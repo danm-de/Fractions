@@ -1,0 +1,11 @@
+bin/
+obj/
+packages/
+!packages/repositories.config
+*.DotSettings.user
+*.suo
+*.csproj.user
+*.ReSharper.user
+_Resharper*
+Fractions.XML
+Fractions.userprefs
