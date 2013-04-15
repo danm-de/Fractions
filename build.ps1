@@ -20,6 +20,6 @@ Task Release -depends Compile {
 }
 
 Task Package -depends Release {
-    nuget pack .\Fractions\Fractions.csproj -Prop Configuration=Release
+    nuget pack .\Fractions\Fractions.csproj -Symbols -Prop Configuration=Release
 }
 
