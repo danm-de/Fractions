@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Fractions</id>
-    <version>1.0.0.0</version>
+    <version>$version$</version>
 	<title>Fraction data type</title>
     <authors>Daniel Mueller</authors>
     <owners>Daniel Mueller</owners>

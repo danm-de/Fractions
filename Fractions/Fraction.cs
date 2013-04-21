@@ -543,7 +543,18 @@ namespace Fractions
             if (IsZero) {
                 return decimal.Zero;
             }
-            return ((decimal)Numerator) / ((decimal)Denominator);
+            try {
+                return ((decimal) Numerator) / ((decimal) Denominator);
+            } catch (OverflowException) {
+                // numerator or denominator is too big. Lets try to split the calculation..
+                var without_decimal_places = (decimal) (Numerator / Denominator);
+                
+                var remainder = Numerator % Denominator;
+                var lowpart = (remainder * BigInteger.Pow(10, 28)) / Denominator;
+                var decimal_places = (((decimal) lowpart) / (decimal) Math.Pow(10, 28));
+                
+                return without_decimal_places + decimal_places;
+            }
         }
 
         /// <summary>
@@ -641,9 +652,11 @@ namespace Fractions
             var high = BitConverter.GetBytes(bits[2]);
             var scale = BitConverter.GetBytes(bits[3]);
 
+            
             var exp = scale[2];
             bool positive_sign = (scale[3] & 0x80) == 0;
 
+            // value = 0x00,high,middle,low / 10^exp
             var numerator = new BigInteger(new byte[] { 
                 low[0],    low[1],    low[2],    low[3], 
                 middle[0], middle[1], middle[2], middle[3],
