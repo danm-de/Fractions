@@ -5,7 +5,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_Subtract
 {
 	[TestFixture]
 	public class Wenn_2_Fünftel_mit_1_Fünftel_subtrahiert_wird : Spec

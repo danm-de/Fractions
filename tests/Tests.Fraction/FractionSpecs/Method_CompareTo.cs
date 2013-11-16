@@ -70,7 +70,6 @@ namespace Tests.Fractions.FractionSpecs.Method_CompareTo {
 		}
 	}
 
-	[Category("")]
 	[TestFixture]
 	public class Wenn_1_fünftel_mit_1_zehntel_verglichen_wird : Spec {
 		private Fraction _a;
@@ -92,7 +91,6 @@ namespace Tests.Fractions.FractionSpecs.Method_CompareTo {
 		}	 
 	}
 
-	[Category("")]
 	[TestFixture]
 	public class Wenn_0_mit_131_verglichen_wird : Spec
 	{

@@ -7,7 +7,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_Divide
 {
     [TestFixture]
     public class Wenn_0_mit_0_dividiert_wird : Spec
@@ -54,7 +54,6 @@ namespace Tests.Fractions.FractionSpecs
             _exception.Should().BeOfType<DivideByZeroException>();
         }
     }
-
     
     [TestFixture]
     public class Wenn_ein_Fünftel_mit_ein_Fünftel_dividiert_wird : Spec

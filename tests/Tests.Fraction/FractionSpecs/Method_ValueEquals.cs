@@ -5,7 +5,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_ValueEquals
 {
     [TestFixture]
     public class Wenn_zwei_Brüche_mit_identischen_Zähler_und_Nenner_verglichen_werden : Spec

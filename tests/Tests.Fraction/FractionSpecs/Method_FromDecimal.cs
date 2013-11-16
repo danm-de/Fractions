@@ -1,6 +1,6 @@
-﻿// ReSharper disable CheckNamespace
+﻿using System.Collections;
+// ReSharper disable CheckNamespace
 // ReSharper disable InconsistentNaming
-
 using System.Numerics;
 using Fractions;
 using FluentAssertions;
@@ -149,19 +149,26 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     [TestFixture]
     public class Wenn_ein_Bruch_mit_Decimaltestzahlen_erzeugt_wird : Spec
     {
-        [Test]
-        public void Soll_der_Bruch_nach_der_Rückumwandlung_zu_decimal_den_selben_Wert_haben([Values(
-            10000000000000000000000000000.0,
-            100000000000000.0, 
-            100000000000000.00000000000000,
-            123456789.0,
-            0.123456789,
-            0.000000000123456789,
-            4294967295.0,
-            18446744073709551615.0,
-            7.9228162514264337593543950335)] decimal value) {
+        public IEnumerable TestCaseSource {
+            get {
+                yield return 10000000000000000000000000000.0m;
+                yield return 10000000000000000000000000000.0m;
+                yield return 100000000000000.0m;
+                yield return 100000000000000.00000000000000m;
+                yield return 123456789.0m;
+                yield return 0.123456789m;
+                yield return 0.000000000123456789m;
+                yield return 4294967295.0m;
+                yield return 18446744073709551615.0m;
+                yield return 7.9228162514264337593543950335m;
+            }
+
+        }
+
+        [Test, TestCaseSource("TestCaseSource")]
+        public void Soll_der_Bruch_nach_der_Rückumwandlung_zu_decimal_den_selben_Wert_haben(decimal value) {
             var fraction = Fraction.FromDecimal(value);
-            
+
             fraction.ToDecimal().Should().Be(value);
         }
     }

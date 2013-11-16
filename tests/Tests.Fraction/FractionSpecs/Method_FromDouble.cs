@@ -8,7 +8,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_FromDouble
 {
     [TestFixture]
     public class Wenn_ein_Bruch_anhand_einer_NaN_double_Zahl_erzeugt_wird : Spec

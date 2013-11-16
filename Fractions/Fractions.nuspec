@@ -3,24 +3,20 @@
   <metadata>
     <id>Fractions</id>
     <version>$version$</version>
-	<title>Fraction data type</title>
+	  <title>Fraction data type</title>
     <authors>Daniel Mueller</authors>
     <owners>Daniel Mueller</owners>
     <licenseUrl>https://danm.de/files/src/csharp/Fractions/license.txt</licenseUrl>
     <projectUrl>https://github.com/danm-de/Fractions</projectUrl>
     <iconUrl>https://danm.de/files/src/csharp/Fractions/Fraction.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>A fraction data type to calculate with rational numbers.</summary>
-    <description>
-	The fraction data type consists of two BigInteger values for numerator and denominator. 
-	It implements various operations (addition, subtraction, multiplication, division and remainder) 
-	with operator overloads.
-	</description>
+	  <summary>A fraction data type to calculate with rational numbers.</summary>
+    <description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2013 Daniel Mueller</copyright>
     <tags>fraction math</tags>
-	<frameworkAssemblies>
-		<frameworkAssembly assemblyName="System.Numerics" />
-	</frameworkAssemblies>
+	  <frameworkAssemblies>
+		  <frameworkAssembly assemblyName="System.Numerics" />
+	  </frameworkAssemblies>
   </metadata>
 </package>

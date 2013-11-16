@@ -1,7 +1,6 @@
 ﻿// ReSharper disable CheckNamespace
 // ReSharper disable InconsistentNaming
 
-using System;
 using Fractions;
 using FluentAssertions;
 using NUnit.Framework;

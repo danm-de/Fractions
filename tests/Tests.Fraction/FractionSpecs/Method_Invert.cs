@@ -5,7 +5,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_FromInvert
 {
     [TestFixture]
     public class Wenn_ein_Bruch_mit_0_als_Zähler_und_0_als_Nenner_negiert_wird : Spec

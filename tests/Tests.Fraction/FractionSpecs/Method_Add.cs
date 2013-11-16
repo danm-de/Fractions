@@ -6,7 +6,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_Add
 {
 	[TestFixture]
 	public class Wenn_zwei_Brüche_die_den_Zahlenwert_0_entsprechen_addiert_werden_dann : Spec

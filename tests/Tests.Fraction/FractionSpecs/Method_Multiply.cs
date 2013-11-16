@@ -5,7 +5,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Method_Multiply
 {
 	[TestFixture]
 	public class Wenn_0_mit_0_multipliziert_wird : Spec

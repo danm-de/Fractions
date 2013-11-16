@@ -6,7 +6,7 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs
+namespace Tests.Fractions.FractionSpecs.Constructors
 {
 	[TestFixture]
 	public class Wenn_ein_Bruch_ohne_Konstruktorparameter_erzeugt_wird : Spec
