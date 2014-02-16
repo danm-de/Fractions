@@ -863,6 +863,19 @@ namespace Fractions
             return new Fraction(numerator, denominator, FractionState.IsNormalized);
         }
 
+        /// <summary>
+        /// Returns a fraction raised to the specified power.
+        /// </summary>
+        /// <param name="base">base to be raised to a power</param>
+        /// <param name="exponent">A number that specifies a power (exponent)</param>
+        /// <returns>The fraction <paramref name="base"/> raised to the power <paramref name="exponent"/>.</returns>
+        [PureAttribute]
+        public static Fraction Pow(Fraction @base, int exponent) {
+            return (exponent < 0)
+                   ? Pow(new Fraction(@base._denominator, @base._numerator), -exponent)
+                   : new Fraction(BigInteger.Pow(@base._numerator, exponent), BigInteger.Pow(@base._denominator, exponent));
+        }
+
         #region Operators
         #pragma warning disable 1591
         public static bool operator ==(Fraction left, Fraction right) {

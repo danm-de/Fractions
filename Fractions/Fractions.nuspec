@@ -13,7 +13,7 @@
 	  <summary>A fraction data type to calculate with rational numbers.</summary>
     <description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2013 Daniel Mueller</copyright>
+    <copyright>Copyright 2013-2014 Daniel Mueller</copyright>
     <tags>fraction math</tags>
 	  <frameworkAssemblies>
 		  <frameworkAssembly assemblyName="System.Numerics" />

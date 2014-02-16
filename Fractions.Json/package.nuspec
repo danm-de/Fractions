@@ -13,7 +13,7 @@
 	  <summary>A JSON.Net converter for the fraction data type.</summary>
     <description>Converts a fraction data type to JSON by using Fraction's ToString() and FromString() methods. The class name is JsonFractionConverter.</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2013 Daniel Mueller</copyright>
+    <copyright>Copyright 2013-2014 Daniel Mueller</copyright>
     <tags>fraction math</tags>
     <dependencies>
       <dependency id="Fractions"/>

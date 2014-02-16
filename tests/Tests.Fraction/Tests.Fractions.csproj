@@ -91,6 +91,7 @@
     <Compile Include="FractionSpecs\Method_Divide.cs" />
     <Compile Include="FractionSpecs\Method_FromString.cs" />
     <Compile Include="FractionSpecs\Method_Invert.cs" />
+    <Compile Include="FractionSpecs\Method_Pow.cs" />
     <Compile Include="FractionSpecs\Method_Remainder.cs" />
     <Compile Include="FractionSpecs\Method_Multiply.cs" />
     <Compile Include="FractionSpecs\Method_Subtract.cs" />
