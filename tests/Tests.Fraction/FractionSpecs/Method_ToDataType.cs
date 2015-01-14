@@ -1,6 +1,7 @@
-﻿// ReSharper disable CheckNamespace
+﻿using System.Collections;
+using System.Numerics;
+// ReSharper disable CheckNamespace
 // ReSharper disable InconsistentNaming
-
 using System;
 using Fractions;
 using FluentAssertions;
@@ -44,6 +45,23 @@ namespace Tests.Fractions.FractionSpecs.Method_ToDataType
         [Test]
         public void Soll_das_Resultat_dem_erwarteten_Ergebnis_entsprechen() {
             Math.Round(_result, 27).Should().Be(0.222222222222222222222222222m);
+        }
+    }
+
+    [TestFixture]
+    public class If_the_user_converts_a_fraction_to_BigInteger : Spec {
+        private static IEnumerable TestCases {
+            get {
+                yield return new TestCaseData(new Fraction(0)).Returns(new BigInteger(0));
+                yield return new TestCaseData(new Fraction(1)).Returns(new BigInteger(1));
+                yield return new TestCaseData(new Fraction(-1)).Returns(new BigInteger(-1));
+                yield return new TestCaseData(new Fraction(new BigInteger(long.MaxValue), new BigInteger(1))).Returns(new BigInteger(long.MaxValue)); 
+            }
+        }
+
+        [Test,TestCaseSource("TestCases")]
+        public BigInteger Shall_the_result_be_correct(Fraction value) {
+            return value.ToBigInteger();
         }
     }
 }

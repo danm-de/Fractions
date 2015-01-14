@@ -83,6 +83,7 @@
     <Compile Include="Fraction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FractionTypeConverter.cs" />
     <Compile Include="InvalidNumberException.cs" />
     <Compile Include="MathMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

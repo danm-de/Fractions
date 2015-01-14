@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Numerics;
@@ -11,6 +12,7 @@ namespace Fractions
     /// The data type is not capable to store NaN (not a number) or infinite.
     /// </summary>
     [Serializable]
+    [TypeConverter(typeof(FractionTypeConverter))]
     [StructLayout(LayoutKind.Sequential)]
     public struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>
     {
@@ -551,6 +553,18 @@ namespace Fractions
                 return 0;
             }
             return (ulong)(Numerator / Denominator);
+        }
+
+        /// <summary>
+        /// Returns the fraction as BigInteger.
+        /// </summary>
+        /// <returns>BigInteger</returns>
+        [Pure]
+        public BigInteger ToBigInteger() {
+            if (IsZero) {
+                return BigInteger.Zero;
+            }
+            return Numerator / Denominator;
         }
 
         /// <summary>

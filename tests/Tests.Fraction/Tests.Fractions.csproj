@@ -97,6 +97,8 @@
     <Compile Include="FractionSpecs\Method_Subtract.cs" />
     <Compile Include="FractionSpecs\Method_ToDataType.cs" />
     <Compile Include="FractionSpecs\Method_ValueEquals.cs" />
+    <Compile Include="FractionTypeConverterSpecs\Method_ConvertFrom.cs" />
+    <Compile Include="FractionTypeConverterSpecs\Method_ConvertTo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spec.cs" />
   </ItemGroup>
