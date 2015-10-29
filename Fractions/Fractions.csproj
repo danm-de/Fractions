@@ -84,12 +84,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Exceptions.resx</DependentUpon>
     </Compile>
-    <Compile Include="Fraction.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FractionTypeConverter.cs" />
-    <Compile Include="InvalidNumberException.cs" />
-    <Compile Include="MathMethods.cs" />
+    <Compile Include="Fraction\Fraction.Operators.cs" />
+    <Compile Include="Fraction\Fraction.cs" />
+    <Compile Include="Fraction\Fraction.ConvertFrom.cs" />
+    <Compile Include="Fraction\Fraction.ConvertTo.cs" />
+    <Compile Include="Fraction\Fraction.Equality.cs" />
+    <Compile Include="Fraction\Fraction.CompareTo.cs" />
+    <Compile Include="Fraction\Fraction.Constructors.cs" />
+    <Compile Include="Fraction\Fraction.ToString.cs" />
+    <Compile Include="Fraction\Fraction.Math.cs" />
+    <Compile Include="Fraction\Fraction.FractionState.cs" />
+    <Compile Include="TypeConverters\FractionTypeConverter.cs" />
+    <Compile Include="Exceptions\InvalidNumberException.cs" />
+    <Compile Include="Math\MathMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +117,7 @@
       <Link>license.txt</Link>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

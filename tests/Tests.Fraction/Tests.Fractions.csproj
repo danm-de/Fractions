@@ -84,6 +84,7 @@
     <Compile Include="FractionSpecs\Method_FromDouble.cs" />
     <Compile Include="FractionSpecs\Method_Add.cs" />
     <Compile Include="FractionSpecs\Method_Divide.cs" />
+    <Compile Include="FractionSpecs\Method_FromDoubleRounded.cs" />
     <Compile Include="FractionSpecs\Method_FromString.cs" />
     <Compile Include="FractionSpecs\Method_Invert.cs" />
     <Compile Include="FractionSpecs\Method_Pow.cs" />

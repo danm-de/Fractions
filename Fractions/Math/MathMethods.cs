@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace Fractions {
     internal static class MathMethods {
@@ -26,7 +27,7 @@ namespace Fractions {
         /// <param name="a">First number.</param>
         /// <param name="b">Second number.</param>
         /// <returns>The largest positive integer that divides <paramref name="a"/> and <paramref name="b"/> without a remainder.</returns>
-        public static Int64 GreatestCommonDivisor(Int64 a, Int64 b) {
+        public static long GreatestCommonDivisor(long a, long b) {
             a = Math.Abs(a);
             b = Math.Abs(b);
 
@@ -51,7 +52,7 @@ namespace Fractions {
                 : BinaryGreatestCommonDivisorAlgorithm(a, b);
         }
 
-        private static Int64 BinaryGreatestCommonDivisorAlgorithm(Int64 a, Int64 b) {
+        private static long BinaryGreatestCommonDivisorAlgorithm(long a, long b) {
 
             // Solange 'a' und 'b' beide gerade Zahlen sind, teile die Zahlen durch 2
             // und merke wie oft dies möglich war in 'k'.
@@ -113,6 +114,16 @@ namespace Fractions {
 
             var gcd = GreatestCommonDivisor(a, b);
             return (a / gcd) * b;
+        }
+
+        /// <summary>
+        /// Returns <c>true</c> if there are remaining digits after the decimal point.
+        /// </summary>
+        /// <param name="remaining_digits">A <see cref="double"/> value with possible remaining digits</param>
+        /// <returns><c>true</c> if <paramref name="remaining_digits"/> has digits after the decimal point</returns>
+        [Pure]
+        public static bool RemainingDigitsAfterTheDecimalPoint(double remaining_digits) {
+            return (Math.Abs(remaining_digits - Math.Floor(remaining_digits)) > double.Epsilon);
         }
     }
 }
