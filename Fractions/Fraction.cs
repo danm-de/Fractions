@@ -434,6 +434,53 @@ namespace Fractions
         }
 
         /// <summary>
+        /// Get the value of the Fraction as a complex String.
+        /// </summary>
+        /// <returns>
+        /// The get complex fraction.
+        /// </returns>
+        public string ToComplexString()
+        {
+            int tempWhole = 0;
+            var tempNumerator = _numerator;
+            string output;
+
+            while (tempNumerator >= _denominator)
+            {
+                tempWhole++;
+                tempNumerator -= _denominator;
+            }
+
+            // ReSharper disable RedundantCast
+            if (tempWhole > 0 && (double)tempNumerator / (double)_denominator > 0.0)
+            {
+                output = tempWhole + " " + tempNumerator + "/" + _denominator;
+            }
+            else if (tempWhole > 0 && (double)tempNumerator / (double)_denominator == 0.0)
+            {
+                // ReSharper restore RedundantCast
+                output = tempWhole.ToString(CultureInfo.CurrentCulture);
+            }
+            else if (tempNumerator == 0)
+            {
+                output = "0";
+            }
+            else
+            {
+                output = tempNumerator + "/" + _denominator;
+            }
+
+            if (tempNumerator < 0)
+            {
+                Fraction tempFrac = this;
+                output = tempFrac.Invert().ToComplexString();
+                output = "-" + output;
+            }
+
+            return output;
+        }
+
+        /// <summary>
         /// Tests if the calculated value of this fraction equals to the calculated value of <paramref name="other"/>.
         /// It does not matter if either of them is not normalized. Both values will be reduced (normalized) before performing 
         /// the <see cref="object.Equals(object)"/> test.
