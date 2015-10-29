@@ -137,7 +137,6 @@ namespace Fractions {
         /// <returns>The absolute value.</returns>
         [Pure]
         public Fraction Abs() {
-            BigInteger.Abs(BigInteger.MinusOne);
             return Abs(this);
         }
 
