@@ -132,6 +132,26 @@ namespace Fractions {
         }
 
         /// <summary>
+        /// Gets the absolute value of a <see cref="Fraction"/> object.
+        /// </summary>
+        /// <returns>The absolute value.</returns>
+        [Pure]
+        public Fraction Abs() {
+            BigInteger.Abs(BigInteger.MinusOne);
+            return Abs(this);
+        }
+
+        /// <summary>
+        /// Gets the absolute value of a <see cref="Fraction"/> object.
+        /// </summary>
+        /// <param name="fraction">The fraction.</param>
+        /// <returns>The absolute value.</returns>
+        [Pure]
+        public static Fraction Abs(Fraction fraction) {
+            return new Fraction(BigInteger.Abs(fraction.Numerator), BigInteger.Abs(fraction.Denominator), fraction.State);
+        }
+
+        /// <summary>
         /// Returns a reduced and normalized fraction.
         /// </summary>
         /// <param name="numerator">Numerator</param>

@@ -12,7 +12,7 @@ namespace Fractions {
     [Serializable]
     [TypeConverter(typeof (FractionTypeConverter))]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction> {
+    public partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
         [NonSerialized] private static readonly BigInteger MIN_DECIMAL = new BigInteger(decimal.MinValue);
         [NonSerialized] private static readonly BigInteger MAX_DECIMAL = new BigInteger(decimal.MaxValue);
         [NonSerialized] private static readonly Fraction _zero = new Fraction(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);

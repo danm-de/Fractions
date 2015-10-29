@@ -84,6 +84,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Exceptions.resx</DependentUpon>
     </Compile>
+    <Compile Include="Formatter\DefaultFractionFormatProvider.cs" />
+    <Compile Include="Formatter\DefaultFractionFormatter.cs" />
     <Compile Include="Fraction\Fraction.Operators.cs" />
     <Compile Include="Fraction\Fraction.cs" />
     <Compile Include="Fraction\Fraction.ConvertFrom.cs" />

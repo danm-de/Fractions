@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="Catch.cs" />
     <Compile Include="FractionSpecs\Constructors.cs" />
+    <Compile Include="FractionSpecs\Method_Abs.cs" />
     <Compile Include="FractionSpecs\Method_CompareTo.cs" />
     <Compile Include="FractionSpecs\Method_ConvertTo.cs" />
     <Compile Include="FractionSpecs\Method_FromDecimal.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="FractionSpecs\Method_Multiply.cs" />
     <Compile Include="FractionSpecs\Method_Subtract.cs" />
     <Compile Include="FractionSpecs\Method_ToDataType.cs" />
+    <Compile Include="FractionSpecs\Method_ToString.cs" />
     <Compile Include="FractionSpecs\Method_ValueEquals.cs" />
     <Compile Include="FractionTypeConverterSpecs\Method_ConvertFrom.cs" />
     <Compile Include="FractionTypeConverterSpecs\Method_ConvertTo.cs" />

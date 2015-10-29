@@ -86,5 +86,14 @@ namespace Fractions {
                 return ResourceManager.GetString("DivideByZero", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The type {0} is not supported. ähnelt.
+        /// </summary>
+        internal static string TypeXnotSupported {
+            get {
+                return ResourceManager.GetString("TypeXnotSupported", resourceCulture);
+            }
+        }
     }
 }

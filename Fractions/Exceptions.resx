@@ -126,4 +126,7 @@
   <data name="CannotConvertToFraction" xml:space="preserve">
     <value>The string '{0}' cannot be converted to fraction.</value>
   </data>
+  <data name="TypeXnotSupported" xml:space="preserve">
+    <value>The type {0} is not supported.</value>
+  </data>
 </root>
