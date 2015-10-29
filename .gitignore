@@ -1,11 +1,17 @@
 bin/
 obj/
+_build.output/
 packages/
 !packages/repositories.config
+.paket/paket.exe
+.fake/
+.vs/
+
 *.DotSettings.user
 *.suo
 *.csproj.user
 *.ReSharper.user
 _Resharper*
+build.log
 Fractions.XML
 Fractions.userprefs

@@ -1,16 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{3A3DC1B2-241B-43CA-9641-013772764634}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions", "Fractions\Fractions.csproj", "{D8ACB536-362A-4580-9AF1-572F26B87182}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Fractions", "tests\Tests.Fraction\Tests.Fractions.csproj", "{2AD2FCF0-E659-46C8-983A-6BA355EF0CCA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3EAB55C5-0DDC-4C58-978C-3CE6870444C9}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions.Json", "Fractions.Json\Fractions.Json.csproj", "{598BEDCF-FB72-4005-8FA3-235EF022459B}"
 EndProject

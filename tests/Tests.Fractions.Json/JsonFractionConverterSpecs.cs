@@ -55,9 +55,10 @@ namespace Tests.Fractions.Json.JsonFractionConverterSpecs
         }
 
         [Test]
-        public void Soll_der_Ergebnis_auch_wieder_deserialisiert_werden_können() {
-            _serializer.Deserialize<Test>(new JsonTextReader(new StringReader(_sb.ToString())))
-                .ShouldHave().AllProperties().EqualTo(_test_objekt);
+        public void Soll_der_Ergebnis_auch_wieder_deserialisiert_werden_können()
+        {
+	        _serializer.Deserialize<Test>(new JsonTextReader(new StringReader(_sb.ToString())))
+				.ShouldBeEquivalentTo(_test_objekt);
         }
     }
 

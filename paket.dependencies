@@ -1,0 +1,8 @@
+source https://www.nuget.org/api/v2/
+framework >= net40
+
+nuget FAKE
+nuget FluentAssertions 
+nuget Newtonsoft.Json 6.0.8
+nuget NUnit
+nuget NUnit.Runners

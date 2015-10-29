@@ -89,8 +89,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Fractions.nuspec" />
+    <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Exceptions.resx">
@@ -101,7 +100,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fraction.ico" />
-    <None Include="license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\license.txt">
+      <Link>license.txt</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -111,4 +114,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Import Project="..\.paket\paket.targets" />
 </Project>
