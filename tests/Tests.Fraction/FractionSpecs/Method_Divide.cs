@@ -7,11 +7,9 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_Divide
-{
+namespace Tests.Fractions.FractionSpecs.Method_Divide {
     [TestFixture]
-    public class Wenn_0_mit_0_dividiert_wird : Spec
-    {
+    public class Wenn_0_mit_0_dividiert_wird : Spec {
         private Exception _exception;
 
         public override void Act() {
@@ -26,8 +24,7 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
     }
 
     [TestFixture]
-    public class Wenn_1_mit_0_dividiert_wird : Spec
-    {
+    public class Wenn_1_mit_0_dividiert_wird : Spec {
         private Exception _exception;
 
         public override void Act() {
@@ -41,8 +38,7 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
     }
 
     [TestFixture]
-    public class Wenn_minus_1_mit_0_dividiert_wird : Spec
-    {
+    public class Wenn_minus_1_mit_0_dividiert_wird : Spec {
         private Exception _exception;
 
         public override void Act() {
@@ -54,10 +50,9 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
             _exception.Should().BeOfType<DivideByZeroException>();
         }
     }
-    
+
     [TestFixture]
-    public class Wenn_ein_Fünftel_mit_ein_Fünftel_dividiert_wird : Spec
-    {
+    public class Wenn_ein_Fünftel_mit_ein_Fünftel_dividiert_wird : Spec {
         private Fraction _a;
         private Fraction _b;
         private Fraction _result;
@@ -78,8 +73,7 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
     }
 
     [TestFixture]
-    public class Wenn_2_mit_2_Viertel_dividiert_wird : Spec
-    {
+    public class Wenn_2_mit_2_Viertel_dividiert_wird : Spec {
         private Fraction _a;
         private Fraction _b;
         private Fraction _result;
@@ -100,8 +94,7 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
     }
 
     [TestFixture]
-    public class Wenn_minus_2_mit_2_Viertel_dividiert_wird : Spec
-    {
+    public class Wenn_minus_2_mit_2_Viertel_dividiert_wird : Spec {
         private Fraction _a;
         private Fraction _b;
         private Fraction _result;
@@ -122,8 +115,7 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
     }
 
     [TestFixture]
-    public class Wenn_0_Achtel_durch_4_dividiert_werden : Spec
-    {
+    public class Wenn_0_Achtel_durch_4_dividiert_werden : Spec {
         private Fraction _a;
         private Fraction _b;
         private Fraction _result;
@@ -144,8 +136,7 @@ namespace Tests.Fractions.FractionSpecs.Method_Divide
     }
 
     [TestFixture]
-    public class Wenn_0_durch_4_dividiert_werden : Spec
-    {
+    public class Wenn_0_durch_4_dividiert_werden : Spec {
         private Fraction _a;
         private Fraction _b;
         private Fraction _result;

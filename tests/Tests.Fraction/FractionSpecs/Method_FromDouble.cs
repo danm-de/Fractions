@@ -1,18 +1,16 @@
-﻿// ReSharper disable CheckNamespace
-// ReSharper disable InconsistentNaming
-// ReSharper disable ReturnValueOfPureMethodIsNotUsed
-
-using System;
+﻿using System;
 using System.Numerics;
 using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_FromDouble
-{
+// ReSharper disable CheckNamespace
+// ReSharper disable InconsistentNaming
+// ReSharper disable ReturnValueOfPureMethodIsNotUsed
+
+namespace Tests.Fractions.FractionSpecs.Method_FromDouble {
     [TestFixture]
-    public class Wenn_ein_Bruch_anhand_einer_NaN_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_anhand_einer_NaN_double_Zahl_erzeugt_wird : Spec {
         private Exception _exception;
 
         public override void SetUp() {
@@ -27,8 +25,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_anhand_einer_positiv_unendlichen_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_anhand_einer_positiv_unendlichen_double_Zahl_erzeugt_wird : Spec {
         private Exception _exception;
 
         public override void SetUp() {
@@ -43,8 +40,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_anhand_einer_negativ_unendlichen_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_anhand_einer_negativ_unendlichen_double_Zahl_erzeugt_wird : Spec {
         private Exception _exception;
 
         public override void SetUp() {
@@ -59,8 +55,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_0_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_0_double_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -75,8 +70,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_minus_1_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_minus_1_double_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -91,8 +85,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_1_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_1_double_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -107,15 +100,14 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_1_Komma_345_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_1_Komma_345_double_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
             base.SetUp();
             _fraction = Fraction.FromDouble(1.345);
         }
-        
+
         [Test]
         public void Soll_der_auf_15_Nachkommastellen_gerundete_Wert_der_Zahl_entsprechen() {
             var rounded = Math.Round(_fraction.ToDouble(), 15, MidpointRounding.ToEven);
@@ -125,8 +117,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_0_Komma_3125_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_0_Komma_3125_double_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -146,8 +137,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_minus_0_Komma_3125_double_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_minus_0_Komma_3125_double_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -167,8 +157,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_double_MaxValue_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_double_MaxValue_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -188,8 +177,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_double_MinValue_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_double_MinValue_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -209,8 +197,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_PI_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_PI_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -225,8 +212,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec {
         private Fraction _fraction;
         private const double _one_third = 1.0 / 3.0;
 
@@ -241,5 +227,4 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDouble
             rounded.Should().Be(0.333333333333333);
         }
     }
-
 }

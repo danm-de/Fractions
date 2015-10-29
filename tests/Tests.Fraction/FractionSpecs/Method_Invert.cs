@@ -1,15 +1,13 @@
-﻿// ReSharper disable CheckNamespace
-// ReSharper disable InconsistentNaming
-
-using Fractions;
+﻿using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_FromInvert
-{
+// ReSharper disable CheckNamespace
+// ReSharper disable InconsistentNaming
+
+namespace Tests.Fractions.FractionSpecs.Method_FromInvert {
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_0_als_Zähler_und_0_als_Nenner_negiert_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_0_als_Zähler_und_0_als_Nenner_negiert_wird : Spec {
         private Fraction _result;
 
         public override void Act() {
@@ -36,8 +34,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromInvert
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_0_als_Zähler_und_4_als_Nenner_negiert_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_0_als_Zähler_und_4_als_Nenner_negiert_wird : Spec {
         private Fraction _result;
 
         public override void Act() {
@@ -64,8 +61,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromInvert
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_minus_1_als_Zähler_und_1_als_Nenner_negiert_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_minus_1_als_Zähler_und_1_als_Nenner_negiert_wird : Spec {
         private Fraction _result;
 
         public override void Act() {
@@ -86,8 +82,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromInvert
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_1_als_Zähler_und_1_als_Nenner_negiert_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_1_als_Zähler_und_1_als_Nenner_negiert_wird : Spec {
         private Fraction _result;
 
         public override void Act() {

@@ -1,11 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Tests.Fractions
-{
-
-    public class Spec
-    {
+namespace Tests.Fractions {
+    public class Spec {
         [TestFixtureSetUp]
         public void TestFixtureSetUp() {
             SetUp();

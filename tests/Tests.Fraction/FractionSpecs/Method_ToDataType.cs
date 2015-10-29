@@ -1,17 +1,16 @@
 ﻿using System.Collections;
 using System.Numerics;
-// ReSharper disable CheckNamespace
-// ReSharper disable InconsistentNaming
 using System;
 using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_ToDataType
-{
+// ReSharper disable CheckNamespace
+// ReSharper disable InconsistentNaming
+
+namespace Tests.Fractions.FractionSpecs.Method_ToDataType {
     [TestFixture]
-    public class Wenn_ein_0_Bruch_in_ein_Decimal_konvertiert_wird : Spec
-    {
+    public class Wenn_ein_0_Bruch_in_ein_Decimal_konvertiert_wird : Spec {
         [Test]
         public void Soll_das_Ergebnis_0_sein() {
             Fraction.Zero.ToDecimal().Should().Be(0);
@@ -19,11 +18,10 @@ namespace Tests.Fractions.FractionSpecs.Method_ToDataType
     }
 
     [TestFixture]
-    public class Wenn_ein_1viertel_in_ein_Decimal_konvertiert_wird : Spec
-    {
+    public class Wenn_ein_1viertel_in_ein_Decimal_konvertiert_wird : Spec {
         [Test]
         public void Soll_das_Ergebnis_0_25_sein() {
-            (new Fraction(1,4)).ToDecimal().Should().Be(0.25m);
+            (new Fraction(1, 4)).ToDecimal().Should().Be(0.25m);
         }
     }
 
@@ -55,11 +53,13 @@ namespace Tests.Fractions.FractionSpecs.Method_ToDataType
                 yield return new TestCaseData(new Fraction(0)).Returns(new BigInteger(0));
                 yield return new TestCaseData(new Fraction(1)).Returns(new BigInteger(1));
                 yield return new TestCaseData(new Fraction(-1)).Returns(new BigInteger(-1));
-                yield return new TestCaseData(new Fraction(new BigInteger(long.MaxValue), new BigInteger(1))).Returns(new BigInteger(long.MaxValue)); 
+                yield return
+                    new TestCaseData(new Fraction(new BigInteger(long.MaxValue), new BigInteger(1))).Returns(
+                        new BigInteger(long.MaxValue));
             }
         }
 
-        [Test,TestCaseSource("TestCases")]
+        [Test, TestCaseSource(nameof(TestCases))]
         public BigInteger Shall_the_result_be_correct(Fraction value) {
             return value.ToBigInteger();
         }

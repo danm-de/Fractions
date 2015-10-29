@@ -2,20 +2,18 @@
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Fractions.Json
-{
+namespace Fractions.Json {
     /// <summary>
     /// Converts a <see cref="Fraction"/> data type to JSON.
     /// </summary>
-    public class JsonFractionConverter : JsonConverter
-    {
+    public class JsonFractionConverter : JsonConverter {
         /// <summary>
         /// Writes the JSON representation of the object.
         /// </summary>
         /// <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param><param name="value">The value.</param>
         /// <param name="serializer">The calling serializer.</param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            var fraction = (Fraction)value;
+            var fraction = (Fraction) value;
             writer.WriteValue(fraction.ToString());
         }
 
@@ -28,7 +26,8 @@ namespace Fractions.Json
         /// <returns>
         /// The object value.
         /// </returns>
-        public override object ReadJson(JsonReader reader, Type object_type, object existing_value, JsonSerializer serializer) {
+        public override object ReadJson(JsonReader reader, Type object_type, object existing_value,
+            JsonSerializer serializer) {
             var value = reader.Value.ToString();
             Fraction fraction;
             if (!Fraction.TryParse(value, out fraction)) {
@@ -45,7 +44,7 @@ namespace Fractions.Json
         /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
         /// </returns>
         public override bool CanConvert(Type object_type) {
-            return object_type == typeof(Fraction);
+            return object_type == typeof (Fraction);
         }
     }
 }

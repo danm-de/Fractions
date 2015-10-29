@@ -5,49 +5,48 @@ using System.Globalization;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace Fractions
-{
+namespace Fractions {
     /// <summary>
     /// A mathematical fraction. A rational number written as a/b (a is the numerator and b the denominator). 
     /// The data type is not capable to store NaN (not a number) or infinite.
     /// </summary>
     [Serializable]
-    [TypeConverter(typeof(FractionTypeConverter))]
+    [TypeConverter(typeof (FractionTypeConverter))]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>
-    {
+    public struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction> {
         /// <summary>
         /// The fraction's state.
         /// </summary>
-        public enum FractionState
-        {
+        public enum FractionState {
             /// <summary>
             /// Unknown state.
             /// </summary>
             Unknown,
+
             /// <summary>
             /// A reduced/simplified fraction.
             /// </summary>
             IsNormalized
         }
 
-        [NonSerialized]
-        private static readonly BigInteger MIN_DECIMAL = new BigInteger(decimal.MinValue);
-        [NonSerialized]
-        private static readonly BigInteger MAX_DECIMAL = new BigInteger(decimal.MaxValue);
+        [NonSerialized] private static readonly BigInteger MIN_DECIMAL = new BigInteger(decimal.MinValue);
+        [NonSerialized] private static readonly BigInteger MAX_DECIMAL = new BigInteger(decimal.MaxValue);
 
-        [NonSerialized]
-        private static readonly Fraction _zero = new Fraction(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);
-        [NonSerialized]
-        private static readonly Fraction _one = new Fraction(BigInteger.One, BigInteger.One, FractionState.IsNormalized);
-        [NonSerialized]
-        private static readonly Fraction _minus_one = new Fraction(BigInteger.MinusOne, BigInteger.One, FractionState.IsNormalized);
+        [NonSerialized] private static readonly Fraction _zero = new Fraction(BigInteger.Zero, BigInteger.Zero,
+            FractionState.IsNormalized);
+
+        [NonSerialized] private static readonly Fraction _one = new Fraction(BigInteger.One, BigInteger.One,
+            FractionState.IsNormalized);
+
+        [NonSerialized] private static readonly Fraction _minus_one = new Fraction(BigInteger.MinusOne, BigInteger.One,
+            FractionState.IsNormalized);
 
         private readonly BigInteger _denominator;
         private readonly BigInteger _numerator;
         private readonly FractionState _state;
-        
+
         #region constructors
+
         /// <summary>
         /// Create a fraction with <paramref name="numerator"/>, <paramref name="denominator"/> and the fraction' <paramref name="state"/>. 
         /// Warning: if you use unreduced values combined with a state of <see cref="FractionState.IsNormalized"/> 
@@ -68,7 +67,7 @@ namespace Fractions
         /// <param name="numerator">Numerator</param>
         /// <param name="denominator">Denominator</param>
         public Fraction(BigInteger numerator, BigInteger denominator)
-            : this(numerator, denominator, true) { }
+            : this(numerator, denominator, true) {}
 
         /// <summary>
         /// Creates a normalized (reduced/simplified) or unnormalized fraction using <paramref name="numerator"/> and <paramref name="denominator"/>.
@@ -96,7 +95,7 @@ namespace Fractions
         /// Creates a normalized fraction using a signed 32bit integer.
         /// </summary>
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
-        public Fraction(Int32 numerator) {
+        public Fraction(int numerator) {
             _numerator = new BigInteger(numerator);
             _denominator = (numerator != 0) ? BigInteger.One : BigInteger.Zero;
             _state = FractionState.IsNormalized;
@@ -106,7 +105,7 @@ namespace Fractions
         /// Creates a normalized fraction using a signed 64bit integer.
         /// </summary>
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
-        public Fraction(Int64 numerator) {
+        public Fraction(long numerator) {
             _numerator = new BigInteger(numerator);
             _denominator = numerator != 0 ? BigInteger.One : BigInteger.Zero;
             _state = FractionState.IsNormalized;
@@ -116,7 +115,7 @@ namespace Fractions
         /// Creates a normalized fraction using a unsigned 32bit integer.
         /// </summary>
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
-        public Fraction(UInt32 numerator) {
+        public Fraction(uint numerator) {
             _numerator = new BigInteger(numerator);
             _denominator = numerator != 0 ? BigInteger.One : BigInteger.Zero;
             _state = FractionState.IsNormalized;
@@ -127,7 +126,7 @@ namespace Fractions
         /// Creates a normalized fraction using a unsigned 64bit integer.
         /// </summary>
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
-        public Fraction(UInt64 numerator) {
+        public Fraction(ulong numerator) {
             _numerator = new BigInteger(numerator);
             _denominator = numerator != 0 ? BigInteger.One : BigInteger.Zero;
             _state = FractionState.IsNormalized;
@@ -163,83 +162,64 @@ namespace Fractions
         public Fraction(decimal value) {
             this = FromDecimal(value);
         }
+
         #endregion
 
         /// <summary>
         /// The numerator.
         /// </summary>
         [Pure]
-        public BigInteger Numerator {
-            get { return _numerator; }
-        }
+        public BigInteger Numerator => _numerator;
 
         /// <summary>
         /// The denominator
         /// </summary>
         [Pure]
-        public BigInteger Denominator {
-            get { return _denominator; }
-        }
+        public BigInteger Denominator => _denominator;
 
         /// <summary>
         /// <c>true</c> if the value is positive (greater than or equal to 0).
         /// </summary>
         [Pure]
-        public bool IsPositive {
-            get {
-                return (_numerator.Sign == 1 && _denominator.Sign == 1) || (_numerator.Sign == -1 && _denominator.Sign == -1);
-            }
-        }
+        public bool IsPositive => (_numerator.Sign == 1 && _denominator.Sign == 1) ||
+                                  (_numerator.Sign == -1 && _denominator.Sign == -1);
 
         /// <summary>
         /// <c>true</c> if the value is negative (lesser than 0).
         /// </summary>
         [Pure]
-        public bool IsNegative {
-            get {
-                return (_numerator.Sign == -1 && _denominator.Sign == 1) || (_numerator.Sign == 1 && _denominator.Sign == -1);
-            }
-        }
+        public bool IsNegative => (_numerator.Sign == -1 && _denominator.Sign == 1) ||
+                                  (_numerator.Sign == 1 && _denominator.Sign == -1);
 
         /// <summary>
         /// <c>true</c> if the fraction has a real (calculated) value of 0.
         /// </summary>
         [Pure]
-        public bool IsZero {
-            get { return _numerator.IsZero || _denominator.IsZero; }
-        }
+        public bool IsZero => _numerator.IsZero || _denominator.IsZero;
 
         /// <summary>
         /// The fraction's state.
         /// </summary>
         [Pure]
-        public FractionState State {
-            get { return _state; }
-        }
+        public FractionState State => _state;
 
         /// <summary>
         /// A fraction with the reduced/simplified value of 0.
         /// </summary>
         [Pure]
-        public static Fraction Zero {
-            get { return _zero; }
-        }
+        public static Fraction Zero => _zero;
 
         /// <summary>
         /// A fraction with the reduced/simplified value of 1.
         /// </summary>
         [Pure]
-        public static Fraction One {
-            get { return _one; }
-        }
+        public static Fraction One => _one;
 
         /// <summary>
         /// A fraction with the reduced/simplified value of -1.
         /// </summary>
         [Pure]
-        public static Fraction MinusOne {
-            get { return _minus_one; }
-        }
+        public static Fraction MinusOne => _minus_one;
 
         /// <summary>
         /// Calculates the remainder of the division with the fraction's value and the supplied <paramref name="divisor"/> (% operator).
@@ -301,7 +281,7 @@ namespace Fractions
             var calculated_numerator = BigInteger.Add(
                 BigInteger.Multiply(_numerator, other_multiplier),
                 BigInteger.Multiply(summand.Numerator, this_multiplier)
-            );
+                );
 
             return new Fraction(calculated_numerator, least_common_multiple, true);
         }
@@ -373,11 +353,12 @@ namespace Fractions
                 return 1;
             }
 
-            if (obj.GetType() != typeof(Fraction)) {
-                throw new ArgumentException(string.Format(Exceptions.CompareToArgumentException, GetType(), obj.GetType()), "obj");
+            if (obj.GetType() != typeof (Fraction)) {
+                throw new ArgumentException(
+                    string.Format(Exceptions.CompareToArgumentException, GetType(), obj.GetType()), "obj");
             }
 
-            return CompareTo((Fraction)obj);
+            return CompareTo((Fraction) obj);
         }
 
         /// <summary>
@@ -418,11 +399,9 @@ namespace Fractions
         /// </summary>
         /// <returns>"numerator/denominator" or just "numerator"</returns>
         [PureAttribute]
-        public override string ToString()
-        {
+        public override string ToString() {
             // ReSharper disable ImpureMethodCallOnReadonlyValueField
-            if (_denominator == BigInteger.One)
-            {
+            if (_denominator == BigInteger.One) {
                 return _numerator.ToString(CultureInfo.InvariantCulture);
 
             }
@@ -462,22 +441,19 @@ namespace Fractions
         }
 
         /// <summary>
-        /// <para>Performs an exact comparison with <paramref name="obj"/> using numerator and denominator.</para>
+        /// <para>Performs an exact comparison with <paramref name="other"/> using numerator and denominator.</para>
         /// <para>Warning: 1/2 is NOT equal to 2/4! -1/2 is NOT equal to 1/-2!</para>
         /// <para>If you want to test the calculated values for equality use <see cref="CompareTo(Fraction)"/> or
         /// <see cref="IsEquivalentTo"/> </para>
         /// </summary>
-        /// <param name="obj">The fraction to compare with.</param>
-        /// <returns><c>true</c> if <paramref name="obj"/> is type of <see cref="Fraction"/> and numerator and denominator of both are equal.</returns>
+        /// <param name="other">The fraction to compare with.</param>
+        /// <returns><c>true</c> if <paramref name="other"/> is type of <see cref="Fraction"/> and numerator and denominator of both are equal.</returns>
         [Pure]
-        public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) {
+        public override bool Equals(object other) {
+            if (ReferenceEquals(null, other)) {
                 return false;
             }
-            if (obj.GetType() != typeof(Fraction)) {
-                return false;
-            }
-            return Equals((Fraction)obj);
+            return other is Fraction && Equals((Fraction) other);
         }
 
         /// <summary>
@@ -516,7 +492,7 @@ namespace Fractions
             if (IsZero) {
                 return 0;
             }
-            return (int)(Numerator / Denominator);
+            return (int) (Numerator / Denominator);
         }
 
         /// <summary>
@@ -528,7 +504,7 @@ namespace Fractions
             if (IsZero) {
                 return 0;
             }
-            return (long)(Numerator / Denominator);
+            return (long) (Numerator / Denominator);
         }
 
         /// <summary>
@@ -540,7 +516,7 @@ namespace Fractions
             if (IsZero) {
                 return 0;
             }
-            return (uint)(Numerator / Denominator);
+            return (uint) (Numerator / Denominator);
         }
 
         /// <summary>
@@ -552,7 +528,7 @@ namespace Fractions
             if (IsZero) {
                 return 0;
             }
-            return (ulong)(Numerator / Denominator);
+            return (ulong) (Numerator / Denominator);
         }
 
         /// <summary>
@@ -584,11 +560,11 @@ namespace Fractions
 
             // numerator or denominator is too big. Lets try to split the calculation..
             // Possible OverFlowException!
-            var without_decimal_places = (decimal)(_numerator / _denominator);
+            var without_decimal_places = (decimal) (_numerator / _denominator);
 
             var remainder = _numerator % _denominator;
             var lowpart = (remainder * BigInteger.Pow(10, 28)) / _denominator;
-            var decimal_places = (((decimal)lowpart) / (decimal)Math.Pow(10, 28));
+            var decimal_places = (((decimal) lowpart) / (decimal) Math.Pow(10, 28));
 
             return without_decimal_places + decimal_places;
         }
@@ -602,8 +578,9 @@ namespace Fractions
             if (IsZero) {
                 return 0;
             }
-            return ((double)Numerator) / ((double)Denominator);
+            return ((double) Numerator) / ((double) Denominator);
         }
+
         #endregion ToDataTypeMethods
 
         #region FromDataTypeMethods
@@ -640,9 +617,10 @@ namespace Fractions
         /// <param name="format_provider">Provides culture specific information that will be used to parse the <paramref name="fraction_string"/>.</param>
         /// <returns>Ein Bruch</returns>
         [Pure]
-        public static Fraction FromString(string fraction_string, NumberStyles number_styles, IFormatProvider format_provider) {
+        public static Fraction FromString(string fraction_string, NumberStyles number_styles,
+            IFormatProvider format_provider) {
             if (fraction_string == null) {
-                throw new ArgumentNullException("fraction_string");
+                throw new ArgumentNullException(nameof(fraction_string));
             }
 
             Fraction fraction;
@@ -663,8 +641,7 @@ namespace Fractions
         /// <para><c>true</c> if <paramref name="fraction_string"/> was well formed. The parsing result will be written to <paramref name="fraction"/>. </para>
         /// <para><c>false</c> if <paramref name="fraction_string"/> was invalid.</para></returns>
         [Pure]
-        public static bool TryParse(string fraction_string, out Fraction fraction)
-        {
+        public static bool TryParse(string fraction_string, out Fraction fraction) {
             return TryParse(fraction_string, NumberStyles.Number, null, out fraction);
         }
 
@@ -723,7 +700,8 @@ namespace Fractions
         /// <para><c>true</c> if <paramref name="number"/> was well formed. The parsing result will be written to <paramref name="fraction"/>. </para>
         /// <para><c>false</c> if <paramref name="number"/> was invalid.</para>
         /// </returns>
-        private static bool TryParseSingleNumber(string number, NumberStyles number_styles, IFormatProvider format_provider, out Fraction fraction) {
+        private static bool TryParseSingleNumber(string number, NumberStyles number_styles,
+            IFormatProvider format_provider, out Fraction fraction) {
             var number_format_info = NumberFormatInfo.GetInstance(format_provider);
 
             if (number.Contains(number_format_info.NumberDecimalSeparator)) {
@@ -780,7 +758,7 @@ namespace Fractions
             var one = BigInteger.One;
 
             // value = (-1 * sign)   *   (1 + 2^(-1) + 2^(-2) .. + 2^(-52))   *   2^(exponent-K)
-            var value_bits = unchecked((ulong)BitConverter.DoubleToInt64Bits(value));
+            var value_bits = unchecked((ulong) BitConverter.DoubleToInt64Bits(value));
 
             if (value_bits == 0) {
                 // See IEEE 754
@@ -791,7 +769,7 @@ namespace Fractions
             var mantissa_bits = (value_bits & MANTISSA);
 
             // (exponent-K)
-            var exponent = (int)(((value_bits & EXPONENT_BITS) >> 52) - K);
+            var exponent = (int) (((value_bits & EXPONENT_BITS) >> 52) - K);
 
             // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
             var mantissa = new Fraction(mantissa_bits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
@@ -833,22 +811,24 @@ namespace Fractions
             var high = BitConverter.GetBytes(bits[2]);
             var scale = BitConverter.GetBytes(bits[3]);
 
-            
+
             var exp = scale[2];
             bool positive_sign = (scale[3] & 0x80) == 0;
 
             // value = 0x00,high,middle,low / 10^exp
-            var numerator = new BigInteger(new byte[] { 
-                low[0],    low[1],    low[2],    low[3], 
+            var numerator = new BigInteger(new byte[] {
+                low[0], low[1], low[2], low[3],
                 middle[0], middle[1], middle[2], middle[3],
-                high[0],   high[1],   high[2],   high[3], 
-                0x00 });
+                high[0], high[1], high[2], high[3],
+                0x00
+            });
             var denominator = BigInteger.Pow(10, exp);
 
             return positive_sign
                 ? new Fraction(numerator, denominator, true)
                 : new Fraction(BigInteger.Negate(numerator), denominator, true);
         }
+
         #endregion FromDataTypeMethods
 
         /// <summary>
@@ -871,7 +851,8 @@ namespace Fractions
 
             var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
             if (!gcd.IsOne && !gcd.IsZero) {
-                return new Fraction(BigInteger.Divide(numerator, gcd), BigInteger.Divide(denominator, gcd), FractionState.IsNormalized);
+                return new Fraction(BigInteger.Divide(numerator, gcd), BigInteger.Divide(denominator, gcd),
+                    FractionState.IsNormalized);
             }
 
             return new Fraction(numerator, denominator, FractionState.IsNormalized);
@@ -886,12 +867,13 @@ namespace Fractions
         [PureAttribute]
         public static Fraction Pow(Fraction @base, int exponent) {
             return (exponent < 0)
-                   ? Pow(new Fraction(@base._denominator, @base._numerator), -exponent)
-                   : new Fraction(BigInteger.Pow(@base._numerator, exponent), BigInteger.Pow(@base._denominator, exponent));
+                ? Pow(new Fraction(@base._denominator, @base._numerator), -exponent)
+                : new Fraction(BigInteger.Pow(@base._numerator, exponent), BigInteger.Pow(@base._denominator, exponent));
         }
 
         #region Operators
-        #pragma warning disable 1591
+
+#pragma warning disable 1591
         public static bool operator ==(Fraction left, Fraction right) {
             return left.Equals(right);
         }
@@ -991,7 +973,8 @@ namespace Fractions
         public static explicit operator double(Fraction fraction) {
             return fraction.ToDouble();
         }
-        #pragma warning restore 1591
+#pragma warning restore 1591
+
         #endregion Operators
     }
 }

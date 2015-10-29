@@ -5,11 +5,9 @@ using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
-{
+namespace Tests.Fractions.FractionSpecs.Method_ConvertTo {
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_NULL_verglichen_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_NULL_verglichen_wird : Spec {
         [Test]
         public void Soll_das_Ergebnis_1_sein() {
             Fraction.One.CompareTo(null)
@@ -18,8 +16,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
     }
 
     [TestFixture]
-    public class Wenn_1_mit_2_verglichen_wird : Spec
-    {
+    public class Wenn_1_mit_2_verglichen_wird : Spec {
         [Test]
         public void Soll_das_Ergebnis_kleiner_0_sein() {
             Fraction.One.CompareTo(new Fraction(2))
@@ -28,8 +25,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
     }
 
     [TestFixture]
-    public class Wenn_1_mit_minus_2_verglichen_wird : Spec
-    {
+    public class Wenn_1_mit_minus_2_verglichen_wird : Spec {
         [Test]
         public void Soll_das_Ergebnis_größer_0_sein() {
             Fraction.One.CompareTo(new Fraction(-2))
@@ -38,8 +34,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
     }
 
     [TestFixture]
-    public class Wenn_1_mit_1_verglichen_wird : Spec
-    {
+    public class Wenn_1_mit_1_verglichen_wird : Spec {
         [Test]
         public void Soll_das_Ergebnis_gleich_0_sein() {
             Fraction.One.CompareTo(new Fraction(1, 1, false))
@@ -48,8 +43,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
     }
 
     [TestFixture]
-    public class Wenn_1_Viertel_mit_2_Achtel_verglichen_wird : Spec
-    {
+    public class Wenn_1_Viertel_mit_2_Achtel_verglichen_wird : Spec {
         private Fraction _a;
         private Fraction _b;
 
@@ -60,7 +54,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
 
         [Test]
         public void Soll_das_Ergebnis_gleich_0_sein() {
-           _a.CompareTo(_b)
+            _a.CompareTo(_b)
                 .Should().Be(0);
         }
 
@@ -76,5 +70,4 @@ namespace Tests.Fractions.FractionSpecs.Method_ConvertTo
                 .Should().BeTrue();
         }
     }
-
 }

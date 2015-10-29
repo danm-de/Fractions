@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Fractions
-{
-    internal static class MathMethods
-    {
+namespace Fractions {
+    internal static class MathMethods {
         /// <summary>
         /// Checks for an even number.
         /// </summary>

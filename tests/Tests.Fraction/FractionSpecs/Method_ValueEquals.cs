@@ -1,15 +1,13 @@
-﻿// ReSharper disable CheckNamespace
-// ReSharper disable InconsistentNaming
-
-using Fractions;
+﻿using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_ValueEquals
-{
+// ReSharper disable CheckNamespace
+// ReSharper disable InconsistentNaming
+
+namespace Tests.Fractions.FractionSpecs.Method_ValueEquals {
     [TestFixture]
-    public class Wenn_zwei_Brüche_mit_identischen_Zähler_und_Nenner_verglichen_werden : Spec
-    {
+    public class Wenn_zwei_Brüche_mit_identischen_Zähler_und_Nenner_verglichen_werden : Spec {
         private Fraction _fraction_a;
         private Fraction _fraction_b;
 
@@ -28,8 +26,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ValueEquals
     }
 
     [TestFixture]
-    public class Wenn_zwei_Brüche_mit_unterschiedlichen_Zähler_aber_identischen_Nenner_verglichen_werden : Spec
-    {
+    public class Wenn_zwei_Brüche_mit_unterschiedlichen_Zähler_aber_identischen_Nenner_verglichen_werden : Spec {
         private Fraction _fraction_a;
         private Fraction _fraction_b;
 
@@ -48,8 +45,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ValueEquals
     }
 
     [TestFixture]
-    public class Wenn_zwei_Brüche_mit_identischen_Zähler_aber_unterschiedlichen_Nenner_verglichen_werden : Spec
-    {
+    public class Wenn_zwei_Brüche_mit_identischen_Zähler_aber_unterschiedlichen_Nenner_verglichen_werden : Spec {
         private Fraction _fraction_a;
         private Fraction _fraction_b;
 
@@ -68,8 +64,7 @@ namespace Tests.Fractions.FractionSpecs.Method_ValueEquals
     }
 
     [TestFixture]
-    public class Wenn_der_Bruch_2_4_mit_dem_Bruch_1_2_verglichen_wird : Spec
-    {
+    public class Wenn_der_Bruch_2_4_mit_dem_Bruch_1_2_verglichen_wird : Spec {
         private Fraction _fraction_a;
         private Fraction _fraction_b;
 

@@ -1,17 +1,16 @@
 ﻿using System.Collections;
-// ReSharper disable CheckNamespace
-// ReSharper disable InconsistentNaming
 using System.Numerics;
 using Fractions;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
-{
-   
+// ReSharper disable CheckNamespace
+// ReSharper disable InconsistentNaming
+
+namespace Tests.Fractions.FractionSpecs.Method_FromDecimal {
+
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_0_decimal_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_0_decimal_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -26,8 +25,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_minus_1_decimal_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_minus_1_decimal_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -42,8 +40,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_1_decimal_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_1_decimal_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -58,8 +55,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_1_Komma_345_decimal_Zahl_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_einer_1_Komma_345_decimal_Zahl_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -79,8 +75,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_decimal_MaxValue_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_decimal_MaxValue_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -100,8 +95,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_decimal_MinValue_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_decimal_MinValue_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -121,8 +115,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec {
         private Fraction _fraction;
 
         public override void SetUp() {
@@ -147,8 +140,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_Decimaltestzahlen_erzeugt_wird : Spec
-    {
+    public class Wenn_ein_Bruch_mit_Decimaltestzahlen_erzeugt_wird : Spec {
         public IEnumerable TestCaseSource {
             get {
                 yield return 10000000000000000000000000000.0m;
@@ -165,7 +157,7 @@ namespace Tests.Fractions.FractionSpecs.Method_FromDecimal
 
         }
 
-        [Test, TestCaseSource("TestCaseSource")]
+        [Test, TestCaseSource(nameof(TestCaseSource))]
         public void Soll_der_Bruch_nach_der_Rückumwandlung_zu_decimal_den_selben_Wert_haben(decimal value) {
             var fraction = Fraction.FromDecimal(value);
 
