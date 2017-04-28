@@ -14,7 +14,7 @@ set file_buildlog=%~dp0\%~n0.log
 del %file_buildlog% >nul 2>&1
 
 IF NOT [%1]==[] (
-  "%dir_packages%\FAKE\tools\Fake.exe" "%root%\.build\build.fsx" "%1" --logfile "%file_buildlog%"
+  "%dir_packages%\build\FAKE\tools\Fake.exe" "%root%\.build\build.fsx" "%1" --logfile "%file_buildlog%"
 ) ELSE (
-  "%dir_packages%\FAKE\tools\Fake.exe" "%root%\.build\build.fsx" --logfile "%file_buildlog%"
+  "%dir_packages%\build\FAKE\tools\Fake.exe" "%root%\.build\build.fsx" --logfile "%file_buildlog%"
 )

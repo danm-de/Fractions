@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <Product>Fraction data type</Product>
+    <Authors>Daniel Mueller</Authors>
+    <Company>Daniel Mueller</Company>
+    <Copyright>Copyright 2013-2017 Daniel Mueller</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/license.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/Fractions/Fraction.ico</PackageIconUrl>
+    <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>fraction math</PackageTags>
+    <Description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</Description>
+    <Version>3.0.0</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn />
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="..\..\license.txt" Link="license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

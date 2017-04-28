@@ -1,8 +1,15 @@
-source https://www.nuget.org/api/v2/
-framework >= net40
+source https://www.nuget.org/api/v2
+
+nuget System.ComponentModel.TypeConverter
+
+group Build
+source https://nuget.org/api/v2
 
 nuget FAKE
-nuget FluentAssertions 
-nuget Newtonsoft.Json 6.0.8
+
+group Test
+source https://www.nuget.org/api/v2
+
+nuget FluentAssertions
 nuget NUnit
 nuget NUnit.Runners

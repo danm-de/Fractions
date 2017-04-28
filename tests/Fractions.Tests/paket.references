@@ -1,0 +1,6 @@
+﻿System.ComponentModel.TypeConverter
+
+group Test
+	FluentAssertions 
+	NUnit
+	NUnit.Runners
