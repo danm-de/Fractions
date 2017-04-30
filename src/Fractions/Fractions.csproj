@@ -3,8 +3,9 @@
     <TargetFramework>netstandard1.3</TargetFramework>
     <Product>Fraction data type</Product>
     <Authors>Daniel Mueller</Authors>
-    <Company>Daniel Mueller</Company>
     <Copyright>Copyright 2013-2017 Daniel Mueller</Copyright>
+    <Title>Fraction data type</Title>
+    <PackageId>Fractions</PackageId>
     <PackageLicenseUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/license.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/Fractions/Fraction.ico</PackageIconUrl>
@@ -17,6 +18,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn />
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="..\..\license.txt" Link="license.txt" />

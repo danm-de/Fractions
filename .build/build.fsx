@@ -1,6 +1,7 @@
 // include Fake lib
 #r "../packages/build/FAKE/tools/FakeLib.dll"
 open Fake
+open Fake.Testing.NUnit3
 open System
 
 let RequiredEnvironVar name =
@@ -41,74 +42,64 @@ let CleanSolution solutionFile buildConfig outputPath =
 let BuildSolution solutionFile buildConfig outputPath =
   sprintf "Building %s with configuration %s .." solutionFile buildConfig |> traceHeader
   let outDir = if isNotNullOrEmpty outputPath then outputPath else ""
-
-  let buildMode = getBuildParamOrDefault "buildMode" buildConfig
-  let setParams defaults =
-        { defaults with
-            Verbosity = Some(Quiet)
-            RestorePackagesFlag = true
-            Targets = ["Build"]
-            Properties =
-                [
-                    "Optimize", "True"
-                    "DebugSymbols", "True"
-                    "Configuration", buildMode
-                ]
-         }
-  build setParams solutionFile
-      |> DoNothing
-
-  //MSBuild outDir "Build" ["Configuration", buildConfig; "Platform", "Any CPU"] [solutionFile] |> Log "MSBuild"
+  let targets = [
+    "Restore" 
+    "Build"
+  ]
+  targets
+    |> Seq.iter (fun target ->
+       MSBuild outDir target ["Configuration", buildConfig; "Platform", "Any CPU"] [solutionFile] |> Log "MSBuild"
+    )  
 
 // Targets
 Target "Clean" (fun _ ->
-    traceHeader "Prepare build directory.."
-    CleanDirs [dirBuildTest; dirBuildOutput]
-    CleanSolution fileSolution buildConfig dirBuildBin
+  traceHeader "Prepare build directory.."
+  CleanDirs [dirBuildTest; dirBuildOutput]
+  CleanSolution fileSolution buildConfig dirBuildBin
 )
 
-Target "BuildApp" (fun _ ->
-    BuildSolution fileSolution buildConfig dirBuildBin
+Target "Build" (fun _ ->
+  BuildSolution fileSolution buildConfig dirBuildBin
+)
+
+Target "CopyNuGetToOutput" (fun _ ->
+  !! ("src" @@ "**" @@ "bin" @@ buildConfig @@ "*.nupkg")
+    |> Copy dirBuildNuget
 )
 
 Target "Test" (fun _ ->
-    !! (dirProjectRoot @@ (sprintf "**/bin/%s/*.Tests.dll" buildConfig))
-      |> NUnit (fun p ->
-          {p with
-             DisableShadowCopy = true;
-             OutputFile = dirBuildOutput + "/TestResult.xml"
-          })
-)
-
-Target "NuGet" (fun _ ->
-    Paket.Pack(fun p ->
-        {p with
-           OutputPath = dirBuildNuget 
-        })
+  ensureDirectory dirBuildTest
+  !! (dirProjectRoot @@ (sprintf "**/bin/%s/*.Tests.dll" buildConfig))
+    |> NUnit3 (fun p ->
+      {p with
+         ShadowCopy  = false;
+         WorkingDir = dirBuildTest;
+         OutputDir = dirBuildTest @@ "TestResult.txt";
+      })
 )
 
 Target "NuGetPush" (fun _ ->
-    Paket.Push(fun p -> 
-        {p with
-           WorkingDir = dirBuildNuget
-           DegreeOfParallelism = 1
-        })
+  Paket.Push(fun p -> 
+    {p with
+       WorkingDir = dirBuildNuget
+       DegreeOfParallelism = 1
+    })
 )
 
 Target "Default" (fun _ ->
-    trace "PC/SC wrapper classes for .NET"
+  trace "PC/SC wrapper classes for .NET"
 )
+
+Target "" ignore
 
 // Dependencies
 "Clean"
-  ==> "BuildApp"
+  ==> "Build"
+  ==> "CopyNuGetToOutput"
   ==> "Test"
   ==> "Default"
 
-"Test"
-  ==> "NuGet"
-
-"NuGet"
+"CopyNuGetToOutput"
   ==> "NuGetPush"
 
 // start build
