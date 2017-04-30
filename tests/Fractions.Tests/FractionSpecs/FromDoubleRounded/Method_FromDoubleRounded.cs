@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Numerics;
 using FluentAssertions;
-using Fractions;
-using Fractions.Tests;
 using NUnit.Framework;
+using Tests.Fractions;
 
-
-
-
-namespace Tests.Fractions.FractionSpecs.Method_FromDoubleRounded {
+namespace Fractions.Tests.FractionSpecs.FromDoubleRounded {
 
     [TestFixture]
     public class Wenn_ein_Bruch_anhand_einer_NaN_double_Zahl_erzeugt_wird : Spec {

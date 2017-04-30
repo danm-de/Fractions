@@ -1,13 +1,9 @@
 ﻿using System;
-using Fractions;
 using FluentAssertions;
-using Fractions.Tests;
 using NUnit.Framework;
+using Tests.Fractions;
 
-
-
-
-namespace Tests.Fractions.FractionSpecs.Method_Remainder {
+namespace Fractions.Tests.FractionSpecs.Remainder {
     [TestFixture]
     public class Wenn_1_Mod_3_errechnet_wird : Spec {
         private Fraction _a;

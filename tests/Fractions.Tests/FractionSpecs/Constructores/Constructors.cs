@@ -5,7 +5,7 @@ using Tests.Fractions;
 
 namespace Fractions.Tests.FractionSpecs.Constructores {
     [TestFixture]
-    public class Wenn_ein_Bruch_ohne_Konstruktorparameter_erzeugt_wird : Spec {
+    public class If_the_user_creates_a_fraction_with_constructor_parameters : Spec {
         private Fraction _fraction;
 
         public override void Act() {
@@ -13,21 +13,21 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
         }
 
         [Test]
-        public void Soll_der_Zähler_im_resultierenden_Bruch_0L_sein() {
+        public void Shall_the_numerator_be_0() {
             _fraction.Numerator
                 .Should()
-                .Be(0L);
+                .Be(0);
         }
 
         [Test]
-        public void Soll_der_Nenner_im_resultierenden_Bruch_0L_sein() {
+        public void Shall_the_denominator_be_0() {
             _fraction.Denominator
                 .Should()
-                .Be(0L);
+                .Be(0);
         }
 
         [Test]
-        public void Soll_der_Bruch_0_sein() {
+        public void Shall_the_result_indicate_that_it_IsZero() {
             _fraction.IsZero
                 .Should()
                 .BeTrue();
@@ -35,7 +35,7 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_0L_als_Zähler_und_0L_als_Nenner_erzeugt_wird : Spec {
+    public class If_the_user_creates_a_fraction_using_0L_as_numerator_and_0L_as_denominator : Spec {
         private Fraction _fraction;
 
         public override void Act() {
@@ -43,7 +43,7 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
         }
 
         [Test]
-        public void Soll_der_resultierende_Bruch_0_darstellen() {
+        public void Shall_the_result_be_Zero() {
             _fraction.IsZero
                 .Should()
                 .BeTrue();
@@ -51,7 +51,7 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_0L_als_Zähler_und_1L_als_Nenner_erzeugt_wird : Spec {
+    public class If_the_user_creates_a_non_normalized_fraction_using_0L_as_numerator_and_1L_as_denominator : Spec {
         private Fraction _fraction;
 
         public override void Act() {
@@ -59,22 +59,22 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
         }
 
         [Test]
-        public void Soll_der_Zähler_im_resultierenden_Bruch_0L_sein() {
+        public void Shall_the_numerator_be_0() {
             _fraction.Numerator
                 .Should()
-                .Be(0L);
+                .Be(0);
         }
 
         [Test]
-        public void Soll_der_Nenner_im_resultierenden_Bruch_1L_sein() {
+        public void Shall_the_denominator_be_1() {
             _fraction.Denominator
                 .Should()
-                .Be(1L);
+                .Be(1);
         }
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_0L_als_Zähler_und_0L_als_Nenner_normalisiert_erzeugt_wird_dann : Spec {
+    public class If_the_user_creates_a_normalized_fraction_using_0L_as_numerator_and_1L_as_denominator : Spec {
         private Fraction _fraction;
 
         public override void Act() {
@@ -82,7 +82,7 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
         }
 
         [Test]
-        public void Soll_der_resultierende_Bruch_Zero_darstellen() {
+        public void Shall_the_result_be_Zero() {
             _fraction.IsZero
                 .Should()
                 .BeTrue();
@@ -90,7 +90,7 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
     }
 
     [TestFixture]
-    public class Wenn_ein_Bruch_mit_4L_als_Zähler_und_4L_als_Nenner_normalisiert_erzeugt_wird_dann : Spec {
+    public class If_the_user_creates_a_normalized_fraction_using_4L_as_numerator_and_4L_as_denominator : Spec {
         private Fraction _fraction;
 
         public override void Act() {
@@ -98,17 +98,17 @@ namespace Fractions.Tests.FractionSpecs.Constructores {
         }
 
         [Test]
-        public void Soll_der_resultierende_Bruch_im_Zähler_1L_haben() {
+        public void Shall_the_numerator_be_1() {
             _fraction.Numerator
                 .Should()
-                .Be(1L);
+                .Be(1);
         }
 
         [Test]
-        public void Soll_der_resultierende_Bruch_im_Nenner_1L_haben() {
+        public void Shall_the_denominator_be_1() {
             _fraction.Denominator
                 .Should()
-                .Be(1L);
+                .Be(1);
         }
     }
 

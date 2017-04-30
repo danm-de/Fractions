@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Numerics;
-using Fractions;
 using System.Collections;
-using System.Diagnostics;
+using System.Numerics;
 using Fractions.TypeConverters;
 using NUnit.Framework;
+using Tests.Fractions;
 
-
-
-
-namespace Tests.Fractions.FractionTypeConverterSpecs.Methods_ConvertTo {
+namespace Fractions.Tests.TypeConverters.FractionTypeConverterSpecs.ConvertTo {
     [TestFixture]
     public class If_the_user_wants_to_convert_a_Fraction_to_another_type : Spec {
         private FractionTypeConverter _converter;
