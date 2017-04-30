@@ -19,17 +19,17 @@ namespace Fractions {
 
             var gcd = BigInteger.GreatestCommonDivisor(_denominator, divisor.Denominator);
 
-            var this_multiplier = BigInteger.Divide(_denominator, gcd);
-            var other_multiplier = BigInteger.Divide(divisor.Denominator, gcd);
+            var thisMultiplier = BigInteger.Divide(_denominator, gcd);
+            var otherMultiplier = BigInteger.Divide(divisor.Denominator, gcd);
 
-            var least_common_multiple = BigInteger.Multiply(this_multiplier, divisor.Denominator);
+            var leastCommonMultiple = BigInteger.Multiply(thisMultiplier, divisor.Denominator);
 
-            var a = BigInteger.Multiply(_numerator, other_multiplier);
-            var b = BigInteger.Multiply(divisor.Numerator, this_multiplier);
+            var a = BigInteger.Multiply(_numerator, otherMultiplier);
+            var b = BigInteger.Multiply(divisor.Numerator, thisMultiplier);
 
             var remainder = BigInteger.Remainder(a, b);
 
-            return new Fraction(remainder, least_common_multiple);
+            return new Fraction(remainder, leastCommonMultiple);
         }
 
         /// <summary>
@@ -55,17 +55,17 @@ namespace Fractions {
 
             var gcd = BigInteger.GreatestCommonDivisor(_denominator, summand.Denominator);
 
-            var this_multiplier = BigInteger.Divide(_denominator, gcd);
-            var other_multiplier = BigInteger.Divide(summand.Denominator, gcd);
+            var thisMultiplier = BigInteger.Divide(_denominator, gcd);
+            var otherMultiplier = BigInteger.Divide(summand.Denominator, gcd);
 
-            var least_common_multiple = BigInteger.Multiply(this_multiplier, summand.Denominator);
+            var leastCommonMultiple = BigInteger.Multiply(thisMultiplier, summand.Denominator);
 
-            var calculated_numerator = BigInteger.Add(
-                BigInteger.Multiply(_numerator, other_multiplier),
-                BigInteger.Multiply(summand.Numerator, this_multiplier)
+            var calculatedNumerator = BigInteger.Add(
+                BigInteger.Multiply(_numerator, otherMultiplier),
+                BigInteger.Multiply(summand.Numerator, thisMultiplier)
                 );
 
-            return new Fraction(calculated_numerator, least_common_multiple, true);
+            return new Fraction(calculatedNumerator, leastCommonMultiple, true);
         }
 
         /// <summary>

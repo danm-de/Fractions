@@ -1,0 +1,8 @@
+﻿System.ComponentModel.TypeConverter
+System.Runtime.Serialization.Primitives
+Newtonsoft.Json 
+
+group Test
+	FluentAssertions 
+	NUnit
+	NUnit.Runners

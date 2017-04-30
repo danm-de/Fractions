@@ -8,7 +8,7 @@ namespace Fractions {
 #pragma warning disable 1591
         public InvalidNumberException() {}
         public InvalidNumberException(string message) : base(message) {}
-        public InvalidNumberException(string message, Exception inner_exception) : base(message, inner_exception) {}
+        public InvalidNumberException(string message, Exception innerException) : base(message, innerException) {}
 #pragma warning restore 1591
     }
 }

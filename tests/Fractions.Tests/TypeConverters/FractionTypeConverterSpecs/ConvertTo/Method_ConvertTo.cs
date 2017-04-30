@@ -30,8 +30,8 @@ namespace Fractions.Tests.TypeConverters.FractionTypeConverterSpecs.ConvertTo {
         }
 
         [Test, TestCaseSource(nameof(TypeTests))]
-        public bool Shall_the_result_of_CanConvertTo_be_correct(Type destination_type) {
-            return _converter.CanConvertTo(destination_type);
+        public bool Shall_the_result_of_CanConvertTo_be_correct(Type destinationType) {
+            return _converter.CanConvertTo(destinationType);
         }
 
         private static IEnumerable ConvertToTests {
@@ -64,8 +64,8 @@ namespace Fractions.Tests.TypeConverters.FractionTypeConverterSpecs.ConvertTo {
         }
 
         [Test, TestCaseSource(nameof(ConvertToTests))]
-        public object Shall_the_result_of_ConvertTo_be_correct(Fraction value, Type destination_type) {
-            var result = _converter.ConvertTo(value, destination_type);
+        public object Shall_the_result_of_ConvertTo_be_correct(Fraction value, Type destinationType) {
+            var result = _converter.ConvertTo(value, destinationType);
             // ReSharper disable once PossibleNullReferenceException
             Console.WriteLine("Type: {0}, Value: {1}", result.GetType(), result);
 

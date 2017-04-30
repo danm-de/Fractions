@@ -213,11 +213,11 @@ namespace Fractions.Tests.FractionSpecs.FromDouble {
     [TestFixture]
     public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec {
         private Fraction _fraction;
-        private const double _one_third = 1.0 / 3.0;
+        private const double ONE_THIRD = 1.0 / 3.0;
 
         public override void SetUp() {
             base.SetUp();
-            _fraction = Fraction.FromDouble(_one_third);
+            _fraction = Fraction.FromDouble(ONE_THIRD);
         }
 
         [Test]

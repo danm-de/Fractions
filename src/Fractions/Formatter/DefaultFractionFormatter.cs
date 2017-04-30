@@ -8,7 +8,7 @@ namespace Fractions.Formatter {
     internal class DefaultFractionFormatter : ICustomFormatter {
         public static readonly ICustomFormatter Instance = new DefaultFractionFormatter();
 
-        public string Format(string format, object arg, IFormatProvider format_provider) {
+        public string Format(string format, object arg, IFormatProvider formatProvider) {
             if (arg == null) {
                 return string.Empty;
             }

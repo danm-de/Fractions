@@ -28,9 +28,9 @@ namespace Fractions.Tests.FractionSpecs.ToDataType {
         private decimal _result;
 
         public override void SetUp() {
-            var drei_durch_9 = new Fraction(3, 9).ToDecimal();
-            var sechs_durch_9 = new Fraction(6, 9).ToDecimal();
-            _fraction = new Fraction(drei_durch_9) * new Fraction(sechs_durch_9);
+            var dreiDurch9 = new Fraction(3, 9).ToDecimal();
+            var sechsDurch9 = new Fraction(6, 9).ToDecimal();
+            _fraction = new Fraction(dreiDurch9) * new Fraction(sechsDurch9);
         }
 
         public override void Act() {

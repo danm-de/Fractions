@@ -38,15 +38,15 @@ namespace Fractions {
         /// <c>true</c> if the value is positive (greater than or equal to 0).
         /// </summary>
         
-        public bool IsPositive => (_numerator.Sign == 1 && _denominator.Sign == 1) ||
-                                  (_numerator.Sign == -1 && _denominator.Sign == -1);
+        public bool IsPositive => _numerator.Sign == 1 && _denominator.Sign == 1 ||
+                                  _numerator.Sign == -1 && _denominator.Sign == -1;
 
         /// <summary>
         /// <c>true</c> if the value is negative (lesser than 0).
         /// </summary>
         
-        public bool IsNegative => (_numerator.Sign == -1 && _denominator.Sign == 1) ||
-                                  (_numerator.Sign == 1 && _denominator.Sign == -1);
+        public bool IsNegative => _numerator.Sign == -1 && _denominator.Sign == 1 ||
+                                  _numerator.Sign == 1 && _denominator.Sign == -1;
 
         /// <summary>
         /// <c>true</c> if the fraction has a real (calculated) value of 0.

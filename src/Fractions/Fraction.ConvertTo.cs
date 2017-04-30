@@ -74,13 +74,13 @@ namespace Fractions {
 
             // numerator or denominator is too big. Lets try to split the calculation..
             // Possible OverFlowException!
-            var without_decimal_places = (decimal) (_numerator / _denominator);
+            var withoutDecimalPlaces = (decimal) (_numerator / _denominator);
 
             var remainder = _numerator % _denominator;
             var lowpart = (remainder * BigInteger.Pow(10, 28)) / _denominator;
-            var decimal_places = (((decimal) lowpart) / (decimal) Math.Pow(10, 28));
+            var decimalPlaces = (((decimal) lowpart) / (decimal) Math.Pow(10, 28));
 
-            return without_decimal_places + decimal_places;
+            return withoutDecimalPlaces + decimalPlaces;
         }
 
         /// <summary>

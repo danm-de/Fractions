@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Tests.Fractions;
 
 namespace Fractions.Tests.FractionSpecs.Abs {
+    [Serializable]
+    internal class TestClass { }
+
     [TestFixture]
     public class If_the_Abs_function_is_called : Spec {
         private static IEnumerable<TestCaseData> TestCases {

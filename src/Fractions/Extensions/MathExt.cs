@@ -118,11 +118,11 @@ namespace Fractions.Extensions {
         /// <summary>
         /// Returns <c>true</c> if there are remaining digits after the decimal point.
         /// </summary>
-        /// <param name="remaining_digits">A <see cref="double"/> value with possible remaining digits</param>
-        /// <returns><c>true</c> if <paramref name="remaining_digits"/> has digits after the decimal point</returns>
+        /// <param name="remainingDigits">A <see cref="double"/> value with possible remaining digits</param>
+        /// <returns><c>true</c> if <paramref name="remainingDigits"/> has digits after the decimal point</returns>
         
-        public static bool RemainingDigitsAfterTheDecimalPoint(double remaining_digits) {
-            return Math.Abs(remaining_digits - Math.Floor(remaining_digits)) > double.Epsilon;
+        public static bool RemainingDigitsAfterTheDecimalPoint(double remainingDigits) {
+            return Math.Abs(remainingDigits - Math.Floor(remainingDigits)) > double.Epsilon;
         }
     }
 }

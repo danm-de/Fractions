@@ -9,9 +9,9 @@ namespace Fractions.Tests.FractionSpecs.FromString {
     [TestFixture]
     public class Wenn_versucht_wird_aus_einem_Leerstring_ein_Bruch_zu_erzeugen : Spec {
         [Test]
-        public void Soll_dies_nicht_funktionieren([Values("", " ")] string invalid_string) {
+        public void Soll_dies_nicht_funktionieren([Values("", " ")] string invalidString) {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            Invoking(() => Fraction.FromString(invalid_string))
+            Invoking(() => Fraction.FromString(invalidString))
                 .ShouldThrow<FormatException>();
         }
     }

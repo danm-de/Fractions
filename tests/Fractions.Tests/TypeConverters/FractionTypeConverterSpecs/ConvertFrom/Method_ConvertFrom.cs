@@ -31,8 +31,8 @@ namespace Fractions.Tests.TypeConverters.FractionTypeConverterSpecs.ConvertFrom 
         }
 
         [Test, TestCaseSource(nameof(TypeTests))]
-        public bool Shall_the_result_of_CanConvertFrom_be_correct(Type destination_type) {
-            return _converter.CanConvertFrom(destination_type);
+        public bool Shall_the_result_of_CanConvertFrom_be_correct(Type destinationType) {
+            return _converter.CanConvertFrom(destinationType);
         }
 
         private static IEnumerable ConvertFromTests {
@@ -78,9 +78,9 @@ namespace Fractions.Tests.TypeConverters.FractionTypeConverterSpecs.ConvertFrom 
         }
 
         [Test, TestCaseSource(nameof(ConvertFromTests))]
-        public Fraction Shall_the_result_of_ConvertFrom_be_correct(object value, CultureInfo culture_info) {
+        public Fraction Shall_the_result_of_ConvertFrom_be_correct(object value, CultureInfo cultureInfo) {
             // ReSharper disable once PossibleNullReferenceException
-            var result = (Fraction) _converter.ConvertFrom(null, culture_info, value);
+            var result = (Fraction) _converter.ConvertFrom(null, cultureInfo, value);
             Console.WriteLine("Type: {0}, Result: {1}", value?.GetType(), result);
 
             return result;

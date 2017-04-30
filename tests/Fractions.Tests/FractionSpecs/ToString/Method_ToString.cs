@@ -102,12 +102,12 @@ namespace Fractions.Tests.FractionSpecs.ToString
         }
 
         [Test,TestCaseSource(nameof(TestCases))]
-        public string Shall_the_text_output_be_the_expected_one(Fraction fraction, string format, IFormatProvider culture_info) {
-            return fraction.ToString(format, culture_info);
+        public string Shall_the_text_output_be_the_expected_one(Fraction fraction, string format, IFormatProvider cultureInfo) {
+            return fraction.ToString(format, cultureInfo);
         }
 
         [Test, TestCaseSource(nameof(TestCases))]
-        public string Shall_the_text_output_be_the_expected_one_when_using_the_simple_ToString_method(Fraction fraction, string format, IFormatProvider culture_info) {
+        public string Shall_the_text_output_be_the_expected_one_when_using_the_simple_ToString_method(Fraction fraction, string format, IFormatProvider cultureInfo) {
             return fraction.ToString(format);
         }
     }

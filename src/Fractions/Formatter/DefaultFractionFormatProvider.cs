@@ -10,8 +10,8 @@ namespace Fractions.Formatter {
         /// </summary>
         public static readonly IFormatProvider Instance = new DefaultFractionFormatProvider();
 
-        object IFormatProvider.GetFormat(Type format_type) {
-            return format_type == typeof (Fraction) 
+        object IFormatProvider.GetFormat(Type formatType) {
+            return formatType == typeof (Fraction) 
                 ? DefaultFractionFormatter.Instance
                 : null;
         }

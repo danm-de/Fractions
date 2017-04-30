@@ -50,11 +50,11 @@ namespace Fractions {
 
             var gcd = BigInteger.GreatestCommonDivisor(_denominator, other._denominator);
 
-            var this_multiplier = BigInteger.Divide(_denominator, gcd);
-            var other_multiplier = BigInteger.Divide(other._denominator, gcd);
+            var thisMultiplier = BigInteger.Divide(_denominator, gcd);
+            var otherMultiplier = BigInteger.Divide(other._denominator, gcd);
 
-            var a = BigInteger.Multiply(_numerator, other_multiplier);
-            var b = BigInteger.Multiply(other._numerator, this_multiplier);
+            var a = BigInteger.Multiply(_numerator, otherMultiplier);
+            var b = BigInteger.Multiply(other._numerator, thisMultiplier);
 
             return a.CompareTo(b);
         }
