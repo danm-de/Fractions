@@ -211,6 +211,38 @@ namespace Fractions.Tests.FractionSpecs.FromDouble {
     }
 
     [TestFixture]
+    public class Wenn_ein_Bruch_von_0_komma_1_ohne_Rundung_erzeugt_wird : Spec
+    {
+        private Fraction _fraction;
+        public override void SetUp() {
+            base.SetUp();
+            _fraction = Fraction.FromDouble(0.1);
+            Console.WriteLine(_fraction.ToString());
+        }
+
+        [Test]
+        public void Soll_das_Ergebnis_3602879701896397_durch_36028797018963968_sein() {
+            _fraction.Should().Be(new Fraction(3602879701896397L, 36028797018963968L));
+        }
+    }
+
+    [TestFixture]
+    public class Wenn_ein_Bruch_von_0_komma_1_mit_Rundung_erzeugt_wird : Spec
+    {
+        private Fraction _fraction;
+        public override void SetUp() {
+            base.SetUp();
+            _fraction = Fraction.FromDoubleRounded(0.1);
+            Console.WriteLine(_fraction.ToString());
+        }
+
+        [Test]
+        public void Soll_das_Ergebnis_1_durch_10_sein() {
+            _fraction.Should().Be(new Fraction(1, 10));
+        }
+    }
+
+    [TestFixture]
     public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec {
         private Fraction _fraction;
         private const double ONE_THIRD = 1.0 / 3.0;
