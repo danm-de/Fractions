@@ -104,6 +104,7 @@ Console.WriteLine(Math.Round(value, 5));
 | z | The fraction as integer |
 | r | The positive remainder of all digits after the decimal point using the format: &lt;numerator&gt;/&lt;denominator&gt; or `string.Empty` if the fraction is a valid integer without digits after the decimal point. |
 | m | The fraction as mixed number e.g. _2 1/3_ instead of _7/3_ |
+
 **Note:** The special characters _#_, and _0_ like in _#.###_ are not supported. Convert the `Fraction` to `decimal` if you want to display rounded decimal values.
 
 Example:
