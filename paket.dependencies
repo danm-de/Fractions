@@ -1,6 +1,5 @@
 source https://www.nuget.org/api/v2
 
-nuget Newtonsoft.Json
 nuget System.ComponentModel.TypeConverter
 
 group Build

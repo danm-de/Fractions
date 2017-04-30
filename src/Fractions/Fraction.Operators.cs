@@ -102,6 +102,10 @@ namespace Fractions {
         public static explicit operator double(Fraction fraction) {
             return fraction.ToDouble();
         }
+
+        public static explicit operator BigInteger(Fraction fraction) {
+            return fraction.ToBigInteger();
+        }
 #pragma warning restore 1591
     }
 }

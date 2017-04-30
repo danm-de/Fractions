@@ -23,6 +23,16 @@ namespace Fractions.Tests.FractionSpecs.ToDataType {
     }
 
     [TestFixture]
+    public class Wenn_ein_Bruch_mit_long_MaxValue_von_Fraction_in_int_konvertiert_wird : Spec
+    {
+        [Test]
+        public void Soll_das_eine_OverflowException_werfen() {
+            Invoking(() => new Fraction(long.MaxValue).ToInt32())
+                .ShouldThrow<OverflowException>();
+        }
+    }
+
+    [TestFixture]
     public class Wenn_ein_Bruch_mit_sehr_groﬂen_Zahlen_in_Z‰hler_und_Nenner_in_ein_Decimal_konvertiert_wird : Spec {
         private Fraction _fraction;
         private decimal _result;
@@ -60,5 +70,11 @@ namespace Fractions.Tests.FractionSpecs.ToDataType {
         public BigInteger Shall_the_result_be_correct(Fraction value) {
             return value.ToBigInteger();
         }
+
+        [Test, TestCaseSource(nameof(TestCases))]
+        public BigInteger Shall_the_result_be_correct_when_using_explicit_cast(Fraction value) {
+            return (BigInteger) value;
+        }
+
     }
 }
