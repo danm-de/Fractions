@@ -27,7 +27,7 @@
     <DocumentationFile>bin\Release\netstandard1.1\Fractions.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="..\..\license.txt" Link="license.txt" />
+    <None Include="..\..\license.txt" Link="license.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
