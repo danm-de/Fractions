@@ -8,12 +8,12 @@
     <PackageId>Fractions</PackageId>
     <PackageLicenseUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/license.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/Fractions/Fraction.ico</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/src/Fractions/Fraction.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <Description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</Description>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <NeutralLanguage />
     <Company />

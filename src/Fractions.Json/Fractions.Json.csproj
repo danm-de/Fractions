@@ -5,17 +5,17 @@
     <Company />
     <Description>Converts a fraction data type to JSON by using Fraction's ToString() and FromString() methods. The class name is JsonFractionConverter.</Description>
     <Copyright>Copyright 2013-2017 Daniel Mueller</Copyright>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <AssemblyVersion>3.0.1.0</AssemblyVersion>
+    <FileVersion>3.0.1.0</FileVersion>
     <PackageLicenseUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/license.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/Fractions/Fraction.ico</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/src/Fractions/Fraction.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <NeutralLanguage />
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>bin\Debug\netstandard1.1\Fractions.Json.xml</DocumentationFile>
