@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A802E8A0-03B4-4779-8C9C-FE971D93648B}</ProjectGuid>
+    <ProjectGuid>{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Fractions.Tests</RootNamespace>
-    <AssemblyName>Fractions.Tests</AssemblyName>
+    <RootNamespace>Fractions.Json.Tests</RootNamespace>
+    <AssemblyName>Fractions.Json.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -37,6 +37,9 @@
     <Reference Include="FluentAssertions.Core, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -51,48 +54,25 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Catch.cs" />
-    <Compile Include="FractionSpecs\Abs\Method_Abs.cs" />
-    <Compile Include="FractionSpecs\Add\Method_Add.cs" />
-    <Compile Include="FractionSpecs\CompareTo\Method_CompareTo.cs" />
-    <Compile Include="FractionSpecs\Constructores\Constructors.cs" />
-    <Compile Include="FractionSpecs\ConvertTo\Method_ConvertTo.cs" />
-    <Compile Include="FractionSpecs\Divide\Method_Divide.cs" />
-    <Compile Include="FractionSpecs\FromDecimal\Method_FromDecimal.cs" />
-    <Compile Include="FractionSpecs\FromDoubleRounded\Method_FromDoubleRounded.cs" />
-    <Compile Include="FractionSpecs\FromDouble\Method_FromDouble.cs" />
-    <Compile Include="FractionSpecs\FromString\Method_FromString.cs" />
-    <Compile Include="FractionSpecs\Invert\Method_Invert.cs" />
-    <Compile Include="FractionSpecs\Multiply\Method_Multiply.cs" />
-    <Compile Include="FractionSpecs\Pow\Method_Pow.cs" />
-    <Compile Include="FractionSpecs\Remainder\Method_Remainder.cs" />
-    <Compile Include="FractionSpecs\Subtract\Method_Subtract.cs" />
-    <Compile Include="FractionSpecs\ToDataType\Method_ToDataType.cs" />
-    <Compile Include="FractionSpecs\ToString\Method_ToString.cs" />
-    <Compile Include="FractionSpecs\ValueEquals\Method_ValueEquals.cs" />
-    <Compile Include="TypeConverters\FractionTypeConverterSpecs\ConvertFrom\Method_ConvertFrom.cs" />
-    <Compile Include="TypeConverters\FractionTypeConverterSpecs\ConvertTo\Method_ConvertTo.cs" />
+    <Compile Include="JsonFractionConverterSpecs\JsonFractionConverterSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spec.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Fractions.Json\Fractions.Json.csproj">
+      <Project>{da46faac-301b-4c04-851d-1fdfabe12095}</Project>
+      <Name>Fractions.Json</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Fractions\Fractions.csproj">
       <Project>{03b08a42-72b2-4285-9829-d484f29dc204}</Project>
       <Name>Fractions</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

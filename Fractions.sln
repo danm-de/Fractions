@@ -3,17 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{3A3DC1B2-241B-43CA-9641-013772764634}"
-	ProjectSection(SolutionItems) = preProject
-		paket.dependencies = paket.dependencies
-		paket.lock = paket.lock
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B41FB63E-5400-433A-AE72-BA3787D122E6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions", "src\Fractions\Fractions.csproj", "{03B08A42-72B2-4285-9829-D484F29DC204}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions.Tests", "tests\Fractions.Tests\Fractions.Tests.csproj", "{A802E8A0-03B4-4779-8C9C-FE971D93648B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions.Json", "src\Fractions.Json\Fractions.Json.csproj", "{DA46FAAC-301B-4C04-851D-1FDFABE12095}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions.Json.Tests", "tests\Fractions.Json.Tests\Fractions.Json.Tests.csproj", "{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,11 +37,28 @@ Global
 		{A802E8A0-03B4-4779-8C9C-FE971D93648B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A802E8A0-03B4-4779-8C9C-FE971D93648B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A802E8A0-03B4-4779-8C9C-FE971D93648B}.Release|x86.Build.0 = Release|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Debug|x86.Build.0 = Debug|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Release|x86.ActiveCfg = Release|Any CPU
+		{DA46FAAC-301B-4C04-851D-1FDFABE12095}.Release|x86.Build.0 = Release|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Debug|x86.Build.0 = Debug|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Release|x86.ActiveCfg = Release|Any CPU
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A802E8A0-03B4-4779-8C9C-FE971D93648B} = {B41FB63E-5400-433A-AE72-BA3787D122E6}
+		{D872F7DE-E4F7-40D3-8689-10E9A8B4DB7E} = {B41FB63E-5400-433A-AE72-BA3787D122E6}
 	EndGlobalSection
 EndGlobal
