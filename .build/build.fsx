@@ -58,6 +58,10 @@ Target "Clean" (fun _ ->
   CleanSolution fileSolution buildConfig dirBuildBin
 )
 
+Target "PackageRestore" (fun _ ->
+  RestorePackages ()
+)
+
 Target "Build" (fun _ ->
   BuildSolution fileSolution buildConfig dirBuildBin
 )
@@ -94,6 +98,7 @@ Target "" ignore
 
 // Dependencies
 "Clean"
+  ==> "PackageRestore"
   ==> "Build"
   ==> "CopyNuGetToOutput"
   ==> "Test"

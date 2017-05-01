@@ -3,6 +3,7 @@ source https://www.nuget.org/api/v2
 group Build
 source https://nuget.org/api/v2
 nuget FAKE
+nuget NuGet.CommandLine
 
 group Test
 source https://www.nuget.org/api/v2

@@ -4,6 +4,7 @@ GROUP Build
 NUGET
   remote: https://www.nuget.org/api/v2
     FAKE (4.60)
+    NuGet.CommandLine (3.5)
 
 GROUP Test
 NUGET
