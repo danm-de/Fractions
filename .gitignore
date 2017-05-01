@@ -1,11 +1,13 @@
 bin/
 obj/
 _build.output/
+_build.output/*
 packages/
 !packages/repositories.config
 .paket/paket.exe
 .fake/
 .vs/
+.build/.fake
 
 *.DotSettings.user
 *.suo

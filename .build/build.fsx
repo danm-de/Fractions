@@ -1,9 +1,8 @@
 // include Fake lib
-#r "../packages/FAKE/tools/FakeLib.dll"
+#r "../packages/build/FAKE/tools/FakeLib.dll"
 open Fake
+open Fake.Testing.NUnit3
 open System
-
-MSBuildDefaults <- { MSBuildDefaults with Verbosity = Some (Quiet) }
 
 let RequiredEnvironVar name =
   match environVarOrNone name with
@@ -11,29 +10,27 @@ let RequiredEnvironVar name =
     | None -> sprintf "The environment variable '%s' has no value" name |> failwith
 
 // build settings
-let _build_config = environVarOrDefault "build_configuration" "Release"
-let _file_solution = RequiredEnvironVar "file_solution"
-let _file_buildlog = RequiredEnvironVar "file_buildlog"
-
-let _dir_project_root = System.IO.Path.GetDirectoryName (FullName _file_solution)
-let _dir_build_output = _dir_project_root @@ "_build.output"
-let _dir_build_bin = ""
-let _dir_build_tests = _dir_build_output @@ "tests"
-let _dir_build_nuget = _dir_build_output @@ "nuget"
+let buildConfig = environVarOrDefault "build_configuration" "Release"
+let fileSolution = RequiredEnvironVar "file_solution"
+let dirProjectRoot = System.IO.Path.GetDirectoryName (FullName fileSolution)
+let dirBuildOutput = dirProjectRoot @@ "_build.output"
+let dirBuildBin = ""
+let dirBuildTest = dirBuildOutput @@ "tests"
+let dirBuildNuget = dirBuildOutput @@ "nupkg"
+let dirBuildNugetSym = dirBuildOutput @@ "symbols"
 
 let PrintVariables() =
   traceHeader "Build settings:"
   trace String.Empty
-  trace (sprintf "%s -> %s" "_dir_project_root" _dir_project_root)
-  trace (sprintf "%s -> %s" "_dir_build_output" _dir_build_output)
-  trace (sprintf "%s -> %s" "_dir_build_bin" _dir_build_bin)
-  trace (sprintf "%s -> %s" "_dir_build_tests" _dir_build_tests)
-  trace (sprintf "%s -> %s" "_dir_build_nuget" _dir_build_nuget)
+  trace (sprintf "%s -> %s" "dirProjectRoot" dirProjectRoot)
+  trace (sprintf "%s -> %s" "dirBuildOutput" dirBuildOutput)
+  trace (sprintf "%s -> %s" "dirBuildBin" dirBuildBin)
+  trace (sprintf "%s -> %s" "dirBuildTest" dirBuildTest)
+  trace (sprintf "%s -> %s" "dirBuildNuget" dirBuildNuget)
   trace String.Empty
-  trace (sprintf "%s -> %s" "_file_solution" _file_solution)
-  trace (sprintf "%s -> %s" "_file_buildlog" _file_buildlog)
+  trace (sprintf "%s -> %s" "fileSolution" fileSolution)
   trace String.Empty
-  trace (sprintf "%s -> %s" "_build_config" _build_config)
+  trace (sprintf "%s -> %s" "buildConfig" buildConfig)
   trace String.Empty
 
 PrintVariables()
@@ -41,62 +38,97 @@ PrintVariables()
 let CleanSolution solutionFile buildConfig outputPath =
   sprintf "Cleanup %s .." solutionFile |> traceHeader
   let outDir = if isNotNullOrEmpty outputPath then outputPath else ""
-  MSBuild outDir "Clean" ["Configuration", buildConfig; "Platform", "Any CPU"] [solutionFile] |> Log "MSBuild"
+  MSBuild outDir "Clean" [
+      "Configuration", buildConfig
+      "Platform", "Any CPU"
+    ] 
+    [solutionFile] 
+    |> Log "MSBuild"
 
 let BuildSolution solutionFile buildConfig outputPath =
   sprintf "Building %s with configuration %s .." solutionFile buildConfig |> traceHeader
   let outDir = if isNotNullOrEmpty outputPath then outputPath else ""
-  MSBuild outDir "Build" ["Configuration", buildConfig; "Platform", "Any CPU"] [solutionFile] |> Log "MSBuild"
-
+  MSBuild outDir "restore" [
+      "Configuration", buildConfig; 
+      "Platform", "Any CPU" 
+    ] 
+    [solutionFile] 
+    |> Log "MSBuild"
+  MSBuild outDir "build" [
+      "Configuration", buildConfig
+      "Platform", "Any CPU"
+      "IncludeSymbols", "True"
+      "IncludeSource", "True"
+    ] 
+    [solutionFile] 
+    |> Log "MSBuild"
+  
 // Targets
 Target "Clean" (fun _ ->
-    traceHeader "Prepare build directory.."
-    CleanDirs [_dir_build_tests; _dir_build_output]
-    CleanSolution _file_solution _build_config _dir_build_bin
+  traceHeader "Prepare build directory.."
+  CleanDirs [dirBuildTest; dirBuildOutput]
+  CleanSolution fileSolution buildConfig dirBuildBin
 )
 
-Target "BuildApp" (fun _ ->
-    BuildSolution _file_solution _build_config _dir_build_bin
+Target "PackageRestore" (fun _ ->
+  RestorePackages ()
+)
+
+Target "Build" (fun _ ->
+  BuildSolution fileSolution buildConfig dirBuildBin
+)
+
+Target "CopyNuGetToOutput" (fun _ ->
+  ensureDirectory dirBuildNugetSym
+  !! ("src" @@ "**" @@ "bin" @@ buildConfig @@ "*.symbols.nupkg")
+    |> Seq.iter (fun file -> MoveFile dirBuildNugetSym file)
+
+  ensureDirectory dirBuildNuget    
+  !! ("src" @@ "**" @@ "bin" @@ buildConfig @@ "*.nupkg")
+    |> Seq.iter (fun file -> MoveFile dirBuildNuget file)
 )
 
 Target "Test" (fun _ ->
-    !! (_dir_project_root @@ (sprintf "**/bin/%s/Tests.*.dll" _build_config))
-      |> NUnit (fun p ->
-          {p with
-             DisableShadowCopy = true;
-             OutputFile = _dir_build_output + "/TestResult.xml"
-          })
-)
-
-Target "NuGet" (fun _ ->
-    Paket.Pack(fun p ->
-        {p with
-           OutputPath = _dir_build_nuget 
-        })
+  ensureDirectory dirBuildTest
+  !! (dirProjectRoot @@ (sprintf "**/bin/%s/*.Tests.dll" buildConfig))
+    |> NUnit3 (fun p ->
+      {p with
+         ShadowCopy  = false;
+         WorkingDir = dirBuildTest;
+         OutputDir = dirBuildTest @@ "TestResult.txt";
+      })
 )
 
 Target "NuGetPush" (fun _ ->
-    Paket.Push(fun p -> 
-        {p with
-           WorkingDir = _dir_build_nuget
-           DegreeOfParallelism = 1
-        })
+  Paket.Push(fun p -> 
+    {p with
+       DegreeOfParallelism = 1
+       WorkingDir = dirBuildNuget 
+    })
+
+  Paket.Push(fun p -> 
+    {p with
+       PublishUrl = "https://nuget.smbsrc.net/"
+       DegreeOfParallelism = 1
+       WorkingDir = dirBuildNugetSym
+    })
 )
 
 Target "Default" (fun _ ->
-    trace "PC/SC wrapper classes for .NET"
+  trace "PC/SC wrapper classes for .NET"
 )
+
+Target "" ignore
 
 // Dependencies
 "Clean"
-  ==> "BuildApp"
+  ==> "PackageRestore"
+  ==> "Build"
+  ==> "CopyNuGetToOutput"
   ==> "Test"
   ==> "Default"
 
-"Test"
-  ==> "NuGet"
-
-"NuGet"
+"CopyNuGetToOutput"
   ==> "NuGetPush"
 
 // start build
