@@ -1,17 +1,9 @@
 source https://www.nuget.org/api/v2
 
-nuget NETStandard.Library
-nuget Newtonsoft.Json
-nuget System.ComponentModel.TypeConverter
-
 group Build
 source https://nuget.org/api/v2
-
 nuget FAKE
 
 group Test
 source https://www.nuget.org/api/v2
-
-nuget FluentAssertions
-nuget NUnit
 nuget NUnit.Runners
