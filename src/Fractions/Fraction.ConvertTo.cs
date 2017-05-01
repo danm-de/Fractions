@@ -67,9 +67,8 @@ namespace Fractions {
                 return decimal.Zero;
             }
 
-            if ((_numerator >= MIN_DECIMAL && _numerator <= MAX_DECIMAL)
-                && (_denominator >= MIN_DECIMAL && _denominator <= MAX_DECIMAL)) {
-                return ((decimal) _numerator) / ((decimal) _denominator);
+            if (_numerator >= MIN_DECIMAL && _numerator <= MAX_DECIMAL && _denominator >= MIN_DECIMAL && _denominator <= MAX_DECIMAL) {
+                return (decimal) _numerator / (decimal) _denominator;
             }
 
             // numerator or denominator is too big. Lets try to split the calculation..
@@ -77,8 +76,8 @@ namespace Fractions {
             var withoutDecimalPlaces = (decimal) (_numerator / _denominator);
 
             var remainder = _numerator % _denominator;
-            var lowpart = (remainder * BigInteger.Pow(10, 28)) / _denominator;
-            var decimalPlaces = (((decimal) lowpart) / (decimal) Math.Pow(10, 28));
+            var lowpart = remainder * BigInteger.Pow(10, 28) / _denominator;
+            var decimalPlaces = (decimal) lowpart / (decimal) Math.Pow(10, 28);
 
             return withoutDecimalPlaces + decimalPlaces;
         }
@@ -91,7 +90,7 @@ namespace Fractions {
             if (IsZero) {
                 return 0;
             }
-            return ((double) Numerator) / ((double) Denominator);
+            return (double) Numerator / (double) Denominator;
         }
     }
 }

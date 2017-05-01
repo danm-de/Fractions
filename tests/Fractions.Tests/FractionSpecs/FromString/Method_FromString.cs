@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using FluentAssertions;
-using Fractions.Tests.FractionSpecs.ValueEquals;
 using NUnit.Framework;
 using Tests.Fractions;
 

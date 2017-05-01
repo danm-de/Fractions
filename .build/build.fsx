@@ -16,7 +16,8 @@ let dirProjectRoot = System.IO.Path.GetDirectoryName (FullName fileSolution)
 let dirBuildOutput = dirProjectRoot @@ "_build.output"
 let dirBuildBin = ""
 let dirBuildTest = dirBuildOutput @@ "tests"
-let dirBuildNuget = dirBuildOutput @@ "nuget"
+let dirBuildNuget = dirBuildOutput @@ "nupkg"
+let dirBuildNugetSym = dirBuildOutput @@ "symbols"
 
 let PrintVariables() =
   traceHeader "Build settings:"
@@ -37,20 +38,31 @@ PrintVariables()
 let CleanSolution solutionFile buildConfig outputPath =
   sprintf "Cleanup %s .." solutionFile |> traceHeader
   let outDir = if isNotNullOrEmpty outputPath then outputPath else ""
-  MSBuild outDir "Clean" ["Configuration", buildConfig; "Platform", "Any CPU"] [solutionFile] |> Log "MSBuild"
+  MSBuild outDir "Clean" [
+      "Configuration", buildConfig
+      "Platform", "Any CPU"
+    ] 
+    [solutionFile] 
+    |> Log "MSBuild"
 
 let BuildSolution solutionFile buildConfig outputPath =
   sprintf "Building %s with configuration %s .." solutionFile buildConfig |> traceHeader
   let outDir = if isNotNullOrEmpty outputPath then outputPath else ""
-  let targets = [
-    "Restore" 
-    "Build"
-  ]
-  targets
-    |> Seq.iter (fun target ->
-       MSBuild outDir target ["Configuration", buildConfig; "Platform", "Any CPU"] [solutionFile] |> Log "MSBuild"
-    )  
-
+  MSBuild outDir "restore" [
+      "Configuration", buildConfig; 
+      "Platform", "Any CPU" 
+    ] 
+    [solutionFile] 
+    |> Log "MSBuild"
+  MSBuild outDir "build" [
+      "Configuration", buildConfig
+      "Platform", "Any CPU"
+      "IncludeSymbols", "True"
+      "IncludeSource", "True"
+    ] 
+    [solutionFile] 
+    |> Log "MSBuild"
+  
 // Targets
 Target "Clean" (fun _ ->
   traceHeader "Prepare build directory.."
@@ -67,8 +79,13 @@ Target "Build" (fun _ ->
 )
 
 Target "CopyNuGetToOutput" (fun _ ->
+  ensureDirectory dirBuildNugetSym
+  !! ("src" @@ "**" @@ "bin" @@ buildConfig @@ "*.symbols.nupkg")
+    |> Seq.iter (fun file -> MoveFile dirBuildNugetSym file)
+
+  ensureDirectory dirBuildNuget    
   !! ("src" @@ "**" @@ "bin" @@ buildConfig @@ "*.nupkg")
-    |> Copy dirBuildNuget
+    |> Seq.iter (fun file -> MoveFile dirBuildNuget file)
 )
 
 Target "Test" (fun _ ->
@@ -85,8 +102,15 @@ Target "Test" (fun _ ->
 Target "NuGetPush" (fun _ ->
   Paket.Push(fun p -> 
     {p with
-       WorkingDir = dirBuildNuget
        DegreeOfParallelism = 1
+       WorkingDir = dirBuildNuget 
+    })
+
+  Paket.Push(fun p -> 
+    {p with
+       PublishUrl = "https://nuget.smbsrc.net/"
+       DegreeOfParallelism = 1
+       WorkingDir = dirBuildNugetSym
     })
 )
 

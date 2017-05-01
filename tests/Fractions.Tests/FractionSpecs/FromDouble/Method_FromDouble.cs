@@ -4,9 +4,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
 
-
-// ReSharper disable ReturnValueOfPureMethodIsNotUsed
-
 namespace Fractions.Tests.FractionSpecs.FromDouble {
     [TestFixture]
     public class Wenn_ein_Bruch_anhand_einer_NaN_double_Zahl_erzeugt_wird : Spec {

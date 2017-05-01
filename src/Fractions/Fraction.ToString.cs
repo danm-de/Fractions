@@ -42,7 +42,7 @@ namespace Fractions {
         /// <item><term>m</term><description>The fraction as mixed number e.g. "2 1/3" instead of "7/3"</description></item>
         /// </list>
         /// -or- A null reference (Nothing in Visual Basic) to use the default format defined for the type of the <see cref="T:System.IFormattable"/> implementation. </param>
-        /// <param name="formatProvider">The provider to use to format the value. -or- A null reference (Nothing in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system. </param>
+        /// <param name="formatProvider">The provider to use to format the value. -or- A null reference (Nothing in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
         /// <filterpriority>2</filterpriority>
         public string ToString(string format, IFormatProvider formatProvider) {
             var formatter = formatProvider?.GetFormat(GetType()) as ICustomFormatter;

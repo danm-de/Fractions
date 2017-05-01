@@ -11,7 +11,7 @@ namespace Fractions {
         /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
         /// </summary>
         /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-        /// <returns>A fraction</returns>
+        /// <returns>A normalized <see cref="Fraction"/></returns>
         public static Fraction FromString(string fractionString) {
             return FromString(fractionString, NumberStyles.Number, null);
         }
@@ -22,7 +22,7 @@ namespace Fractions {
         /// </summary>
         /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
         /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
-        /// <returns>Ein Bruch</returns>
+        /// <returns>A normalized <see cref="Fraction"/></returns>
         public static Fraction FromString(string fractionString, IFormatProvider formatProvider) {
             return FromString(fractionString, NumberStyles.Number, formatProvider);
         }
@@ -34,14 +34,13 @@ namespace Fractions {
         /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
         /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="fractionString"/>.</param>
         /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
-        /// <returns>Ein Bruch</returns>
-        public static Fraction FromString(string fractionString, NumberStyles numberStyles,
-            IFormatProvider formatProvider) {
+        /// <returns>A normalized <see cref="Fraction"/></returns>
+        public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider) {
             if (fractionString == null) {
                 throw new ArgumentNullException(nameof(fractionString));
             }
 
-            if (!TryParse(fractionString, numberStyles, formatProvider, out Fraction fraction)) {
+            if (!TryParse(fractionString, numberStyles, formatProvider, true, out Fraction fraction)) {
                 throw new FormatException(string.Format(Resources.CannotConvertToFraction, fractionString));
             }
 
@@ -53,14 +52,13 @@ namespace Fractions {
         /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
         /// </summary>
         /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-        /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise the value is invalid.</param>
+        /// <param name="fraction">A normalized <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise the value is invalid.</param>
         /// <returns>
         /// <para><c>true</c> if <paramref name="fractionString"/> was well formed. The parsing result will be written to <paramref name="fraction"/>. </para>
         /// <para><c>false</c> if <paramref name="fractionString"/> was invalid.</para></returns>
         public static bool TryParse(string fractionString, out Fraction fraction) {
-            return TryParse(fractionString, NumberStyles.Number, null, out fraction);
+            return TryParse(fractionString, NumberStyles.Number, null, true, out fraction);
         }
-
 
         /// <summary>
         /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
@@ -69,13 +67,29 @@ namespace Fractions {
         /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
         /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="fractionString"/>.</param>
         /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
+        /// <param name="fraction">A normalized <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise the value is invalid.</param>
+        /// <returns>
+        /// <para><c>true</c> if <paramref name="fractionString"/> was well formed. The parsing result will be written to <paramref name="fraction"/>. </para>
+        /// <para><c>false</c> if <paramref name="fractionString"/> was invalid.</para>
+        /// </returns>
+        public static bool TryParse(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, out Fraction fraction) {
+            return TryParse(fractionString, numberStyles, formatProvider, true, out fraction);
+        }
+
+        /// <summary>
+        /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
+        /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+        /// </summary>
+        /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
+        /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="fractionString"/>.</param>
+        /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
+        /// <param name="normalize">If <c>true</c> the parsed fraction will be reduced.</param>
         /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise the value is invalid.</param>
         /// <returns>
         /// <para><c>true</c> if <paramref name="fractionString"/> was well formed. The parsing result will be written to <paramref name="fraction"/>. </para>
         /// <para><c>false</c> if <paramref name="fractionString"/> was invalid.</para>
         /// </returns>
-        public static bool TryParse(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider,
-            out Fraction fraction) {
+        public static bool TryParse(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
             if (fractionString == null) {
                 return CannotParse(out fraction);
             }
@@ -89,13 +103,21 @@ namespace Fractions {
                 var numeratorString = components[0];
                 var denominatorString = components[1];
 
-                var withoutDecimalpoint = numberStyles & (~NumberStyles.AllowDecimalPoint);
-                if (BigInteger.TryParse(numeratorString, withoutDecimalpoint, formatProvider, out BigInteger numerator) &&
-                    BigInteger.TryParse(denominatorString, withoutDecimalpoint, formatProvider, out BigInteger denominator)) {
-
-                    fraction = new Fraction(numerator, denominator);
-                    return true;
+                var withoutDecimalpoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
+                if (!BigInteger.TryParse(
+                        value: numeratorString,
+                        style: withoutDecimalpoint,
+                        provider: formatProvider,
+                        result: out BigInteger numerator)
+                    || !BigInteger.TryParse(
+                        value: denominatorString,
+                        style: withoutDecimalpoint,
+                        provider: formatProvider,
+                        result: out BigInteger denominator)) {
+                    return CannotParse(out fraction);
                 }
+                fraction = new Fraction(numerator, denominator, normalize);
+                return true;
             }
 
             // Technically it should not be possible to reach this line of code..
@@ -114,23 +136,23 @@ namespace Fractions {
         /// <para><c>true</c> if <paramref name="number"/> was well formed. The parsing result will be written to <paramref name="fraction"/>. </para>
         /// <para><c>false</c> if <paramref name="number"/> was invalid.</para>
         /// </returns>
-        private static bool TryParseSingleNumber(string number, NumberStyles numberStyles,
-            IFormatProvider formatProvider, out Fraction fraction) {
+        private static bool TryParseSingleNumber(string number, NumberStyles numberStyles, IFormatProvider formatProvider, out Fraction fraction) {
             var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
 
             if (number.Contains(numberFormatInfo.NumberDecimalSeparator)) {
-                if (decimal.TryParse(number, numberStyles, formatProvider, out decimal decimalNumber)) {
-                    fraction = FromDecimal(decimalNumber);
-                    return true;
+                if (!decimal.TryParse(number, numberStyles, formatProvider, out decimal decimalNumber)) {
+                    return CannotParse(out fraction);
                 }
-            } else {
-                var withoutDecimalpoint = numberStyles & (~NumberStyles.AllowDecimalPoint);
-                if (BigInteger.TryParse(number, withoutDecimalpoint, formatProvider, out BigInteger numerator)) {
-                    fraction = new Fraction(numerator);
-                    return true;
-                }
+                fraction = FromDecimal(decimalNumber);
+                return true;
             }
-            return CannotParse(out fraction);
+
+            var withoutDecimalpoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
+            if (!BigInteger.TryParse(number, withoutDecimalpoint, formatProvider, out BigInteger numerator)) {
+                return CannotParse(out fraction);
+            }
+            fraction = new Fraction(numerator);
+            return true;
         }
 
         /// <summary>
@@ -168,7 +190,7 @@ namespace Fractions {
             var one = BigInteger.One;
 
             // value = (-1 * sign)   *   (1 + 2^(-1) + 2^(-2) .. + 2^(-52))   *   2^(exponent-K)
-            var valueBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(value));
+            var valueBits = unchecked((ulong) BitConverter.DoubleToInt64Bits(value));
 
             if (valueBits == 0) {
                 // See IEEE 754
@@ -176,22 +198,22 @@ namespace Fractions {
             }
 
             var isNegative = (valueBits & SIGN_BIT) == SIGN_BIT;
-            var mantissaBits = (valueBits & MANTISSA);
+            var mantissaBits = valueBits & MANTISSA;
 
             // (exponent-K)
-            var exponent = (int)(((valueBits & EXPONENT_BITS) >> 52) - K);
+            var exponent = (int) (((valueBits & EXPONENT_BITS) >> 52) - K);
 
             // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
             var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
 
             // 2^exponent
-            var factor = (exponent < 0)
+            var factor = exponent < 0
                 ? new Fraction(one, one << Math.Abs(exponent))
                 : new Fraction(one << exponent);
 
             var result = mantissa * factor;
 
-            return (isNegative)
+            return isNegative
                 ? result.Invert()
                 : result;
         }
@@ -225,13 +247,13 @@ namespace Fractions {
             var breakCounter = 0;
 
             while (MathExt.RemainingDigitsAfterTheDecimalPoint(remainingDigits)
-                && Math.Abs(absoluteValue - ((double)numerator / denominator)) > double.Epsilon) {
+                   && Math.Abs(absoluteValue - (double) numerator / denominator) > double.Epsilon) {
 
                 remainingDigits = 1.0 / (remainingDigits - Math.Floor(remainingDigits));
 
                 var tmp = denominator;
 
-                denominator = (Math.Floor(remainingDigits) * denominator) + previousDenominator;
+                denominator = Math.Floor(remainingDigits) * denominator + previousDenominator;
                 numerator = new BigInteger(absoluteValue * denominator + 0.5);
 
                 previousDenominator = tmp;
@@ -243,7 +265,7 @@ namespace Fractions {
             }
 
             return new Fraction(
-                (sign < 0) ? BigInteger.Negate(numerator) : numerator,
+                sign < 0 ? BigInteger.Negate(numerator) : numerator,
                 new BigInteger(denominator),
                 true);
         }

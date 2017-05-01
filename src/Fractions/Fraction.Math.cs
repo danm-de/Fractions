@@ -98,8 +98,8 @@ namespace Fractions {
         
         public Fraction Multiply(Fraction factor) {
             return new Fraction(
-                (_numerator * factor._numerator),
-                (_denominator * factor._denominator),
+                _numerator * factor._numerator,
+                _denominator * factor._denominator,
                 true);
         }
 
@@ -115,9 +115,9 @@ namespace Fractions {
             }
 
             return new Fraction(
-                (_numerator * divisor._denominator),
-                (_denominator * divisor._numerator),
-                true);
+                numerator: _numerator * divisor._denominator,
+                denominator: _denominator * divisor._numerator,
+                normalize: true);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Fractions {
         /// <returns>A reduced and normalized fraction.</returns>
         
         public Fraction Reduce() {
-            return (_state == FractionState.IsNormalized)
+            return _state == FractionState.IsNormalized
                 ? this
                 : GetReducedFraction(_numerator, _denominator);
         }
@@ -185,7 +185,7 @@ namespace Fractions {
         /// <returns>The fraction <paramref name="base"/> raised to the power <paramref name="exponent"/>.</returns>
         
         public static Fraction Pow(Fraction @base, int exponent) {
-            return (exponent < 0)
+            return exponent < 0
                 ? Pow(new Fraction(@base._denominator, @base._numerator), -exponent)
                 : new Fraction(BigInteger.Pow(@base._numerator, exponent), BigInteger.Pow(@base._denominator, exponent));
         }

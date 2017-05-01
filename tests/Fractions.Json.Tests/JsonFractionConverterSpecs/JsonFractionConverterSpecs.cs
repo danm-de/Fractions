@@ -1,13 +1,10 @@
-﻿using Fractions;
-using Fractions.Json;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using FluentAssertions;
-using Fractions.Json.Tests;
 using NUnit.Framework;
 
 // ReSharper disable CheckNamespace
@@ -35,7 +32,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
 
         [Culture("de-DE")]
         public override void Arrange() {
-            var converter = new JsonFractionConverter();
+            var converter = new JsonFractionConverter(null, true, true);
             _serializer = new JsonSerializer();
             _serializer.Converters.Add(converter);
 
@@ -52,7 +49,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
 
         [Test]
         public void Shall_the_result_contain_1_third() {
-            Debug.Print(_sb.ToString());
+            Console.WriteLine(_sb.ToString());
             _sb.ToString().Should().Contain("1/3");
         }
 
@@ -65,31 +62,144 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
 
     [TestFixture]
     [Culture("de-DE")]
-    public class If_the_user_deserializes_a_json_text : Spec
+    public class If_the_user_serializes_a_Fraction_without_normalization : Spec
     {
         private JsonSerializer _serializer;
 
         [Culture("de-DE")]
         public override void Arrange() {
-            var converter = new JsonFractionConverter();
+            var converter = new JsonFractionConverter(null, false, true);
             _serializer = new JsonSerializer();
             _serializer.Converters.Add(converter);
         }
 
-        [Test]
-        [Culture("de-DE")]
-        public void Shall_the_result_be_a_fraction_with_numerator_7_and_denominator_2(
-            [Values("3,5", "7/2", "+3,5", "+7/2", "7/+2")] string fraction_text) {
-            var json_text = "\"" + fraction_text + "\"";
+        private static IEnumerable<TestCaseData> TestCases {
+            get {
+                yield return new TestCaseData(new Fraction(7, 2, true)).Returns("\"7/2\"");
+                yield return new TestCaseData(new Fraction(-7, 2, true)).Returns("\"-7/2\"");
+                yield return new TestCaseData(new Fraction(7, -2, false)).Returns("\"7/-2\"");
+                yield return new TestCaseData(new Fraction(-7, -2, false)).Returns("\"-7/-2\"");
+            }
+        }
 
-            Debug.Print(json_text);
-            _serializer.Deserialize<Fraction>(new JsonTextReader(new StringReader(json_text)))
-                .Should().Be(new Fraction(7, 2));
+        [Test, TestCaseSource(nameof(TestCases))]
+        [Culture("de-DE")]
+        public string Shall_the_result_be_the_expected_json_text(Fraction value) {
+            Console.WriteLine(value);
+            var sb = new StringBuilder();
+            _serializer.Serialize(new JsonTextWriter(new StringWriter(sb)), value);
+            return sb.ToString();
         }
     }
 
     [TestFixture]
-    public class Wenn_überprüft_wird_ob_der_Converter_mit_Typen_umgehen_kann : Spec
+    [Culture("de-DE")]
+    public class If_the_user_serializes_a_Fraction_with_normalization : Spec
+    {
+        private JsonSerializer _serializer;
+
+        [Culture("de-DE")]
+        public override void Arrange() {
+            var converter = new JsonFractionConverter(null, true, false);
+            _serializer = new JsonSerializer();
+            _serializer.Converters.Add(converter);
+        }
+
+        private static IEnumerable<TestCaseData> TestCases {
+            get {
+                yield return new TestCaseData(new Fraction(7, 2, true)).Returns("\"7/2\"");
+                yield return new TestCaseData(new Fraction(-7, 2, true)).Returns("\"-7/2\"");
+                yield return new TestCaseData(new Fraction(7, -2, false)).Returns("\"-7/2\"");
+                yield return new TestCaseData(new Fraction(-7, -2, false)).Returns("\"7/2\"");
+            }
+        }
+
+        [Test, TestCaseSource(nameof(TestCases))]
+        [Culture("de-DE")]
+        public string Shall_the_result_be_the_expected_json_text(Fraction value) {
+            Console.WriteLine(value);
+            var sb = new StringBuilder();
+            _serializer.Serialize(new JsonTextWriter(new StringWriter(sb)), value);
+            return sb.ToString();
+        }
+    }
+
+    [TestFixture]
+    [Culture("de-DE")]
+    public class If_the_user_deserializes_a_json_text_without_normalization : Spec
+    {
+        private JsonSerializer _serializer;
+
+        [Culture("de-DE")]
+        public override void Arrange() {
+            var converter = new JsonFractionConverter(null, true, false);
+            _serializer = new JsonSerializer();
+            _serializer.Converters.Add(converter);
+        }
+
+        private static IEnumerable<TestCaseData> TestCases {
+            get {
+                yield return new TestCaseData("3,5").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("-3,5").Returns(new Fraction(-7, 2, true));
+                yield return new TestCaseData("7/2").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("+3,5").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("+7/2").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("7/+2").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("7/-2").Returns(new Fraction(7, -2, false));
+                yield return new TestCaseData("-7/2").Returns(new Fraction(-7, 2, true));
+                yield return new TestCaseData("-7/-2").Returns(new Fraction(-7, -2, false));
+            }
+        }
+
+        [Test,TestCaseSource(nameof(TestCases))]
+        [Culture("de-DE")]
+        public Fraction Shall_the_result_be_the_expected_fraction(string text) {
+            var json_text = "\"" + text + "\"";
+
+            Console.WriteLine(json_text);
+            return _serializer.Deserialize<Fraction>(new JsonTextReader(new StringReader(json_text)));
+        }
+    }
+
+    [TestFixture]
+    [Culture("de-DE")]
+    public class If_the_user_deserializes_a_json_text_with_normalization : Spec
+    {
+        private JsonSerializer _serializer;
+
+        [Culture("de-DE")]
+        public override void Arrange() {
+            var converter = new JsonFractionConverter(null, true, true);
+            _serializer = new JsonSerializer();
+            _serializer.Converters.Add(converter);
+        }
+
+        private static IEnumerable<TestCaseData> TestCases {
+            get {
+                yield return new TestCaseData("3,5").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("-3,5").Returns(new Fraction(-7, 2, true));
+                yield return new TestCaseData("7/2").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("+3,5").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("+7/2").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("7/+2").Returns(new Fraction(7, 2, true));
+                yield return new TestCaseData("7/-2").Returns(new Fraction(-7, 2, false));
+                yield return new TestCaseData("-7/2").Returns(new Fraction(-7, 2, true));
+                yield return new TestCaseData("-7/-2").Returns(new Fraction(7, 2, false));
+            }
+        }
+
+        [Test, TestCaseSource(nameof(TestCases))]
+        [Culture("de-DE")]
+        public Fraction Shall_the_result_be_the_expected_fraction(string text) {
+            var json_text = "\"" + text + "\"";
+
+            Console.WriteLine(json_text);
+            return _serializer.Deserialize<Fraction>(new JsonTextReader(new StringReader(json_text)));
+        }
+    }
+
+    [TestFixture]
+    public class If_the_user_checks_the_supported_types : Spec
     {
         private JsonFractionConverter _converter;
 
@@ -98,7 +208,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
         }
 
         [Test]
-        public void Soll_das_bei_Fraction_True_liefern() {
+        public void Shall_it_be_TRUE_for_Fraction() {
             _converter
                 .CanConvert(typeof(Fraction))
                 .Should()
@@ -106,7 +216,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
         }
 
         [Test]
-        public void Soll_das_bei_anderen_Typen_False_liefern([Values(typeof(int), typeof(string), typeof(object))] Type type) {
+        public void Shall_it_be_FALSE_for_other_types([Values(typeof(int), typeof(string), typeof(object))] Type type) {
             _converter
                 .CanConvert(type)
                 .Should()

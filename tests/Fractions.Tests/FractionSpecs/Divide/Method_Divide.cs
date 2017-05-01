@@ -1,8 +1,4 @@
-﻿
-
-// ReSharper disable ReturnValueOfPureMethodIsNotUsed
-
-using System;
+﻿using System;
 using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;

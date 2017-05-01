@@ -26,7 +26,7 @@ namespace Fractions.TypeConverters {
                 {typeof (long), (o, info) => ((Fraction) o).ToInt64()},
                 {typeof (decimal), (o, info) => ((Fraction) o).ToDecimal()},
                 {typeof (double), (o, info) => ((Fraction) o).ToDouble()},
-                {typeof (Fraction), (o, info) => ((Fraction) o)},
+                {typeof (Fraction), (o, info) => (Fraction) o},
                 {typeof (BigInteger), (o, info) => ((Fraction) o).ToBigInteger()}
             };
 

@@ -40,7 +40,7 @@ namespace Fractions {
                 return;
             }
 
-            _state = (numerator.IsZero && denominator.IsZero)
+            _state = numerator.IsZero && denominator.IsZero
                 ? FractionState.IsNormalized
                 : FractionState.Unknown;
 
@@ -54,7 +54,7 @@ namespace Fractions {
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
         public Fraction(int numerator) {
             _numerator = new BigInteger(numerator);
-            _denominator = (numerator != 0) ? BigInteger.One : BigInteger.Zero;
+            _denominator = numerator != 0 ? BigInteger.One : BigInteger.Zero;
             _state = FractionState.IsNormalized;
         }
 

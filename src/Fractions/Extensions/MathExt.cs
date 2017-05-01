@@ -112,7 +112,7 @@ namespace Fractions.Extensions {
             // Es gilt LCM(a,b) = (|a*b|) / GCD(a,b)
 
             var gcd = GreatestCommonDivisor(a, b);
-            return (a / gcd) * b;
+            return a / gcd * b;
         }
 
         /// <summary>
