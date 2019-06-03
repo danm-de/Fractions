@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
@@ -14,8 +14,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <Description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</Description>
-    <Version>4.0.0</Version>
-    <PackageVersion>4.0.0</PackageVersion>
+    <Version>4.0.1</Version>
+    <PackageVersion>4.0.1</PackageVersion>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <NeutralLanguage />
     <Company />
@@ -57,6 +57,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
