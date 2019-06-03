@@ -11,7 +11,8 @@ namespace Fractions.Tests.FractionSpecs.FromString {
         public void Soll_dies_nicht_funktionieren([Values("", " ")] string invalidString) {
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
             Invoking(() => Fraction.FromString(invalidString))
-                .ShouldThrow<FormatException>();
+                .Should()
+                .Throw<FormatException>();
         }
     }
 
@@ -105,7 +106,7 @@ namespace Fractions.Tests.FractionSpecs.FromString {
     [TestFixture]
     public class Wenn_aus_der_Zeichenkette_1_Slash_5_ein_Bruch_erzeugt_wird : Spec {
         [Test]
-        public void Soll_das_Ergebnis_1_durch_5_sein([Values("1/5", "-1/-5", "+1/5", "+1/+5", "+1/+5")] string value) {
+        public void Soll_das_Ergebnis_1_durch_5_sein([Values("1/5", "-1/-5", "+1/5", "+1/+5", "1/+5")] string value) {
             Fraction.FromString(value)
                 .Should().Be(new Fraction(1, 5));
         }

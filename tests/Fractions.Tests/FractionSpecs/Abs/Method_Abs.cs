@@ -15,7 +15,6 @@ namespace Fractions.Tests.FractionSpecs.Abs {
                 yield return new TestCaseData(Fraction.One).Returns(Fraction.One);
                 yield return new TestCaseData(Fraction.MinusOne).Returns(Fraction.One);
                 yield return new TestCaseData(new Fraction(-1, 3)).Returns(new Fraction(1, 3));
-                yield return new TestCaseData(new Fraction(-1, 3)).Returns(new Fraction(1, 3));
                 yield return new TestCaseData(new Fraction(1, -3, false)).Returns(new Fraction(1, 3, false));
                 yield return new TestCaseData(new Fraction(-1, -3, false)).Returns(new Fraction(1, 3, false));
             }

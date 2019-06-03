@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 using FluentAssertions;
 using NUnit.Framework;
@@ -138,24 +139,23 @@ namespace Fractions.Tests.FractionSpecs.FromDecimal {
 
     [TestFixture]
     public class Wenn_ein_Bruch_mit_Decimaltestzahlen_erzeugt_wird : Spec {
-        private static IEnumerable TestCaseSource {
+        private static IEnumerable<TestCaseData> TestCaseSource {
             get {
-                yield return 10000000000000000000000000000.0m;
-                yield return 10000000000000000000000000000.0m;
-                yield return 100000000000000.0m;
-                yield return 100000000000000.00000000000000m;
-                yield return 123456789.0m;
-                yield return 0.123456789m;
-                yield return 0.000000000123456789m;
-                yield return 4294967295.0m;
-                yield return 18446744073709551615.0m;
-                yield return 7.9228162514264337593543950335m;
+                yield return new TestCaseData(10000000000000000000000000000.0m);
+                yield return new TestCaseData(100000000000000.0m);
+                yield return new TestCaseData(100000000000000.00000000000000m);
+                yield return new TestCaseData(123456789.0m);
+                yield return new TestCaseData(0.123456789m);
+                yield return new TestCaseData(0.000000000123456789m);
+                yield return new TestCaseData(4294967295.0m);
+                yield return new TestCaseData(18446744073709551615.0m);
+                yield return new TestCaseData(7.9228162514264337593543950335m);
             }
 
         }
 
         [Test, TestCaseSource(nameof(TestCaseSource))]
-        public void Soll_der_Bruch_nach_der_Rückumwandlung_zu_decimal_den_selben_Wert_haben(decimal value) {
+        public void Soll_der_Bruch_nach_der_Rueckumwandlung_zu_decimal_den_selben_Wert_haben(decimal value) {
             var fraction = Fraction.FromDecimal(value);
 
             fraction.ToDecimal().Should().Be(value);

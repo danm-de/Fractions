@@ -1,4 +1,4 @@
-# Introduction
+﻿# Introduction
 This package contains a data type to calculate with rational numbers. It supports basic mathematic operators such as:
 - addition
 - subtraction
@@ -162,3 +162,29 @@ You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fract
 # Under the hood
 
 The data type stores the numerator and denominator as `BigInteger`. Per default it will reduce fractions to its normalized form during creation. The result of each mathematical operation will be reduced as well. There is a special constructor to create a non-normalized fraction. Be aware that `Equals` relies on normalized values when comparing two different instances. 
+
+# Build from source
+
+[![Build status](https://ci.appveyor.com/api/projects/status/22acgj4m7pt5wr8d?svg=true)](https://ci.appveyor.com/project/danm-de/fractions)
+
+## Required software frameworks
+
+* .Net Core 2.2 SDK
+
+## Required build tools
+
+* Fake (https://fake.build/fake-dotnetcore.html), 
+ 
+Please run:
+
+  ```dotnet tool install fake-cli -g```
+
+to install fake as global tool. On Linux you may have to add the following lines into your .profile or .bashrc file:
+
+```
+if [ -d "$HOME/.dotnet/tools" ] ; then
+  PATH="$HOME/.dotnet/tools:$PATH"
+fi
+```
+
+Fractions uses the great FAKE DSL for build tasks. To build the solution, simply start the build.cmd on Windows or the build.sh shell script on Unix.
