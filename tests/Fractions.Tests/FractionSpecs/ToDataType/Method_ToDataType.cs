@@ -28,7 +28,8 @@ namespace Fractions.Tests.FractionSpecs.ToDataType {
         [Test]
         public void Soll_das_eine_OverflowException_werfen() {
             Invoking(() => new Fraction(long.MaxValue).ToInt32())
-                .ShouldThrow<OverflowException>();
+                .Should()
+                .Throw<OverflowException>();
         }
     }
 

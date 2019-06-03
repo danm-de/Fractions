@@ -28,7 +28,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
 
         private readonly StringBuilder _sb = new StringBuilder();
         private JsonSerializer _serializer;
-        private Test _test_objekt;
+        private Test _testObject;
 
         [Culture("de-DE")]
         public override void Arrange() {
@@ -36,7 +36,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
             _serializer = new JsonSerializer();
             _serializer.Converters.Add(converter);
 
-            _test_objekt = new Test {
+            _testObject = new Test {
                 Name = "TestName",
                 Value = new Fraction(1, 3)
             };
@@ -44,7 +44,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
 
         [Culture("de-DE")]
         public override void Act() {
-            _serializer.Serialize(new JsonTextWriter(new StringWriter(_sb)), _test_objekt);
+            _serializer.Serialize(new JsonTextWriter(new StringWriter(_sb)), _testObject);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
         [Test]
         public void Shall_the_deserialized_value_equal_to_the_origin_value() {
             _serializer.Deserialize<Test>(new JsonTextReader(new StringReader(_sb.ToString())))
-                .ShouldBeEquivalentTo(_test_objekt);
+                .Should().BeEquivalentTo(_testObject);
         }
     }
 
