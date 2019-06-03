@@ -12,18 +12,18 @@ Target.create "Clean" (fun _ ->
     ++ "src/**/obj"
     ++ "Tests/**/bin"
     ++ "Tests/**/obj"
-    |> Shell.cleanDirs
+        |> Shell.cleanDirs
 )
 
 Target.create "Build" (fun _ ->
     !! "src/**/*.*proj"
     ++ "Tests/**/*.*proj"
-    |> Seq.iter (DotNet.build id)
+        |> Seq.iter (DotNet.build id)
 )
 
 Target.create "Test" (fun _ ->
     !! "Tests/**/*.*proj"
-      |> Seq.iter (DotNet.test id)
+        |> Seq.iter (DotNet.test id)
 )
 
 Target.create "NuGetPush" (fun _ ->
@@ -39,17 +39,17 @@ Target.create "NuGetPush" (fun _ ->
 
     !! "src/**/bin/Release/*.nupkg"
     ++ "src/**/bin/Release/*.snupkg"
-    |> Seq.iter (fun file -> DotNet.nugetPush setParams file)
+        |> Seq.iter (fun file -> DotNet.nugetPush setParams file)
 )
 
 Target.create "All" ignore
 
 "Clean"
-  ==> "Build"
-  ==> "Test"
-  ==> "All"
+    ==> "Build"
+    ==> "Test"
+    ==> "All"
 
 "Build"
-  ==> "NuGetPush"
+    ==> "NuGetPush"
 
 Target.runOrDefault "All"
