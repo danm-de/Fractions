@@ -1,4 +1,5 @@
 #load ".fake/build.fsx/intellisense.fsx"
+
 open Fake.Core
 open Fake.DotNet
 open Fake.DotNet.NuGet
@@ -6,6 +7,11 @@ open Fake.IO
 open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.Core.TargetOperators
+open Fake.BuildServer
+
+BuildServer.install [
+    AppVeyor.Installer
+]
 
 Target.create "Clean" (fun _ ->
     !! "src/**/bin"
@@ -38,7 +44,6 @@ Target.create "NuGetPush" (fun _ ->
         }
 
     !! "src/**/bin/Release/*.nupkg"
-    ++ "src/**/bin/Release/*.snupkg"
         |> Seq.iter (fun file -> DotNet.nugetPush setParams file)
 )
 
