@@ -1,4 +1,4 @@
-image: .NET Core
+image: Ubuntu
 build_script:
   - cmd: build.sh
 test: off
