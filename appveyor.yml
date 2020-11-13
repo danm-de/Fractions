@@ -1,6 +1,8 @@
 image: Ubuntu
 build_script:
-  - sh: dotnet tool run fake run build.fsx
+  - sh: |-
+    dotnet tool restore
+    dotnet tool run fake run build.fsx
 test: off
 environment:
   PAKET_BOOTSTRAPPER_TRACE: true
