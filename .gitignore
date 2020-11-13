@@ -1,4 +1,4 @@
-bin/
+﻿bin/
 obj/
 _build.output/
 _build.output/*
@@ -17,3 +17,4 @@ _Resharper*
 build.log
 Fractions.XML
 Fractions.userprefs
+/TestResults/*
