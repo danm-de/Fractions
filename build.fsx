@@ -26,14 +26,32 @@ Target.create "Clean" (fun _ ->
 )
 
 Target.create "Build" (fun _ ->
+    let runBuild =
+      DotNet.build (fun p ->
+        { p with
+            Configuration = DotNet.BuildConfiguration.Release
+        })
+
     !! "src/**/*.*proj"
     ++ "Tests/**/*.*proj"
-        |> Seq.iter (DotNet.build id)
+        |> Seq.iter runBuild
 )
 
 Target.create "Test" (fun _ ->
+    let runTest =
+      DotNet.test (fun p ->
+        { p with
+            ResultsDirectory = Some "TestResults"
+            Logger = Some "trx"
+            Configuration = DotNet.BuildConfiguration.Release
+        })
+
     !! "Tests/**/*.*proj"
-        |> Seq.iter (DotNet.test id)
+        |> Seq.iter runTest
+
+    // publish unit test results
+    !! "TestResults/*.trx"
+        |> Seq.iter (Trace.publish (ImportData.Mstest))
 )
 
 Target.create "NuGetPush" (fun _ ->
