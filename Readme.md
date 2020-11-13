@@ -169,7 +169,7 @@ The data type stores the numerator and denominator as `BigInteger`. Per default 
 
 ## Required software frameworks
 
-* .Net Core 2.2 SDK
+* .Net Core 3.1 SDK (LTS version)
 
 ## Required build tools
 
