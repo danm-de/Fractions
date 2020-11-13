@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
+    <TargetFramework>netstandard1.1</TargetFramework>
     <Product>Fraction data type</Product>
     <Authors>Daniel Mueller</Authors>
-    <Copyright>Copyright 2013-2019 Daniel Mueller</Copyright>
+    <Copyright>Copyright 2013-2020 Daniel Mueller</Copyright>
     <Title>Fraction data type</Title>
     <PackageId>Fractions</PackageId>
     <PackageLicenseUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/license.txt</PackageLicenseUrl>
@@ -14,8 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <Description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</Description>
-    <Version>4.0.1</Version>
-    <PackageVersion>4.0.1</PackageVersion>
+    <Version>5.0.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <NeutralLanguage />
     <Company />
@@ -32,12 +31,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.1|AnyCPU'">
     <DocumentationFile>bin\Debug\netstandard1.1\Fractions.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
-    <DocumentationFile>bin\Release\net45\Fractions.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
-    <DocumentationFile>bin\Debug\net45\Fractions.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
