@@ -1,10 +1,14 @@
-#load ".fake/build.fsx/intellisense.fsx"
+#r "paket:
+nuget Fake.Core.Target
+nuget Fake.DotNet.Cli
+nuget Fake.IO.FileSystem
+nuget Fake.BuildServer.AppVeyor //"
+#load "./.fake/build.fsx/intellisense.fsx"
 
 open Fake.Core
 open Fake.DotNet
 open Fake.DotNet.NuGet
 open Fake.IO
-open Fake.IO.FileSystemOperators
 open Fake.IO.Globbing.Operators
 open Fake.Core.TargetOperators
 open Fake.BuildServer
