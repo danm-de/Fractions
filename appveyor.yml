@@ -1,6 +1,6 @@
 image: Ubuntu
 build_script:
-  - sh: build.sh
+  - sh: ./build.sh
 test: off
 environment:
   PAKET_BOOTSTRAPPER_TRACE: true
