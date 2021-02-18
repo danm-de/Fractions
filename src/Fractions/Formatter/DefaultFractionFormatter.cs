@@ -57,7 +57,10 @@ namespace Fractions.Formatter {
                 return FormatGeneral(fraction);
             }
 
-            var integer = fraction.Numerator / fraction.Denominator;
+            var integer = fraction.Denominator != BigInteger.Zero
+                ? fraction.Numerator / fraction.Denominator
+                : BigInteger.Zero;
+
             var remainder = Fraction.Abs(fraction - integer);
 
             return remainder.IsZero
@@ -69,24 +72,33 @@ namespace Fractions.Formatter {
         }
 
         private static string FormatInteger(Fraction fraction) {
-            return (fraction.Numerator / fraction.Denominator)
-                .ToString(CultureInfo.InvariantCulture);
+            return fraction.Denominator != BigInteger.Zero
+                ? (fraction.Numerator / fraction.Denominator).ToString(CultureInfo.InvariantCulture)
+                : BigInteger.Zero.ToString(CultureInfo.InvariantCulture);
         }
 
         private static string FormatRemainder(Fraction fraction) {
             if (BigInteger.Abs(fraction.Numerator) < BigInteger.Abs(fraction.Denominator)) {
                 return FormatGeneral(fraction);
             }
-            var integer = fraction.Numerator / fraction.Denominator;
+
+            var integer = fraction.Denominator != BigInteger.Zero
+                ? fraction.Numerator / fraction.Denominator
+                : BigInteger.Zero;
+
             var remainder = fraction - integer;
             return FormatGeneral(remainder);
         }
 
         private static string FormatGeneral(Fraction fraction) {
-              if (fraction.Denominator == BigInteger.One) {
-                return fraction.Numerator.ToString(CultureInfo.InvariantCulture);
-
+            if (fraction.Denominator == BigInteger.Zero) {
+                return BigInteger.Zero.ToString(CultureInfo.InvariantCulture);
             }
+
+            if (fraction.Denominator == BigInteger.One) {
+                return fraction.Numerator.ToString(CultureInfo.InvariantCulture);
+            }
+
             return string.Concat(
                 fraction.Numerator.ToString(CultureInfo.InvariantCulture),
                 "/",

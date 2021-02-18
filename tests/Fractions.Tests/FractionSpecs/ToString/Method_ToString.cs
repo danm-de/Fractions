@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Fractions.Formatter;
@@ -11,8 +11,12 @@ namespace Fractions.Tests.FractionSpecs.ToString
     public class If_the_user_calls_ToString : Spec {
         private static IEnumerable<TestCaseData> TestCases {
             get {
+                yield return new TestCaseData(new Fraction(3, 0))
+                    .Returns("0");
+                yield return new TestCaseData(new Fraction(0, 0))
+                    .Returns("0");
                 yield return new TestCaseData(new Fraction(0, 3))
-                    .Returns("0/0");
+                    .Returns("0");
                 yield return new TestCaseData(new Fraction(1, 3))
                     .Returns("1/3");
                 yield return new TestCaseData(new Fraction(-1, 3))
@@ -28,7 +32,6 @@ namespace Fractions.Tests.FractionSpecs.ToString
         public string Shall_the_text_output_be_the_expected_one(Fraction fraction) {
             return fraction.ToString();
         }
-
     }
 
     [TestFixture]
@@ -42,9 +45,11 @@ namespace Fractions.Tests.FractionSpecs.ToString
                     .Returns("1/3");
                 yield return new TestCaseData(new Fraction(1, 3), null, en)
                     .Returns("1/3");
+                yield return new TestCaseData(Fraction.Zero, null, en)
+                    .Returns("0");
 
                 yield return new TestCaseData(new Fraction(0, 3), "G", de)
-                    .Returns("0/0");
+                    .Returns("0");
                 yield return new TestCaseData(new Fraction(1, 3), "G", de)
                     .Returns("1/3");
                 yield return new TestCaseData(new Fraction(3, 1), "G", de)
@@ -59,6 +64,8 @@ namespace Fractions.Tests.FractionSpecs.ToString
                     .Returns("1/-3");
                 yield return new TestCaseData(new Fraction(-1, -3, false), "G", en)
                     .Returns("-1/-3");
+                yield return new TestCaseData(Fraction.Zero, "G", en)
+                    .Returns("0");
 
                 yield return new TestCaseData(new Fraction(-1, -3, false), "n", en)
                     .Returns("-1");
@@ -71,20 +78,28 @@ namespace Fractions.Tests.FractionSpecs.ToString
                     .Returns("-3 -3");
                 yield return new TestCaseData(new Fraction(3, 1), "d", de)
                     .Returns("1");
+                yield return new TestCaseData(Fraction.Zero, "d", de)
+                    .Returns("0");
 
                 yield return new TestCaseData(new Fraction(1, 3), "n/d", en)
                     .Returns("1/3");
-                
+                yield return new TestCaseData(Fraction.Zero, "n/d", en)
+                    .Returns("0/0");
+
                 yield return new TestCaseData(new Fraction(3, 1), "z", de)
                     .Returns("3");
                 yield return new TestCaseData(new Fraction(1, 3), "z", de)
                     .Returns("0");
                 yield return new TestCaseData(new Fraction(1, 2), "z", de)
                     .Returns("0");
+                yield return new TestCaseData(Fraction.Zero, "z", de)
+                    .Returns("0");
                 yield return new TestCaseData(new Fraction(1, 2), "r", de)
                     .Returns("1/2");
                 yield return new TestCaseData(new Fraction(1, -2), "r", de)
                     .Returns("-1/2");
+                yield return new TestCaseData(Fraction.Zero, "r", de)
+                    .Returns("0");
 
                 yield return new TestCaseData(new Fraction(3, 2), "m", de)
                     .Returns("1 1/2");
@@ -98,6 +113,8 @@ namespace Fractions.Tests.FractionSpecs.ToString
                     .Returns("2");
                 yield return new TestCaseData(new Fraction(-2, 1), "m", de)
                     .Returns("-2");
+                yield return new TestCaseData(Fraction.Zero, "m", de)
+                    .Returns("0");
             }
         }
 

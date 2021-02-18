@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1;netstandard2.0;netstandard2.1;net45;net48</TargetFrameworks>
     <Authors>Daniel Mueller</Authors>
     <Description>Converts a fraction data type to JSON by using Fraction's ToString() and FromString() methods. The class name is JsonFractionConverter.</Description>
-    <Copyright>Copyright 2013-2020 Daniel Mueller</Copyright>
+    <Copyright>Copyright 2013-2021 Daniel Mueller</Copyright>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/src/Fractions/Fraction.ico</PackageIconUrl>
     <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>5.0.1</Version>
+    <Version>6.0.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../../Fractions.snk</AssemblyOriginatorKeyFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -20,6 +20,10 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>Fraction.png</PackageIcon>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
