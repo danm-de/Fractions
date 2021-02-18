@@ -9,6 +9,7 @@ packages/
 .vs/
 .build/.fake
 .ionide/
+.idea/
 
 *.DotSettings.user
 *.suo
