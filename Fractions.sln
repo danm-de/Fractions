@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractions", "src\Fractions\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB32586E-70BB-4EEE-A0D0-F5BA24988419}"
 	ProjectSection(SolutionItems) = preProject
+		Changelog.md = Changelog.md
 		license.txt = license.txt
 		Readme.md = Readme.md
 	EndProjectSection
@@ -17,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractions.Json", "src\Fract
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractions.Tests", "tests\Fractions.Tests\Fractions.Tests.csproj", "{F48B5784-4102-44AB-B07A-18485C21FC07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fractions.Json.Tests", "tests\Fractions.Json.Tests\Fractions.Json.Tests.csproj", "{1C77D649-95F0-4E45-9D28-568F94574AC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractions.Json.Tests", "tests\Fractions.Json.Tests\Fractions.Json.Tests.csproj", "{1C77D649-95F0-4E45-9D28-568F94574AC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
