@@ -44,7 +44,7 @@ There a three types of constructors available:
 - `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)`
 
 ## Creation from `double`
-The `double` data type stores its values as 64bit floating point numbers that comply with IEC 60559:1989 (IEEE 754) standard for binary floating-point arithmetic. `double` cannot store some binary fractions. For example, _1/10_, which is represented precisely by _.1_ as a decimal fraction, is represented by _.001100110011_ as a binary fraction, with the pattern _0011_ repeating to infinity. In this case, the floating-point value provides an imprecise representation of the number that it represents:
+The `double` data type stores its values as 64bit floating point numbers that comply with IEC 60559:1989 (IEEE 754) standard for binary floating-point arithmetic. `double` cannot store some binary fractions. For example, _1/10_, which is represented precisely by _.1_ as a decimal fraction, is represented by _.0001100110011_ as a binary fraction, with the pattern _0011_ repeating to infinity. In this case, the floating-point value provides an imprecise representation of the number that it represents:
 ```csharp
 var value = Fraction.FromDouble(0.1);
 /* Returns 3602879701896397/36028797018963968
