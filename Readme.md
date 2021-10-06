@@ -169,11 +169,11 @@ The data type stores the numerator and denominator as `BigInteger`. Per default 
 
 ## Required software frameworks
 
-* .Net Core 3.1 SDK (LTS version)
+* .Net Core 5.0 SDK (LTS version)
 
 ## Required build tools
 
-* Fake (https://fake.build/fake-dotnetcore.html), 
+* Fake (https://fake.build/fake-gettingstarted.html), 
  
 Please run:
 
