@@ -26,7 +26,7 @@ namespace Fractions.Json
         public JsonFractionConverter() {
             _normalizeOnSerialization = false;
             _normalizeOnDeserialization = false;
-            _formatProvider = default(IFormatProvider);
+            _formatProvider = default;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Fractions.Json
         /// </returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
             var value = reader.Value.ToString();
-            if (Fraction.TryParse(value, NumberStyles.Number, _formatProvider, _normalizeOnDeserialization, out Fraction fraction)) {
+            if (Fraction.TryParse(value, NumberStyles.Number, _formatProvider, _normalizeOnDeserialization, out var fraction)) {
                 return fraction;
             }
             throw new SerializationException(string.Format(Resources.CouldNotDeserialize, value));

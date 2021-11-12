@@ -40,10 +40,10 @@ namespace Fractions {
         /// <returns><c>true</c> if <paramref name="other"/> is type of <see cref="Fraction"/> and numerator and denominator of both are equal.</returns>
         
         public override bool Equals(object other) {
-            if (ReferenceEquals(null, other)) {
+            if (other is null) {
                 return false;
             }
-            return other is Fraction && Equals((Fraction)other);
+            return other is Fraction fraction && Equals(fraction);
         }
 
         /// <summary>

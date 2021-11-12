@@ -40,7 +40,7 @@ namespace Fractions {
                 throw new ArgumentNullException(nameof(fractionString));
             }
 
-            if (!TryParse(fractionString, numberStyles, formatProvider, true, out Fraction fraction)) {
+            if (!TryParse(fractionString, numberStyles, formatProvider, true, out var fraction)) {
                 throw new FormatException(string.Format(Resources.CannotConvertToFraction, fractionString));
             }
 
@@ -108,12 +108,12 @@ namespace Fractions {
                         value: numeratorString,
                         style: withoutDecimalpoint,
                         provider: formatProvider,
-                        result: out BigInteger numerator)
+                        result: out var numerator)
                     || !BigInteger.TryParse(
                         value: denominatorString,
                         style: withoutDecimalpoint,
                         provider: formatProvider,
-                        result: out BigInteger denominator)) {
+                        result: out var denominator)) {
                     return CannotParse(out fraction);
                 }
                 fraction = new Fraction(numerator, denominator, normalize);
@@ -140,7 +140,7 @@ namespace Fractions {
             var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
 
             if (number.Contains(numberFormatInfo.NumberDecimalSeparator)) {
-                if (!decimal.TryParse(number, numberStyles, formatProvider, out decimal decimalNumber)) {
+                if (!decimal.TryParse(number, numberStyles, formatProvider, out var decimalNumber)) {
                     return CannotParse(out fraction);
                 }
                 fraction = FromDecimal(decimalNumber);
@@ -148,7 +148,7 @@ namespace Fractions {
             }
 
             var withoutDecimalpoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
-            if (!BigInteger.TryParse(number, withoutDecimalpoint, formatProvider, out BigInteger numerator)) {
+            if (!BigInteger.TryParse(number, withoutDecimalpoint, formatProvider, out var numerator)) {
                 return CannotParse(out fraction);
             }
             fraction = new Fraction(numerator);
@@ -161,7 +161,7 @@ namespace Fractions {
         /// <param name="fraction">Returns <c>default()</c> of <see cref="Fraction"/></param>
         /// <returns><c>false</c></returns>
         private static bool CannotParse(out Fraction fraction) {
-            fraction = default(Fraction);
+            fraction = default;
             return false;
         }
 
@@ -296,7 +296,7 @@ namespace Fractions {
 
 
             var exp = scale[2];
-            bool positiveSign = (scale[3] & 0x80) == 0;
+            var positiveSign = (scale[3] & 0x80) == 0;
 
             // value = 0x00,high,middle,low / 10^exp
             var numerator = new BigInteger(new byte[] {

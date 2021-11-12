@@ -45,10 +45,8 @@ namespace Fractions {
         /// <param name="formatProvider">The provider to use to format the value. -or- A null reference (Nothing in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
         /// <filterpriority>2</filterpriority>
         public string ToString(string format, IFormatProvider formatProvider) {
-            var formatter = formatProvider?.GetFormat(GetType()) as ICustomFormatter;
-
-            return formatter != null 
-                ? formatter.Format(format, this, formatProvider) 
+            return formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter
+                ? formatter.Format(format, this, formatProvider)
                 : DefaultFractionFormatter.Instance.Format(format, this, formatProvider);
         }
     }

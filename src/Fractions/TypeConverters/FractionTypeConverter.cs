@@ -66,12 +66,12 @@ namespace Fractions.TypeConverters {
         /// </summary>
         /// <param name="context">An <see cref="ITypeDescriptorContext" /> that provides a format context.</param>
         /// <param name="culture">A CultureInfo. If <c>null</c> is passed, the current culture is assumed.</param>
-        /// <param name="value">The <see cref="Object"/> to convert.</param>
+        /// <param name="value">The <see cref="object"/> to convert.</param>
         /// <param name="destinationType">The <see cref="Type" />  to convert the value parameter to.</param>
-        /// <returns>An <see cref="Object"/> that represents the converted value.</returns>
+        /// <returns>An <see cref="object"/> that represents the converted value.</returns>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value,
             Type destinationType) {
-            return !ReferenceEquals(value, null) && CONVERT_TO_DICTIONARY.TryGetValue(destinationType, out Func<object, CultureInfo, object> func)
+            return value is object && CONVERT_TO_DICTIONARY.TryGetValue(destinationType, out var func)
                 ? func(value, culture)
                 : base.ConvertTo(context, culture, value, destinationType);
         }
@@ -81,14 +81,14 @@ namespace Fractions.TypeConverters {
         /// </summary>
         /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> to use as the current culture.</param>
-        /// <param name="value">The <see cref="Object"/> to convert.</param>
-        /// <returns>An <see cref="Object"/> that represents the converted value.</returns>
+        /// <param name="value">The <see cref="object"/> to convert.</param>
+        /// <returns>An <see cref="object"/> that represents the converted value.</returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
-            if (ReferenceEquals(value, null)) {
+            if (value is null) {
                 return Fraction.Zero;
             }
 
-            return CONVERT_FROM_DICTIONARY.TryGetValue(value.GetType(), out Func<object, CultureInfo, Fraction>  func)
+            return CONVERT_FROM_DICTIONARY.TryGetValue(value.GetType(), out var  func)
                 ? func(value, culture)
                 : base.ConvertFrom(context, culture, value);
         }

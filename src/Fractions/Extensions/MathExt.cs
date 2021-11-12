@@ -83,7 +83,7 @@ namespace Fractions.Extensions {
                     a = temp;
                 }
 
-                b = b - a;
+                b -= a;
 
             } while (b != 0);
 

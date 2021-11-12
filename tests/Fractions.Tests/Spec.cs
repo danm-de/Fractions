@@ -23,7 +23,7 @@ namespace Tests.Fractions {
 
         public virtual void Act() {}
 
-        protected Action Invoking(Action func) {
+        protected static Action Invoking(Action func) {
             return func;
         }
     }

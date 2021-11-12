@@ -26,7 +26,7 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs
             public Fraction Value { get; set; }
         }
 
-        private readonly StringBuilder _sb = new StringBuilder();
+        private readonly StringBuilder _sb = new();
         private JsonSerializer _serializer;
         private Test _testObject;
 
