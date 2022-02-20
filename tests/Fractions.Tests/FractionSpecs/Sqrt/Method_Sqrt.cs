@@ -22,29 +22,23 @@ namespace Fractions.Tests.FractionSpecs.Sqrt {
                         .WithMessage("Cannot calculate square root from a negative number");
         }
 
-        
-        private bool SqrtCompareToDouble(double testValue) {
-
-            var fractionSqrt = Fraction.FromDouble(testValue).Sqrt();
-            var doubleSqrt = Math.Sqrt(testValue);
-
-            return fractionSqrt.ToDouble() == doubleSqrt;            
+        private static IEnumerable<TestCaseData> TestCases {
+            get {
+                yield return new TestCaseData(0.001);
+                yield return new TestCaseData(5);
+                yield return new TestCaseData(4.54854751);
+                yield return new TestCaseData(9999999855487);
+                yield return new TestCaseData(99999998554865557);
+                yield return new TestCaseData(Math.PI);
+            }
         }
 
-        [Test]
-        public void Sqrt_Of_values() {
-
-            SqrtCompareToDouble(0.001).Should().BeTrue();
-            SqrtCompareToDouble(5).Should().BeTrue();  
-            SqrtCompareToDouble(4.54854751).Should().BeTrue();
-            SqrtCompareToDouble(9999999855487).Should().BeTrue();
-            SqrtCompareToDouble(99999998554865557).Should().BeTrue();
-            SqrtCompareToDouble(Math.PI).Should().BeTrue();
-
-        }
-
-
-
+        [Test,TestCaseSource(nameof(TestCases))]
+        public void Should_the_result_be_equal_to_Math_Sqrt(double value) {
+            var expected = Math.Sqrt(value);
+            var actual = Fraction.FromDouble(value).Sqrt();
+            actual.ToDouble().Should().Be(expected);
+        }```
 
 
     }
