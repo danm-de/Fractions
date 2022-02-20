@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Fractions.Extensions {
-    internal static class MathExt {
+    public static partial class MathExt {
         /// <summary>
         /// Checks for an even number.
         /// </summary>
