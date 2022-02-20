@@ -15,7 +15,7 @@ namespace Fractions {
         public static Fraction Sqrt(this Fraction x, int numberOFDecimalPlaceAccuracy = 30) {
             //Babylonian Method of computing square roots
 
-            if (x < 0) {
+            if (x < Fraction.Zero) {
                 throw new OverflowException("Cannot calculate square root from a negative number");
             }
 
