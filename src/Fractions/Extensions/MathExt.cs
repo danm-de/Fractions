@@ -81,12 +81,10 @@ namespace Fractions.Extensions {
                 // damit die notwendige Subtraktion durchgeführt werden
                 // kann.
                 if (a > b) {
-                    var temp = b;
-                    b = a;
-                    a = temp;
+                    (b, a) = (a, b);
                 }
 
-                b = b - a;
+                b -= a;
 
             } while (b != 0);
 
