@@ -74,9 +74,8 @@ namespace Fractions {
         public static Fraction One => _one;
 
         /// <summary>
-        /// A fraction with the reduced/simplified value of 1.
+        /// A fraction with the reduced/simplified value of 2.
         /// </summary>
-
         public static Fraction Two => _two;
 
         /// <summary>
