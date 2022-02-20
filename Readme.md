@@ -126,6 +126,9 @@ The following mathematic operations are supported:
 - `.Abs()` returns the absolute value `|a|`
 - `Fraction.Pow(Fraction, int)` returns a base raised to a power `(a ^ exponent)` (e.g. _1/10_^(-1) -> _10/1_)
 
+As extension method:
+- `FractionExt.Sqrt(this Fraction, int)` returns the square root, specifying the precision after the decimal point.
+
 Example:
 ```csharp
  var a = new Fraction(1, 3);
