@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
-using Fractions.Extensions;
 
 namespace Fractions.Tests.FractionSpecs.Sqrt {
 
@@ -41,7 +40,5 @@ namespace Fractions.Tests.FractionSpecs.Sqrt {
             var actual = Fraction.FromDouble(value).Sqrt();
             actual.ToDouble().Should().Be(expected);
         }
-
-
     }
 }
