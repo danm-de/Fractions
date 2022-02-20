@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <Product>Fraction data type</Product>
     <Authors>Daniel Mueller</Authors>
-    <Copyright>Copyright 2013-2021 Daniel Mueller</Copyright>
+    <Copyright>Copyright 2013-2022 Daniel Mueller</Copyright>
     <Title>Fraction data type</Title>
     <PackageId>Fractions</PackageId>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
