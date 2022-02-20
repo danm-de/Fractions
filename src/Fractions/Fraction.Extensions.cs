@@ -9,9 +9,10 @@ namespace Fractions {
     {
 
         /// <summary>
-        /// Returns the square root of a fraction.
+        /// Returns the square root of a fraction. Use <paramref name="numberOFDecimalPlaceAccuracy"/> to set the accuracy.
         /// </summary>
-        public static Fraction Sqrt(this Fraction x) {
+        /// <param name="numberOFDecimalPlaceAccuracy"></param>
+        public static Fraction Sqrt(this Fraction x, int numberOFDecimalPlaceAccuracy = 30) {
             //Babylonian Method of computing square roots
 
             if (x < 0) {
@@ -21,7 +22,7 @@ namespace Fractions {
 
             Fraction oldGuess;
             var newGuess = Fraction.Zero;
-            var tolerance = new Fraction(BigInteger.One, new BigInteger(79000000000000000000000000000m));
+            var tolerance = new Fraction(BigInteger.One, BigInteger.Pow(new BigInteger(10), numberOFDecimalPlaceAccuracy));
 
 
             //Using Math.Sqrt to get a good starting guess
@@ -41,11 +42,5 @@ namespace Fractions {
 
             return newGuess;
         }
-
-
-
-
-
-
     }
 }
