@@ -17,6 +17,7 @@ namespace Fractions {
         private static readonly Fraction _zero = new Fraction(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);
         private static readonly Fraction _one = new Fraction(BigInteger.One, BigInteger.One, FractionState.IsNormalized);
         private static readonly Fraction _minus_one = new Fraction(BigInteger.MinusOne, BigInteger.One, FractionState.IsNormalized);
+        private static readonly Fraction _two = new Fraction(new BigInteger(2), BigInteger.One, FractionState.IsNormalized);
 
         private readonly BigInteger _denominator;
         private readonly BigInteger _numerator;
@@ -73,9 +74,15 @@ namespace Fractions {
         public static Fraction One => _one;
 
         /// <summary>
+        /// A fraction with the reduced/simplified value of 1.
+        /// </summary>
+
+        public static Fraction Two => _two;
+
+        /// <summary>
         /// A fraction with the reduced/simplified value of -1.
         /// </summary>
-        
+
         public static Fraction MinusOne => _minus_one;
     }
 }

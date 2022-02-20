@@ -1,7 +1,10 @@
 ﻿using System;
 
 namespace Fractions.Extensions {
-    internal static class MathExt {
+    /// <summary>
+    /// Math extension methods
+    /// </summary>
+    public static class MathExt {
         /// <summary>
         /// Checks for an even number.
         /// </summary>
@@ -78,12 +81,10 @@ namespace Fractions.Extensions {
                 // damit die notwendige Subtraktion durchgeführt werden
                 // kann.
                 if (a > b) {
-                    var temp = b;
-                    b = a;
-                    a = temp;
+                    (b, a) = (a, b);
                 }
 
-                b = b - a;
+                b -= a;
 
             } while (b != 0);
 

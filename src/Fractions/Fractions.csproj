@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <Product>Fraction data type</Product>
     <Authors>Daniel Mueller</Authors>
-    <Copyright>Copyright 2013-2021 Daniel Mueller</Copyright>
+    <Copyright>Copyright 2013-2022 Daniel Mueller</Copyright>
     <Title>Fraction data type</Title>
     <PackageId>Fractions</PackageId>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <Description>The fraction data type consists of two BigInteger values for numerator and denominator. It implements various operations (addition, subtraction, multiplication, division and remainder) with operator overloads.</Description>
-    <Version>7.0.0</Version>
+    <Version>7.1.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../../Fractions.snk</AssemblyOriginatorKeyFile>
@@ -47,7 +47,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
   </ItemGroup>
 

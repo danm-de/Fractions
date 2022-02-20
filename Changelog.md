@@ -1,4 +1,8 @@
-﻿7.0.0
+﻿7.1.0
+
+- New Sqrt() extension method contributed by https://github.com/MadsKirkFoged
+
+7.0.0
 
 - Removed unsupported framework DLL netstandard1.1 (Issue [#9](https://github.com/danm-de/Fractions/issues/9))
 - Removed deplicated and unecessary framework DLLs net45, net48, net5.0 and netcoreapp3.1 (Issue [#9](https://github.com/danm-de/Fractions/issues/9))
