@@ -11,7 +11,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>7.1.0</Version>
+    <Version>7.2.0</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../../Fractions.snk</AssemblyOriginatorKeyFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

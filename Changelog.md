@@ -1,4 +1,8 @@
-﻿7.1.0
+﻿7.2.0
+
+- Removed System.Runtime.Numerics dependency. Thanks to @stan-sz https://github.com/danm-de/Fractions/pull/18
+
+7.1.0
 
 - New Sqrt() extension method contributed by https://github.com/MadsKirkFoged
 
