@@ -1,4 +1,8 @@
-﻿7.2.0
+﻿7.2.1
+
+- Updated Newtonsoft.Json to version 13.0.2 (Dependabot)
+
+7.2.0
 
 - Removed System.Runtime.Numerics dependency. Thanks to @stan-sz https://github.com/danm-de/Fractions/pull/18
 
