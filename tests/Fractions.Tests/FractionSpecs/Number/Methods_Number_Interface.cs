@@ -51,3 +51,39 @@ public class If_the_user_parses_string_to_fraction {
     public Fraction Should_it_return_the_expected_result_when_using_Parse_with_ReadOnlySpan_NumberStyles_and_DE_culture(string value) =>
         Fraction.Parse(value.AsSpan(), NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, De);
 }
+
+[TestFixture]
+public class If_a_fraction_is_incremented {
+    private static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData(new Fraction(1)).Returns(new Fraction(2));
+            yield return new TestCaseData(new Fraction(0)).Returns(new Fraction(1));
+            yield return new TestCaseData(new Fraction(-1)).Returns(new Fraction(0));
+            yield return new TestCaseData(new Fraction(1,2)).Returns(new Fraction(3,2));
+        }
+    }
+
+    [Test,TestCaseSource(nameof(TestCases))]
+    public Fraction Should_it_return_the_expected_result(Fraction a) {
+        _ = a++;
+        return a;
+    }
+}
+
+[TestFixture]
+public class If_a_fraction_is_decremented {
+    private static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData(new Fraction(1)).Returns(new Fraction(0));
+            yield return new TestCaseData(new Fraction(0)).Returns(new Fraction(-1));
+            yield return new TestCaseData(new Fraction(-1)).Returns(new Fraction(-2));
+            yield return new TestCaseData(new Fraction(1,2)).Returns(new Fraction(-1,2));
+        }
+    }
+
+    [Test,TestCaseSource(nameof(TestCases))]
+    public Fraction Should_it_return_the_expected_result(Fraction a) {
+        _ = a--;
+        return a;
+    }
+}

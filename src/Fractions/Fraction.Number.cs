@@ -26,8 +26,20 @@ namespace Fractions {
         }
 
         /// <inheritdoc />
-        public static bool TryParse(string s, IFormatProvider provider, out Fraction result) {
-            throw new NotImplementedException();
+        public static bool TryParse(string s, IFormatProvider provider, out Fraction result) =>
+            TryParse(s, NumberStyles.Number, provider, out result);
+
+        /// <inheritdoc />
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Fraction result) {
+            // TODO optimize FromString to use ReadOnlySpan (Split required https://github.com/dotnet/runtime/issues/76186)
+            return TryParse(s.ToString(), provider, out result);
+        }
+
+        /// <inheritdoc />
+        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider provider,
+            out Fraction result) {
+            // TODO optimize FromString to use ReadOnlySpan (Split required https://github.com/dotnet/runtime/issues/76186)
+            return TryParse(s.ToString(), style, provider, out result);
         }
 
         /// <inheritdoc />
@@ -36,30 +48,15 @@ namespace Fractions {
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc />
-        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Fraction result) {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider provider,
-            out Fraction result) {
-            throw new NotImplementedException();
-        }
-
 
         /// <inheritdoc />
         public static Fraction AdditiveIdentity => throw new NotImplementedException();
 
         /// <inheritdoc />
-        public static Fraction operator --(Fraction value) {
-            throw new NotImplementedException();
-        }
+        public static Fraction operator --(Fraction value) => value.Add(MinusOne);
 
         /// <inheritdoc />
-        public static Fraction operator ++(Fraction value) {
-            throw new NotImplementedException();
-        }
+        public static Fraction operator ++(Fraction value) => value.Add(One);
 
         /// <inheritdoc />
         public static Fraction MultiplicativeIdentity => throw new NotImplementedException();
