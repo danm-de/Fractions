@@ -20,6 +20,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageIcon>Fraction.png</PackageIcon>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -49,6 +50,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" Link="Readme.md" />
     <None Include="..\Fractions\Fraction.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
