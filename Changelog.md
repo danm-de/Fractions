@@ -1,4 +1,9 @@
-﻿7.2.1
+﻿7.3.0
+
+- New Reciprocal() method contributed by https://github.com/teemka
+- Updated nuget packages
+
+7.2.1
 
 - Updated Newtonsoft.Json to version 13.0.2 (Dependabot)
 

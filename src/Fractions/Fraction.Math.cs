@@ -37,7 +37,6 @@ namespace Fractions {
         /// </summary>
         /// <param name="summand">Summand</param>
         /// <returns>The result as summation.</returns>
-        
         public Fraction Add(Fraction summand) {
             if (_denominator == summand.Denominator) {
                 return new Fraction(BigInteger.Add(_numerator, summand.Numerator), _denominator, true);
@@ -73,7 +72,6 @@ namespace Fractions {
         /// </summary>
         /// <param name="subtrahend">Subtrahend.</param>
         /// <returns>The result as difference.</returns>
-        
         public Fraction Subtract(Fraction subtrahend) {
             return Add(subtrahend.Invert());
         }
@@ -82,7 +80,6 @@ namespace Fractions {
         /// Inverts the fraction. Has the same result as multiplying it by -1.
         /// </summary>
         /// <returns>The inverted fraction.</returns>
-        
         public Fraction Invert() {
             if (IsZero) {
                 return _zero;
@@ -95,7 +92,6 @@ namespace Fractions {
         /// </summary>
         /// <param name="factor">Factor</param>
         /// <returns>The result as product.</returns>
-        
         public Fraction Multiply(Fraction factor) {
             return new Fraction(
                 _numerator * factor._numerator,
@@ -108,7 +104,6 @@ namespace Fractions {
         /// </summary>
         /// <param name="divisor">Divisor</param>
         /// <returns>The result as quotient.</returns>
-        
         public Fraction Divide(Fraction divisor) {
             if (divisor.IsZero) {
                 throw new DivideByZeroException(string.Format(Resources.DivideByZero, this));
@@ -124,7 +119,6 @@ namespace Fractions {
         /// Returns this as reduced/simplified fraction. The fraction's sign will be normalized.
         /// </summary>
         /// <returns>A reduced and normalized fraction.</returns>
-        
         public Fraction Reduce() {
             return _state == FractionState.IsNormalized
                 ? this
@@ -135,7 +129,6 @@ namespace Fractions {
         /// Gets the absolute value of a <see cref="Fraction"/> object.
         /// </summary>
         /// <returns>The absolute value.</returns>
-        
         public Fraction Abs() {
             return Abs(this);
         }
@@ -145,7 +138,6 @@ namespace Fractions {
         /// </summary>
         /// <param name="fraction">The fraction.</param>
         /// <returns>The absolute value.</returns>
-        
         public static Fraction Abs(Fraction fraction) {
             return new Fraction(BigInteger.Abs(fraction.Numerator), BigInteger.Abs(fraction.Denominator), fraction.State);
         }
@@ -156,7 +148,6 @@ namespace Fractions {
         /// <param name="numerator">Numerator</param>
         /// <param name="denominator">Denominator</param>
         /// <returns>A reduced and normalized fraction</returns>
-        
         public static Fraction GetReducedFraction(BigInteger numerator, BigInteger denominator) {
             if (numerator.IsZero || denominator.IsZero) {
                 return Zero;
@@ -183,11 +174,29 @@ namespace Fractions {
         /// <param name="base">base to be raised to a power</param>
         /// <param name="exponent">A number that specifies a power (exponent)</param>
         /// <returns>The fraction <paramref name="base"/> raised to the power <paramref name="exponent"/>.</returns>
-        
         public static Fraction Pow(Fraction @base, int exponent) {
             return exponent < 0
                 ? Pow(new Fraction(@base._denominator, @base._numerator), -exponent)
                 : new Fraction(BigInteger.Pow(@base._numerator, exponent), BigInteger.Pow(@base._denominator, exponent));
         }
+
+        /// <summary>
+        /// Returns a fraction with the numerator and denominator exchanged.
+        /// </summary>
+        /// <returns>
+        /// The fraction with the numerator and denominator exchanged.
+        /// </returns>
+        public Fraction Reciprocal() => Reciprocal(this);
+
+
+        /// <summary>
+        /// Returns a fraction with the numerator and denominator exchanged.
+        /// </summary>
+        /// <param name="fraction">The fraction.</param>
+        /// <returns>
+        /// The fraction with the numerator and denominator exchanged.
+        /// </returns>
+        public static Fraction Reciprocal(Fraction fraction) =>
+            new Fraction(fraction.Denominator, fraction.Numerator, fraction.State);
     }
 }
