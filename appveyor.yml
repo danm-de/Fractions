@@ -1,12 +1,9 @@
 image: Ubuntu
 build_script:
   - sh: |-
-      dotnet tool restore
-      dotnet tool run fake run build.fsx
-
+      dotnet test
+      dotnet build
 test: off
-environment:
-  PAKET_BOOTSTRAPPER_TRACE: true
 pull_requests:
   do_not_increment_build_number: true
 nuget:
