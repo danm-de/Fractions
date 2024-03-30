@@ -31,6 +31,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.CLSCompliantAttribute">
+      <_Parameter1>true</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
