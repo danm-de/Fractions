@@ -2,87 +2,91 @@
 using NUnit.Framework;
 using Tests.Fractions;
 
-namespace Fractions.Tests.FractionSpecs.ValueEquals {
-    [TestFixture]
-    public class Wenn_zwei_Brüche_mit_identischen_Zähler_und_Nenner_verglichen_werden : Spec {
-        private Fraction _fractionA;
-        private Fraction _fractionB;
+namespace Fractions.Tests.FractionSpecs.ValueEquals;
 
-        public override void SetUp() {
-            base.SetUp();
+[TestFixture]
+// German: Wenn zwei Brüche mit identischen Zähler und Nenner verglichen werden
+public class When_comparing_two_fractions_with_identical_numerator_and_denominator : Spec {
+    private Fraction _fractionA;
+    private Fraction _fractionB;
 
-            _fractionA = new Fraction(5, 6, true);
-            _fractionB = new Fraction(5, 6, true);
-        }
-
-        [Test]
-        public void Sollen_diese_als_Wertgleich_erkannt_werden() {
-            _fractionA.IsEquivalentTo(_fractionB)
-                .Should().BeTrue();
-        }
+    public override void SetUp() {
+        base.SetUp();
+        _fractionA = new Fraction(5, 6, true);
+        _fractionB = new Fraction(5, 6, true);
     }
 
-    [TestFixture]
-    public class Wenn_zwei_Brüche_mit_unterschiedlichen_Zähler_aber_identischen_Nenner_verglichen_werden : Spec {
-        private Fraction _fractionA;
-        private Fraction _fractionB;
+    [Test]
+    // German: Diese sollten als wertgleich erkannt werden
+    public void These_should_be_recognized_as_equivalent() {
+        _fractionA.IsEquivalentTo(_fractionB)
+            .Should().BeTrue();
+    }
+}
 
-        public override void SetUp() {
-            base.SetUp();
+[TestFixture]
+// German: Wenn zwei Brüche mit unterschiedlichen Zähler aber identischen Nenner verglichen werden
+public class When_comparing_two_fractions_with_different_numerator_but_identical_denominator : Spec {
+    private Fraction _fractionA;
+    private Fraction _fractionB;
 
-            _fractionA = new Fraction(4, 6, true);
-            _fractionB = new Fraction(5, 6, true);
-        }
-
-        [Test]
-        public void Sollen_diese_als_nicht_Wertgleich_erkannt_werden() {
-            _fractionA.IsEquivalentTo(_fractionB)
-                .Should().BeFalse();
-        }
+    public override void SetUp() {
+        base.SetUp();
+        _fractionA = new Fraction(4, 6, true);
+        _fractionB = new Fraction(5, 6, true);
     }
 
-    [TestFixture]
-    public class Wenn_zwei_Brüche_mit_identischen_Zähler_aber_unterschiedlichen_Nenner_verglichen_werden : Spec {
-        private Fraction _fractionA;
-        private Fraction _fractionB;
+    [Test]
+    // German: Diese sollten als nicht wertgleich erkannt werden
+    public void These_should_be_recognized_as_not_equivalent() {
+        _fractionA.IsEquivalentTo(_fractionB)
+            .Should().BeFalse();
+    }
+}
 
-        public override void SetUp() {
-            base.SetUp();
+[TestFixture]
+// German: Wenn zwei Brüche mit identischen Zähler aber unterschiedlichen Nenner verglichen werden
+public class When_comparing_two_fractions_with_identical_numerator_but_different_denominator : Spec {
+    private Fraction _fractionA;
+    private Fraction _fractionB;
 
-            _fractionA = new Fraction(4, 6, true);
-            _fractionB = new Fraction(4, 7, true);
-        }
-
-        [Test]
-        public void Sollen_diese_als_nicht_Wertgleich_erkannt_werden() {
-            _fractionA.IsEquivalentTo(_fractionB)
-                .Should().BeFalse();
-        }
+    public override void SetUp() {
+        base.SetUp();
+        _fractionA = new Fraction(4, 6, true);
+        _fractionB = new Fraction(4, 7, true);
     }
 
-    [TestFixture]
-    public class Wenn_der_Bruch_2_4_mit_dem_Bruch_1_2_verglichen_wird : Spec {
-        private Fraction _fractionA;
-        private Fraction _fractionB;
+    [Test]
+    // German: Diese sollten als nicht wertgleich erkannt werden
+    public void These_should_be_recognized_as_not_equivalent() {
+        _fractionA.IsEquivalentTo(_fractionB)
+            .Should().BeFalse();
+    }
+}
 
-        public override void SetUp() {
-            base.SetUp();
+[TestFixture]
+// German: Wenn der Bruch 2/4 mit dem Bruch 1/2 verglichen wird
+public class When_comparing_the_fraction_2_over_4_with_the_fraction_1_over_2 : Spec {
+    private Fraction _fractionA;
+    private Fraction _fractionB;
 
-            _fractionA = new Fraction(2, 4, false);
-            _fractionB = new Fraction(1, 2, true);
-        }
+    public override void SetUp() {
+        base.SetUp();
+        _fractionA = new Fraction(2, 4, false);
+        _fractionB = new Fraction(1, 2, true);
+    }
 
+    [Test]
+    // German: Die Brüche sollten als nicht strukturell gleich erkannt werden
+    public void The_fractions_should_be_recognized_as_not_equal() {
+        _fractionA.Equals(_fractionB)
+            .Should().BeFalse();
+    }
 
-        [Test]
-        public void Sollen_die_Brüche_als_nicht_strukturell_gleich_erkannt_werden() {
-            _fractionA.Equals(_fractionB)
-                .Should().BeFalse();
-        }
-
-        [Test]
-        public void Sollen_die_Brüche_als_Wertgleich_erkannt_werden() {
-            _fractionA.IsEquivalentTo(_fractionB)
-                .Should().BeTrue();
-        }
+    [Test]
+    // German: Die Brüche sollten als wertgleich erkannt werden
+    public void The_fractions_should_be_recognized_as_equivalent() {
+        _fractionA.IsEquivalentTo(_fractionB)
+            .Should().BeTrue();
     }
 }

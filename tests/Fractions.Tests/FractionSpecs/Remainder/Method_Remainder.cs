@@ -3,277 +3,303 @@ using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
 
-namespace Fractions.Tests.FractionSpecs.Remainder {
-    [TestFixture]
-    public class Wenn_1_Mod_3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
+namespace Fractions.Tests.FractionSpecs.Remainder;
 
-        public override void SetUp() {
-            _a = new Fraction(1);
-            _b = new Fraction(3);
-        }
+[TestFixture]
+// German: Wenn 1 Mod 3 errechnet wird
+public class When_calculating_1_mod_3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_1_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(1));
-        }
+    public override void SetUp() {
+        _a = new Fraction(1);
+        _b = new Fraction(3);
     }
 
-    [TestFixture]
-    public class Wenn_0_Mod_3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
-
-        public override void SetUp() {
-            _a = new Fraction(0);
-            _b = new Fraction(3);
-        }
-
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_0_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(0));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
     }
 
-    [TestFixture]
-    public class Wenn_4_Mod_3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
+    [Test]
+    // German: Soll 1 als Ergebnis zurückgeliefert werden
+    public void Should_return_1_as_the_result() {
+        _result.Should().Be(new Fraction(1));
+    }
+}
 
-        public override void SetUp() {
-            _a = new Fraction(4);
-            _b = new Fraction(3);
-        }
+[TestFixture]
+// German: Wenn 0 Mod 3 errechnet wird
+public class When_calculating_0_mod_3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_1_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(1));
-        }
+    public override void SetUp() {
+        _a = new Fraction(0);
+        _b = new Fraction(3);
     }
 
-    [TestFixture]
-    public class Wenn_5_Mod_3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
-
-        public override void SetUp() {
-            _a = new Fraction(5);
-            _b = new Fraction(3);
-        }
-
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_2_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(2));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
     }
 
-    [TestFixture]
-    public class Wenn_minus5_Mod_3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
+    [Test]
+    // German: Soll 0 als Ergebnis zurückgeliefert werden
+    public void Should_return_0_as_the_result() {
+        _result.Should().Be(new Fraction(0));
+    }
+}
 
-        public override void SetUp() {
-            _a = new Fraction(-5);
-            _b = new Fraction(3);
-        }
+[TestFixture]
+// German: Wenn 4 Mod 3 errechnet wird
+public class When_calculating_4_mod_3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_minus2_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(-2));
-        }
+    public override void SetUp() {
+        _a = new Fraction(4);
+        _b = new Fraction(3);
     }
 
-    [TestFixture]
-    public class Wenn_minus5_Mod_minus3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
-
-        public override void SetUp() {
-            _a = new Fraction(-5);
-            _b = new Fraction(-3);
-        }
-
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_minus2_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(-2));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
     }
 
-    [TestFixture]
-    public class Wenn_5_Mod_minus3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
+    [Test]
+    // German: Soll 1 als Ergebnis zurückgeliefert werden
+    public void Should_return_1_as_the_result() {
+        _result.Should().Be(new Fraction(1));
+    }
+}
 
-        public override void SetUp() {
-            _a = new Fraction(5);
-            _b = new Fraction(-3);
-        }
+[TestFixture]
+// German: Wenn 5 Mod 3 errechnet wird
+public class When_calculating_5_mod_3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_2_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(2));
-        }
+    public override void SetUp() {
+        _a = new Fraction(5);
+        _b = new Fraction(3);
     }
 
-    [TestFixture]
-    public class Wenn_6_Mod_3_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
-
-        public override void SetUp() {
-            _a = new Fraction(6);
-            _b = new Fraction(3);
-        }
-
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_0_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(0));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
     }
 
-    [TestFixture]
-    public class Wenn_6_Mod_0_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Exception _exception;
+    [Test]
+    // German: Soll 2 als Ergebnis zurückgeliefert werden
+    public void Should_return_2_as_the_result() {
+        _result.Should().Be(new Fraction(2));
+    }
+}
 
-        public override void SetUp() {
-            _a = new Fraction(6);
-            _b = new Fraction(0);
-        }
+[TestFixture]
+// German: Wenn minus5 Mod 3 errechnet wird
+public class When_calculating_minus5_mod_3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _exception = Catch.Exception(() => _a.Remainder(_b));
-        }
-
-        [Test]
-        public void Soll_eine_Division_durch_0_Exception_ausgelöst_werden() {
-            _exception.Should().BeOfType<DivideByZeroException>();
-        }
+    public override void SetUp() {
+        _a = new Fraction(-5);
+        _b = new Fraction(3);
     }
 
-    [TestFixture]
-    public class Wenn_2_komma5_Mod_0_komma5_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
-
-        public override void SetUp() {
-            _a = new Fraction(5, 2);
-            _b = new Fraction(1, 2);
-        }
-
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_0_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(0));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
     }
 
-    [TestFixture]
-    public class Wenn_2_komma3_Mod_0_komma5_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
+    [Test]
+    // German: Soll minus2 als Ergebnis zurückgeliefert werden
+    public void Should_return_minus2_as_the_result() {
+        _result.Should().Be(new Fraction(-2));
+    }
+}
 
-        public override void SetUp() {
-            _a = new Fraction(23, 10);
-            _b = new Fraction(1, 2);
-        }
+[TestFixture]
+// German: Wenn minus5 Mod minus3 errechnet wird
+public class When_calculating_minus5_mod_minus3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _result = _a.Remainder(_b);
-        }
-
-        [Test]
-        public void Soll_0_3_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(3, 10));
-        }
+    public override void SetUp() {
+        _a = new Fraction(-5);
+        _b = new Fraction(-3);
     }
 
-    [TestFixture]
-    public class Wenn_131_Mod_320_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
-
-        public override void SetUp() {
-            _a = 131;
-            _b = 320;
-        }
-
-        public override void Act() {
-            _result = _a % _b;
-        }
-
-        [Test]
-        public void Soll_131_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(131));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
     }
 
-    [TestFixture]
-    public class Wenn_60_Mod_100_errechnet_wird : Spec {
-        private Fraction _a;
-        private Fraction _b;
-        private Fraction _result;
+    [Test]
+    // German: Soll minus2 als Ergebnis zurückgeliefert werden
+    public void Should_return_minus2_as_the_result() {
+        _result.Should().Be(new Fraction(-2));
+    }
+}
 
-        public override void SetUp() {
-            _a = 60;
-            _b = 100;
-        }
+[TestFixture]
+// German: Wenn 5 Mod minus3 errechnet wird
+public class When_calculating_5_mod_minus3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
 
-        public override void Act() {
-            _result = _a % _b;
-        }
+    public override void SetUp() {
+        _a = new Fraction(5);
+        _b = new Fraction(-3);
+    }
 
-        [Test]
-        public void Soll_60_als_Ergebnis_zurückgeliefert_werden() {
-            _result.Should().Be(new Fraction(60));
-        }
+    public override void Act() {
+        _result = _a.Remainder(_b);
+    }
+
+    [Test]
+    // German: Soll 2 als Ergebnis zurückgeliefert werden
+    public void Should_return_2_as_the_result() {
+        _result.Should().Be(new Fraction(2));
+    }
+}
+
+[TestFixture]
+// German: Wenn 6 Mod 3 errechnet wird
+public class When_calculating_6_mod_3 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
+
+    public override void SetUp() {
+        _a = new Fraction(6);
+        _b = new Fraction(3);
+    }
+
+    public override void Act() {
+        _result = _a.Remainder(_b);
+    }
+
+    [Test]
+    // German: Soll 0 als Ergebnis zurückgeliefert werden
+    public void Should_return_0_as_the_result() {
+        _result.Should().Be(new Fraction(0));
+    }
+}
+
+[TestFixture]
+// German: Wenn 6 Mod 0 errechnet wird
+public class When_calculating_6_mod_0 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Exception _exception;
+
+    public override void SetUp() {
+        _a = new Fraction(6);
+        _b = new Fraction(0);
+    }
+
+    public override void Act() {
+        _exception = Catch.Exception(() => _a.Remainder(_b));
+    }
+
+    [Test]
+    // German: Soll eine Division durch 0 Exception ausgelöst werden
+    public void Should_throw_a_division_by_zero_exception() {
+        _exception.Should().BeOfType<DivideByZeroException>();
+    }
+}
+
+[TestFixture]
+// German: Wenn 2,5 Mod 0,5 errechnet wird
+public class When_calculating_2_point_5_mod_0_point_5 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
+
+    public override void SetUp() {
+        _a = new Fraction(5, 2);
+        _b = new Fraction(1, 2);
+    }
+
+    public override void Act() {
+        _result = _a.Remainder(_b);
+    }
+
+    [Test]
+    // German: Soll 0 als Ergebnis zurückgeliefert werden
+    public void Should_return_0_as_the_result() {
+        _result.Should().Be(new Fraction(0));
+    }
+}
+
+[TestFixture]
+// German: Wenn 2,3 Mod 0,5 errechnet wird
+public class When_calculating_2_point_3_mod_0_point_5 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
+
+    public override void SetUp() {
+        _a = new Fraction(23, 10);
+        _b = new Fraction(1, 2);
+    }
+
+    public override void Act() {
+        _result = _a.Remainder(_b);
+    }
+
+    [Test]
+    // German: Soll 0,3 als Ergebnis zurückgeliefert werden
+    public void Should_return_0_point_3_as_the_result() {
+        _result.Should().Be(new Fraction(3, 10));
+    }
+}
+
+[TestFixture]
+// German: Wenn 131 Mod 320 errechnet wird
+public class When_calculating_131_mod_320 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
+
+    public override void SetUp() {
+        _a = 131;
+        _b = 320;
+    }
+
+    public override void Act() {
+        _result = _a % _b;
+    }
+
+    [Test]
+    // German: Soll 131 als Ergebnis zurückgeliefert werden
+    public void Should_return_131_as_the_result() {
+        _result.Should().Be(new Fraction(131));
+    }
+}
+
+[TestFixture]
+// German: Wenn 60 Mod 100 errechnet wird
+public class When_calculating_60_mod_100 : Spec {
+    private Fraction _a;
+    private Fraction _b;
+    private Fraction _result;
+
+    public override void SetUp() {
+        _a = 60;
+        _b = 100;
+    }
+
+    public override void Act() {
+        _result = _a % _b;
+    }
+
+    [Test]
+    // German: Soll 60 als Ergebnis zurückgeliefert werden
+    public void Should_return_60_as_the_result() {
+        _result.Should().Be(new Fraction(60));
     }
 }
