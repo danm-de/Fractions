@@ -72,6 +72,7 @@ namespace Fractions {
         /// Creates a normalized fraction using a unsigned 32bit integer.
         /// </summary>
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
+        [CLSCompliant(false)]
         public Fraction(uint numerator) {
             _numerator = new BigInteger(numerator);
             _denominator = numerator != 0 ? BigInteger.One : BigInteger.Zero;
@@ -83,6 +84,7 @@ namespace Fractions {
         /// Creates a normalized fraction using a unsigned 64bit integer.
         /// </summary>
         /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
+        [CLSCompliant(false)]
         public Fraction(ulong numerator) {
             _numerator = new BigInteger(numerator);
             _denominator = numerator != 0 ? BigInteger.One : BigInteger.Zero;

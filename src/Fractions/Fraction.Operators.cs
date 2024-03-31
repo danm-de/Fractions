@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace Fractions {
     public partial struct Fraction {
@@ -54,11 +55,13 @@ namespace Fractions {
         public static implicit operator Fraction(long value) {
             return new Fraction(value);
         }
-
+        
+        [CLSCompliant(false)]
         public static implicit operator Fraction(uint value) {
             return new Fraction(value);
         }
-
+        
+        [CLSCompliant(false)]
         public static implicit operator Fraction(ulong value) {
             return new Fraction(value);
         }
@@ -86,11 +89,13 @@ namespace Fractions {
         public static explicit operator long(Fraction fraction) {
             return fraction.ToInt64();
         }
-
+        
+        [CLSCompliant(false)]
         public static explicit operator uint(Fraction fraction) {
             return fraction.ToUInt32();
         }
-
+        
+        [CLSCompliant(false)]
         public static explicit operator ulong(Fraction fraction) {
             return fraction.ToUInt64();
         }
