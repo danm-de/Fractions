@@ -198,5 +198,13 @@ public partial struct Fraction {
     /// The fraction with the numerator and denominator exchanged.
     /// </returns>
     public static Fraction Reciprocal(Fraction fraction) =>
-        new Fraction(fraction.Denominator, fraction.Numerator, fraction.State);
+        fraction is { State: FractionState.IsNormalized, Numerator.Sign: -1 }
+            ? new Fraction(
+                numerator: BigInteger.Negate(fraction.Denominator),
+                denominator: BigInteger.Negate(fraction.Numerator),
+                state: fraction.State)
+            : new Fraction(
+                numerator: fraction.Denominator,
+                denominator: fraction.Numerator,
+                state: fraction.State);
 }
