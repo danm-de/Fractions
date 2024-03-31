@@ -112,6 +112,14 @@ dotnet_style_null_propagation = true:warning
 
 ### Code Style Settings ###
 
+# IDE0065:  Prefer using directives to be placed outside the namespace
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement
+csharp_using_directive_placement = outside_namespace
+
+# IDE0161: Convert to file-scoped namespace
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0160-ide0161
+csharp_style_namespace_declarations = file_scoped:warning
+
 # Implicit and explicit types
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference#implicit-and-explicit-types
 csharp_style_var_for_built_in_types = true:suggestion

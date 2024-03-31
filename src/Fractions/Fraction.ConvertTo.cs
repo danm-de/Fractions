@@ -1,70 +1,71 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Fractions {
-    public partial struct Fraction {
-        /// <summary>
-        /// Returns the fraction as signed 32bit integer.
-        /// </summary>
-        /// <returns>32bit signed integer</returns>
-        public int ToInt32() {
+namespace Fractions;
+
+public partial struct Fraction {
+    /// <summary>
+    /// Returns the fraction as signed 32bit integer.
+    /// </summary>
+    /// <returns>32bit signed integer</returns>
+    public int ToInt32() {
             if (IsZero) {
                 return 0;
             }
             return (int) (Numerator / Denominator);
         }
 
-        /// <summary>
-        /// Returns the fraction as signed 64bit integer.
-        /// </summary>
-        /// <returns>64bit signed integer</returns>
-        public long ToInt64() {
+    /// <summary>
+    /// Returns the fraction as signed 64bit integer.
+    /// </summary>
+    /// <returns>64bit signed integer</returns>
+    public long ToInt64() {
             if (IsZero) {
                 return 0;
             }
             return (long) (Numerator / Denominator);
         }
 
-        /// <summary>
-        /// Returns the fraction as unsigned 32bit integer.
-        /// </summary>
-        /// <returns>32bit unsigned integer</returns>
-        [CLSCompliant(false)]
-        public uint ToUInt32() {
+    /// <summary>
+    /// Returns the fraction as unsigned 32bit integer.
+    /// </summary>
+    /// <returns>32bit unsigned integer</returns>
+    [CLSCompliant(false)]
+    public uint ToUInt32() {
             if (IsZero) {
                 return 0;
             }
             return (uint) (Numerator / Denominator);
         }
 
-        /// <summary>
-        /// Returns the fraction as unsigned 64bit integer.
-        /// </summary>
-        /// <returns>64-Bit unsigned integer</returns>
-        [CLSCompliant(false)]
-        public ulong ToUInt64() {
+    /// <summary>
+    /// Returns the fraction as unsigned 64bit integer.
+    /// </summary>
+    /// <returns>64-Bit unsigned integer</returns>
+    [CLSCompliant(false)]
+    public ulong ToUInt64() {
             if (IsZero) {
                 return 0;
             }
             return (ulong) (Numerator / Denominator);
         }
 
-        /// <summary>
-        /// Returns the fraction as BigInteger.
-        /// </summary>
-        /// <returns>BigInteger</returns>
-        public BigInteger ToBigInteger() {
+    /// <summary>
+    /// Returns the fraction as BigInteger.
+    /// </summary>
+    /// <returns>BigInteger</returns>
+    public BigInteger ToBigInteger() {
             if (IsZero) {
                 return BigInteger.Zero;
             }
             return Numerator / Denominator;
         }
 
-        /// <summary>
-        /// Returns the fraction as (rounded!) decimal value.
-        /// </summary>
-        /// <returns>Decimal value</returns>
-        public decimal ToDecimal() {
+    /// <summary>
+    /// Returns the fraction as (rounded!) decimal value.
+    /// </summary>
+    /// <returns>Decimal value</returns>
+    public decimal ToDecimal() {
             if (IsZero) {
                 return decimal.Zero;
             }
@@ -84,15 +85,14 @@ namespace Fractions {
             return withoutDecimalPlaces + decimalPlaces;
         }
 
-        /// <summary>
-        /// Returns the fraction as (rounded!) floating point value.
-        /// </summary>
-        /// <returns>A floating point value</returns>
-        public double ToDouble() {
+    /// <summary>
+    /// Returns the fraction as (rounded!) floating point value.
+    /// </summary>
+    /// <returns>A floating point value</returns>
+    public double ToDouble() {
             if (IsZero) {
                 return 0;
             }
             return (double) Numerator / (double) Denominator;
         }
-    }
 }
