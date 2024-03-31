@@ -1,4 +1,10 @@
-﻿7.3.0
+﻿7.4.0
+
+- The CLSCompliant(true) attribute was added by https://github.com/lipchev
+- fix invalid characters in test names by https://github.com/lipchev
+- Updated nuget packages
+
+7.3.0
 
 - New Reciprocal() method contributed by https://github.com/teemka
 - Updated nuget packages
