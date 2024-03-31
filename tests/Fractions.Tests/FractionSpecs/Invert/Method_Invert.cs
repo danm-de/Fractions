@@ -2,100 +2,114 @@
 using NUnit.Framework;
 using Tests.Fractions;
 
-namespace Fractions.Tests.FractionSpecs.Invert {
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_0_als_Zähler_und_0_als_Nenner_negiert_wird : Spec {
-        private Fraction _result;
+namespace Fractions.Tests.FractionSpecs.Invert;
 
-        public override void Act() {
-            _result = new Fraction(0, 0, false).Invert();
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit 0 als Zähler und 0 als Nenner negiert wird
+public class When_negating_a_fraction_with_0_as_numerator_and_0_as_denominator : Spec {
+    private Fraction _result;
 
-        [Test]
-        public void Soll_der_resultierende_Bruch_0_als_Zähler_haben() {
-            _result.Numerator
-                .Should().Be(0);
-        }
-
-        [Test]
-        public void Soll_der_resultierende_Bruch_0_als_Nenner_haben() {
-            _result.Denominator
-                .Should().Be(0);
-        }
-
-        [Test]
-        public void Soll_der_Bruch_0_sein() {
-            _result.IsZero
-                .Should().BeTrue();
-        }
+    public override void Act() {
+        _result = new Fraction(0, 0, false).Invert();
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_0_als_Zähler_und_4_als_Nenner_negiert_wird : Spec {
-        private Fraction _result;
-
-        public override void Act() {
-            _result = new Fraction(0, 4, false).Invert();
-        }
-
-        [Test]
-        public void Soll_der_resultierende_Bruch_0_als_Zähler_haben() {
-            _result.Numerator
-                .Should().Be(0);
-        }
-
-        [Test]
-        public void Soll_der_resultierende_Bruch_0_als_Nenner_haben() {
-            _result.Denominator
-                .Should().Be(0);
-        }
-
-        [Test]
-        public void Soll_der_Bruch_0_sein() {
-            _result.IsZero
-                .Should().BeTrue();
-        }
+    [Test]
+    // German: Der resultierende Bruch sollte 0 als Zähler haben
+    public void The_resulting_fraction_should_have_0_as_numerator() {
+        _result.Numerator
+            .Should().Be(0);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_minus_1_als_Zähler_und_1_als_Nenner_negiert_wird : Spec {
-        private Fraction _result;
-
-        public override void Act() {
-            _result = new Fraction(-1, 1, false).Invert();
-        }
-
-        [Test]
-        public void Soll_der_resultierende_Bruch_1_als_Zähler_haben() {
-            _result.Numerator
-                .Should().Be(1);
-        }
-
-        [Test]
-        public void Soll_der_resultierende_Bruch_1_als_Nenner_haben() {
-            _result.Denominator
-                .Should().Be(1);
-        }
+    [Test]
+    // German: Der resultierende Bruch sollte 0 als Nenner haben
+    public void The_resulting_fraction_should_have_0_as_denominator() {
+        _result.Denominator
+            .Should().Be(0);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_1_als_Zähler_und_1_als_Nenner_negiert_wird : Spec {
-        private Fraction _result;
+    [Test]
+    // German: Der Bruch sollte 0 sein
+    public void The_fraction_should_be_0() {
+        _result.IsZero
+            .Should().BeTrue();
+    }
+}
 
-        public override void Act() {
-            _result = new Fraction(1, 1, false).Invert();
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit 0 als Zähler und 4 als Nenner negiert wird
+public class When_negating_a_fraction_with_0_as_numerator_and_4_as_denominator : Spec {
+    private Fraction _result;
 
-        [Test]
-        public void Soll_der_resultierende_Bruch_minus_1_als_Zähler_haben() {
-            _result.Numerator
-                .Should().Be(-1);
-        }
+    public override void Act() {
+        _result = new Fraction(0, 4, false).Invert();
+    }
 
-        [Test]
-        public void Soll_der_resultierende_Bruch_1_als_Nenner_haben() {
-            _result.Denominator
-                .Should().Be(1);
-        }
+    [Test]
+    // German: Der resultierende Bruch sollte 0 als Zähler haben
+    public void The_resulting_fraction_should_have_0_as_numerator() {
+        _result.Numerator
+            .Should().Be(0);
+    }
+
+    [Test]
+    // German: Der resultierende Bruch sollte 0 als Nenner haben
+    public void The_resulting_fraction_should_have_0_as_denominator() {
+        _result.Denominator
+            .Should().Be(0);
+    }
+
+    [Test]
+    // German: Der Bruch sollte 0 sein
+    public void The_fraction_should_be_0() {
+        _result.IsZero
+            .Should().BeTrue();
+    }
+}
+
+[TestFixture]
+// German: Wenn ein Bruch mit minus 1 als Zähler und 1 als Nenner negiert wird
+public class When_negating_a_fraction_with_minus_1_as_numerator_and_1_as_denominator : Spec {
+    private Fraction _result;
+
+    public override void Act() {
+        _result = new Fraction(-1, 1, false).Invert();
+    }
+
+    [Test]
+    // German: Der resultierende Bruch sollte 1 als Zähler haben
+    public void The_resulting_fraction_should_have_1_as_numerator() {
+        _result.Numerator
+            .Should().Be(1);
+    }
+
+    [Test]
+    // German: Der resultierende Bruch sollte 1 als Nenner haben
+    public void The_resulting_fraction_should_have_1_as_denominator() {
+        _result.Denominator
+            .Should().Be(1);
+    }
+}
+
+[TestFixture]
+// German: Wenn ein Bruch mit 1 als Zähler und 1 als Nenner negiert wird
+public class When_negating_a_fraction_with_1_as_numerator_and_1_as_denominator : Spec {
+    private Fraction _result;
+
+    public override void Act() {
+        _result = new Fraction(1, 1, false).Invert();
+    }
+
+    [Test]
+    // German: Der resultierende Bruch sollte minus 1 als Zähler haben
+    public void The_resulting_fraction_should_have_minus_1_as_numerator() {
+        _result.Numerator
+            .Should().Be(-1);
+    }
+
+    [Test]
+    // German: Der resultierende Bruch sollte 1 als Nenner haben
+    public void The_resulting_fraction_should_have_1_as_denominator() {
+        _result.Denominator
+            .Should().Be(1);
     }
 }

@@ -4,184 +4,210 @@ using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
 
-namespace Fractions.Tests.FractionSpecs.FromDoubleRounded {
+namespace Fractions.Tests.FractionSpecs.FromDoubleRounded;
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_anhand_einer_NaN_double_Zahl_erzeugt_wird : Spec {
-        private Exception _exception;
+[TestFixture]
+// German: Wenn ein Bruch anhand einer NaN double Zahl erzeugt wird
+public class When_a_fraction_is_created_based_on_a_NaN_double : Spec {
+    private Exception _exception;
 
-        public override void SetUp() {
-            _exception = Catch.Exception(() => Fraction.FromDoubleRounded(double.NaN));
-        }
-
-        [Test]
-        public void Soll_dies_eine_NotANumberException_auslösen() {
-            _exception.Should().BeOfType<InvalidNumberException>();
-        }
+    public override void SetUp() {
+        _exception = Catch.Exception(() => Fraction.FromDoubleRounded(double.NaN));
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_anhand_einer_positiv_unendlichen_double_Zahl_erzeugt_wird : Spec {
-        private Exception _exception;
+    [Test]
+    // German: Soll dies eine InvalidNumberException auslösen
+    public void This_should_trigger_an_InvalidNumberException() {
+        _exception.Should().BeOfType<InvalidNumberException>();
+    }
+}
 
-        public override void SetUp() {
-            _exception = Catch.Exception(() => Fraction.FromDoubleRounded(double.PositiveInfinity));
-        }
+[TestFixture]
+// German: Wenn ein Bruch anhand einer positiv unendlichen double Zahl erzeugt wird
+public class When_a_fraction_is_created_based_on_a_positive_infinite_double : Spec {
+    private Exception _exception;
 
-        [Test]
-        public void Soll_dies_eine_NotANumberException_auslösen() {
-            _exception.Should().BeOfType<InvalidNumberException>();
-        }
+    public override void SetUp() {
+        _exception = Catch.Exception(() => Fraction.FromDoubleRounded(double.PositiveInfinity));
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_anhand_einer_negativ_unendlichen_double_Zahl_erzeugt_wird : Spec {
-        private Exception _exception;
+    [Test]
+    // German: Soll dies eine InvalidNumberException auslösen
+    public void This_should_trigger_an_InvalidNumberException() {
+        _exception.Should().BeOfType<InvalidNumberException>();
+    }
+}
 
-        public override void SetUp() {
-            _exception = Catch.Exception(() => Fraction.FromDoubleRounded(double.NegativeInfinity));
-        }
+[TestFixture]
+// German: Wenn ein Bruch anhand einer negativ unendlichen double Zahl erzeugt wird
+public class When_a_fraction_is_created_based_on_a_negative_infinite_double : Spec {
+    private Exception _exception;
 
-        [Test]
-        public void Soll_dies_eine_NotANumberException_auslösen() {
-            _exception.Should().BeOfType<InvalidNumberException>();
-        }
+    public override void SetUp() {
+        _exception = Catch.Exception(() => Fraction.FromDoubleRounded(double.NegativeInfinity));
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_0_double_Zahl_erzeugt_wird : Spec {
-        private Fraction _fraction;
+    [Test]
+    // German: Soll dies eine InvalidNumberException auslösen
+    public void This_should_trigger_an_InvalidNumberException() {
+        _exception.Should().BeOfType<InvalidNumberException>();
+    }
+}
 
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(0);
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit einer 0 double Zahl erzeugt wird
+public class When_a_fraction_is_created_with_a_0_double : Spec {
+    private Fraction _fraction;
 
-        [Test]
-        public void Soll_der_Wert_danach_0_sein() {
-            _fraction.Should().Be(Fraction.Zero);
-        }
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(0);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_minus_1_double_Zahl_erzeugt_wird : Spec {
-        private Fraction _fraction;
+    [Test]
+    // German: Soll der Wert danach 0 sein
+    public void The_value_should_then_be_0() {
+        _fraction.Should().Be(Fraction.Zero);
+    }
+}
 
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(-1);
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit einer minus 1 double Zahl erzeugt wird
+public class When_a_fraction_is_created_with_a_minus_1_double : Spec {
+    private Fraction _fraction;
 
-        [Test]
-        public void Soll_der_Wert_danach_minus_1_sein() {
-            _fraction.Should().Be(new Fraction(-1, 1));
-        }
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(-1);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_1_double_Zahl_erzeugt_wird : Spec {
-        private Fraction _fraction;
+    [Test]
+    // German: Soll der Wert danach minus 1 sein
+    public void The_value_should_then_be_minus_1() {
+        _fraction.Should().Be(new Fraction(-1, 1));
+    }
+}
 
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(1);
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit einer 1 double Zahl erzeugt wird
+public class When_a_fraction_is_created_with_a_1_double : Spec {
+    private Fraction _fraction;
 
-        [Test]
-        public void Soll_der_Wert_danach_1_sein() {
-            _fraction.Should().Be(new Fraction(1, 1));
-        }
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(1);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_einer_1_Komma_345_double_Zahl_erzeugt_wird : Spec {
-        private Fraction _fraction;
+    [Test]
+    // German: Soll der Wert danach 1 sein
+    public void The_value_should_then_be_1() {
+        _fraction.Should().Be(new Fraction(1, 1));
+    }
+}
 
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(1.345);
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit einer 1 Komma 345 double Zahl erzeugt wird
+public class When_a_fraction_is_created_with_a_1_point_345_double : Spec {
+    private Fraction _fraction;
 
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Zähler_von_269_haben() {
-            _fraction.Numerator.Should().Be(new BigInteger(269));
-        }
-
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Nenner_von_200_haben() {
-            _fraction.Denominator.Should().Be(new BigInteger(200));
-        }
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(1.345);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_double_MaxValue_erzeugt_wird : Spec {
-        private Fraction _fraction;
-
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(double.MaxValue);
-        }
-
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Zähler_von_double_MaxValue_haben() {
-            _fraction.Numerator.Should().Be(new BigInteger(double.MaxValue));
-        }
-
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Nenner_von_1_haben() {
-            _fraction.Denominator.Should().Be(new BigInteger(1));
-        }
+    [Test]
+    // German: Soll der Bruch danach einen Zähler von 269 haben
+    public void The_fraction_should_then_have_a_numerator_of_269() {
+        _fraction.Numerator.Should().Be(new BigInteger(269));
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_double_MinValue_erzeugt_wird : Spec {
-        private Fraction _fraction;
+    [Test]
+    // German: Soll der Bruch danach einen Nenner von 200 haben
+    public void The_fraction_should_then_have_a_denominator_of_200() {
+        _fraction.Denominator.Should().Be(new BigInteger(200));
+    }
+}
 
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(double.MinValue);
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit double MaxValue erzeugt wird
+public class When_a_fraction_is_created_with_double_MaxValue : Spec {
+    private Fraction _fraction;
 
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Zähler_von_minus_double_MaxValue_haben() {
-            _fraction.Numerator.Should().Be(BigInteger.Negate(new BigInteger(double.MaxValue)));
-        }
-
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Nenner_von_1_haben() {
-            _fraction.Denominator.Should().Be(new BigInteger(1));
-        }
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(double.MaxValue);
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_PI_erzeugt_wird : Spec {
-        private Fraction _fraction;
-
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(Math.PI);
-        }
-
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Zähler_von_245850922_haben() {
-            _fraction.Numerator.Should().Be(245850922);
-        }
-
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Nenner_von_78256779_haben() {
-            _fraction.Denominator.Should().Be(78256779);
-        }
+    [Test]
+    // German: Soll der Bruch danach einen Zähler von double MaxValue haben
+    public void The_fraction_should_then_have_a_numerator_of_double_MaxValue() {
+        _fraction.Numerator.Should().Be(new BigInteger(double.MaxValue));
     }
 
-    [TestFixture]
-    public class Wenn_ein_Bruch_mit_1_Drittel_erzeugt_wird : Spec {
-        private Fraction _fraction;
+    [Test]
+    // German: Soll der Bruch danach einen Nenner von 1 haben
+    public void The_fraction_should_then_have_a_denominator_of_1() {
+        _fraction.Denominator.Should().Be(new BigInteger(1));
+    }
+}
 
-        public override void SetUp() {
-            _fraction = Fraction.FromDoubleRounded(1.0 / 3.0);
-        }
+[TestFixture]
+// German: Wenn ein Bruch mit double MinValue erzeugt wird
+public class When_a_fraction_is_created_with_double_MinValue : Spec {
+    private Fraction _fraction;
 
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Zähler_von_1_haben() {
-            _fraction.Numerator.Should().Be(1);
-        }
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(double.MinValue);
+    }
 
-        [Test]
-        public void Soll_der_Bruch_danach_einen_Nenner_von_3_haben() {
-            _fraction.Denominator.Should().Be(3);
-        }
+    [Test]
+    // German: Soll der Bruch danach einen Zähler von minus double MaxValue haben
+    public void The_fraction_should_then_have_a_numerator_of_minus_double_MaxValue() {
+        _fraction.Numerator.Should().Be(BigInteger.Negate(new BigInteger(double.MaxValue)));
+    }
+
+    [Test]
+    // German: Soll der Bruch danach einen Nenner von 1 haben
+    public void The_fraction_should_then_have_a_denominator_of_1() {
+        _fraction.Denominator.Should().Be(new BigInteger(1));
+    }
+}
+
+[TestFixture]
+// German: Wenn ein Bruch mit PI erzeugt wird
+public class When_a_fraction_is_created_with_PI : Spec {
+    private Fraction _fraction;
+
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(Math.PI);
+    }
+
+    [Test]
+    // German: Soll der Bruch danach einen Zähler von 245850922 haben
+    public void The_fraction_should_then_have_a_numerator_of_245850922() {
+        _fraction.Numerator.Should().Be(245850922);
+    }
+
+    [Test]
+    // German: Soll der Bruch danach einen Nenner von 78256779 haben
+    public void The_fraction_should_then_have_a_denominator_of_78256779() {
+        _fraction.Denominator.Should().Be(78256779);
+    }
+}
+
+[TestFixture]
+// German: Wenn ein Bruch mit 1 Drittel erzeugt wird
+public class When_a_fraction_is_created_with_1_third : Spec {
+    private Fraction _fraction;
+
+    public override void SetUp() {
+        _fraction = Fraction.FromDoubleRounded(1.0 / 3.0);
+    }
+
+    [Test]
+    // German: Soll der Bruch danach einen Zähler von 1 haben
+    public void The_fraction_should_then_have_a_numerator_of_1() {
+        _fraction.Numerator.Should().Be(1);
+    }
+
+    [Test]
+    // German: Soll der Bruch danach einen Nenner von 3 haben
+    public void The_fraction_should_then_have_a_denominator_of_3() {
+        _fraction.Denominator.Should().Be(3);
     }
 }
