@@ -4,11 +4,12 @@ using System.Numerics;
 using System.Text;
 using Fractions.Properties;
 
-namespace Fractions.Formatter {
-    internal class DefaultFractionFormatter : ICustomFormatter {
-        public static readonly ICustomFormatter Instance = new DefaultFractionFormatter();
+namespace Fractions.Formatter;
 
-        public string Format(string format, object arg, IFormatProvider formatProvider) {
+internal class DefaultFractionFormatter : ICustomFormatter {
+    public static readonly ICustomFormatter Instance = new DefaultFractionFormatter();
+
+    public string Format(string format, object arg, IFormatProvider formatProvider) {
             if (arg == null) {
                 return string.Empty;
             }
@@ -52,7 +53,7 @@ namespace Fractions.Formatter {
             return sb.ToString();
         }
 
-        private static string FormatMixed(Fraction fraction) {
+    private static string FormatMixed(Fraction fraction) {
             if (BigInteger.Abs(fraction.Numerator) < BigInteger.Abs(fraction.Denominator)) {
                 return FormatGeneral(fraction);
             }
@@ -71,13 +72,13 @@ namespace Fractions.Formatter {
                     FormatGeneral(remainder));
         }
 
-        private static string FormatInteger(Fraction fraction) {
+    private static string FormatInteger(Fraction fraction) {
             return fraction.Denominator != BigInteger.Zero
                 ? (fraction.Numerator / fraction.Denominator).ToString(CultureInfo.InvariantCulture)
                 : BigInteger.Zero.ToString(CultureInfo.InvariantCulture);
         }
 
-        private static string FormatRemainder(Fraction fraction) {
+    private static string FormatRemainder(Fraction fraction) {
             if (BigInteger.Abs(fraction.Numerator) < BigInteger.Abs(fraction.Denominator)) {
                 return FormatGeneral(fraction);
             }
@@ -90,7 +91,7 @@ namespace Fractions.Formatter {
             return FormatGeneral(remainder);
         }
 
-        private static string FormatGeneral(Fraction fraction) {
+    private static string FormatGeneral(Fraction fraction) {
             if (fraction.Denominator == BigInteger.Zero) {
                 return BigInteger.Zero.ToString(CultureInfo.InvariantCulture);
             }
@@ -104,5 +105,4 @@ namespace Fractions.Formatter {
                 "/",
                 fraction.Denominator.ToString(CultureInfo.InvariantCulture));
         }
-    }
 }

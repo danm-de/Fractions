@@ -11,7 +11,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>fraction math</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>7.4.0</Version>
+    <Version>7.4.1</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../../Fractions.snk</AssemblyOriginatorKeyFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -60,6 +60,14 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
