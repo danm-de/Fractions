@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Fractions;
 
-public partial struct Fraction
+public readonly partial struct Fraction
 {
     /// <summary>
     /// Create a fraction with <paramref name="numerator"/>, <paramref name="denominator"/> and the fraction' <paramref name="state"/>. 
@@ -111,15 +111,11 @@ public partial struct Fraction
     /// http://en.wikipedia.org/wiki/Floating_point
     /// </summary>
     /// <param name="value">Floating point value.</param>
-    public Fraction(double value) {
-        this = FromDouble(value);
-    }
+    public Fraction(double value) => this = FromDouble(value);
 
     /// <summary>
     /// Creates a normalized fraction using a 128bit decimal value (decimal).
     /// </summary>
     /// <param name="value">Floating point value.</param>
-    public Fraction(decimal value) {
-        this = FromDecimal(value);
-    }
+    public Fraction(decimal value) => this = FromDecimal(value);
 }

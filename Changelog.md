@@ -1,4 +1,9 @@
-﻿7.4.0
+﻿7.4.1
+
+- Code cleanup (use new language features)
+- fix https://github.com/danm-de/Fractions/issues/27 reported by https://github.com/lipchev
+
+7.4.0
 
 - The CLSCompliant(true) attribute was added by https://github.com/lipchev
 - fix invalid characters in test names by https://github.com/lipchev

@@ -1,8 +1,6 @@
-﻿
-namespace Fractions;
+﻿namespace Fractions;
 
-public partial struct Fraction
-{
+public readonly partial struct Fraction {
     /// <summary>
     /// Tests if the calculated value of this fraction equals to the calculated value of <paramref name="other"/>.
     /// It does not matter if either of them is not normalized. Both values will be reduced (normalized) before performing 
@@ -10,7 +8,6 @@ public partial struct Fraction
     /// </summary>
     /// <param name="other">The fraction to compare with.</param>
     /// <returns><c>true</c> if both values are equivalent. (e.g. 2/4 is equivalent to 1/2. But 2/4 is not equivalent to -1/2)</returns>
-        
     public bool IsEquivalentTo(Fraction other) {
         var a = Reduce();
         var b = other.Reduce();
@@ -26,10 +23,8 @@ public partial struct Fraction
     /// </summary>
     /// <param name="other">The fraction to compare with.</param>
     /// <returns><c>true</c> if numerator and denominator of both fractions are equal.</returns>
-        
-    public bool Equals(Fraction other) {
-        return other._denominator.Equals(_denominator) && other._numerator.Equals(_numerator);
-    }
+    public bool Equals(Fraction other) =>
+        other._denominator.Equals(_denominator) && other._numerator.Equals(_numerator);
 
     /// <summary>
     /// <para>Performs an exact comparison with <paramref name="other"/> using numerator and denominator.</para>
@@ -39,13 +34,8 @@ public partial struct Fraction
     /// </summary>
     /// <param name="other">The fraction to compare with.</param>
     /// <returns><c>true</c> if <paramref name="other"/> is type of <see cref="Fraction"/> and numerator and denominator of both are equal.</returns>
-        
-    public override bool Equals(object other) {
-        if (ReferenceEquals(null, other)) {
-            return false;
-        }
-        return other is Fraction && Equals((Fraction)other);
-    }
+    public override bool Equals(object other) =>
+        other is Fraction fraction && Equals(fraction);
 
     /// <summary>
     /// Returns the hash code.
@@ -54,7 +44,6 @@ public partial struct Fraction
     /// A 32bit integer with sign. It has been constructed using the <see cref="Numerator"/> and the <see cref="Denominator"/>.
     /// </returns>
     /// <filterpriority>2</filterpriority>
-        
     public override int GetHashCode() {
         unchecked {
             return (_denominator.GetHashCode() * 397) ^ _numerator.GetHashCode();

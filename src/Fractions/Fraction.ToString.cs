@@ -4,16 +4,13 @@ using Fractions.Formatter;
 
 namespace Fractions;
 
-public partial struct Fraction {
+public readonly partial struct Fraction {
     /// <summary>
     /// Returns the fraction as "numerator/denominator" or just "numerator" if the denominator has a value of 1.
     /// The returning value is culture invariant (<see cref="CultureInfo" />).
     /// </summary>
     /// <returns>"numerator/denominator" or just "numerator"</returns>
-        
-    public override string ToString() {
-        return ToString("G", DefaultFractionFormatProvider.Instance);
-    }
+    public override string ToString() => ToString("G", DefaultFractionFormatProvider.Instance);
 
     /// <summary>
     /// Formats the value of the current instance using the specified format.
@@ -21,10 +18,7 @@ public partial struct Fraction {
     /// See <see cref="ToString(string,IFormatProvider)"/> for all formatting options.
     /// </summary>
     /// <returns>"numerator/denominator" or just "numerator"</returns>
-        
-    public string ToString(string format) {
-        return ToString(format, DefaultFractionFormatProvider.Instance);
-    }
+    public string ToString(string format) => ToString(format, DefaultFractionFormatProvider.Instance);
 
     /// <summary>
     /// Formats the value of the current instance using the specified format. The numbers are however culture invariant.
@@ -45,11 +39,8 @@ public partial struct Fraction {
     /// -or- A null reference (Nothing in Visual Basic) to use the default format defined for the type of the <see cref="T:System.IFormattable"/> implementation. </param>
     /// <param name="formatProvider">The provider to use to format the value. -or- A null reference (Nothing in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
     /// <filterpriority>2</filterpriority>
-    public string ToString(string format, IFormatProvider formatProvider) {
-        var formatter = formatProvider?.GetFormat(GetType()) as ICustomFormatter;
-
-        return formatter != null 
-            ? formatter.Format(format, this, formatProvider) 
+    public string ToString(string format, IFormatProvider formatProvider) =>
+        formatProvider?.GetFormat(GetType()) is ICustomFormatter formatter
+            ? formatter.Format(format, this, formatProvider)
             : DefaultFractionFormatter.Instance.Format(format, this, formatProvider);
-    }
 }

@@ -10,7 +10,8 @@ namespace Fractions.Json;
 /// Converts a <see cref="Fraction"/> data type to JSON.
 /// </summary>
 public class JsonFractionConverter : JsonConverter {
-    private static readonly Lazy<JsonFractionConverter> _instance = new Lazy<JsonFractionConverter>(() => new JsonFractionConverter());
+    private static readonly Lazy<JsonFractionConverter> _instance = new(() => new JsonFractionConverter());
+
     private readonly IFormatProvider _formatProvider;
     private readonly bool _normalizeOnDeserialization;
     private readonly bool _normalizeOnSerialization;
@@ -24,10 +25,10 @@ public class JsonFractionConverter : JsonConverter {
     /// Creates an instance using the system's default formatter and does not apply normalization.
     /// </summary>
     public JsonFractionConverter() {
-            _normalizeOnSerialization = false;
-            _normalizeOnDeserialization = false;
-            _formatProvider = default(IFormatProvider);
-        }
+        _normalizeOnSerialization = false;
+        _normalizeOnDeserialization = false;
+        _formatProvider = default;
+    }
 
     /// <summary>
     /// Creates an instance.
@@ -35,11 +36,12 @@ public class JsonFractionConverter : JsonConverter {
     /// <param name="formatProvider">The provider to use to format the value. -or- A null reference (Nothing in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
     /// <param name="normalizeOnSerialization">The fraction will be normalized during serialization.</param>
     /// <param name="normalizeOnDeserialization">The fraction will be normalized during deserialization.</param>
-    public JsonFractionConverter(IFormatProvider formatProvider, bool normalizeOnSerialization, bool normalizeOnDeserialization) {
-            _formatProvider = formatProvider;
-            _normalizeOnSerialization = normalizeOnSerialization;
-            _normalizeOnDeserialization = normalizeOnDeserialization;
-        }
+    public JsonFractionConverter(IFormatProvider formatProvider, bool normalizeOnSerialization,
+        bool normalizeOnDeserialization) {
+        _formatProvider = formatProvider;
+        _normalizeOnSerialization = normalizeOnSerialization;
+        _normalizeOnDeserialization = normalizeOnDeserialization;
+    }
 
     /// <summary>
     /// Writes the JSON representation of the object.
@@ -47,14 +49,19 @@ public class JsonFractionConverter : JsonConverter {
     /// <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param><param name="value">The value.</param>
     /// <param name="serializer">The calling serializer.</param>
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-            var fraction = (Fraction)value;
-
-            if (_normalizeOnSerialization && fraction.State != FractionState.IsNormalized) {
-                writer.WriteValue(fraction.Reduce().ToString("G", _formatProvider));
-                return;
-            }
-            writer.WriteValue(fraction.ToString("G", _formatProvider));
+        if (value == null) {
+            throw new ArgumentNullException(nameof(value));
         }
+
+        var fraction = (Fraction)value;
+
+        if (_normalizeOnSerialization && fraction.State != FractionState.IsNormalized) {
+            writer.WriteValue(fraction.Reduce().ToString("G", _formatProvider));
+            return;
+        }
+
+        writer.WriteValue(fraction.ToString("G", _formatProvider));
+    }
 
     /// <summary>
     /// Reads the JSON representation of the object.
@@ -65,13 +72,28 @@ public class JsonFractionConverter : JsonConverter {
     /// <returns>
     /// The object value.
     /// </returns>
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-            var value = reader.Value.ToString();
-            if (Fraction.TryParse(value, NumberStyles.Number, _formatProvider, _normalizeOnDeserialization, out Fraction fraction)) {
-                return fraction;
-            }
-            throw new SerializationException(string.Format(Resources.CouldNotDeserialize, value));
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+        JsonSerializer serializer) {
+        if (reader == null) {
+            throw new ArgumentNullException(nameof(reader));
         }
+
+        if (reader.Value == null) {
+            throw new ArgumentException(Resources.InvalidJsonReaderValueIsNull, nameof(reader));
+        }
+
+        var value = reader.Value.ToString();
+        if (Fraction.TryParse(
+                fractionString: value,
+                numberStyles: NumberStyles.Number,
+                formatProvider: _formatProvider,
+                normalize: _normalizeOnDeserialization,
+                fraction: out var parsedFraction)) {
+            return parsedFraction;
+        }
+
+        throw new SerializationException(string.Format(Resources.CouldNotDeserialize, value));
+    }
 
     /// <summary>
     /// Determines whether this instance can convert the specified object type.
@@ -80,7 +102,5 @@ public class JsonFractionConverter : JsonConverter {
     /// <returns>
     /// <c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
     /// </returns>
-    public override bool CanConvert(Type objectType) {
-            return objectType == typeof(Fraction);
-        }
+    public override bool CanConvert(Type objectType) => objectType == typeof(Fraction);
 }

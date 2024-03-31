@@ -120,4 +120,7 @@
   <data name="CouldNotDeserialize" xml:space="preserve">
     <value>Could not deserialize the value '{0}' as fraction.</value>
   </data>
+  <data name="InvalidJsonReaderValueIsNull" xml:space="preserve">
+    <value>Invalid JSON reader: property Value is null.</value>
+  </data>
 </root>
