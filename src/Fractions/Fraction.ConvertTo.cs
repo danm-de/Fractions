@@ -29,6 +29,7 @@ namespace Fractions {
         /// Returns the fraction as unsigned 32bit integer.
         /// </summary>
         /// <returns>32bit unsigned integer</returns>
+        [CLSCompliant(false)]
         public uint ToUInt32() {
             if (IsZero) {
                 return 0;
@@ -40,6 +41,7 @@ namespace Fractions {
         /// Returns the fraction as unsigned 64bit integer.
         /// </summary>
         /// <returns>64-Bit unsigned integer</returns>
+        [CLSCompliant(false)]
         public ulong ToUInt64() {
             if (IsZero) {
                 return 0;
