@@ -15,6 +15,7 @@ namespace Fractions;
 public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger MIN_DECIMAL = new(decimal.MinValue);
     private static readonly BigInteger MAX_DECIMAL = new(decimal.MaxValue);
+    private static readonly BigInteger TEN = new(10);
     private static readonly Fraction _zero = new(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);
     private static readonly Fraction _one = new(BigInteger.One, BigInteger.One, FractionState.IsNormalized);
     private static readonly Fraction _minusOne = new(BigInteger.MinusOne, BigInteger.One, FractionState.IsNormalized);
