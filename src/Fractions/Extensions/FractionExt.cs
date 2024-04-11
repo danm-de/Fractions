@@ -44,4 +44,49 @@ public static class FractionExt {
 
         return newGuess;
     }
+
+    /// <summary>
+    ///     Raises a fraction to the power of another fraction.
+    /// </summary>
+    /// <param name="x">The base fraction.</param>
+    /// <param name="power">The exponent fraction.</param>
+    /// <param name="minAccuracy">The minimum accuracy for the result.</param>
+    /// <returns>The result of raising the base fraction to the power of the exponent fraction.</returns>
+    public static Fraction Pow(this Fraction x, Fraction power, Fraction minAccuracy)
+    {
+        var numeratorRaised = Fraction.Pow(x, (int)power.Numerator);
+        return numeratorRaised.Root((int)power.Denominator, minAccuracy);
+    }
+
+    /// <summary>
+    ///     Calculates the nth root of the given fraction with a specified minimum accuracy.
+    /// </summary>
+    /// <param name="number">The fraction for which to calculate the nth root.</param>
+    /// <param name="n">The root to calculate. For example, if n is 2, the method calculates the square root.</param>
+    /// <param name="minAccuracy">
+    ///     The minimum accuracy of the result. The method continues to calculate the root until the
+    ///     difference between two successive approximations is less than this value.
+    /// </param>
+    /// <returns>The nth root of the fraction, calculated to the specified minimum accuracy.</returns>
+    public static Fraction Root(this Fraction number, int n, Fraction minAccuracy) {
+        //Babylonian Method of computing the nth-square root
+
+        if (number < Fraction.Zero) {
+            throw new OverflowException("Cannot calculate square root from a negative number");
+        }
+
+        if (minAccuracy <= 0) {
+            throw new ArgumentOutOfRangeException(nameof(minAccuracy), minAccuracy, $"Accuracy of {minAccuracy} is not allowed! Have to be above 0.");
+        }
+
+        var initialGuess = Math.Pow(number.ToDouble(), 1.0 / n);
+        var x = initialGuess == 0.0 ? number : Fraction.FromDoubleRounded(initialGuess);
+        Fraction xPrev;
+        do {
+            xPrev = x;
+            x = ((n - 1) * x + number / Fraction.Pow(x, n - 1)) / n;
+        } while ((x - xPrev).Abs() > minAccuracy);
+
+        return x;
+    }
 }
