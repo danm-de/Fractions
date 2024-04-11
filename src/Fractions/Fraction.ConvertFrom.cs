@@ -95,9 +95,6 @@ public readonly partial struct Fraction {
         }
 
         var components = fractionString.Split('/');
-        if (components.Length == 1) {
-            return TryParseSingleNumber(components[0], numberStyles, formatProvider, out fraction);
-        }
 
         if (components.Length >= 2) {
             var numeratorString = components[0];
@@ -121,44 +118,124 @@ public readonly partial struct Fraction {
             return true;
         }
 
+        if (numberStyles.HasFlag(NumberStyles.AllowExponent))
+        {
+            return TryParseWithExponent(fractionString, numberStyles, formatProvider, out fraction); 
+        }
+
+        if (numberStyles.HasFlag(NumberStyles.AllowDecimalPoint))
+        {
+            return TryParseDecimalNumber(fractionString, numberStyles, formatProvider, out fraction);
+        }
+
+        if(BigInteger.TryParse(fractionString, numberStyles, formatProvider, out var bigInteger))
+        {
+            fraction = bigInteger;
+            return true;
+        }
+
         // Technically it should not be possible to reach this line of code..
         return CannotParse(out fraction);
     }
 
-    /// <summary>
-    /// Try to convert a single number to a fraction. Example 34 or 4.5 (depending on the supplied culture used in <paramref name="formatProvider"/>)
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
-    /// </summary>
-    /// <param name="number">A (decimal) number</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="number"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="number"/>.</param>
-    /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
-    /// <returns>
-    /// <para><c>true</c> if <paramref name="number"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="number"/> was invalid.</para>
-    /// </returns>
-    private static bool TryParseSingleNumber(string number, NumberStyles numberStyles, IFormatProvider formatProvider,
-        out Fraction fraction) {
-        var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
-
-        if (number.Contains(numberFormatInfo.NumberDecimalSeparator)) {
-            if (!decimal.TryParse(number, numberStyles, formatProvider, out var decimalNumber)) {
-                return CannotParse(out fraction);
-            }
-
-            fraction = FromDecimal(decimalNumber);
-            return true;
+    private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles, IFormatProvider formatProvider, out Fraction fraction)
+    {
+        parseNumberStyles &= ~NumberStyles.AllowExponent;
+        var exponentIndex = valueString.IndexOfAny(['e', 'E'], 1);
+        if (exponentIndex == -1)
+        {
+            return parseNumberStyles.HasFlag(NumberStyles.AllowDecimalPoint)
+                ? TryParseDecimalNumber(valueString, parseNumberStyles, formatProvider, out fraction)
+                : TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction);
         }
 
-        var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
-        if (!BigInteger.TryParse(number, withoutDecimalPoint, formatProvider, out var numerator)) {
+        var exponentString = valueString.Substring(exponentIndex + 1);
+        if (!int.TryParse(exponentString, parseNumberStyles, formatProvider, out var exponent))
+        {
             return CannotParse(out fraction);
         }
 
-        fraction = new Fraction(numerator);
+        // we've got an exponent: try to parse the coefficient
+        var coefficientString = valueString.Substring(0, exponentIndex);
+        if (parseNumberStyles.HasFlag(NumberStyles.AllowDecimalPoint))
+        {
+            if (!TryParseDecimalNumber(coefficientString, parseNumberStyles, formatProvider, out fraction))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (!TryParseInteger(coefficientString, parseNumberStyles, formatProvider, out fraction))
+            {
+                return false;
+            }
+        }
+
+        fraction *= Pow(TEN, exponent);
         return true;
     }
 
+    private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles, IFormatProvider formatProvider, out Fraction fraction)
+    {
+        // valueString can be either a big-integer expression or one of the form "123.456...890" (possibly longer than the decimal range/precision)
+        // // TODO test the short-path
+        // if (valueString.Length < 30 && decimal.TryParse(valueString, parseNumberStyles, formatProvider, out var decimalValue))
+        // {
+        //     quantityValue = decimalValue;
+        //     return true;
+        // }
+        // note: this whole function could probably be implemented without any string allocations
+        // 1. clean up the whitespaces
+        if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite) && parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite))
+        {
+            valueString = valueString.Trim();
+            parseNumberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite);
+        }
+        else if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite))
+        {
+            valueString = valueString.TrimStart();
+            parseNumberStyles &= ~NumberStyles.AllowLeadingWhite;
+        }
+        else if (parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite))
+        {
+            valueString = valueString.TrimEnd();
+            parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
+        }
+
+        // 2. find the position of the decimal separator (if any)
+        var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        var decimalSeparatorIndex = valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, 0, StringComparison.Ordinal);
+        if (decimalSeparatorIndex == -1)
+        {
+            return TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction); // TODO check if the parseNumberStyles need to be adjusted
+        }
+
+        // 3. try to parse the numerator
+        var numeratorString = valueString.Substring(0, decimalSeparatorIndex) + valueString.Substring(decimalSeparatorIndex + 1);
+        if (!BigInteger.TryParse(numeratorString, parseNumberStyles, formatProvider, out var numerator))
+        {
+            return CannotParse(out fraction);
+        }
+
+        // 4. construct the fraction using the corresponding decimal power for the denominator
+        var nbDecimals = valueString.Length - decimalSeparatorIndex - 1;
+        var denominator = BigInteger.Pow(TEN, nbDecimals);
+        fraction = new Fraction(numerator, denominator);
+        return true;
+    }
+    
+    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles, IFormatProvider formatProvider, out Fraction fraction)
+    {
+        if (BigInteger.TryParse(valueString, parseNumberStyles, formatProvider, out var bigInteger))
+        {
+            fraction = new Fraction(bigInteger);
+            return true;
+        }
+        
+        return CannotParse(out fraction);
+    }
+    
     /// <summary>
     /// Returns false. <paramref name="fraction"/> contains an invalid value.
     /// </summary>
