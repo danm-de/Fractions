@@ -186,43 +186,37 @@ public class When_creating_a_fraction_from_the_string_minus_64_over_40_by_explic
         _result.Should().Be(new Fraction(-64, 40));
     }
 }
-    
+
 [TestFixture]
 public class When_creating_a_fraction_from_a_very_long_decimal_string : Spec {
-    private string _valueToParse;
-    private Fraction _expectedFraction;
-
     private Fraction _result;
-    
-    public override void Arrange() {
-        _valueToParse = "123456789987654321.123456789987654321";
-        BigInteger a = new BigInteger(123456789987654321);
-        BigInteger b = new BigInteger(123456789987654321) * BigInteger.Pow(10, 18);
-        var largeValue = a + b; // should represent the value 123456789987654321123456789987654321
-        _expectedFraction = new Fraction(largeValue, BigInteger.Pow(10, 18)); // place the decimal point in the middle
-    }
 
     public override void Act() {
-        _result = Fraction.FromString(_valueToParse);
+        _result = Fraction.FromString("123456789987654321.123456789987654321", new CultureInfo("en-US"));
     }
 
     [Test]
     public void The_number_is_parsed_without_any_loss_of_precision() {
-        _result.Should().Be(_expectedFraction);
+        _result.Should().Be(new Fraction(
+            BigInteger.Parse("123456789987654321123456789987654321"),
+            BigInteger.Pow(10, 18))
+        );
     }
 }
-  
+
 [TestFixture]
 public class Parsing_a_string_with_scientific_notation_representing_a_large_positive_number : Spec {
     private Fraction _expectedFraction;
-    
+
     public override void Arrange() {
-        _expectedFraction = new Fraction(new BigInteger(123456789987654321) * BigInteger.Pow(10,  24));
+        _expectedFraction = new Fraction(new BigInteger(123456789987654321) * BigInteger.Pow(10, 24));
     }
-    
+
     [Test]
-    public void Should_not_work_by_default([Values("1.23456789987654321E+41", "1.23456789987654321e+41")] string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse))
+    public void Should_not_work_by_default(
+        [Values("1.23456789987654321E+41", "1.23456789987654321e+41")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
     }
@@ -231,28 +225,34 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_posi
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("1.23456789987654321E+41", "1.23456789987654321e+41")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")).Should().Be(_expectedFraction);
+        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+            .Should()
+            .Be(_expectedFraction);
     }
 
     [Test]
-    public void Should_not_work_for_decimal_exponents([Values("1.23456789987654321E+41.5", "1.23456789987654321e+41.5")] string valueToParse) {
+    public void Should_not_work_for_decimal_exponents(
+        [Values("1.23456789987654321E+41.5", "1.23456789987654321e+41.5")]
+        string valueToParse) {
         Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
     }
 }
-  
+
 [TestFixture]
 public class Parsing_a_string_with_scientific_notation_representing_a_large_negative_number : Spec {
     private Fraction _expectedFraction;
-    
+
     public override void Arrange() {
-        _expectedFraction = new Fraction(new BigInteger(-123456789987654321) * BigInteger.Pow(10,  24));
+        _expectedFraction = new Fraction(new BigInteger(-123456789987654321) * BigInteger.Pow(10, 24));
     }
-    
+
     [Test]
-    public void Should_not_work_by_default([Values("-1.23456789987654321E+41", "-1.23456789987654321e+41")] string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse))
+    public void Should_not_work_by_default(
+        [Values("-1.23456789987654321E+41", "-1.23456789987654321e+41")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
     }
@@ -261,11 +261,15 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_nega
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("-1.23456789987654321E+41", "-1.23456789987654321e+41")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")).Should().Be(_expectedFraction);
+        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+            .Should()
+            .Be(_expectedFraction);
     }
 
     [Test]
-    public void Should_not_work_for_decimal_exponents([Values("-1.23456789987654321E+41.5", "-1.23456789987654321e+41.5")] string valueToParse) {
+    public void Should_not_work_for_decimal_exponents(
+        [Values("-1.23456789987654321E+41.5", "-1.23456789987654321e+41.5")]
+        string valueToParse) {
         Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
@@ -275,14 +279,16 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_nega
 [TestFixture]
 public class Parsing_a_string_with_scientific_notation_representing_a_small_positive_number : Spec {
     private Fraction _expectedFraction;
-    
+
     public override void Arrange() {
         _expectedFraction = new Fraction(new BigInteger(123456789987654321), BigInteger.Pow(10, 17 + 24));
     }
-    
+
     [Test]
-    public void Should_not_work_by_default([Values("1.23456789987654321E-24", "1.23456789987654321e-24")] string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse))
+    public void Should_not_work_by_default(
+        [Values("1.23456789987654321E-24", "1.23456789987654321e-24")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
     }
@@ -291,11 +297,15 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_posi
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("1.23456789987654321E-24", "1.23456789987654321e-24")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")).Should().Be(_expectedFraction);
+        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+            .Should()
+            .Be(_expectedFraction);
     }
 
     [Test]
-    public void Should_not_work_for_decimal_exponents([Values("1.23456789987654321E-24.5", "1.23456789987654321e-24.5")] string valueToParse) {
+    public void Should_not_work_for_decimal_exponents(
+        [Values("1.23456789987654321E-24.5", "1.23456789987654321e-24.5")]
+        string valueToParse) {
         Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
@@ -305,14 +315,16 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_posi
 [TestFixture]
 public class Parsing_a_string_with_scientific_notation_representing_a_small_negative_number : Spec {
     private Fraction _expectedFraction;
-    
+
     public override void Arrange() {
         _expectedFraction = new Fraction(new BigInteger(-123456789987654321), BigInteger.Pow(10, 17 + 24));
     }
-    
+
     [Test]
-    public void Should_not_work_by_default([Values("-1.23456789987654321E-24", "-1.23456789987654321e-24")] string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse))
+    public void Should_not_work_by_default(
+        [Values("-1.23456789987654321E-24", "-1.23456789987654321e-24")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
     }
@@ -321,11 +333,15 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_nega
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("-1.23456789987654321E-24", "-1.23456789987654321e-24")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")).Should().Be(_expectedFraction);
+        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+            .Should()
+            .Be(_expectedFraction);
     }
 
     [Test]
-    public void Should_not_work_for_decimal_exponents([Values("-1.23456789987654321E-24.5", "-1.23456789987654321e-24.5")] string valueToParse) {
+    public void Should_not_work_for_decimal_exponents(
+        [Values("-1.23456789987654321E-24.5", "-1.23456789987654321e-24.5")]
+        string valueToParse) {
         Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
