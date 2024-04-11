@@ -205,4 +205,4 @@ Just run `dotnet build -c release`.
 
 ### Required software frameworks
 
-- .Net 7.0 SDK (7.0.11/ SDK 7.0.401)
+- .Net 8.0 SDK
