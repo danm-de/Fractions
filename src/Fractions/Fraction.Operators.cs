@@ -41,7 +41,7 @@ public readonly partial struct Fraction {
 
     public static explicit operator Fraction(double value) => new(value);
 
-    public static explicit operator Fraction(decimal value) => new(value);
+    public static implicit operator Fraction(decimal value) => new(value);
 
     public static explicit operator Fraction(string value) => FromString(value);
 
