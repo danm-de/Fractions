@@ -168,14 +168,6 @@ public readonly partial struct Fraction {
 
     private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles,
         IFormatProvider formatProvider, out Fraction fraction) {
-        // valueString can be either a big-integer expression or one of the form "123.456...890" (possibly longer than the decimal range/precision)
-        // // TODO test the short-path
-        // if (valueString.Length < 30 && decimal.TryParse(valueString, parseNumberStyles, formatProvider, out var decimalValue))
-        // {
-        //     quantityValue = decimalValue;
-        //     return true;
-        // }
-        // note: this whole function could probably be implemented without any string allocations
         // 1. clean up the whitespaces
         if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite) &&
             parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite)) {
@@ -194,8 +186,8 @@ public readonly partial struct Fraction {
         var decimalSeparatorIndex =
             valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, 0, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            return TryParseInteger(valueString, parseNumberStyles, formatProvider,
-                out fraction); // TODO check if the parseNumberStyles need to be adjusted
+            // TODO check if the parseNumberStyles need to be adjusted
+            return TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction);
         }
 
         // 3. try to parse the numerator
@@ -364,12 +356,12 @@ public readonly partial struct Fraction {
         var positiveSign = (scale[3] & 0x80) == 0;
 
         // value = 0x00,high,middle,low / 10^exp
-        var numerator = new BigInteger(new byte[] {
+        var numerator = new BigInteger([
             low[0], low[1], low[2], low[3],
             middle[0], middle[1], middle[2], middle[3],
             high[0], high[1], high[2], high[3],
             0x00
-        });
+        ]);
         var denominator = BigInteger.Pow(10, exp);
 
         return positiveSign
