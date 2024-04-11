@@ -24,7 +24,6 @@
     <PackageIcon>Fraction.png</PackageIcon>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
