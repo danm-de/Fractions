@@ -4,8 +4,6 @@ using System.Numerics;
 namespace Fractions;
 
 public readonly partial struct Fraction {
-    private static readonly BigInteger TEN = new(10);
-
     /// <summary>
     /// Rounds the given Fraction to the specified precision using <see cref="MidpointRounding.ToEven"/> rounding strategy.
     /// </summary>

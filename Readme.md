@@ -44,13 +44,14 @@ There a three types of constructors available:
 ### Static creation methods
 
 - `Fraction.FromDecimal(decimal)`
-- `Fraction.FromDouble(double)` 
+- `Fraction.FromDouble(double)`
 - `Fraction.FromDoubleRounded(double)`
 - `Fraction.FromString(string)` (using current culture)
 - `Fraction.FromString(string, IFormatProvider)`
 - `Fraction.FromString(string, NumberStyles, IFormatProvider)`
 - `Fraction.TryParse(string, out Fraction)` (using current culture)
 - `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)`
+- `Fraction.TryParse(ReadOnlySpan<char>, NumberStyles, IFormatProvider, bool, out Fraction)`
 
 ### Creation from `double`
 
