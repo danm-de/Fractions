@@ -6,6 +6,8 @@
 - Added Fraction.Round/RoundToBigInteger functions by https://github.com/lipchev
 - Make the operator from decimal implicit by https://github.com/lipchev
 - Support for parsing long/very precise numbers by https://github.com/lipchev
+- Added support for `ReadOnlySpan<char>` when using TryParse(..)
+- Added target framework .NET8.0
 - Updated documentation
 
 ## 7.4.1
