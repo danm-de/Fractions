@@ -1,37 +1,45 @@
-﻿7.4.1
+﻿# Changelog
+
+## 7.x.x
+
+- Added benchmarks for the most common operations by https://github.com/lipchev
+- Make the operator from decimal implicit by https://github.com/lipchev
+- Updated documentation
+
+## 7.4.1
 
 - Code cleanup (use new language features)
 - fix https://github.com/danm-de/Fractions/issues/27 reported by https://github.com/lipchev
 
-7.4.0
+## 7.4.0
 
 - The CLSCompliant(true) attribute was added by https://github.com/lipchev
 - fix invalid characters in test names by https://github.com/lipchev
 - Updated nuget packages
 
-7.3.0
+## 7.3.0
 
 - New Reciprocal() method contributed by https://github.com/teemka
 - Updated nuget packages
 
-7.2.1
+## 7.2.1
 
 - Updated Newtonsoft.Json to version 13.0.2 (Dependabot)
 
-7.2.0
+## 7.2.0
 
 - Removed System.Runtime.Numerics dependency. Thanks to @stan-sz https://github.com/danm-de/Fractions/pull/18
 
-7.1.0
+## 7.1.0
 
 - New Sqrt() extension method contributed by https://github.com/MadsKirkFoged
 
-7.0.0
+## 7.0.0
 
 - Removed unsupported framework DLL netstandard1.1 (Issue [#9](https://github.com/danm-de/Fractions/issues/9))
 - Removed deplicated and unecessary framework DLLs net45, net48, net5.0 and netcoreapp3.1 (Issue [#9](https://github.com/danm-de/Fractions/issues/9))
 
-6.0.0
+## 6.0.0
 
 - Breaking change: `new Fraction(0, 0).ToString()` or `new Fraction(0, 3).ToString()` returns "0" instead of "0/0"
 - Bugfix: `Fraction.Zero.ToString("m")` does not longer throw a divide by zero exception (Issue [#6](https://github.com/danm-de/Fractions/issues/6))

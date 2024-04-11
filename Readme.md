@@ -1,4 +1,6 @@
-﻿# Introduction
+﻿# Fractions
+
+## Introduction
 
 This package contains a data type to calculate with rational numbers. It supports basic mathematic operators such as:
 
@@ -11,27 +13,27 @@ This package contains a data type to calculate with rational numbers. It support
 
 The fraction data type implements operator overloads and implicit type conversion for convenience.
 
-# Creation
+## Creation
 
-You can implicitly cast `int`, `uint`, `long`, `ulong` or `BigInteger` to `Fraction`:
+You can implicitly cast `int`, `uint`, `long`, `ulong`, `decimal` or `BigInteger` to `Fraction`:
 
 ```csharp
-Fraction a = 3;  // int
-Fraction b = 4L; // long
-Fraction c = new BigInteger(3);
+Fraction a = 3;    // int
+Fraction b = 4L;   // long
+Fraction c = 3.3m; // decimal
+Fraction d = new BigInteger(3);
 // ..
 ```
 
-You can explicitly cast `decimal` and `double` to `Fraction`:
+You can explicitly cast `double` to `Fraction`:
 
 ```csharp
-var a = (Fraction)3.3m; // decimal
-var b = (Fraction)3.3;  // double
+var a = (Fraction)3.3;  // double
 ```
 
 You can explicitly cast from `Fraction` to any supported data type (`int`, `uint`, `long`, `ulong`, `BigInteger`, `decimal`, `double`). However, be aware that an `OverflowException` will be thrown, if the target data type's boundary values are exceeded.
 
-## Constructors
+### Constructors
 
 There a three types of constructors available:
 
@@ -39,7 +41,7 @@ There a three types of constructors available:
 - `new Fraction (<numerator>, <denominator>)` using `BigInteger` for numerator and denominator.
 - `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator + `bool` to indicate if the resulting fraction shall be normalized (reduced).
 
-## Static creation methods
+### Static creation methods
 
 - `Fraction.FromDecimal(decimal)`
 - `Fraction.FromDouble(double)` 
@@ -50,7 +52,7 @@ There a three types of constructors available:
 - `Fraction.TryParse(string, out Fraction)` (using current culture)
 - `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)`
 
-## Creation from `double`
+### Creation from `double`
 
 The `double` data type stores its values as 64bit floating point numbers that comply with IEC 60559:1989 (IEEE 754) standard for binary floating-point arithmetic. `double` cannot store some binary fractions. For example, _1/10_, which is represented precisely by _.1_ as a decimal fraction, is represented by _.0001100110011..._ as a binary fraction, with the pattern _0011_ repeating to infinity. In this case, the floating-point value provides an imprecise representation of the number that it represents:
 
@@ -86,7 +88,7 @@ Console.WriteLine(value);
 
 You should consider the `TryParse` methods when reading numbers as text from user input. **Furthermore it is best practice to always supply a culture information (e.g. `CultureInfo.InvariantCulture`).** Otherwise you will sooner or later parse wrong numbers because of different decimal point symbols or included Thousands character.
 
-# Conversion
+## Conversion
 
 You can convert a `Fraction` to any supported data type by calling:
 
@@ -112,7 +114,7 @@ var value = rationalNumber.ToDecimal();
 Console.WriteLine(Math.Round(value, 5));
 ```
 
-## String format
+### String format
 
 | Character | Description |
 | ----------| ----------- |
@@ -133,7 +135,7 @@ var value = new Fraction(3, 2);
 Console.WriteLine(value.ToString("m", new CultureInfo("de-DE")));
 ```
 
-# Mathematic operators
+## Mathematic operators
 
 The following mathematic operations are supported:
 
@@ -161,7 +163,7 @@ Example:
  Console.WriteLine(result);
 ```
 
-# Equality operators
+## Equality operators
 
 `Fraction` implements the following interfaces:
 
@@ -188,16 +190,16 @@ var result3 = a == c;
 
 You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fractions for value-equality.
 
-# Under the hood
+## Under the hood
 
 The data type stores the numerator and denominator as `BigInteger`. Per default it will reduce fractions to its normalized form during creation. The result of each mathematical operation will be reduced as well. There is a special constructor to create a non-normalized fraction. Be aware that `Equals` relies on normalized values when comparing two different instances. 
 
-# Build from source
+## Build from source
 
 [![Build status](https://ci.appveyor.com/api/projects/status/22acgj4m7pt5wr8d?svg=true)](https://ci.appveyor.com/project/danm-de/fractions)
 
 Just run `dotnet build -c release`.
 
-## Required software frameworks
+### Required software frameworks
 
 - .Net 7.0 SDK (7.0.11/ SDK 7.0.401)
