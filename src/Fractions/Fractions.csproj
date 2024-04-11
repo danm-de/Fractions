@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
     <Product>Fraction data type</Product>
     <Authors>Daniel Mueller</Authors>
     <Copyright>Copyright 2013-2024 Daniel Mueller</Copyright>
@@ -24,7 +24,6 @@
     <PackageIcon>Fraction.png</PackageIcon>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
-    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
