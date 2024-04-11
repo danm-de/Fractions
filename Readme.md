@@ -148,6 +148,8 @@ The following mathematic operations are supported:
 - `.Invert()` returns an inverted fraction (same operation as `(a * -1)`)
 - `.Abs()` returns the absolute value `|a|`
 - `Fraction.Pow(Fraction, int)` returns a base raised to a power `(a ^ exponent)` (e.g. _1/10_^(-1) -> _10/1_)
+- `Fraction.Round(Fraction, int, MidpointRounding)` returns the fraction, which is rounded to the specified precision
+- `Fraction.RoundToBigInteger(Fraction, MidpointRounding)` returns the fraction as rounded BigInteger
 
 As extension method:
 
