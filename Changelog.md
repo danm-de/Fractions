@@ -5,6 +5,7 @@
 - Added benchmarks for the most common operations by https://github.com/lipchev
 - Added Fraction.Round/RoundToBigInteger functions by https://github.com/lipchev
 - Make the operator from decimal implicit by https://github.com/lipchev
+- Support for parsing long/very precise numbers by https://github.com/lipchev
 - Updated documentation
 
 ## 7.4.1
