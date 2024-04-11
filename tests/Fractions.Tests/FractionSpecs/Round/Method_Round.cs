@@ -45,7 +45,7 @@ public class When_rounding_a_decimal_fraction : Spec {
     [Test]
     [TestCaseSource(nameof(RoundToBigIntegerTestCases))]
     public BigInteger The_integral_result_should_be_correct_for_all_decimal_values(Fraction fraction, MidpointRounding roundingMode) {
-        return Fraction.Round(fraction, roundingMode);
+        return Fraction.RoundToBigInteger(fraction, roundingMode);
     }
 
     private static IEnumerable RoundToFractionTestCases =>
