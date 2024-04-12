@@ -1,6 +1,6 @@
 ﻿# Changelog
 
-## 8.0.0
+## 7.5.0
 
 - Added benchmarks for the most common operations by https://github.com/lipchev
 - Added Fraction.Round/RoundToBigInteger functions by https://github.com/lipchev
@@ -9,6 +9,7 @@
 - Added support for `ReadOnlySpan<char>` when using TryParse(..)
 - Added target framework .NET8.0
 - Updated documentation
+- Many thanks to @lipchev for the contributions
 
 ## 7.4.1
 
