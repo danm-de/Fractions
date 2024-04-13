@@ -402,13 +402,13 @@ public readonly partial struct Fraction {
         if (exponentBits == EXPONENT_BITS) {
             // NaN or Infinity
             if (mantissaBits != 0) {
-                throw new InvalidNumberException("NaN values are not supported.");
+                throw new InvalidNumberException(Resources.NaNNotSupported);
             }
 
             // Infinity
             throw isNegative
-                ? new InvalidNumberException("Negative infinity (-Infinity) is not supported.")
-                : new InvalidNumberException("Positive infinity (+Infinity) is not supported.");
+                ? new InvalidNumberException(Resources.NegativeInfinityNotSupported)
+                : new InvalidNumberException(Resources.PositiveInfinityNotSupported);
         }
         
         var exponent = (int)((exponentBits >> 52) - K);
@@ -508,12 +508,11 @@ public readonly partial struct Fraction {
             case 0:
                 return Zero;
             case double.NaN:
-                throw new InvalidNumberException("NaN values are not supported.");
+                throw new InvalidNumberException(Resources.NaNNotSupported);
             case double.PositiveInfinity:
-                throw new InvalidNumberException("Positive infinity (+Infinity) is not supported.");
+                throw new InvalidNumberException(Resources.PositiveInfinityNotSupported);
             case double.NegativeInfinity:
-                throw new InvalidNumberException("Negative infinity (-Infinity) is not supported.");
-                
+                throw new InvalidNumberException(Resources.NegativeInfinityNotSupported);
         }
 
         // Determine the number of decimal places to keep
