@@ -27,7 +27,7 @@ namespace Fractions.Formatter;
 /// </example>
 /// <seealso cref="ICustomFormatter" />
 /// <seealso cref="Fraction" />
-public class DecimalFractionFormatter : ICustomFormatter {
+public class DecimalNotationFormatter : ICustomFormatter {
     /// <summary>
     ///     <list type="bullet">
     ///         <item>
@@ -56,7 +56,7 @@ public class DecimalFractionFormatter : ICustomFormatter {
     /// <remarks>
     ///     This instance can be used to format Fraction objects into decimal string representations.
     /// </remarks>
-    public static readonly ICustomFormatter Instance = new DecimalFractionFormatter();
+    public static readonly ICustomFormatter Instance = new DecimalNotationFormatter();
 
     private static readonly BigInteger Ten = new(10);
 
@@ -138,13 +138,14 @@ public class DecimalFractionFormatter : ICustomFormatter {
             'n' or 'N' => FormatWithStandardNumericFormat(fraction, format, numberFormatInfo),
             'e' or 'E' => FormatWithScientificFormat(fraction, format, numberFormatInfo),
             'r' or 'R' => FormatGeneral(fraction, "G32", numberFormatInfo), // TODO see about replacing this with the "1/3" format
-            // 'p' or 'P'  => fraction.ToDouble().ToString(format, formatProvider), // TODO see about implementing this 
+            'p' or 'P'  => FormatWithPercentFormat(fraction, format, numberFormatInfo),
             // 'c' or 'C'  => fraction.ToDouble().ToString(format, formatProvider), // TODO see about implementing this 
             's' or 'S' => FormatWithSignificantDigitsAfterRadix(fraction, format, numberFormatInfo),
             _ => fraction.ToDouble()
                 .ToString(format, formatProvider) // (not implemented|custom formats) handed over to the double (possible loss of precision) 
         };
     }
+
 
     private static int GetPrecisionDigitsOrDefault(string format, int defaultValue) {
         return format.Length > 1 ? GetPrecisionDigits(format) : defaultValue;
@@ -246,7 +247,7 @@ public class DecimalFractionFormatter : ICustomFormatter {
         if (formatProvider.NumberNegativePattern != 1 && formatProvider.NumberNegativePattern != 2) {
             // TODO see about implementing the other patterns if necessary
             // https://learn.microsoft.com/en-us/dotnet/api/system.globalization.numberformatinfo.numbernegativepattern?view=netframework-4.8
-            throw new NotSupportedException($"The selected NumberNegativePattern currently not supported by the {nameof(DecimalFractionFormatter)}.");
+            throw new NotSupportedException($"The selected NumberNegativePattern currently not supported by the {nameof(DecimalNotationFormatter)}.");
         }
 
         if (fraction.Numerator == BigInteger.Zero) {
@@ -309,6 +310,107 @@ public class DecimalFractionFormatter : ICustomFormatter {
 #endif
     }
 
+    /// <summary>
+    ///     The percent ("P") format specifier multiplies a number by 100 and converts it to a string that represents a
+    ///     percentage.
+    /// </summary>
+    /// <remarks>
+    ///     The precision specifier indicates the desired number of decimal places. If the precision specifier is omitted,
+    ///     the default numeric precision supplied by the current PercentDecimalDigits property is used.
+    /// </remarks>
+    private static string FormatWithPercentFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
+
+        if (fraction.Numerator == BigInteger.Zero) {
+            return 0.ToString(format, formatProvider);
+        }
+
+        if (fraction.Denominator.IsOne) {
+            return (fraction.Numerator).ToString(format, formatProvider)!;
+        }
+
+        var maxNbDecimals = GetPrecisionDigitsOrDefault(format, formatProvider.PercentDecimalDigits);
+
+        var sb = new StringBuilder(4 + maxNbDecimals);
+        
+        var isPositive = fraction.IsPositive;
+
+        if (fraction.IsPositive) {
+            fraction *= 100;
+        } else {
+            fraction *= -100;
+        }
+
+        if (maxNbDecimals == 0) {
+            var roundedValue = Round(fraction.Numerator, fraction.Denominator);
+#if NETSTANDARD
+            if (roundedValue.IsZero) {
+                return 0.ToString(format, formatProvider);
+            }
+#endif
+            sb.Append(roundedValue.ToString($"N{maxNbDecimals}", formatProvider)!);
+        } else {
+            var roundedFraction = Round(fraction, maxNbDecimals);
+            if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
+#if NETSTANDARD
+                if (roundedFraction.Numerator.IsZero) {
+                    return 0.ToString(format, formatProvider);
+                }
+#endif
+                sb.Append(roundedFraction.Numerator.ToString($"N{maxNbDecimals}", formatProvider)!);
+            } else {
+                AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimals, "N0");
+            }
+        }
+
+        return isPositive
+            ? withPositiveSign(sb, formatProvider.PercentSymbol, formatProvider.PercentPositivePattern)
+            : withNegativeSign(sb, formatProvider.PercentSymbol, formatProvider.NegativeSign, formatProvider.PercentNegativePattern);
+
+        static string withPositiveSign(StringBuilder sb, string percentSymbol, int pattern) {
+            return pattern switch {
+                0 => // n %
+                    sb.Append(' ').Append(percentSymbol).ToString(),
+                1 => // n%
+                    sb.Append(percentSymbol).ToString(),
+                2 => // %n
+                    sb.Insert(0, percentSymbol).ToString(),
+                3 => // % n
+                    sb.Insert(0, ' ').Insert(1, percentSymbol).ToString(),
+                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
+            };
+        }
+
+        static string withNegativeSign(StringBuilder sb, string percentSymbol, string negativeSignSymbol, int pattern) {
+            return pattern switch {
+                0 => // -n %
+                    sb.Insert(0, negativeSignSymbol).Append(' ').Append(percentSymbol).ToString(),
+                1 => // -n%
+                    sb.Insert(0, negativeSignSymbol).Append(percentSymbol).ToString(),
+                2 => // -%n
+                    sb.Insert(0, negativeSignSymbol).Insert(1, percentSymbol).ToString(),
+                3 => // %-n
+                    sb.Insert(0, percentSymbol).Insert(1, negativeSignSymbol).ToString(),
+                4 => // %n-
+                    sb.Append(percentSymbol).Append(negativeSignSymbol).ToString(),
+                5 => // n-%
+                    sb.Append(negativeSignSymbol).Append(percentSymbol).ToString(),
+                6 => // n%-
+                    sb.Append(percentSymbol).Append(negativeSignSymbol).ToString(),
+                7 => // -% n
+                    sb.Insert(0, negativeSignSymbol).Insert(1, ' ').Insert(2, percentSymbol).ToString(),
+                8 => // n %-
+                    sb.Append(' ').Append(percentSymbol).Append(negativeSignSymbol).ToString(),
+                9 => // % n-
+                    sb.Insert(0, ' ').Insert(1, percentSymbol).Append(negativeSignSymbol).ToString(),
+                10 => // % -n
+                    sb.Insert(0, percentSymbol).Insert(1, ' ').Insert(2, negativeSignSymbol).ToString(),
+                11 => // n- %
+                    sb.Append(negativeSignSymbol).Append(' ').Append(percentSymbol).ToString(),
+                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
+            };
+        }
+    }
+    
     /// <summary>
     ///     Exponential format specifier (E)
     ///     The exponential ("E") format specifier converts a number to a string of the form "-d.ddd…E+ddd" or "-d.ddd…e+ddd",

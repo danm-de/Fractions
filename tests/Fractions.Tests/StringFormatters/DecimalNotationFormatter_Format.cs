@@ -99,7 +99,7 @@ public class When_formatting_a_fraction: Spec {
         1554566.5434654m, -1554566.5434654m
     ];
 
-    private static readonly DecimalFractionFormatter DecimalFormatter = new();
+    private static readonly DecimalNotationFormatter DecimalFormatter = new();
 
     public static IEnumerable<TestCaseData> GeneralFormatsToTest =>
         from stringFormat in GeneralFormats
@@ -204,6 +204,18 @@ public class When_formatting_a_fraction: Spec {
     }
 
     [Test]
+    public static void The_percentage_format_supports_high_precision() {
+        // Arrange
+        var valueToTest = Fraction.FromString("123456789987654321.123456789987654321");
+        var formatProvider = CultureInfo.InvariantCulture;
+
+        // Assert
+        DecimalFormatter.Format("P15", valueToTest, formatProvider).Should().Be("12,345,678,998,765,432,112.345678998765432 %");
+        DecimalFormatter.Format("P16", valueToTest, formatProvider).Should().Be("12,345,678,998,765,432,112.3456789987654321 %");
+        DecimalFormatter.Format("P17", valueToTest, formatProvider).Should().Be("12,345,678,998,765,432,112.34567899876543210 %");
+    }
+
+    [Test]
     public static void The_scientific_format_supports_high_precision() {
         // Arrange
         var valueToTest = Fraction.FromString("123456789987654321.123456789987654321");
@@ -255,7 +267,7 @@ public class When_attempting_to_format_null : Spec {
     
     [Test]
     public void A_FormatException_should_be_thrown() {
-        DecimalFractionFormatter.Instance.Format(null, null, null).Should().BeEmpty();
+        DecimalNotationFormatter.Instance.Format(null, null, null).Should().BeEmpty();
     }
 }
 
@@ -264,7 +276,7 @@ public class When_attempting_to_format_with_something_that_is_not_a_fraction : S
     
     [Test]
     public void A_FormatException_should_be_thrown() {
-        Invoking(() => DecimalFractionFormatter.Instance.Format(null, "not a fraction", null))
+        Invoking(() => DecimalNotationFormatter.Instance.Format(null, "not a fraction", null))
             .Should()
             .Throw<FormatException>();
     }
