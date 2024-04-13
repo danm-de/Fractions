@@ -159,17 +159,17 @@ public readonly partial struct Fraction {
         var count = value.Split(ranges, '/');
 
         if (count == 2) {
-            var numeratorString = value[ranges[0]];
-            var denominatorString = value[ranges[1]];
+            var numeratorValue = value[ranges[0]];
+            var denominatorValue = value[ranges[1]];
             
             var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
             if (!BigInteger.TryParse(
-                    value: numeratorString,
+                    value: numeratorValue,
                     style: withoutDecimalPoint,
                     provider: formatProvider,
                     result: out var numerator)
                 || !BigInteger.TryParse(
-                    value: denominatorString,
+                    value: denominatorValue,
                     style: withoutDecimalPoint,
                     provider: formatProvider,
                     result: out var denominator)) {
@@ -377,18 +377,13 @@ public readonly partial struct Fraction {
     /// <returns>A fraction</returns>
     /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
     public static Fraction FromDouble(double value) {
-        if (double.IsNaN(value) || double.IsInfinity(value)) {
-            throw new InvalidNumberException();
-        }
-
         // No rounding here! It will convert the actual number that is stored as double! 
-        // See http://www.mpdvc.de/artikel/FloatingPoint.htm
+        // See https://csharpindepth.com/Articles/FloatingPoint
         const ulong SIGN_BIT = 0x8000000000000000;
         const ulong EXPONENT_BITS = 0x7FF0000000000000;
         const ulong MANTISSA = 0x000FFFFFFFFFFFFF;
         const ulong MANTISSA_DIVISOR = 0x0010000000000000;
         const ulong K = 1023;
-        var one = BigInteger.One;
 
         // value = (-1 * sign)   *   (1 + 2^(-1) + 2^(-2) .. + 2^(-52))   *   2^(exponent-K)
         var valueBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(value));
@@ -402,21 +397,32 @@ public readonly partial struct Fraction {
         var mantissaBits = valueBits & MANTISSA;
 
         // (exponent-K)
-        var exponent = (int)(((valueBits & EXPONENT_BITS) >> 52) - K);
+        var exponentBits = (valueBits & EXPONENT_BITS);
+
+        if (exponentBits == EXPONENT_BITS) {
+            // NaN or Infinity
+            if (mantissaBits != 0) {
+                throw new InvalidNumberException(Resources.NaNNotSupported);
+            }
+
+            // Infinity
+            throw isNegative
+                ? new InvalidNumberException(Resources.NegativeInfinityNotSupported)
+                : new InvalidNumberException(Resources.PositiveInfinityNotSupported);
+        }
+        
+        var exponent = (int)((exponentBits >> 52) - K);
 
         // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
         var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
-
+        
+        var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
         // 2^exponent
         var factor = exponent < 0
-            ? new Fraction(one, one << Math.Abs(exponent))
-            : new Fraction(one << exponent);
+            ? new Fraction(factorSign, BigInteger.One << -exponent)
+            : new Fraction(factorSign << exponent);
 
-        var result = mantissa * factor;
-
-        return isNegative
-            ? result.Invert()
-            : result;
+        return mantissa * factor;
     }
 
     /// <summary>
@@ -469,6 +475,71 @@ public readonly partial struct Fraction {
             new BigInteger(denominator),
             true);
     }
+
+
+    /// <summary>
+    ///     Converts a floating point value to a Fraction. The value is rounded if possible.
+    /// </summary>
+    /// <param name="value">The floating point value to convert.</param>
+    /// <param name="significantDigits">Number of significant digits</param>
+    /// <returns>A Fraction representing the rounded floating point value.</returns>
+    /// <remarks>
+    ///     The double data type stores its values as 64-bit floating point numbers in accordance with the IEC 60559:1989 (IEEE
+    ///     754) standard for binary floating-point arithmetic.
+    ///     However, the double data type cannot precisely store some binary fractions. For instance, 1/10, which is accurately
+    ///     represented by .1 as a decimal fraction, is represented by .0001100110011... as a binary fraction, with the pattern
+    ///     0011 repeating indefinitely.
+    ///     In such cases, the floating-point value provides an approximate representation of the number.
+    ///     <para>
+    ///         This method can be used to avoid large numbers in the numerator and denominator. However, be aware that the
+    ///         creation speed is significantly slower than using the pure value resulting from casting to double.
+    ///     </para>
+    /// </remarks>
+    /// <example>
+    ///     This example shows how to use the <see cref="FromDoubleRounded(double, int)" /> method.
+    ///     <code>
+    /// Fraction qv = Fraction.FromDoubleRounded(0.1, 15);
+    /// // Output: 1/10, which is exactly 0.1
+    /// </code>
+    /// </example>
+    /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
+    public static Fraction FromDoubleRounded(double value, int significantDigits) {
+        switch (value) {
+            case 0:
+                return Zero;
+            case double.NaN:
+                throw new InvalidNumberException(Resources.NaNNotSupported);
+            case double.PositiveInfinity:
+                throw new InvalidNumberException(Resources.PositiveInfinityNotSupported);
+            case double.NegativeInfinity:
+                throw new InvalidNumberException(Resources.NegativeInfinityNotSupported);
+        }
+
+        // Determine the number of decimal places to keep
+        var magnitude = Math.Floor(Math.Log10(Math.Abs(value)));
+        if (magnitude > significantDigits) {
+            var digitsToKeep = new BigInteger(value / Math.Pow(10, magnitude - significantDigits));
+            return digitsToKeep * BigInteger.Pow(TEN, (int)magnitude - significantDigits);
+        }
+
+        // "decimal" values
+        var truncatedValue = Math.Truncate(value);
+        var integerPart = new BigInteger(truncatedValue);
+
+        var decimalPlaces = Math.Min(-(int)magnitude + significantDigits - 1, 308);
+        var scaleFactor = Math.Pow(10, decimalPlaces);
+        // Get the fractional part
+        var fractionalPartDouble = Math.Round((value - truncatedValue) * scaleFactor);
+        if (fractionalPartDouble == 0) // rounded to integer
+        {
+            return new Fraction(integerPart);
+        }
+
+        var denominator = BigInteger.Pow(TEN, decimalPlaces);
+        var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
+        return new Fraction(numerator, denominator);
+    }
+    
 
     /// <summary>
     /// Converts a decimal value in a fraction. The value will not be rounded.

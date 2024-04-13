@@ -102,7 +102,7 @@ You can convert a `Fraction` to any supported data type by calling:
 - `.ToDouble()`
 - `.ToString()` (using current culture)
 - `.ToString(string)` (using format string and the system's current culture)
-- `.ToString(string,IFormatProvider)` 
+- `.ToString(string,IFormatProvider)`
 
 If the target's data type boundary values are exceeded the system will throw an `OverflowException`.
 
@@ -170,8 +170,8 @@ Example:
 
 `Fraction` implements the following interfaces:
 
-- `IEquatable<Fraction>`, 
-- `IComparable`, 
+- `IEquatable<Fraction>`,
+- `IComparable`,
 - `IComparable<Fraction>`
 
 Please note that `.Equals(Fraction)` will compare the exact values of numerator and denominator. That said:
@@ -195,7 +195,7 @@ You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fract
 
 ## Under the hood
 
-The data type stores the numerator and denominator as `BigInteger`. Per default it will reduce fractions to its normalized form during creation. The result of each mathematical operation will be reduced as well. There is a special constructor to create a non-normalized fraction. Be aware that `Equals` relies on normalized values when comparing two different instances. 
+The data type stores the numerator and denominator as `BigInteger`. Per default it will reduce fractions to its normalized form during creation. The result of each mathematical operation will be reduced as well. There is a special constructor to create a non-normalized fraction. Be aware that `Equals` relies on normalized values when comparing two different instances.
 
 ## Build from source
 
