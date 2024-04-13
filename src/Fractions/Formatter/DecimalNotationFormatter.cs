@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Numerics;
 using System.Text;
+using Fractions.Properties;
 
 namespace Fractions.Formatter;
 
@@ -40,13 +41,13 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///         </item>
     ///     </list>
     /// </summary>
-    private const MidpointRounding DefaultMidpointRoundingMode =
+    private const MidpointRounding DEFAULT_MIDPOINT_ROUNDING_MODE =
 #if NETCOREAPP2_1_OR_GREATER
         MidpointRounding.ToEven;
 #else
         MidpointRounding.AwayFromZero;
 #endif
-    
+
     /// <summary>
     ///     Gets the singleton instance of the DecimalFractionFormatter class.
     /// </summary>
@@ -58,7 +59,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </remarks>
     public static readonly ICustomFormatter Instance = new DecimalNotationFormatter();
 
-    private static readonly BigInteger Ten = new(10);
+    private static readonly BigInteger TEN = new(10);
 
     /// <summary>
     ///     Formats the value of the specified Fraction object as a string according to the provided format and
@@ -118,7 +119,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
         }
 
         if (arg is not Fraction fraction) {
-            throw new FormatException(string.Format(Properties.Resources.TypeXnotSupported, arg.GetType()));
+            throw new FormatException(string.Format(Resources.TypeXnotSupported, arg.GetType()));
         }
 
         formatProvider ??= CultureInfo.CurrentCulture;
@@ -138,11 +139,11 @@ public class DecimalNotationFormatter : ICustomFormatter {
             'n' or 'N' => FormatWithStandardNumericFormat(fraction, format, numberFormatInfo),
             'e' or 'E' => FormatWithScientificFormat(fraction, format, numberFormatInfo),
             'r' or 'R' => FormatGeneral(fraction, "G32", numberFormatInfo), // TODO see about replacing this with the "1/3" format
-            'p' or 'P'  => FormatWithPercentFormat(fraction, format, numberFormatInfo),
-            // 'c' or 'C'  => fraction.ToDouble().ToString(format, formatProvider), // TODO see about implementing this 
+            'p' or 'P' => FormatWithPercentFormat(fraction, format, numberFormatInfo),
+            'c' or 'C' => FormatWithCurrencyFormat(fraction, format, numberFormatInfo),
             's' or 'S' => FormatWithSignificantDigitsAfterRadix(fraction, format, numberFormatInfo),
-            _ => fraction.ToDouble()
-                .ToString(format, formatProvider) // (not implemented|custom formats) handed over to the double (possible loss of precision) 
+            _ => // (not implemented|custom formats) handed over to the double (possible loss of precision) 
+                fraction.ToDouble().ToString(format, formatProvider)
         };
     }
 
@@ -160,17 +161,12 @@ public class DecimalNotationFormatter : ICustomFormatter {
     }
 
     /// <summary>
-    ///     Handles the standard decimal formats "Fx"
-    ///     <list type="bullet">
-    ///         <item>
-    ///             The fixed-point ("F") format specifier converts a number to a string of the form "-ddd.ddd…" where each "d"
-    ///             indicates a digit (0-9). The string starts with a minus sign if the number is negative.
-    ///         </item>
-    ///     </list>
+    ///     The fixed-point ("F") format specifier converts a number to a string of the form "-ddd.ddd…" where each "d"
+    ///     indicates a digit (0-9). The string starts with a minus sign if the number is negative.
     /// </summary>
     /// <remarks>
     ///     The precision specifier indicates the desired number of decimal places. If the precision specifier is omitted, the
-    ///     current NumberFormatInfo.NumberDecimalDigits property supplies the numeric precision.
+    ///     current <see cref="NumberFormatInfo.NumberDecimalDigits" /> property supplies the numeric precision.
     /// </remarks>
     private static string FormatWithFixedPointFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
         if (fraction.Numerator == BigInteger.Zero) {
@@ -225,23 +221,14 @@ public class DecimalNotationFormatter : ICustomFormatter {
     }
 
     /// <summary>
-    ///     Handles the standard decimal formats: "Fx" and "Nx"
-    ///     <list type="bullet">
-    ///         <item>
-    ///             The fixed-point ("F") format specifier converts a number to a string of the form "-ddd.ddd…" where each "d"
-    ///             indicates a digit (0-9). The string starts with a minus sign if the number is negative.
-    ///         </item>
-    ///         <item>
-    ///             The numeric ("N") format specifier converts a number to a string of the form "-d,ddd,ddd.ddd…", where "-"
-    ///             indicates
-    ///             a negative number symbol if required, "d" indicates a digit (0-9), "," indicates a group separator, and "."
-    ///             indicates a decimal point symbol.
-    ///         </item>
-    ///     </list>
+    ///     The numeric ("N") format specifier converts a number to a string of the form "-d,ddd,ddd.ddd…", where "-"
+    ///     indicates
+    ///     a negative number symbol if required, "d" indicates a digit (0-9), "," indicates a group separator, and "."
+    ///     indicates a decimal point symbol.
     /// </summary>
     /// <remarks>
     ///     The precision specifier indicates the desired number of decimal places. If the precision specifier is omitted, the
-    ///     current NumberFormatInfo.NumberDecimalDigits property supplies the numeric precision.
+    ///     current <see cref="NumberFormatInfo.NumberDecimalDigits" /> property supplies the numeric precision.
     /// </remarks>
     private static string FormatWithStandardNumericFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
         if (formatProvider.NumberNegativePattern != 1 && formatProvider.NumberNegativePattern != 2) {
@@ -316,22 +303,22 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </summary>
     /// <remarks>
     ///     The precision specifier indicates the desired number of decimal places. If the precision specifier is omitted,
-    ///     the default numeric precision supplied by the current PercentDecimalDigits property is used.
+    ///     the default numeric precision supplied by the current <see cref="NumberFormatInfo.PercentDecimalDigits" /> property
+    ///     is used.
     /// </remarks>
     private static string FormatWithPercentFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
-
         if (fraction.Numerator == BigInteger.Zero) {
             return 0.ToString(format, formatProvider);
         }
 
         if (fraction.Denominator.IsOne) {
-            return (fraction.Numerator).ToString(format, formatProvider)!;
+            return fraction.Numerator.ToString(format, formatProvider)!;
         }
 
         var maxNbDecimals = GetPrecisionDigitsOrDefault(format, formatProvider.PercentDecimalDigits);
 
         var sb = new StringBuilder(4 + maxNbDecimals);
-        
+
         var isPositive = fraction.IsPositive;
 
         if (fraction.IsPositive) {
@@ -410,18 +397,130 @@ public class DecimalNotationFormatter : ICustomFormatter {
             };
         }
     }
-    
+
+    /// <summary>
+    ///     The "C" (or currency) format specifier converts a number to a string that represents a currency amount. The
+    ///     precision specifier indicates the desired number of decimal places in the result string. If the precision specifier
+    ///     is omitted, the default precision is defined by the <see cref="NumberFormatInfo.CurrencyDecimalDigits" /> property.
+    /// </summary>
+    /// <remarks>
+    ///     If the value to be formatted has more than the specified or default number of decimal places, the fractional
+    ///     value is rounded in the result string. If the value to the right of the number of specified decimal places is 5 or
+    ///     greater, the last digit in the result string is rounded away from zero.
+    /// </remarks>
+    private static string FormatWithCurrencyFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
+        if (fraction.Numerator == BigInteger.Zero) {
+            return 0.ToString(format, formatProvider);
+        }
+
+        if (fraction.Denominator.IsOne) {
+            return fraction.Numerator.ToString(format, formatProvider)!;
+        }
+
+        var maxNbDecimals = GetPrecisionDigitsOrDefault(format, formatProvider.CurrencyDecimalDigits);
+
+        var sb = new StringBuilder(4 + maxNbDecimals);
+
+        var isPositive = fraction.IsPositive;
+
+        if (!fraction.IsPositive) {
+            fraction = fraction.Abs();
+        }
+
+        if (maxNbDecimals == 0) {
+            var roundedValue = Round(fraction.Numerator, fraction.Denominator);
+#if NETSTANDARD
+            if (roundedValue.IsZero) {
+                return 0.ToString(format, formatProvider);
+            }
+#endif
+            sb.Append(roundedValue.ToString($"N{maxNbDecimals}", formatProvider)!);
+        } else {
+            var roundedFraction = Round(fraction, maxNbDecimals);
+            if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
+#if NETSTANDARD
+                if (roundedFraction.Numerator.IsZero) {
+                    return 0.ToString(format, formatProvider);
+                }
+#endif
+                sb.Append(roundedFraction.Numerator.ToString($"N{maxNbDecimals}", formatProvider)!);
+            } else {
+                AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimals, "N0");
+            }
+        }
+
+        return isPositive
+            ? withPositiveSign(sb, formatProvider.CurrencySymbol, formatProvider.CurrencyPositivePattern)
+            : withNegativeSign(sb, formatProvider.CurrencySymbol, formatProvider.NegativeSign, formatProvider.CurrencyNegativePattern);
+
+        static string withPositiveSign(StringBuilder sb, string currencySymbol, int pattern) {
+            return pattern switch {
+                0 => // $n
+                    sb.Insert(0, currencySymbol).ToString(),
+                1 => // n$
+                    sb.Append(currencySymbol).ToString(),
+                2 => // $ n
+                    sb.Insert(0, ' ').Insert(1, currencySymbol).ToString(),
+                3 => // n $
+                    sb.Append(' ').Append(currencySymbol).ToString(),
+                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
+            };
+        }
+
+        static string withNegativeSign(StringBuilder sb, string currencySymbol, string negativeSignSymbol, int pattern) {
+            return pattern switch {
+                0 => // ($n)
+                    sb.Insert(0, '(').Append(')').Insert(1, currencySymbol).ToString(),
+                1 => // -$n
+                    sb.Insert(0, negativeSignSymbol).Insert(1, currencySymbol).ToString(),
+                2 => // $-n
+                    sb.Insert(0, currencySymbol).Insert(1, negativeSignSymbol).ToString(),
+                3 => // $n-
+                    sb.Append(negativeSignSymbol).Insert(0, currencySymbol).ToString(),
+                4 => // (n$)
+                    sb.Insert(0, '(').Append(')').Append(currencySymbol).ToString(),
+                5 => // -n$
+                    sb.Insert(0, negativeSignSymbol).Append(currencySymbol).ToString(),
+                6 => // n-$
+                    sb.Append(negativeSignSymbol).Insert(0, currencySymbol).ToString(),
+                7 => // n$-
+                    sb.Append(' ').Append(negativeSignSymbol).Append(currencySymbol).ToString(),
+                8 => // -n $
+                    sb.Insert(0, negativeSignSymbol).Append(' ').Append(currencySymbol).ToString(),
+                9 => // -$ n
+                    sb.Insert(0, negativeSignSymbol).Insert(1, ' ').Insert(2, currencySymbol).ToString(),
+                10 => // n $-
+                    sb.Append(' ').Append(currencySymbol).Append(negativeSignSymbol).ToString(),
+                11 => // $ n-
+                    sb.Append(negativeSignSymbol).Insert(0, ' ').Insert(1, currencySymbol).ToString(),
+                12 => // $ -n
+                    sb.Insert(0, currencySymbol).Insert(1, ' ').Insert(2, negativeSignSymbol).ToString(),
+                13 => // n- $
+                    sb.Append(negativeSignSymbol).Append(' ').Append(currencySymbol).ToString(),
+                14 => // ($ n)
+                    sb.Insert(0, '(').Append(')').Insert(2, ' ').Insert(3, currencySymbol).ToString(),
+                15 => // (n $)
+                    sb.Insert(0, '(').Append(')').Append(' ').Append(currencySymbol).ToString(),
+                16 => // $- n
+                    sb.Insert(0, currencySymbol).Insert(1, negativeSignSymbol).Insert(2, ' ').ToString(),
+                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
+            };
+        }
+    }
+
     /// <summary>
     ///     Exponential format specifier (E)
     ///     The exponential ("E") format specifier converts a number to a string of the form "-d.ddd…E+ddd" or "-d.ddd…e+ddd",
     ///     where each "d" indicates a digit (0-9). The string starts with a minus sign if the number is negative. Exactly one
     ///     digit always precedes the decimal point.
+    /// </summary>
+    /// <remarks>
     ///     The precision specifier indicates the desired number of digits after the decimal point. If the precision specifier
     ///     is omitted, a default of six digits after the decimal point is used.
     ///     The case of the format specifier indicates whether to prefix the exponent with an "E" or an "e". The exponent
     ///     always consists of a plus or minus sign and a minimum of three digits. The exponent is padded with zeros to meet
     ///     this minimum, if required.
-    /// </summary>
+    /// </remarks>
     private static string FormatWithScientificFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
         if (fraction.Numerator == BigInteger.Zero) {
             return 0d.ToString(format, formatProvider);
@@ -463,10 +562,13 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
     /// <summary>
     ///     The general ("G") format specifier converts a number to the more compact of either fixed-point or scientific
-    ///     notation, depending on the type of the number and whether a precision specifier is present. The precision specifier
+    ///     notation, depending on the type of the number and whether a precision specifier is present.
+    /// </summary>
+    /// <remarks>
+    ///     The precision specifier
     ///     defines the maximum number of significant digits that can appear in the result string. If the precision specifier
     ///     is omitted or zero, the type of the number determines the default precision.
-    /// </summary>
+    /// </remarks>
     private static string FormatGeneral(Fraction fraction, string format, NumberFormatInfo formatProvider) {
         if (fraction.Numerator == BigInteger.Zero) {
             return 0d.ToString(format, formatProvider);
@@ -546,7 +648,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             return 0d.ToString(formatProvider);
         }
 
-        const string quotientFormat = "N0";
+        const string QUOTIENT_FORMAT = "N0";
         var maxDigitsAfterRadix = GetPrecisionDigitsOrDefault(format, 2);
 
         var sb = new StringBuilder(3 + maxDigitsAfterRadix);
@@ -561,27 +663,27 @@ public class DecimalNotationFormatter : ICustomFormatter {
         switch (exponent) {
             case > 5: // the smallest value would have the form: 1.23e6 (1230000)
                 mantissa = Round(fraction / exponentTerm, maxDigitsAfterRadix);
-                AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, quotientFormat);
+                AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, QUOTIENT_FORMAT);
                 return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 's' ? 'e' : 'E').ToString();
             case <= -4: // the largest value would have the form: 1.23e-4 (0.000123)
                 mantissa = Round(fraction * exponentTerm, maxDigitsAfterRadix);
-                AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, quotientFormat);
+                AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, QUOTIENT_FORMAT);
                 return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 's' ? 'e' : 'E').ToString();
             case < 0: // the smallest value would have the form: 1.23e-3 (0.00123)
                 var leadingZeroes = -exponent;
                 maxDigitsAfterRadix += leadingZeroes - 1;
                 mantissa = Round(fraction, maxDigitsAfterRadix);
-                return AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, quotientFormat).ToString();
+                return AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, QUOTIENT_FORMAT).ToString();
             default: // the largest value would have the form: 1.23e5 (123000)
                 mantissa = Round(fraction, maxDigitsAfterRadix);
-                return AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, quotientFormat).ToString();
+                return AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, QUOTIENT_FORMAT).ToString();
         }
     }
 
 
     private static StringBuilder AppendDecimals(StringBuilder sb, Fraction fraction, NumberFormatInfo formatProvider, int nbDecimals,
         string quotientFormat = "F0",
-        MidpointRounding roundingMode = DefaultMidpointRoundingMode) {
+        MidpointRounding roundingMode = DEFAULT_MIDPOINT_ROUNDING_MODE) {
         var quotient = BigInteger.DivRem(fraction.Numerator, fraction.Denominator, out var remainder);
 
         sb.Append(quotient.ToString(quotientFormat, formatProvider)).Append(formatProvider.NumberDecimalSeparator);
@@ -590,14 +692,14 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         var decimalsAdded = 0;
         while (!remainder.IsZero && decimalsAdded++ < nbDecimals - 1) {
-            quotient = BigInteger.DivRem(remainder * Ten, fraction.Denominator, out remainder);
+            quotient = BigInteger.DivRem(remainder * TEN, fraction.Denominator, out remainder);
             sb.Append(quotient.ToString(formatProvider));
         }
 
         if (remainder.IsZero) {
             sb.Append('0', nbDecimals - decimalsAdded);
         } else {
-            quotient = Round(remainder * Ten, fraction.Denominator, roundingMode);
+            quotient = Round(remainder * TEN, fraction.Denominator, roundingMode);
             sb.Append(quotient.ToString(formatProvider));
         }
 
@@ -618,14 +720,14 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         var nbDecimals = 0;
         while (nbDecimals++ < maxNbDecimals - 1) {
-            quotient = BigInteger.DivRem(remainder * Ten, mantissa.Denominator, out remainder);
+            quotient = BigInteger.DivRem(remainder * TEN, mantissa.Denominator, out remainder);
             sb.Append(quotient.ToString(formatProvider));
             if (remainder == BigInteger.Zero) {
                 return sb;
             }
         }
 
-        quotient = Round(remainder * Ten, mantissa.Denominator);
+        quotient = Round(remainder * TEN, mantissa.Denominator);
         sb.Append(quotient.ToString(formatProvider));
         return sb;
     }
@@ -656,7 +758,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     A new Fraction that is the nearest number to 'x' with the specified number of digits, rounded as specified by
     ///     'midpointRounding'.
     /// </returns>
-    private static Fraction Round(Fraction x, int nbDigits, MidpointRounding midpointRounding = DefaultMidpointRoundingMode) {
+    private static Fraction Round(Fraction x, int nbDigits, MidpointRounding midpointRounding = DEFAULT_MIDPOINT_ROUNDING_MODE) {
         return Fraction.Round(x, nbDigits, midpointRounding);
     }
 
@@ -671,7 +773,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     framework's default string rounding mode.
     /// </param>
     /// <returns>The number rounded to using the <paramref name="midpointRounding" /> rounding strategy.</returns>
-    private static BigInteger Round(BigInteger numerator, BigInteger denominator, MidpointRounding midpointRounding = DefaultMidpointRoundingMode) {
+    private static BigInteger Round(BigInteger numerator, BigInteger denominator, MidpointRounding midpointRounding = DEFAULT_MIDPOINT_ROUNDING_MODE) {
         return Fraction.RoundToBigInteger(new Fraction(numerator, denominator, false), midpointRounding);
     }
 
@@ -689,19 +791,19 @@ public class DecimalNotationFormatter : ICustomFormatter {
     private static int GetExponentPower(Fraction fraction, out BigInteger powerOfTen) {
         if (fraction.Numerator > fraction.Denominator) {
             var nbDigits = CountDigits(fraction.Numerator / fraction.Denominator, out powerOfTen);
-            if (fraction.Numerator * powerOfTen < Ten * fraction.Denominator) {
+            if (fraction.Numerator * powerOfTen < TEN * fraction.Denominator) {
                 return nbDigits;
             }
 
-            powerOfTen /= Ten;
+            powerOfTen /= TEN;
             return nbDigits - 1;
         } else {
             var nbDigits = CountDigits(fraction.Denominator / fraction.Numerator, out powerOfTen);
-            if (fraction.Numerator * powerOfTen < Ten * fraction.Denominator) {
+            if (fraction.Numerator * powerOfTen < TEN * fraction.Denominator) {
                 return -nbDigits;
             }
 
-            powerOfTen /= Ten;
+            powerOfTen /= TEN;
             return -nbDigits + 1;
         }
     }
@@ -712,26 +814,26 @@ public class DecimalNotationFormatter : ICustomFormatter {
     {
         var numBits = value.GetBitLength();
         var base10Digits = (int)(numBits * Log10Of2);
-        powerOfTen = BigInteger.Pow(Ten, base10Digits);
+        powerOfTen = BigInteger.Pow(TEN, base10Digits);
 
         if (value < powerOfTen)
         {
             return base10Digits;
         }
 
-        powerOfTen *= Ten;
+        powerOfTen *= TEN;
         return base10Digits + 1;
     }
 #else
     private static int CountDigits(BigInteger value, out BigInteger powerOfTen) {
         var base10Digits = (int)Math.Ceiling(BigInteger.Log10(value));
-        powerOfTen = BigInteger.Pow(Ten, base10Digits);
+        powerOfTen = BigInteger.Pow(TEN, base10Digits);
 
         if (value < powerOfTen) {
             return base10Digits;
         }
 
-        powerOfTen *= Ten;
+        powerOfTen *= TEN;
         return base10Digits + 1;
     }
 #endif

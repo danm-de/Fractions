@@ -204,6 +204,18 @@ public class When_formatting_a_fraction: Spec {
     }
 
     [Test]
+    public static void The_currency_format_supports_high_precision() {
+        // Arrange
+        var valueToTest = Fraction.FromString("123456789987654321.123456789987654321");
+        var formatProvider = AmericanCulture;
+
+        // Assert
+        DecimalFormatter.Format("C17", valueToTest, formatProvider).Should().Be("$123,456,789,987,654,321.12345678998765432");
+        DecimalFormatter.Format("C18", valueToTest, formatProvider).Should().Be("$123,456,789,987,654,321.123456789987654321");
+        DecimalFormatter.Format("C19", valueToTest, formatProvider).Should().Be("$123,456,789,987,654,321.1234567899876543210");
+    }
+
+    [Test]
     public static void The_percentage_format_supports_high_precision() {
         // Arrange
         var valueToTest = Fraction.FromString("123456789987654321.123456789987654321");
