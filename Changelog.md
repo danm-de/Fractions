@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 7.6.0
+
+- Added method overload for FromDouble with significant digits by https://github.com/lipchev
+- Performance optimization of the FromDouble method by https://github.com/lipchev
+
 ## 7.5.0
 
 - Added benchmarks for the most common operations by https://github.com/lipchev
