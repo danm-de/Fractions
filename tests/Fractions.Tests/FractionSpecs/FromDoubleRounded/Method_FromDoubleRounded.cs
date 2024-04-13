@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using FluentAssertions;
 using NUnit.Framework;
@@ -209,5 +210,121 @@ public class When_a_fraction_is_created_with_1_third : Spec {
     // German: Soll der Bruch danach einen Nenner von 3 haben
     public void The_fraction_should_then_have_a_denominator_of_3() {
         _fraction.Denominator.Should().Be(3);
+    }
+}
+
+[TestFixture]
+public class When_a_fractions_is_created_by_rounding_a_double_without_precision : Spec {
+    private const double DoubleValue = 1055.05585262;
+    private const decimal LiteralValue = 1055.05585262m; // the "true/literal" decimal representation
+
+    private Fraction _fraction;
+
+    public override void Act() {
+        _fraction = Fraction.FromDoubleRounded(DoubleValue);
+    }
+
+    [Test]
+    public void The_actual_fraction_may_differ_from_the_literal_value() {
+        LiteralValue.Should().Be((decimal)DoubleValue).And.NotBe(_fraction.ToDecimal());
+    }
+
+    [Test]
+    public void The_actual_fraction_is_an_approximation_of_the_literal_value_as_a_decimal() {
+        _fraction.ToDecimal().Should().BeApproximately(LiteralValue, 8);
+    }
+}
+
+[TestFixture]
+public class When_a_fractions_is_created_by_rounding_a_double_with_maximum_precision : Spec {
+    private const double DoubleValue = 1055.05585262;
+    private const decimal LiteralValue = 1055.05585262m; // the "true/literal" decimal representation
+    private const int MaxSignificantDigits = 15; // anything that's in the range [minRequiredPrecision, maxExpectedPrecision] should work
+
+    private Fraction _fraction;
+
+    public override void Act() {
+        _fraction = Fraction.FromDoubleRounded(DoubleValue, MaxSignificantDigits);
+    }
+
+    [Test]
+    public void The_actual_fraction_matches_the_literal_value() {
+        LiteralValue.Should().Be((decimal)DoubleValue).And.Be(_fraction.ToDecimal());
+    }
+}
+
+[TestFixture]
+public class When_a_fractions_is_created_by_rounding_a_double_with_reasonable_number_of_significant_digits : Spec {
+    private const int ReasonableNumberOfSignificantDigits = 15; // anything that's in the range [minRequiredPrecision, maxExpectedPrecision] should work 
+
+    private static IEnumerable<TestCaseData> TestCases { get; } = [
+        new TestCaseData(0.0, ReasonableNumberOfSignificantDigits).Returns(Fraction.Zero),
+        new TestCaseData(1.0, ReasonableNumberOfSignificantDigits).Returns(Fraction.One),
+        new TestCaseData(10.0, ReasonableNumberOfSignificantDigits).Returns(new Fraction(10m)),
+        new TestCaseData(-10.0, ReasonableNumberOfSignificantDigits).Returns(new Fraction(-10m)),
+        new TestCaseData(0.1, ReasonableNumberOfSignificantDigits).Returns(new Fraction(0.1m)),
+        new TestCaseData(-0.1, ReasonableNumberOfSignificantDigits).Returns(new Fraction(-0.1m)),
+        new TestCaseData(1055.05585262, 18).Returns(new Fraction(1055.05585262m)),
+        new TestCaseData(-1055.05585262, 18).Returns(new Fraction(-1055.05585262m))
+    ];
+
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public Fraction The_fraction_corresponds_to_the_rounded_decimal(double value, int significantDigits) {
+        return Fraction.FromDoubleRounded(value, significantDigits);
+    }
+}
+
+[TestFixture]
+public class When_a_fractions_is_created_by_rounding_a_double_with_exceeding_number_of_significant_digits : Spec {
+    private const double DoubleValue = 1055.05585262;
+    private const decimal LiteralValue = 1055.05585262m; // the "true/literal" decimal representation
+
+    [Test]
+    public void The_fraction_preserves_the_rounding_error() {
+        Fraction.FromDoubleRounded(DoubleValue, 19).ToDecimal()
+            .Should().BeApproximately(LiteralValue, 0.0001m).And.NotBe(LiteralValue);
+    }
+}
+
+[TestFixture]
+public class When_a_fractions_is_created_by_rounding_a_double_with_less_than_the_actual_significant_digits : Spec {
+    private static IEnumerable<TestCaseData> TestCases { get; } = [
+        new TestCaseData(1055.05585262, 0).Returns(new Fraction(1000m)),
+        new TestCaseData(-1055.05585262, 0).Returns(new Fraction(-1000m)),
+        new TestCaseData(1055.05585262, 1).Returns(new Fraction(1000m)),
+        new TestCaseData(-1055.05585262, 1).Returns(new Fraction(-1000m)),
+        new TestCaseData(1055.05585262, 2).Returns(new Fraction(1050m)),
+        new TestCaseData(-1055.05585262, 2).Returns(new Fraction(-1050m)),
+        new TestCaseData(1055.05585262, 3).Returns(new Fraction(1055m)),
+        new TestCaseData(-1055.05585262, 3).Returns(new Fraction(-1055m)),
+        new TestCaseData(1055.05585262, 4).Returns(new Fraction(1055m)),
+        new TestCaseData(-1055.05585262, 4).Returns(new Fraction(-1055m)),
+        new TestCaseData(1055.05585262, 5).Returns(new Fraction(1055.1m)),
+        new TestCaseData(-1055.05585262, 5).Returns(new Fraction(-1055.1m)),
+        new TestCaseData(1055.05585262, 6).Returns(new Fraction(1055.06m)),
+        new TestCaseData(-1055.05585262, 6).Returns(new Fraction(-1055.06m)),
+        new TestCaseData(1055.05585262, 7).Returns(new Fraction(1055.056m)),
+        new TestCaseData(-1055.05585262, 7).Returns(new Fraction(-1055.056m)),
+        new TestCaseData(1055.05585262, 8).Returns(new Fraction(1055.0559m)),
+        new TestCaseData(-1055.05585262, 8).Returns(new Fraction(-1055.0559m)),
+        new TestCaseData(1055.05585262, 9).Returns(new Fraction(1055.05585m)),
+        new TestCaseData(-1055.05585262, 9).Returns(new Fraction(-1055.05585m)),
+        new TestCaseData(1055.05585262, 10).Returns(new Fraction(1055.055853m)),
+        new TestCaseData(-1055.05585262, 10).Returns(new Fraction(-1055.055853m)),
+        new TestCaseData(1055.05585262, 11).Returns(new Fraction(1055.0558526m)),
+        new TestCaseData(-1055.05585262, 11).Returns(new Fraction(-1055.0558526m)),
+        new TestCaseData(1055.05585262, 12).Returns(new Fraction(1055.05585262m)),
+        new TestCaseData(-1055.05585262, 12).Returns(new Fraction(-1055.05585262m)),
+        new TestCaseData(1055.05585262, 13).Returns(new Fraction(1055.05585262m)),
+        new TestCaseData(-1055.05585262, 13).Returns(new Fraction(-1055.05585262m))
+    ];
+
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public Fraction The_fraction_is_rounded_to_the_specified_precision(double value, int significantDigits) {
+        return Fraction.FromDoubleRounded(value, significantDigits);
     }
 }

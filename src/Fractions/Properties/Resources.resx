@@ -129,4 +129,13 @@
   <data name="TypeXnotSupported" xml:space="preserve">
     <value>The type {0} is not supported.</value>
   </data>
+  <data name="NaNNotSupported" xml:space="preserve">
+    <value>NaN values are not supported.</value>
+  </data>
+  <data name="NegativeInfinityNotSupported" xml:space="preserve">
+    <value>Negative infinity (-Infinity) is not supported.</value>
+  </data>
+  <data name="PositiveInfinityNotSupported" xml:space="preserve">
+    <value>Positive infinity (+Infinity) is not supported.</value>
+  </data>
 </root>
