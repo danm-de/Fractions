@@ -289,3 +289,20 @@ public class When_a_fraction_is_created_with_1_third : Spec {
         rounded.Should().Be(0.333333333333333);
     }
 }
+
+[TestFixture]
+public class When_a_fraction_is_created_from_double : Spec {
+
+    private const double ExpectedValue = 1.0 / (double.MaxValue - 100);
+
+    private Fraction _fraction;
+
+    public override void Act() {
+        _fraction = Fraction.FromDouble(ExpectedValue);
+    }
+
+    [Test]
+    public void ToDouble_does_not_always_return_the_same_value() {
+        _fraction.ToDouble().Should().NotBe(ExpectedValue);
+    }
+}

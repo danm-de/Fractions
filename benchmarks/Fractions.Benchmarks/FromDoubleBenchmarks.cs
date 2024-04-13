@@ -42,4 +42,24 @@ public class FromDoubleBenchmarks {
             return Zero;
         }
     }
+
+    [Benchmark]
+    [ArgumentsSource(nameof(DoubleValues))]
+    public Fraction Construct_FromDoubleRoundedToFifteenDigits(double value) {
+        try {
+            return Fraction.FromDoubleRounded(value, 15);
+        } catch (InvalidNumberException) {
+            return Zero;
+        }
+    }
+
+    [Benchmark]
+    [ArgumentsSource(nameof(DoubleValues))]
+    public Fraction Construct_FromDoubleRoundedToEighteenDigits(double value) {
+        try {
+            return Fraction.FromDoubleRounded(value, 18);
+        } catch (InvalidNumberException) {
+            return Zero;
+        }
+    }
 }
