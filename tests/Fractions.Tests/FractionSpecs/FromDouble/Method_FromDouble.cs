@@ -292,17 +292,22 @@ public class When_a_fraction_is_created_with_1_third : Spec {
 
 [TestFixture]
 public class When_a_fraction_is_created_from_double : Spec {
-
-    private const double ExpectedValue = 1.0 / (double.MaxValue - 100);
-
+    private const double VerySmallValue = 1.0 / (double.MaxValue - 100);
     private Fraction _fraction;
 
-    public override void Act() {
-        _fraction = Fraction.FromDouble(ExpectedValue);
-    }
+    public override void Act() =>
+        _fraction = Fraction.FromDouble(VerySmallValue);
 
     [Test]
-    public void ToDouble_does_not_always_return_the_same_value() {
-        _fraction.ToDouble().Should().NotBe(ExpectedValue);
+    public void ToDouble_does_not_return_the_exactly_the_same_value() =>
+        _fraction.ToDouble().Should().NotBe(VerySmallValue);
+
+    [Test]
+    public void ToDouble_returns_an_approximation() {
+        var approximateValue = _fraction.ToDouble();
+
+        Math.Abs(approximateValue)
+            .Should()
+            .BeLessThanOrEqualTo(double.Epsilon);
     }
 }

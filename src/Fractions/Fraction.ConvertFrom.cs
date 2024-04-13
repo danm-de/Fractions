@@ -159,17 +159,17 @@ public readonly partial struct Fraction {
         var count = value.Split(ranges, '/');
 
         if (count == 2) {
-            var numeratorString = value[ranges[0]];
-            var denominatorString = value[ranges[1]];
+            var numeratorValue = value[ranges[0]];
+            var denominatorValue = value[ranges[1]];
             
             var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
             if (!BigInteger.TryParse(
-                    value: numeratorString,
+                    value: numeratorValue,
                     style: withoutDecimalPoint,
                     provider: formatProvider,
                     result: out var numerator)
                 || !BigInteger.TryParse(
-                    value: denominatorString,
+                    value: denominatorValue,
                     style: withoutDecimalPoint,
                     provider: formatProvider,
                     result: out var denominator)) {
@@ -378,7 +378,7 @@ public readonly partial struct Fraction {
     /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
     public static Fraction FromDouble(double value) {
         // No rounding here! It will convert the actual number that is stored as double! 
-        // See http://www.mpdvc.de/artikel/FloatingPoint.htm
+        // See https://csharpindepth.com/Articles/FloatingPoint
         const ulong SIGN_BIT = 0x8000000000000000;
         const ulong EXPONENT_BITS = 0x7FF0000000000000;
         const ulong MANTISSA = 0x000FFFFFFFFFFFFF;
@@ -475,13 +475,13 @@ public readonly partial struct Fraction {
             new BigInteger(denominator),
             true);
     }
-    
+
 
     /// <summary>
     ///     Converts a floating point value to a Fraction. The value is rounded if possible.
     /// </summary>
     /// <param name="value">The floating point value to convert.</param>
-    /// <param name="nbSignificantDigits"></param>
+    /// <param name="significantDigits">Number of significant digits</param>
     /// <returns>A Fraction representing the rounded floating point value.</returns>
     /// <remarks>
     ///     The double data type stores its values as 64-bit floating point numbers in accordance with the IEC 60559:1989 (IEEE
@@ -502,8 +502,8 @@ public readonly partial struct Fraction {
     /// // Output: 1/10, which is exactly 0.1
     /// </code>
     /// </example>
-    public static Fraction FromDoubleRounded(double value, int nbSignificantDigits)
-    {
+    /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
+    public static Fraction FromDoubleRounded(double value, int significantDigits) {
         switch (value) {
             case 0:
                 return Zero;
@@ -517,17 +517,16 @@ public readonly partial struct Fraction {
 
         // Determine the number of decimal places to keep
         var magnitude = Math.Floor(Math.Log10(Math.Abs(value)));
-        if (magnitude > nbSignificantDigits)
-        {
-            var digitsToKeep = new BigInteger(value / Math.Pow(10, magnitude - nbSignificantDigits));
-            return digitsToKeep * BigInteger.Pow(TEN, (int)magnitude - nbSignificantDigits);
+        if (magnitude > significantDigits) {
+            var digitsToKeep = new BigInteger(value / Math.Pow(10, magnitude - significantDigits));
+            return digitsToKeep * BigInteger.Pow(TEN, (int)magnitude - significantDigits);
         }
 
         // "decimal" values
         var truncatedValue = Math.Truncate(value);
         var integerPart = new BigInteger(truncatedValue);
 
-        var decimalPlaces = Math.Min(-(int)magnitude + nbSignificantDigits - 1, 308);
+        var decimalPlaces = Math.Min(-(int)magnitude + significantDigits - 1, 308);
         var scaleFactor = Math.Pow(10, decimalPlaces);
         // Get the fractional part
         var fractionalPartDouble = Math.Round((value - truncatedValue) * scaleFactor);

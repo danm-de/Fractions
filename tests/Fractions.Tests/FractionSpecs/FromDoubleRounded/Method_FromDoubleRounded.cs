@@ -228,6 +228,11 @@ public class When_a_fractions_is_created_by_rounding_a_double_without_precision 
     public void The_actual_fraction_may_differ_from_the_literal_value() {
         LiteralValue.Should().Be((decimal)DoubleValue).And.NotBe(_fraction.ToDecimal());
     }
+
+    [Test]
+    public void The_actual_fraction_is_an_approximation_of_the_literal_value_as_a_decimal() {
+        _fraction.ToDecimal().Should().BeApproximately(LiteralValue, 8);
+    }
 }
 
 [TestFixture]
