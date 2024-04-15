@@ -88,16 +88,17 @@ public readonly partial struct Fraction {
 
         static BigInteger roundToEven(BigInteger numerator, BigInteger denominator) {
             var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
-            var half = denominator / 2;
             if (numerator.Sign == denominator.Sign) {
                 // For positive values or when both values are negative
-                if (remainder > half || (remainder == half && !quotient.IsEven)) {
+                var midpoint = 2 * remainder;
+                if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
                     return quotient + 1;
                 }
             } else {
                 // For negative values
                 remainder = -remainder;
-                if (remainder > half || (remainder == half && !quotient.IsEven)) {
+                var midpoint = 2 * remainder;
+                if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
                     return quotient - 1;
                 }
             }
