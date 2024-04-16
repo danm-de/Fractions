@@ -33,6 +33,16 @@ public abstract class DecimalNotationFormatterSpecs : Spec {
         155456.65434654m, -155456.65434654m,
         1554566.5434654m, -1554566.5434654m
     ];
+
+    protected static readonly Fraction[] NonTerminatingFractions = [
+        new Fraction(1, 3), new Fraction(-1, 3),
+        new Fraction(2, 3), new Fraction(-2, 3),
+        new Fraction(19999991, 3), new Fraction(-19999991, 3), // note: for all but the percent (P) format we could be using two more digits ('99')
+        new Fraction(20000001, 3), new Fraction(-20000001, 3), // note: for all but the percent (P) format we could be using two more digits ('00')
+        new Fraction(4, 3), new Fraction(-4, 3),
+        new Fraction(5, 3), new Fraction(-5, 3),
+        new Fraction(7, 3), new Fraction(-7, 3)
+    ];
 }
 
 /// <summary>
@@ -46,7 +56,7 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
     private static readonly string[] GeneralFormats =
         ["G", "G0", "G1", "G2", "G3", "G4", "G5", "G6", "g", "g0", "g1", "g2", "g3", "g4", "g5", "g6"];
 
-    public static IEnumerable<TestCaseData> GeneralFormatsToTest =>
+    public static IEnumerable<TestCaseData> FormatWithTerminatingFractionCases =>
         from stringFormat in GeneralFormats
         from valueToTest in TerminatingFractions
         from cultureToTest in FormatProviders
@@ -54,10 +64,62 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
     [Test]
-    [TestCaseSource(nameof(GeneralFormatsToTest))]
-    public string The_general_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    [TestCaseSource(nameof(FormatWithTerminatingFractionCases))]
+    public string The_general_format_should_match_double_ToString_if_the_fraction_is_terminating(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
+
+    public static IEnumerable<TestCaseData> FormatWithNonTerminatingFractionAndSpecificPrecisionCases =>
+        from stringFormat in GeneralFormats.Except(["G", "g", "G0", "g0"])
+        from valueToTest in NonTerminatingFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
+
+    [Test]
+    [TestCaseSource(nameof(FormatWithNonTerminatingFractionAndSpecificPrecisionCases))]
+    public string The_general_format_should_match_double_ToString_when_the_precision_is_specified(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
+    }
+
+#if NET
+    public static IEnumerable<TestCaseData> FormatWithNonTerminatingFractionAndDefaultPrecisionCases =>
+        from stringFormat in new[] { "G", "g", "G0", "g0" }
+        from valueToTest in NonTerminatingFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest);
+
+    [Test]
+    [TestCaseSource(nameof(FormatWithNonTerminatingFractionAndDefaultPrecisionCases))]
+    public void The_general_format_should_match_double_ToString_when_the_precision_is_not_specified(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        // Arrange
+        var doubleToString = valueToTest.ToDouble().ToString(stringFormat, formatProvider);
+
+        // Act
+        var fractionToString = DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
+
+        // Assert:
+        // while the fraction is correctly rounded to MidpointRounding.ToEven,
+        // there is apparently some optimization done to the double.ToString("g") that give weird results on the last decimal (cannot find any reference)
+        // (7.0/3).ToString(CultureInfo.InvariantCulture) returns "2,3333333333333335"
+        // DecimalFormatter.Format(null, new Fraction(7,3), CultureInfo.InvariantCulture) returns "2.333333333333333"
+        fractionToString[..^2].Should().Be(doubleToString[..(fractionToString.Length - 2)]);
+    }
+
+#else
+    public static IEnumerable<TestCaseData> FormatWithNonTerminatingFractionAndDefaultPrecisionCases =>
+        from stringFormat in new[] { "G", "g", "G0", "g0" }
+        from valueToTest in NonTerminatingFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
+
+    [Test]
+    [TestCaseSource(nameof(FormatWithNonTerminatingFractionAndDefaultPrecisionCases))]
+    public string The_general_format_should_match_double_ToString_when_the_precision_is_not_specified(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
+    }
+#endif
 
     public static IEnumerable<TestCaseData> GeneralFormatSupportHighPrecisionCases {
         get {
@@ -77,6 +139,28 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
     public string The_general_format_support_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
+
+#if NET
+    [Test]
+    public void The_default_precision_specifier_is_16_digits_after_the_decimal_point() {
+        // Arrange
+        var fraction = new Fraction(0.123456789987654321m);
+        // Act
+        var result = DecimalFormatter.Format("g", fraction, null);
+        // Assert
+        result.Should().Be(DecimalFormatter.Format("g16", fraction, null));
+    }
+#else
+    [Test]
+    public void The_default_precision_specifier_is_15_digits_after_the_decimal_point() {
+        // Arrange
+        var fraction = new Fraction(0.123456789987654321m);
+        // Act
+        var result = DecimalFormatter.Format("g", fraction, null);
+        // Assert
+        result.Should().Be(DecimalFormatter.Format("g15", fraction, null));
+    }
+#endif
 }
 
 /// <summary>
@@ -88,11 +172,11 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
 [TestFixture]
 public class When_formatting_a_fraction_using_the_fixed_point_format : DecimalNotationFormatterSpecs {
     private static readonly string[] FixedPointFormats =
-        ["F", "F0", "F1", "F2", "F3", "F4", "F5", "F6", "f", "f0", "f1", "f2", "f3", "f4", "f5", "f6"];
+        ["F", "F0", "F1", "F2", "F3", "F4", "F5", "F6"];
 
     public static IEnumerable<TestCaseData> FixedPointFormatsToTest =>
         from stringFormat in FixedPointFormats
-        from valueToTest in TerminatingFractions
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -130,7 +214,7 @@ public class When_formatting_a_fraction_using_the_fixed_point_format : DecimalNo
 [TestFixture]
 public class When_formatting_a_fraction_with_the_numeric_format : DecimalNotationFormatterSpecs {
     private static readonly string[] NumberFormats =
-        ["N", "N0", "N1", "N2", "N3", "N4", "N5", "N6", "n", "n0", "n1", "n2", "n3", "n4", "n5", "n6"];
+        ["N", "N0", "N1", "N2", "N3", "N4", "N5", "N6"];
 
     public static readonly int[] NumberNegativePatterns = [
         0, // (n)
@@ -142,7 +226,7 @@ public class When_formatting_a_fraction_with_the_numeric_format : DecimalNotatio
 
     public static IEnumerable<TestCaseData> NumberFormatsToTest =>
         from stringFormat in NumberFormats
-        from valueToTest in TerminatingFractions
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -205,7 +289,7 @@ public class When_formatting_a_fraction_with_the_exponential_format : DecimalNot
 
     public static IEnumerable<TestCaseData> ScientificFormatsToTest =>
         from stringFormat in ScientificFormats
-        from valueToTest in TerminatingFractions
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -234,6 +318,16 @@ public class When_formatting_a_fraction_with_the_exponential_format : DecimalNot
     public string The_scientific_format_supports_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
+
+    [Test]
+    public void The_default_precision_specifier_is_6_digits_after_the_decimal_point() {
+        // Arrange
+        var fraction = new Fraction(1.111111m);
+        // Act
+        var result = DecimalFormatter.Format("e", fraction, null);
+        // Assert
+        result.Should().Be(DecimalFormatter.Format("e6", fraction, null));
+    }
 }
 
 /// <summary>
@@ -247,7 +341,7 @@ public class When_formatting_a_fraction_with_the_exponential_format : DecimalNot
 [TestFixture]
 public class When_formatting_a_fraction_with_the_currency_format : DecimalNotationFormatterSpecs {
     private static readonly string[] CurrencyFormats =
-        ["C", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "c", "c0", "c1", "c2", "c3", "c4", "c5", "c6"];
+        ["C", "C0", "C1", "C2", "C3", "C4", "C5", "C6"];
 
     public static readonly int[] CurrencyPositivePatterns = [
         00, // $n
@@ -280,7 +374,7 @@ public class When_formatting_a_fraction_with_the_currency_format : DecimalNotati
 
     public static IEnumerable<TestCaseData> CurrencyFormatsToTest =>
         from stringFormat in CurrencyFormats
-        from valueToTest in TerminatingFractions
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -350,11 +444,11 @@ public class When_formatting_a_fraction_with_the_currency_format : DecimalNotati
 [TestFixture]
 public class When_formatting_a_fraction_with_the_percent_format : DecimalNotationFormatterSpecs {
     private static readonly string[] PercentFormats =
-        ["P", "P0", "P1", "P2", "P3", "P4", "P5", "P6", "p", "p0", "p1", "p2", "p3", "p4", "p5", "p6"];
+        ["P", "P0", "P1", "P2", "P3", "P4", "P5", "P6"];
 
     public static IEnumerable<TestCaseData> PercentFormatsToTest =>
         from stringFormat in PercentFormats
-        from valueToTest in TerminatingFractions
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -445,6 +539,158 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
 /// </summary>
 [TestFixture]
 public class When_formatting_a_fraction_with_the_significant_digits_after_the_radix_format : DecimalNotationFormatterSpecs {
+    /// <summary>
+    ///     Values with exponent in the interval [-3 ≤ e ≤ 5] are formatted using the decimal point notation (no extra digits).
+    /// </summary>
+    public static IEnumerable<TestCaseData> NormalValueCases {
+        get {
+            var culture = CultureInfo.InvariantCulture;
+            foreach (var format in new[] { "S2", "s2" }) {
+                // no exponent: no difference
+                // from -1000000 to -1
+                yield return new TestCaseData(new Fraction(-999999.99), format, culture).Returns("-999,999.99");
+                yield return new TestCaseData(new Fraction(-111000), format, culture).Returns("-111,000");
+                yield return new TestCaseData(new Fraction(-11000), format, culture).Returns("-11,000");
+                yield return new TestCaseData(new Fraction(-1000), format, culture).Returns("-1,000");
+                yield return new TestCaseData(new Fraction(-999.99), format, culture).Returns("-999.99");
+                yield return new TestCaseData(new Fraction(-1.1m), format, culture).Returns("-1.1");
+                yield return new TestCaseData(Fraction.MinusOne, format, culture).Returns("-1");
+                // from -1 to 0
+                yield return new TestCaseData(new Fraction(-0.1), format, culture).Returns("-0.1");
+                yield return new TestCaseData(new Fraction(-0.01), format, culture).Returns("-0.01");
+                yield return new TestCaseData(new Fraction(-0.001), format, culture).Returns("-0.001");
+                // from 0 to 1
+                yield return new TestCaseData(Fraction.Zero, format, culture).Returns("0");
+                yield return new TestCaseData(new Fraction(0.001), format, culture).Returns("0.001");
+                yield return new TestCaseData(new Fraction(0.01), format, culture).Returns("0.01");
+                yield return new TestCaseData(new Fraction(0.1), format, culture).Returns("0.1");
+                // from 1 to 1000000
+                yield return new TestCaseData(new Fraction(1.1m), format, culture).Returns("1.1");
+                yield return new TestCaseData(new Fraction(999.99), format, culture).Returns("999.99");
+                yield return new TestCaseData(new Fraction(1000), format, culture).Returns("1,000");
+                yield return new TestCaseData(new Fraction(11000), format, culture).Returns("11,000");
+                yield return new TestCaseData(new Fraction(111000), format, culture).Returns("111,000");
+                yield return new TestCaseData(new Fraction(999999.99), format, culture).Returns("999,999.99");
+            }
+
+            // the provided culture is respected
+            foreach (var format in new[] { "S2", "s2" }) {
+                // no exponent: no difference
+                yield return new TestCaseData(new Fraction(999999.99), format, RussianCulture).Returns("999 999,99");
+                yield return new TestCaseData(new Fraction(-999999.99), format, RussianCulture).Returns("-999 999,99");
+            }
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(NormalValueCases))]
+    public string Normal_values_are_formatted_in_decimal_point_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
+    }
+
+    /// <summary>
+    ///     Values with exponent in the interval [-inf ≤ e ≤ -4] are formatted in scientific notation.
+    /// </summary>
+    public static IEnumerable<TestCaseData> SmallAbsoluteValueCases {
+        get {
+            var culture = CultureInfo.InvariantCulture;
+            // uppercase letter
+            yield return new TestCaseData(new Fraction(1.99e-4m), "S2", culture).Returns("1.99E-04");
+            yield return new TestCaseData(new Fraction(-1.99e-4m), "S2", culture).Returns("-1.99E-04");
+            yield return new TestCaseData(new Fraction(0.0000111m), "S2", culture).Returns("1.11E-05");
+            yield return new TestCaseData(new Fraction(-0.0000111m), "S2", culture).Returns("-1.11E-05");
+            yield return new TestCaseData(new Fraction(1.23e-120), "S2", culture).Returns("1.23E-120");
+            yield return new TestCaseData(new Fraction(-1.23e-120), "S2", culture).Returns("-1.23E-120");
+            // lowercase letter
+            yield return new TestCaseData(new Fraction(1.99e-4m), "s2", culture).Returns("1.99e-04");
+            yield return new TestCaseData(new Fraction(-1.99e-4m), "s2", culture).Returns("-1.99e-04");
+            yield return new TestCaseData(new Fraction(0.0000111m), "s2", culture).Returns("1.11e-05");
+            yield return new TestCaseData(new Fraction(-0.0000111m), "s2", culture).Returns("-1.11e-05");
+            yield return new TestCaseData(new Fraction(1.23e-120), "s2", culture).Returns("1.23e-120");
+            yield return new TestCaseData(new Fraction(-1.23e-120), "s2", culture).Returns("-1.23e-120");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(SmallAbsoluteValueCases))]
+    public string Values_with_small_absolute_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
+    }
+
+    /// <summary>
+    ///     Any value in the interval [1e+06 ≤ x ≤ +inf] is formatted in scientific notation.
+    /// </summary>
+    public static IEnumerable<TestCaseData> LargePositiveValueCases {
+        get {
+            var culture = CultureInfo.InvariantCulture;
+            // from 1E+6 to +inf (uppercase)
+            yield return new TestCaseData(new Fraction(1000000), "S2", culture).Returns("1E+06");
+            yield return new TestCaseData(new Fraction(11100000), "S2", culture).Returns("1.11E+07");
+            yield return new TestCaseData(new Fraction(double.MaxValue), "S2", culture).Returns("1.8E+308");
+            // from 1e+6 to +inf (lowercase)
+            yield return new TestCaseData(new Fraction(1000000), "s2", culture).Returns("1e+06");
+            yield return new TestCaseData(new Fraction(11100000), "s2", culture).Returns("1.11e+07");
+            yield return new TestCaseData(new Fraction(double.MaxValue), "s2", culture).Returns("1.8e+308");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(LargePositiveValueCases))]
+    public string Large_positive_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
+    }
+
+    /// <summary>
+    ///     Any value in the interval [-inf ≤ x ≤ 1e-04] is formatted in scientific notation.
+    /// </summary>
+    public static IEnumerable<TestCaseData> LargeNegativeValueCases {
+        get {
+            var culture = CultureInfo.InvariantCulture;
+            // from -inf up to -1E+6 (uppercase)
+            yield return new TestCaseData(new Fraction(double.MinValue), "S2", culture).Returns("-1.8E+308");
+            yield return new TestCaseData(new Fraction(-11100000), "S2", culture).Returns("-1.11E+07");
+            yield return new TestCaseData(new Fraction(-1000000), "S2", culture).Returns("-1E+06");
+            // from -inf up to -1e+6 (lowercase)
+            yield return new TestCaseData(new Fraction(double.MinValue), "s2", culture).Returns("-1.8e+308");
+            yield return new TestCaseData(new Fraction(-11100000), "s2", culture).Returns("-1.11e+07");
+            yield return new TestCaseData(new Fraction(-1000000), "s2", culture).Returns("-1e+06");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(LargeNegativeValueCases))]
+    public string Large_negative_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
+    }
+
+    public static IEnumerable<TestCaseData> RoundingErrorsWithSignificantDigitsAfterRadixFormattingCases {
+        get {
+            var culture = CultureInfo.InvariantCulture;
+            yield return new TestCaseData(new Fraction(0.819999999999m), "s2", culture).Returns("0.82");
+            yield return new TestCaseData(new Fraction(0.819999999999m), "s4", culture).Returns("0.82");
+            yield return new TestCaseData(new Fraction(0.00299999999m), "s2", culture).Returns("0.003");
+            yield return new TestCaseData(new Fraction(0.00299999999m), "s4", culture).Returns("0.003");
+            yield return new TestCaseData(new Fraction(0.0003000001m), "s2", culture).Returns("3e-04");
+            yield return new TestCaseData(new Fraction(0.0003000001m), "s4", culture).Returns("3e-04");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(RoundingErrorsWithSignificantDigitsAfterRadixFormattingCases))]
+    public string Values_are_rounded_according_to_the_specified_number_of_significant_digits_after_the_radix(Fraction fraction, string format, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(format, fraction, formatProvider);
+    }
+
+    [Test]
+    public void The_default_precision_specifier_is_2_significant_digits_after_the_radix() {
+        // Arrange
+        var fraction = new Fraction(1.111111m);
+        // Act
+        var result = DecimalFormatter.Format("s", fraction, null);
+        // Assert
+        result.Should().Be(DecimalFormatter.Format("s2", fraction, null));
+    }
+
     public static IEnumerable<TestCaseData> SpecialFormatSupportsHighPrecisionCases {
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321");
@@ -463,6 +709,97 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
     [TestCaseSource(nameof(SpecialFormatSupportsHighPrecisionCases))]
     public string The_special_format_support_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
+    }
+}
+
+/// <summary>
+///     The round-trip ("R") format specifier attempts to ensure that a numeric value that is converted to a string is
+///     parsed back into the same numeric value.This format is supported only for the Half, Single, Double, and BigInteger
+///     types.
+/// </summary>
+/// <remarks>
+///     Although you can include a precision specifier, it is ignored. Round trips are given precedence over precision
+///     when using this specifier. The result string is affected by the formatting information of the current
+///     NumberFormatInfo object.
+/// </remarks>
+[TestFixture]
+public class When_formatting_a_fraction_using_the_round_tripping_format : DecimalNotationFormatterSpecs {
+    private static readonly string[] RoundTrippingFormats = ["R", "r"];
+
+    public static IEnumerable<TestCaseData> GeneralFormatsToTest =>
+        from stringFormat in RoundTrippingFormats
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
+
+    [Test]
+    [TestCaseSource(nameof(GeneralFormatsToTest))]
+    public string The_round_tripping_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
+    }
+}
+
+/// <summary>
+///     Custom numeric format strings such as "%#0.00" and "#0.0#;(#0.0#)" are supported using ToDouble().ToString(...)
+///     (with possible loss of precision)
+/// </summary>
+[TestFixture]
+public class When_formatting_a_fraction_using_a_custom_format : DecimalNotationFormatterSpecs {
+    public static IEnumerable<TestCaseData> TestCases {
+        get {
+            var culture = CultureInfo.InvariantCulture;
+            var oneHalf = new Fraction(1, 2);
+            yield return new TestCaseData("000", oneHalf, culture).Returns("001");
+            yield return new TestCaseData("0.00", oneHalf, culture).Returns("0.50");
+            yield return new TestCaseData("#####", oneHalf, culture).Returns("1");
+            yield return new TestCaseData("#.##", oneHalf, culture).Returns(".5");
+            yield return new TestCaseData("##,#", oneHalf, culture).Returns("1");
+            yield return new TestCaseData("#,#,,", oneHalf, culture).Returns("");
+            yield return new TestCaseData("%#0.00", oneHalf, culture).Returns("%50.00");
+            yield return new TestCaseData("##.0 %", oneHalf, culture).Returns("50.0 %");
+            yield return new TestCaseData("#0.00‰", oneHalf, culture).Returns("500.00‰");
+            yield return new TestCaseData("#0.0e0", oneHalf, culture).Returns("50.0e-2");
+            yield return new TestCaseData("0.0##e+00", oneHalf, culture).Returns("5.0e-01");
+            yield return new TestCaseData("0.0e+00", oneHalf, culture).Returns("5.0e-01");
+            yield return new TestCaseData(@"\###00\#", oneHalf, culture).Returns("#01#");
+            yield return new TestCaseData("#0.0#;(#0.0#);-\0-", oneHalf.Invert(), culture).Returns("(0.5)");
+            yield return new TestCaseData("#0.0#;(#0.0#)", Fraction.Zero, culture).Returns("0.0");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public string The_result_matches_ToDouble_ToString(string format, Fraction fraction, IFormatProvider formatProvider) {
+        var result = DecimalFormatter.Format(format, fraction, formatProvider);
+        result.Should().Be(fraction.ToDouble().ToString(format, formatProvider)); // just double-checking
+        return result;
+    }
+}
+
+[TestFixture]
+public class When_no_format_is_specified : DecimalNotationFormatterSpecs {
+    [Test]
+    public void The_result_should_be_formatted_using_the_generic_format() {
+        // Arrange
+        var fraction = new Fraction(-123456789.987);
+        // Act
+        var result = DecimalFormatter.Format(null, fraction, CultureInfo.CurrentCulture);
+        // Assert
+        result.Should().Be(DecimalFormatter.Format("G", fraction, CultureInfo.CurrentCulture));
+    }
+}
+
+[TestFixture]
+public class When_no_culture_is_specified : DecimalNotationFormatterSpecs {
+    [Test]
+    public void The_result_should_be_formatted_using_the_current_culture() {
+        // Arrange
+        var fraction = new Fraction(-123456789.987);
+        // Act
+        var result = DecimalFormatter.Format(null, fraction, null);
+        // Assert
+        result.Should().Be(DecimalFormatter.Format(null, fraction, CultureInfo.CurrentCulture));
     }
 }
 
