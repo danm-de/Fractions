@@ -1,4 +1,7 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
 
@@ -112,4 +115,20 @@ public class When_negating_a_fraction_with_1_as_numerator_and_1_as_denominator :
         _result.Denominator
             .Should().Be(1);
     }
+}
+
+[TestFixture]
+public class Negating_a_fraction_using_the_minus_operator : Spec {
+
+    private static readonly Fraction[] FractionsToTest = [
+        Fraction.MinusOne, Fraction.Zero, Fraction.One,
+        -0.5m, 1.5m,
+        new Fraction(0, 4, false)
+    ];
+
+    public static IEnumerable<TestCaseData> TestCases => FractionsToTest.Select(x => new TestCaseData(x).Returns(x.Invert()));
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public Fraction Is_the_same_as_calling_the_invert_method(Fraction fraction) => -fraction;
 }
