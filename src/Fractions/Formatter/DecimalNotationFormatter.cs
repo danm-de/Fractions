@@ -195,7 +195,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
         // any handling of the edge cases corresponding to numberFormatInfo.(NaNSymbol|PositiveInfinitySymbol|NegativeInfinitySymbol)
         // should happen here...
 
-        if (format is null or "") {
+        if (string.IsNullOrEmpty(format)) {
             return FormatGeneral(fraction, "G", numberFormatInfo);
         }
 
