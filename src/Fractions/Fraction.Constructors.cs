@@ -126,7 +126,7 @@ public readonly partial struct Fraction
     ///     Additionally, as the <see cref="double"/> value approaches the limits of its precision,
     ///     `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator
     ///     of the <see cref="Fraction"/> are both very large numbers. When these numbers are converted to <see cref="double"/> for the division
-    ///     operation in the <see cref="Fraction.ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
+    ///     operation in the <see cref="ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
     ///     a loss of precision.
     /// </para>
     ///     <code>

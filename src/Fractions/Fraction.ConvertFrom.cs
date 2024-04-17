@@ -390,7 +390,7 @@ public readonly partial struct Fraction {
     ///     Additionally, as the <see cref="double"/> value approaches the limits of its precision,
     ///     `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator
     ///     of the <see cref="Fraction"/> are both very large numbers. When these numbers are converted to <see cref="double"/> for the division
-    ///     operation in the <see cref="Fraction.ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
+    ///     operation in the <see cref="ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
     ///     a loss of precision.
     /// </para>
     ///     <code>
@@ -536,7 +536,7 @@ public readonly partial struct Fraction {
     ///     </para>
     /// </summary>
     /// <param name="value">The floating point value to convert.</param>
-    /// <param name="nbSignificantDigits">The maximum number of significant digits to consider when rounding the value.</param>
+    /// <param name="significantDigits">The maximum number of significant digits to consider when rounding the value.</param>
     /// <returns>A Fraction representing the rounded floating point value.</returns>
     /// <remarks>
     ///     The double data type stores its values as 64-bit floating point numbers in accordance with the <see href="https://en.wikipedia.org/wiki/IEEE_754">IEC 60559:1989 (IEEE
@@ -555,7 +555,7 @@ public readonly partial struct Fraction {
     ///     <para>
     ///         If you care only about minimizing the size of the numerator/denominator, and do not expect to use the
     ///         fraction in any strict comparison operations, then creating an approximated fraction using the
-    ///         <see cref="Fraction.FromDoubleRounded(double)" /> overload should offer much better performance.
+    ///         <see cref="FromDoubleRounded(double)" /> overload should offer much better performance.
     ///     </para>
     ///     For more information, visit the
     ///     <see
