@@ -23,6 +23,15 @@ These benchmarks evaluate the performance of various constructor operations with
 
 For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.ConstructorBenchmarks-report-github.md).
 
+## From Double Benchmarks
+These benchmarks evaluate the performance of constructing `Fraction` objects from double values. The operations being benchmarked are:
+- `Construct_FromDouble(double value)`: Constructs a `Fraction` object from a double value. This operation is used when a fraction needs to be created from a floating-point number.
+- `Construct_FromDoubleRounded(double value)`: Constructs a `Fraction` object from a double value, rounding the result. This operation is used when a fraction needs to be created from a floating-point number with rounding.
+- `Construct_FromDoubleRoundedToFifteenDigits(double value)`: Constructs a `Fraction` object from a double value, rounding the result to fifteen digits. This operation is used when a fraction needs to be created from a floating-point number with rounding to a specific precision.
+- `Construct_FromDoubleRoundedToEighteenDigits(double value)`: Constructs a `Fraction` object from a double value, rounding the result to eighteen digits. This operation is used when a fraction needs to be created from a floating-point number with rounding to a specific precision.
+
+For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.FromDoubleBenchmarks-report-github.md).
+
 ## Numeric Operations
 This section can include benchmarks related to various numeric operations. It can be further divided into sub-sections:
 
