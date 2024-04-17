@@ -368,14 +368,41 @@ public readonly partial struct Fraction {
     }
 
     /// <summary>
-    /// Converts a floating point value to a fraction. The value will not be rounded therefore you will probably 
-    /// get huge numbers as numerator und denominator. <see cref="double"/> values are not able to store simple rational
-    /// numbers like 0.2 or 0.3 - so please don't be worried if the fraction looks weird. For more information visit 
-    /// http://en.wikipedia.org/wiki/Floating_point
+    ///     Converts a floating point value to a fraction. Due to the fact that no rounding is applied to the input, values
+    ///     such as 0.2 or 0.3, which do not have an exact representation as a <see cref="double" />, would result in
+    ///     very large values in the numerator and denominator.
     /// </summary>
     /// <param name="value">A floating point value.</param>
-    /// <returns>A fraction</returns>
-    /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
+    /// <returns>A fraction corresponding to the binary floating-point representation of the value</returns>
+    /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
+    /// <remarks>
+    ///     The <see cref="double"/> data type in C# uses a binary floating-point representation, which can't accurately represent all
+    ///     decimal fractions. When you convert a <see cref="double"/> to a <see cref="Fraction"/> using this method, the resulting fraction is an
+    ///     exact representation of the <see cref="double"/> value, not the decimal number that the <see cref="double"/> is intended to approximate.
+    ///     This is why you can end up with large numerators and denominators.
+    ///     <code>
+    /// var value = Fraction.FromDouble(0.1);
+    /// Console.WriteLine(value);  // Outputs "3602879701896397/36028797018963968"
+    /// </code>
+    ///     The output fraction is an exact representation of the <see cref="double"/> value 0.1, which is actually slightly more than 0.1
+    ///     due to the limitations of binary floating-point representation.
+    /// <para>
+    ///     Additionally, as the <see cref="double"/> value approaches the limits of its precision,
+    ///     `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator
+    ///     of the <see cref="Fraction"/> are both very large numbers. When these numbers are converted to <see cref="double"/> for the division
+    ///     operation in the <see cref="Fraction.ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
+    ///     a loss of precision.
+    /// </para>
+    ///     <code>
+    /// var value = Fraction.FromDouble(double.Epsilon);
+    /// Console.WriteLine(value.ToDouble() == double.Epsilon);  // Outputs "False"
+    /// </code>
+    ///     For more information, visit the
+    ///     <see href="https://github.com/danm-de/Fractions?tab=readme-ov-file#creation-from-double-without-rounding">
+    ///         official GitHub repository
+    ///         page.
+    ///     </see>
+    /// </remarks>
     public static Fraction FromDouble(double value) {
         // No rounding here! It will convert the actual number that is stored as double! 
         // See https://csharpindepth.com/Articles/FloatingPoint
@@ -426,11 +453,33 @@ public readonly partial struct Fraction {
     }
 
     /// <summary>
-    /// Converts a floating point value to a fraction. The value will be rounded if possible.
+    ///     Converts a floating point value to a fraction by rounding to the nearest rational number.
+    ///     This method is designed to avoid large numbers in the numerator and denominator.
     /// </summary>
     /// <param name="value">A floating point value.</param>
-    /// <returns>A fraction</returns>
-    /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
+    /// <returns>
+    ///     A fraction that approximates the input value, rounded to the nearest rational number. If converted back to
+    ///     double, it would produce the same value.
+    /// </returns>
+    /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
+    /// <remarks>
+    ///     This method is the fastest among the three methods for converting a double to a fraction. However, it shouldn't be
+    ///     used for strict comparisons with other fractions due to the heuristic approach it uses.
+    ///     This approach is not guaranteed to produce the exact rational representation of the input. This is demonstrated in
+    ///     the following example:
+    ///     <code>
+    ///     var doubleValue = 1055.05585262;
+    ///     var roundedValue = Fraction.FromDoubleRounded(doubleValue);      // returns {4085925351/3872710} which is 1055.0558526199999483565771772222
+    ///     var literalValue = Fraction.FromDoubleRounded(doubleValue, 15);  // returns {52752792631/50000000} which is 1055.05585262 exactly
+    ///     Console.WriteLine(roundedValue.CompareTo(literalValue); // Outputs "-1" which stands for "smaller than"
+    ///     Console.WriteLine(roundedValue.ToDouble() == doubleValue); // Outputs "true" as the actual difference is smaller than the precision of the doubles
+    ///     </code>
+    ///     For more information, visit the
+    ///     <see href="https://github.com/danm-de/Fractions?tab=readme-ov-file#creation-from-double-with-maximum-number-of-significant-digits">
+    ///         official GitHub repository
+    ///         page.
+    ///     </see>
+    /// </remarks>
     public static Fraction FromDoubleRounded(double value) {
         if (double.IsNaN(value) || double.IsInfinity(value)) {
             throw new InvalidNumberException();
@@ -478,31 +527,43 @@ public readonly partial struct Fraction {
 
 
     /// <summary>
-    ///     Converts a floating point value to a Fraction. The value is rounded if possible.
+    ///     Converts a floating point value to a Fraction by rounding to the nearest rational number with a specified number of
+    ///     significant digits.
+    ///     <para>
+    ///         This method is designed to avoid large numbers in the numerator and denominator while also making the resulting
+    ///         <see cref="Fraction" /> safe to
+    ///         use in comparison operations with other fractions.
+    ///     </para>
     /// </summary>
     /// <param name="value">The floating point value to convert.</param>
-    /// <param name="significantDigits">Number of significant digits</param>
+    /// <param name="nbSignificantDigits">The maximum number of significant digits to consider when rounding the value.</param>
     /// <returns>A Fraction representing the rounded floating point value.</returns>
     /// <remarks>
-    ///     The double data type stores its values as 64-bit floating point numbers in accordance with the IEC 60559:1989 (IEEE
-    ///     754) standard for binary floating-point arithmetic.
+    ///     The double data type stores its values as 64-bit floating point numbers in accordance with the <see href="https://en.wikipedia.org/wiki/IEEE_754">IEC 60559:1989 (IEEE
+    ///     754)</see> standard for binary <see href="https://en.wikipedia.org/wiki/Floating-point_arithmetic">floating-point arithmetic</see>.
     ///     However, the double data type cannot precisely store some binary fractions. For instance, 1/10, which is accurately
     ///     represented by .1 as a decimal fraction, is represented by .0001100110011... as a binary fraction, with the pattern
     ///     0011 repeating indefinitely.
     ///     In such cases, the floating-point value provides an approximate representation of the number.
     ///     <para>
-    ///         This method can be used to avoid large numbers in the numerator and denominator. However, be aware that the
-    ///         creation speed is significantly slower than using the pure value resulting from casting to double.
-    ///     </para>
-    /// </remarks>
-    /// <example>
-    ///     This example shows how to use the <see cref="FromDoubleRounded(double, int)" /> method.
-    ///     <code>
-    /// Fraction qv = Fraction.FromDoubleRounded(0.1, 15);
-    /// // Output: 1/10, which is exactly 0.1
+    ///         This method can be used to avoid large numbers in the numerator and denominator while also making it safe to
+    ///         use in comparison operations with other fractions.
+    ///         <code>
+    /// Fraction value = Fraction.FromDoubleRounded(0.1, 15); // returns {1/10}, which is exactly 0.1 
     /// </code>
-    /// </example>
-    /// <exception cref="InvalidNumberException">If <paramref name="value"/> is NaN (not a number) or infinite.</exception>
+    ///     </para>
+    ///     <para>
+    ///         If you care only about minimizing the size of the numerator/denominator, and do not expect to use the
+    ///         fraction in any strict comparison operations, then creating an approximated fraction using the
+    ///         <see cref="Fraction.FromDoubleRounded(double)" /> overload should offer much better performance.
+    ///     </para>
+    ///     For more information, visit the
+    ///     <see
+    ///         href="https://github.com/danm-de/Fractions?tab=readme-ov-file#creation-from-double-with-rounding-to-a-close-approximation">
+    ///         official GitHub repository
+    ///         page.
+    ///     </see>
+    /// </remarks>
     public static Fraction FromDoubleRounded(double value, int significantDigits) {
         switch (value) {
             case 0:
