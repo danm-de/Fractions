@@ -84,7 +84,7 @@ public readonly partial struct Fraction {
         IsZero ? _zero : new Fraction(BigInteger.Negate(_numerator), _denominator, _state);
 
     /// <inheritdoc cref="Negate"/>>
-    [Obsolete("Please use Negate() instead.", error: false)]
+    [Obsolete("The 'Invert' method is obsolete. Please use the the 'Negate' method or the negation operator '-value'.", error: false)]
     public Fraction Invert() => Negate();
 
     /// <summary>
