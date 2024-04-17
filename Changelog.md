@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## 7.7.0
+
+- Added DecimalNotationFormatter + documentation by https://github.com/lipchev
+
 ## 7.6.1
 
 - Incorrect result when rounding 1/3 with MidpointRounding.ToEven (fixes #39) by https://github.com/lipchev
