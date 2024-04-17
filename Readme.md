@@ -249,6 +249,11 @@ You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fract
 
 The data type stores the numerator and denominator as `BigInteger`. Per default it will reduce fractions to its normalized form during creation. The result of each mathematical operation will be reduced as well. There is a special constructor to create a non-normalized fraction. Be aware that `Equals` relies on normalized values when comparing two different instances.
 
+## Performance considerations
+We have a suite of benchmarks that test the performance of various operations in the Fractions library. These benchmarks provide valuable insights into the relative performance of different test cases.
+For more detailed information about these benchmarks and how to interpret them, please refer to the [Fractions Benchmarks Readme](./benchmarks/Readme.md) in the benchmarks subfolder.
+
+
 ## Build from source
 
 [![Build status](https://ci.appveyor.com/api/projects/status/22acgj4m7pt5wr8d?svg=true)](https://ci.appveyor.com/project/danm-de/fractions)
