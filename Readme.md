@@ -115,9 +115,9 @@ var value = rationalNumber.ToDecimal();
 Console.WriteLine(Math.Round(value, 5));
 ```
 
-### String format
+## String format
 
-| Character | Description |
+| Specifier | Description |
 | ----------| ----------- |
 | G | General format: &lt;numerator&gt;/&lt;denominator&gt; e.g. _1/3_ |
 | n | Numerator |
@@ -126,7 +126,7 @@ Console.WriteLine(Math.Round(value, 5));
 | r | The positive remainder of all digits after the decimal point using the format: &lt;numerator&gt;/&lt;denominator&gt; or `string.Empty` if the fraction is a valid integer without digits after the decimal point. |
 | m | The fraction as mixed number e.g. _2 1/3_ instead of _7/3_ |
 
-**Note:** The special characters _#_, and _0_ like in _#.###_ are not supported. Convert the `Fraction` to `decimal` if you want to display rounded decimal values.
+**Note:** The special characters _#_, and _0_ like in _#.###_ are not supported. Consider converting the `Fraction` to `decimal`/`double` if you want to support the [custom formats](https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings).
 
 Example:
 
@@ -134,6 +134,58 @@ Example:
 var value = new Fraction(3, 2);
 // returns 1 1/2
 Console.WriteLine(value.ToString("m", new CultureInfo("de-DE")));
+```
+## Decimal Notation Formatter
+
+The `DecimalNotationFormatter` class allows for formatting `Fraction` objects using the standard decimal notation, and the specified format and culture-specific format information. 
+Unlike standard numeric types such as `double` and `decimal`, there is no limit to the represented range or precision when using `DecimalNotationFormatter`.
+
+### Usage
+
+Here is a general example of how to use the `DecimalNotationFormatter`:
+
+```csharp
+Fraction value = Fraction.FromString("123456789987654321.123456789987654321");
+string formattedValue = DecimalNotationFormatter.Instance.Format("G36", value, CultureInfo.InvariantCulture);
+Console.WriteLine(formattedValue); // Outputs "123456789987654321.123456789987654321"
+```
+
+In this example, the `Format` method is used to format the value of a `Fraction` object into a string using the 'G' (General) format with a precision specifier of 36, which formats the fraction with up to 36 significant digits.
+
+### Supported Formats
+
+The `Format` method supports the following format strings. For more information about these formats, see the [official .NET documentation](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings).
+
+| Specifier | Format Name | Fraction | Format | Output |
+|-----------|-------------|----------|--------|--------|
+| 'G' or 'g' | [General format](https://docs.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings#the-general-g-format-specifier) | `400/3` | 'G2' | `1.3E+02` |
+| 'F' or 'f' | [Fixed-point format](https://docs.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings#the-fixed-point-f-format-specifier) | `12345/10` | 'F2' | `1234.50` |
+| 'N' or 'n' | [Standard Numeric format](https://docs.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings#the-number-n-format-specifier) | `1234567/1000` | 'N2' | `1,234.57` |
+| 'E' or 'e' | [Scientific format](https://docs.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings#the-exponential-e-format-specifier) | `1234567/1000` | 'E2' | `1.23E+003` |
+| 'P' or 'p' | [Percent format](https://docs.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings#the-percent-p-format-specifier) | `2/3` | 'P2' | `66.67 %` |
+| 'C' or 'c' | [Currency format](https://docs.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings#the-currency-c-format-specifier) | `1234567/1000` | 'C2' | `$1,234.57` |
+| 'R' or 'r' | [Round-trip format](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#RFormatString) | `1234567/1000` | 'R' | `1234.567` |
+| 'S' or 's' | [Significant Digits After Radix format](#significant-digits-after-radix-format) | `400/3` | 'S2' | `133.33` |
+
+Please note that the 'R' format and the [custom formats](https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings) are handled by casting the `Fraction` to `double`, which may result in a loss of precision.
+
+### Significant Digits After Radix Format
+
+The 'S' format is a non-standard format that formats the fraction with significant digits after the radix and dynamically switches between decimal and scientific notation depending on the value of the fraction. 
+
+For fractions where the absolute value is greater than or equal to 0.001 and less than 10000, the 'S' format uses decimal notation. For all other values, it switches to scientific notation.
+
+Here are a few examples:
+
+```csharp
+Fraction value = new Fraction(1, 3);
+Console.WriteLine(value.ToString("S")); // Outputs "0.33"
+
+value = newFraction(1, 1000);
+Console.WriteLine(value.ToString("S")); // Outputs "0.001"
+
+value = new Fraction(1, 100000);
+Console.WriteLine(value.ToString("S")); // Outputs "1E-05"
 ```
 
 ## Mathematic operators
