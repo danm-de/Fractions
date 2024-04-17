@@ -101,16 +101,44 @@ public readonly partial struct Fraction
         _denominator = numerator.IsZero ? BigInteger.Zero : BigInteger.One;
         _state = FractionState.IsNormalized;
     }
-
+    
 
     /// <summary>
-    /// Creates a normalized fraction using a 64bit floating point value (double).
-    /// The value will not be rounded therefore you will probably get huge numbers as numerator und denominator. 
-    /// <see cref="double"/> values are not able to store simple rational numbers like 0.2 or 0.3 - so please 
-    /// don't be worried if the fraction looks weird. For more information visit 
-    /// http://en.wikipedia.org/wiki/Floating_point
+    ///     Creates a <see cref="Fraction"/> by converting a floating point value. Due to the fact that no rounding is applied to the input, values
+    ///     such as 0.2 or 0.3, which do not have an exact representation as a <see cref="double" />, would result in
+    ///     very large values in the numerator and denominator.
     /// </summary>
-    /// <param name="value">Floating point value.</param>
+    /// <param name="value">A floating point value.</param>
+    /// <returns>A fraction corresponding to the binary floating-point representation of the value</returns>
+    /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
+    /// <remarks>
+    ///     The <see cref="double"/> data type in C# uses a binary floating-point representation, which can't accurately represent all
+    ///     decimal fractions. When you convert a <see cref="double"/> to a <see cref="Fraction"/> using this method, the resulting fraction is an
+    ///     exact representation of the <see cref="double"/> value, not the decimal number that the <see cref="double"/> is intended to approximate.
+    ///     This is why you can end up with large numerators and denominators.
+    ///     <code>
+    /// var value = Fraction.FromDouble(0.1);
+    /// Console.WriteLine(value);  // Outputs "3602879701896397/36028797018963968"
+    /// </code>
+    ///     The output fraction is an exact representation of the <see cref="double"/> value 0.1, which is actually slightly more than 0.1
+    ///     due to the limitations of binary floating-point representation.
+    /// <para>
+    ///     Additionally, as the <see cref="double"/> value approaches the limits of its precision,
+    ///     `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator
+    ///     of the <see cref="Fraction"/> are both very large numbers. When these numbers are converted to <see cref="double"/> for the division
+    ///     operation in the <see cref="ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
+    ///     a loss of precision.
+    /// </para>
+    ///     <code>
+    /// var value = Fraction.FromDouble(double.Epsilon);
+    /// Console.WriteLine(value.ToDouble() == double.Epsilon);  // Outputs "False"
+    /// </code>
+    ///     For more information, visit the
+    ///     <see href="https://github.com/danm-de/Fractions?tab=readme-ov-file#creation-from-double-without-rounding">
+    ///         official GitHub repository
+    ///         page.
+    ///     </see>
+    /// </remarks>
     public Fraction(double value) => this = FromDouble(value);
 
     /// <summary>

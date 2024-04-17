@@ -25,10 +25,10 @@ Fraction d = new BigInteger(3);
 // ..
 ```
 
-You can explicitly cast `double` to `Fraction`:
+You can explicitly cast `double` to `Fraction`, however doing so directly has [some important caveats](#creation-from-double-without-rounding) that you should be aware of:
 
 ```csharp
-var a = (Fraction)3.3;  // double
+var a = (Fraction)3.3;  // returns {3715469692580659/1125899906842624} which is 3.299999999999999822364316059975
 ```
 
 You can explicitly cast from `Fraction` to any supported data type (`int`, `uint`, `long`, `ulong`, `BigInteger`, `decimal`, `double`). However, be aware that an `OverflowException` will be thrown, if the target data type's boundary values are exceeded.
@@ -37,7 +37,7 @@ You can explicitly cast from `Fraction` to any supported data type (`int`, `uint
 
 There a three types of constructors available:
 
-- `new Fraction (<value>)` for `int`, `uint`, `long`, `ulong`, `BigInteger`, `decimal` and `double`.
+- `new Fraction (<value>)` for `int`, `uint`, `long`, `ulong`, `BigInteger`, `decimal` and _`double` [(without rounding)](#creation-from-double-without-rounding)_.
 - `new Fraction (<numerator>, <denominator>)` using `BigInteger` for numerator and denominator.
 - `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator + `bool` to indicate if the resulting fraction shall be normalized (reduced).
 
@@ -46,6 +46,7 @@ There a three types of constructors available:
 - `Fraction.FromDecimal(decimal)`
 - `Fraction.FromDouble(double)`
 - `Fraction.FromDoubleRounded(double)`
+- `Fraction.FromDoubleRounded(double, int)` (using a maximum number of significant digits)
 - `Fraction.FromString(string)` (using current culture)
 - `Fraction.FromString(string, IFormatProvider)`
 - `Fraction.FromString(string, NumberStyles, IFormatProvider)`
@@ -53,23 +54,69 @@ There a three types of constructors available:
 - `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)`
 - `Fraction.TryParse(ReadOnlySpan<char>, NumberStyles, IFormatProvider, bool, out Fraction)`
 
-### Creation from `double`
+### Creation from `double` _without rounding_
 
-The `double` data type stores its values as 64bit floating point numbers that comply with IEC 60559:1989 (IEEE 754) standard for binary floating-point arithmetic. `double` cannot store some binary fractions. For example, _1/10_, which is represented precisely by _.1_ as a decimal fraction, is represented by _.0001100110011..._ as a binary fraction, with the pattern _0011_ repeating to infinity. In this case, the floating-point value provides an imprecise representation of the number that it represents:
+The `double` data type in C# uses a binary floating-point representation, which complies with the [IEC 60559:1989 (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754) standard for [binary floating-point arithmetic](https://en.wikipedia.org/wiki/Floating-point_arithmetic). This representation can't accurately represent all decimal fractions. For example, the decimal fraction _0.1_ is represented as the repeating binary fraction _.0001100110011..._. As a result, a `double` value can only provide an approximate representation of the decimal number it's intended to represent.
+
+#### Large values in the numerator / denominator
+When you convert a `double` to a `Fraction` using the `Fraction.FromDouble` method, the resulting fraction is an exact representation of the `double` value, not the decimal number that the `double` is intended to approximate. This is why you can end up with large numerators and denominators. 
 
 ```csharp
 var value = Fraction.FromDouble(0.1);
-/* Returns 3602879701896397/36028797018963968
- * which is 0.10000000000000000555111512312578 */ 
-Console.WriteLine(value);
+Console.WriteLine(value); // Ouputs "3602879701896397/36028797018963968" which is 0.10000000000000000555111512312578
 ```
 
-You can use the `Fraction.FromDoubleRounded(double)` method to avoid big numbers in numerator and denominator. But please keep in mind that the creation speed is significantly slower than using the pure value from `Fraction.FromDouble(double)`. Example:
+The output fraction is an exact representation of the `double` value 0.1, which is actually slightly more than 0.1 due to the limitations of binary floating-point representation.
+
+#### Comparing fractions created with double precision
+Using a `Fraction` that was created using this method for strict Equality/Comparison should be avoided. For example:
+
+```csharp
+var fraction1 = Fraction.FromDouble(0.1);
+var fraction2 = new Fraction(1, 10);
+Console.WriteLine(fraction1 == fraction2); // Outputs "False"
+```
+
+If you need to compare a `Fraction` created from `double` with others fractions you should either do so by using a tolerance or consider constructing the `Fraction` by [specifying the maximum number of significant digits.](#creation-from-double-with-maximum-number-of-significant-digits)
+
+#### Possible rounding errors near the limits of the double precision
+When a `double` value is very close to the limits of its precision, `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator of the `Fraction` are both very large numbers. When these numbers are converted to `double` for the division operation in the `Fraction.ToDouble` method, they can exceed the precision limit of the `double` type, resulting in a loss of precision.
+
+```csharp
+var value = Fraction.FromDouble(double.Epsilon);
+Console.WriteLine(value.ToDouble() == double.Epsilon); // Outputs "False"
+```
+
+For more detailed information about the behavior of the `Fraction.FromDouble` method and the limitations of the `double` type, please refer to the XML documentation comments in the source code.
+
+### Creation from `double` with maximum number of significant digits
+
+The `Fraction.FromDoubleRounded(double, int)` method allows you to specify the maximum number of significant digits when converting a `double` to a `Fraction`. This can help to avoid large numerators and denominators, and can make the `Fraction` suitable for comparison operations. 
+
+```csharp
+var value = Fraction.FromDoubleRounded(0.1, 15); // Returns a fraction with a maximum of 15 significant digits
+Console.WriteLine(value); // Outputs "1/10"
+```
+
+If you care only about minimizing the size of the numerator/denominator, and do not expect to use the fraction in any strict comparison operations, then [creating an approximated fraction](#creation-from-double-with-rounding-to-a-close-approximation) using the `Fraction.FromDoubleRounded(double)` overload should offer the best performance.
+
+### Creation from `double` with rounding to a _close approximation_
+
+You can use the `Fraction.FromDoubleRounded(double)` method to avoid big numbers in numerator and denominator. Example:
 
 ```csharp
 var value = Fraction.FromDoubleRounded(0.1);
-// Returns 1/10 which is 0.1 
-Console.WriteLine(value);
+Console.WriteLine(value); // Outputs "1/10"
+```
+
+However, please note that while rounding to an approximate value would mostly produce the expected result, it shouldn't be relied on for any strict comparison operations. Consider this example:
+
+```csharp
+var doubleValue = 1055.05585262;
+var roundedValue = Fraction.FromDoubleRounded(doubleValue);      // returns {4085925351/3872710} which is 1055.0558526199999483565771772222
+var literalValue = Fraction.FromDoubleRounded(doubleValue, 15);  // returns {52752792631/50000000} which is 1055.05585262 exactly
+Console.WriteLine(roundedValue.CompareTo(literalValue); // Outputs "-1" which stands for "smaller than"
+Console.WriteLine(roundedValue.ToDouble() == doubleValue); // Outputs "true" as the actual difference is smaller than the precision of the doubles
 ```
 
 ## Creation from `string`
