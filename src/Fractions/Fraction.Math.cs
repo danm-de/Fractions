@@ -74,14 +74,18 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="subtrahend">Subtrahend.</param>
     /// <returns>The result as difference.</returns>
-    public Fraction Subtract(Fraction subtrahend) => Add(subtrahend.Invert());
+    public Fraction Subtract(Fraction subtrahend) => Add(subtrahend.Negate());
 
     /// <summary>
-    /// Inverts the fraction. Has the same result as multiplying it by -1.
+    /// Negates the fraction. Has the same result as multiplying it by -1.
     /// </summary>
-    /// <returns>The inverted fraction.</returns>
-    public Fraction Invert() =>
+    /// <returns>The negated fraction.</returns>
+    public Fraction Negate() =>
         IsZero ? _zero : new Fraction(BigInteger.Negate(_numerator), _denominator, _state);
+
+    /// <inheritdoc cref="Negate"/>>
+    [Obsolete("Please use Negate() instead.", error: false)]
+    public Fraction Invert() => Negate();
 
     /// <summary>
     /// Multiply the fraction's value by <paramref name="factor"/>.

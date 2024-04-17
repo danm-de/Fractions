@@ -198,7 +198,7 @@ The following mathematic operations are supported:
 - `.Multiply(Fraction)` returns the product of `(a * b)`
 - `.Divide(Fraction)` returns the quotient of `(a / b)`
 - `.Remainder(Fraction)` returns the remainder (or left over) of `(a % b)`
-- `.Invert()` returns an inverted fraction (same operation as `(a * -1)`)
+- `.Negate()` returns a negated fraction (same operation as `(a * -1)`)
 - `.Abs()` returns the absolute value `|a|`
 - `Fraction.Pow(Fraction, int)` returns a base raised to a power `(a ^ exponent)` (e.g. _1/10_^(-1) -> _10/1_)
 - `Fraction.Round(Fraction, int, MidpointRounding)` returns the fraction, which is rounded to the specified precision

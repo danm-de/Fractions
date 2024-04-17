@@ -763,7 +763,7 @@ public class When_formatting_a_fraction_using_a_custom_format : DecimalNotationF
             yield return new TestCaseData("0.0##e+00", oneHalf, culture).Returns("5.0e-01");
             yield return new TestCaseData("0.0e+00", oneHalf, culture).Returns("5.0e-01");
             yield return new TestCaseData(@"\###00\#", oneHalf, culture).Returns("#01#");
-            yield return new TestCaseData("#0.0#;(#0.0#);-\0-", oneHalf.Invert(), culture).Returns("(0.5)");
+            yield return new TestCaseData("#0.0#;(#0.0#);-\0-", oneHalf.Negate(), culture).Returns("(0.5)");
             yield return new TestCaseData("#0.0#;(#0.0#)", Fraction.Zero, culture).Returns("0.0");
         }
     }
