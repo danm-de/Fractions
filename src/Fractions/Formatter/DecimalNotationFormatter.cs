@@ -199,7 +199,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             return FormatGeneral(fraction, "G", numberFormatInfo);
         }
 
-        var formatCharacter = format[0];
+        var formatCharacter = format![0];
         return formatCharacter switch {
             'G' or 'g' => FormatGeneral(fraction, format, numberFormatInfo),
             'F' or 'f' => FormatWithFixedPointFormat(fraction, format, numberFormatInfo),
@@ -315,7 +315,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             var roundedValue = Round(fraction.Numerator, fraction.Denominator);
 #if NETSTANDARD
             if (roundedValue.IsZero) {
-                return 0.ToString(format, formatProvider);
+                return 0d.ToString(format, formatProvider);
             }
 #endif
             sb.Append(roundedValue.ToString(format, formatProvider)!);
@@ -324,7 +324,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
 #if NETSTANDARD
                 if (roundedFraction.Numerator.IsZero) {
-                    return 0.ToString(format, formatProvider);
+                    return 0d.ToString(format, formatProvider);
                 }
 #endif
                 sb.Append(roundedFraction.Numerator.ToString(format, formatProvider)!);
