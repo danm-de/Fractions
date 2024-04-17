@@ -72,7 +72,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// <remarks>
     ///     This instance can be used to format Fraction objects into decimal string representations.
     /// </remarks>
-    public static readonly ICustomFormatter Instance = new DecimalNotationFormatter();
+    public static ICustomFormatter Instance { get; } = new DecimalNotationFormatter();
 
     private static readonly BigInteger Ten = new(10);
 
