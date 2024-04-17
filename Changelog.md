@@ -3,8 +3,9 @@
 ## 7.7.0
 
 - Added DecimalNotationFormatter + documentation by https://github.com/lipchev
+- Added Benchmark results summary (with Readme) by https://github.com/lipchev
 - Introduced the negation (-) operator by https://github.com/lipchev
-- Replace .Invert() with .Negate()
+- Replace .Invert() with .Negate() method
 
 ## 7.6.1
 
