@@ -16,7 +16,10 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
     private static readonly BigInteger MIN_DECIMAL = new(decimal.MinValue);
     private static readonly BigInteger MAX_DECIMAL = new(decimal.MaxValue);
     private static readonly BigInteger TEN = new (10);
-    private static readonly Fraction _zero = new(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);
+    private static readonly Fraction _nan = new(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);
+    private static readonly Fraction _positiveInfinity = new(BigInteger.One, BigInteger.Zero, FractionState.IsNormalized);
+    private static readonly Fraction _negativeInfinity = new(BigInteger.MinusOne, BigInteger.Zero, FractionState.IsNormalized);
+    private static readonly Fraction _zero = new (BigInteger.Zero, BigInteger.One, FractionState.IsNormalized);
     private static readonly Fraction _one = new(BigInteger.One, BigInteger.One, FractionState.IsNormalized);
     private static readonly Fraction _minusOne = new(BigInteger.MinusOne, BigInteger.One, FractionState.IsNormalized);
     private static readonly Fraction _two = new(new BigInteger(2), BigInteger.One, FractionState.IsNormalized);
@@ -33,29 +36,71 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
     /// <summary>
     /// The denominator
     /// </summary>
-    public BigInteger Denominator => _denominator;
+    public BigInteger Denominator => _denominator.IsZero && _numerator.IsZero && _state != FractionState.IsNormalized ? BigInteger.One : _denominator;
+
 
     /// <summary>
-    /// <c>true</c> if the value is positive (greater than or equal to 0).
+    /// <c>true</c> if the fraction represents a valid number or <c>false</c> otherwise.
     /// </summary>
-    public bool IsPositive => _numerator.Sign == 1 && _denominator.Sign == 1 ||
-                              _numerator.Sign == -1 && _denominator.Sign == -1;
+    public bool IsNaN => _denominator.IsZero && _numerator.IsZero && _state == FractionState.IsNormalized;
+    
+    /// <summary>
+    /// <c>true</c> if the fraction evaluates to positive or negative infinity or <c>false</c> otherwise.
+    /// </summary>
+    public bool IsInfinity => _denominator.IsZero && !_numerator.IsZero;
+    
+    /// <summary>
+    /// <c>true</c> if the fraction evaluates to positive infinity or <c>false</c> otherwise.
+    /// </summary>
+    public bool IsPositiveInfinity => _denominator.IsZero && _numerator.Sign == 1;
+    
+    /// <summary>
+    /// <c>true</c> if the fraction evaluates to negative infinity or <c>false</c> otherwise.
+    /// </summary>
+    public bool IsNegativeInfinity => _denominator.IsZero && _numerator.Sign == -1;
 
     /// <summary>
-    /// <c>true</c> if the value is negative (lesser than 0).
+    ///     <c>true</c> if the value is greater than zero or <c>false</c> otherwise.
     /// </summary>
-    public bool IsNegative => _numerator.Sign == -1 && _denominator.Sign == 1 ||
-                              _numerator.Sign == 1 && _denominator.Sign == -1;
+    public bool IsPositive => _numerator.Sign switch {
+        0 => false,
+        1 => _denominator.Sign >= 0,
+        _ => _denominator.Sign < 0
+    };
 
     /// <summary>
-    /// <c>true</c> if the fraction has a real (calculated) value of 0.
+    /// <c>true</c> if the value is lesser than zero or <c>false</c> otherwise.
     /// </summary>
-    public bool IsZero => _numerator.IsZero || _denominator.IsZero;
+    public bool IsNegative => _numerator.Sign switch {
+        0 => false,
+        -1 => _denominator.Sign >= 0,
+        _ => _denominator.Sign < 0
+    };
+
+    /// <summary>
+    /// <c>true</c> if the fraction represents the value 0 or <c>false</c> otherwise.
+    /// </summary>
+    public bool IsZero => _numerator.IsZero && !IsNaN;
 
     /// <summary>
     /// The fraction's state.
     /// </summary>
     public FractionState State => _state;
+
+    /// <summary>
+    /// A fraction representing the positive infinity.
+    /// </summary>
+    public static Fraction PositiveInfinity => _positiveInfinity;
+
+    /// <summary>
+    /// A fraction representing the negative infinity.
+    /// </summary>
+    public static Fraction NegativeInfinity => _negativeInfinity;
+    
+    /// <summary>
+    /// A fraction representing the result of dividing zero by zero.
+    /// </summary>
+    public static Fraction NaN => _nan;
 
     /// <summary>
     /// A fraction with the reduced/simplified value of 0.

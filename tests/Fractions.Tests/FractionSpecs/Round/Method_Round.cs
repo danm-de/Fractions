@@ -178,4 +178,70 @@ public class When_rounding_a_decimal_fraction : Spec {
 
         roundedValue.Should().Be(valueToTest);
     }
+
+    private static IEnumerable RoundNaNToBigIntegerTestCases =>
+        from midpointRounding in RoundingModes
+        select new TestCaseData(Fraction.NaN, midpointRounding);
+    
+    [Test]
+    [TestCaseSource(nameof(RoundNaNToBigIntegerTestCases))]
+    public void The_result_of_rounding_NaN_to_BigInteger_should_be_a_DivideByZeroException(Fraction fraction, MidpointRounding roundingMode) {
+        Invoking(() => Fraction.RoundToBigInteger(fraction, roundingMode)).Should().Throw<DivideByZeroException>();
+    }
+
+    private static IEnumerable RoundPositiveInfinityToBigIntegerTestCases =>
+        from midpointRounding in RoundingModes
+        select new TestCaseData(Fraction.PositiveInfinity, midpointRounding);
+    
+    [Test]
+    [TestCaseSource(nameof(RoundPositiveInfinityToBigIntegerTestCases))]
+    public void The_result_of_rounding_PositiveInfinity_to_BigInteger_should_throw_a_DivideByZeroException(Fraction fraction, MidpointRounding roundingMode) {
+        Invoking(() => Fraction.RoundToBigInteger(fraction, roundingMode)).Should().Throw<DivideByZeroException>();
+    }
+    
+    private static IEnumerable RoundNegativeInfinityToBigIntegerTestCases =>
+        from midpointRounding in RoundingModes
+        select new TestCaseData(Fraction.NegativeInfinity, midpointRounding);
+    
+    [Test]
+    [TestCaseSource(nameof(RoundNegativeInfinityToBigIntegerTestCases))]
+    public void The_result_of_rounding_NegativeInfinity_to_BigInteger_should_throw_a_DivideByZeroException(Fraction fraction, MidpointRounding roundingMode) {
+        Invoking(() => Fraction.RoundToBigInteger(fraction, roundingMode)).Should().Throw<DivideByZeroException>();
+    }
+    
+    private static IEnumerable RoundNaNTestCases =>
+        from decimalPlaces in DecimalPlaces
+        from midpointRounding in RoundingModes
+        select new TestCaseData(Fraction.NaN, decimalPlaces, midpointRounding)
+            .Returns(Fraction.NaN);
+    
+    [Test]
+    [TestCaseSource(nameof(RoundNaNTestCases))]
+    public Fraction The_result_of_rounding_NaN_should_be_NaN(Fraction fraction, int decimalPlaces, MidpointRounding roundingMode) {
+        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    }
+    
+    private static IEnumerable RoundPositiveInfinityTestCases =>
+        from decimalPlaces in DecimalPlaces
+        from midpointRounding in RoundingModes
+        select new TestCaseData(Fraction.PositiveInfinity, decimalPlaces, midpointRounding)
+            .Returns(Fraction.PositiveInfinity);
+    
+    [Test]
+    [TestCaseSource(nameof(RoundPositiveInfinityTestCases))]
+    public Fraction The_result_of_rounding_PositiveInfinity_should_be_PositiveInfinity(Fraction fraction, int decimalPlaces, MidpointRounding roundingMode) {
+        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    }
+    
+    private static IEnumerable RoundNegativeInfinityTestCases =>
+        from decimalPlaces in DecimalPlaces
+        from midpointRounding in RoundingModes
+        select new TestCaseData(Fraction.NegativeInfinity, decimalPlaces, midpointRounding)
+            .Returns(Fraction.NegativeInfinity);
+    
+    [Test]
+    [TestCaseSource(nameof(RoundNegativeInfinityTestCases))]
+    public Fraction The_result_of_rounding_NegativeInfinity_should_be_NegativeInfinity(Fraction fraction, int decimalPlaces, MidpointRounding roundingMode) {
+        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    }
 }

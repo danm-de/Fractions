@@ -429,19 +429,19 @@ public readonly partial struct Fraction {
         if (exponentBits == EXPONENT_BITS) {
             // NaN or Infinity
             if (mantissaBits != 0) {
-                throw new InvalidNumberException(Resources.NaNNotSupported);
+                return _nan;
             }
 
             // Infinity
-            throw isNegative
-                ? new InvalidNumberException(Resources.NegativeInfinityNotSupported)
-                : new InvalidNumberException(Resources.PositiveInfinityNotSupported);
+            return isNegative
+                ? _negativeInfinity
+                : _positiveInfinity;
         }
         
         var exponent = (int)((exponentBits >> 52) - K);
 
         // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
-        var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
+        var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR); // TODO test without normalization
         
         var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
         // 2^exponent
@@ -481,12 +481,19 @@ public readonly partial struct Fraction {
     ///     </see>
     /// </remarks>
     public static Fraction FromDoubleRounded(double value) {
-        if (double.IsNaN(value) || double.IsInfinity(value)) {
-            throw new InvalidNumberException();
+        if (double.IsPositiveInfinity(value)) {
+            return _positiveInfinity;
         }
 
-        // Null?
-        if (Math.Abs(value - 0.0) < double.Epsilon) {
+        if (double.IsNegativeInfinity(value)) {
+            return _negativeInfinity;
+        }
+
+        if (double.IsNaN(value)) {
+            return _nan;
+        }
+
+        if (Math.Abs(value - 0) < double.Epsilon) { // TODO does this make any sense or can we replace it with a value == 0 check?
             return Zero;
         }
 
@@ -519,10 +526,10 @@ public readonly partial struct Fraction {
             }
         }
 
-        return new Fraction(
+        // TODO see about creating a private overload (without the nan checks)
+        return GetReducedFraction(
             sign < 0 ? BigInteger.Negate(numerator) : numerator,
-            new BigInteger(denominator),
-            true);
+            new BigInteger(denominator));
     }
 
 
@@ -569,11 +576,11 @@ public readonly partial struct Fraction {
             case 0:
                 return Zero;
             case double.NaN:
-                throw new InvalidNumberException(Resources.NaNNotSupported);
+                return NaN;
             case double.PositiveInfinity:
-                throw new InvalidNumberException(Resources.PositiveInfinityNotSupported);
+                return PositiveInfinity;
             case double.NegativeInfinity:
-                throw new InvalidNumberException(Resources.NegativeInfinityNotSupported);
+                return NegativeInfinity;
         }
 
         // Determine the number of decimal places to keep
@@ -598,7 +605,8 @@ public readonly partial struct Fraction {
 
         var denominator = BigInteger.Pow(TEN, decimalPlaces);
         var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
-        return new Fraction(numerator, denominator);
+        // TODO use the private overload
+        return GetReducedFraction(numerator, denominator);
     }
     
 
@@ -608,16 +616,13 @@ public readonly partial struct Fraction {
     /// <param name="value">A decimal value.</param>
     /// <returns>A fraction.</returns>
     public static Fraction FromDecimal(decimal value) {
-        if (value == decimal.Zero) {
-            return _zero;
-        }
-
-        if (value == decimal.One) {
-            return _one;
-        }
-
-        if (value == decimal.MinusOne) {
-            return _minusOne;
+        switch (value) {
+            case decimal.Zero:
+                return _zero;
+            case decimal.One:
+                return _one;
+            case decimal.MinusOne:
+                return _minusOne;
         }
 
         var bits = decimal.GetBits(value);
@@ -637,10 +642,10 @@ public readonly partial struct Fraction {
             high[0], high[1], high[2], high[3],
             0x00
         ]);
-        var denominator = BigInteger.Pow(10, exp);
+        var denominator = BigInteger.Pow(TEN, exp);
 
         return positiveSign
-            ? new Fraction(numerator, denominator, true)
-            : new Fraction(BigInteger.Negate(numerator), denominator, true);
+            ? GetReducedFraction(numerator, denominator)
+            : GetReducedFraction(BigInteger.Negate(numerator), denominator);
     }
 }

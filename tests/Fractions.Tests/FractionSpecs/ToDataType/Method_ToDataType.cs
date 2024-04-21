@@ -87,3 +87,117 @@ public class When_user_converts_fraction_to_BigInteger : Spec {
         return (BigInteger)value;
     }
 }
+
+[TestFixture]
+public class When_converting_NaN : Spec {
+    [Test]
+    public void ToDecimal_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NaN.ToDecimal()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToInt32_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NaN.ToInt32()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToInt64_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NaN.ToInt64()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToUInt32_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NaN.ToUInt32()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToUInt64_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NaN.ToUInt64()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToBigInteger_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NaN.ToBigInteger()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToDouble_should_return_NaN() {
+        Fraction.NaN.ToDouble().Should().Be(double.NaN);
+    }
+}
+
+[TestFixture]
+public class When_converting_PositiveInfinity : Spec {
+    [Test]
+    public void ToDecimal_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.PositiveInfinity.ToDecimal()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToInt32_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.PositiveInfinity.ToInt32()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToInt64_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.PositiveInfinity.ToInt64()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToUInt32_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.PositiveInfinity.ToUInt32()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToUInt64_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.PositiveInfinity.ToUInt64()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToBigInteger_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.PositiveInfinity.ToBigInteger()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToDouble_should_return_PositiveInfinity() {
+        Fraction.PositiveInfinity.ToDouble().Should().Be(double.PositiveInfinity);
+    }
+}
+
+[TestFixture]
+public class When_converting_NegativeInfinity : Spec {
+    [Test]
+    public void ToDecimal_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NegativeInfinity.ToDecimal()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToInt32_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NegativeInfinity.ToInt32()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToInt64_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NegativeInfinity.ToInt64()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToUInt32_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NegativeInfinity.ToUInt32()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToUInt64_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NegativeInfinity.ToUInt64()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToBigInteger_should_throw_a_DivideByZeroException() {
+        Invoking(() => Fraction.NegativeInfinity.ToBigInteger()).Should().Throw<DivideByZeroException>();
+    }
+
+    [Test]
+    public void ToDouble_should_return_NegativeInfinity() {
+        Fraction.NegativeInfinity.ToDouble().Should().Be(double.NegativeInfinity);
+    }
+}

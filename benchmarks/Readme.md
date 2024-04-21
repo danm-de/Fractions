@@ -51,7 +51,7 @@ These benchmarks evaluate the performance of fundamental mathematical operations
 - `Multiply(Fraction a, Fraction b)`: Multiplies two fractions.
 - `Divide(Fraction a, Fraction b)`: Divides one fraction by another.
 
-For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.MathBenchmarks-report-github.md).
+For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.BasicMathBenchmarks-report-github.md).
 
 
 ### Power Math Operations

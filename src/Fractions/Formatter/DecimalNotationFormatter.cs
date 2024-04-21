@@ -192,9 +192,19 @@ public class DecimalNotationFormatter : ICustomFormatter {
         formatProvider ??= CultureInfo.CurrentCulture;
         var numberFormatInfo = (NumberFormatInfo)formatProvider.GetFormat(typeof(NumberFormatInfo))!;
 
-        // any handling of the edge cases corresponding to numberFormatInfo.(NaNSymbol|PositiveInfinitySymbol|NegativeInfinitySymbol)
-        // should happen here...
+        if (fraction.IsPositiveInfinity) {
+            return numberFormatInfo.PositiveInfinitySymbol;
+        }
 
+        if (fraction.IsNegativeInfinity) {
+            return numberFormatInfo.NegativeInfinitySymbol;
+        }
+
+        if (fraction.IsNaN) {
+            return numberFormatInfo.NaNSymbol;
+            
+        }
+        
         if (string.IsNullOrEmpty(format)) {
             return FormatGeneral(fraction, "G", numberFormatInfo);
         }

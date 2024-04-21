@@ -36,6 +36,14 @@ public class When_trying_to_parse_a_fraction : Spec {
                     new Fraction(
                         numerator: new BigInteger(-123456789987654321),
                         denominator: BigInteger.Pow(10, 17 + 24)));
+            yield return new TestCaseData("0/1").Returns(Fraction.Zero);
+            yield return new TestCaseData("0/+10").Returns(Fraction.Zero);
+            yield return new TestCaseData("0/-10").Returns(Fraction.Zero);
+            yield return new TestCaseData("0/0").Returns(Fraction.NaN);
+            yield return new TestCaseData("1/0").Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData("+10/0").Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData("-1/0").Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData("-10/0").Returns(Fraction.NegativeInfinity);
         }
     }
 
@@ -53,4 +61,6 @@ public class When_trying_to_parse_a_fraction : Spec {
             fraction: out var result)
             ? result
             : default(Fraction?);
+
+    // TODO see about testing the non-normalized parsing variant (see tests in Method_FromString)
 }

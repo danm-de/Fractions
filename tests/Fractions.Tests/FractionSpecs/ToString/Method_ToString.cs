@@ -12,11 +12,17 @@ public class When_the_user_calls_ToString : Spec {
     private static IEnumerable<TestCaseData> TestCases {
         get {
             yield return new TestCaseData(new Fraction(3, 0))
-                .Returns("0");
+                .Returns("1/0");
+            yield return new TestCaseData(new Fraction(3, 0, false))
+                .Returns("3/0");
             yield return new TestCaseData(new Fraction(0, 0))
-                .Returns("0");
+                .Returns("0/0");
             yield return new TestCaseData(new Fraction(0, 3))
                 .Returns("0");
+            yield return new TestCaseData(new Fraction(0, 3, false))
+                .Returns("0/3");
+            yield return new TestCaseData(new Fraction(0, -3, false))
+                .Returns("0/-3");
             yield return new TestCaseData(new Fraction(1, 3))
                 .Returns("1/3");
             yield return new TestCaseData(new Fraction(-1, 3))
@@ -25,6 +31,10 @@ public class When_the_user_calls_ToString : Spec {
                 .Returns("1/-3");
             yield return new TestCaseData(new Fraction(-1, -3, false))
                 .Returns("-1/-3");
+            yield return new TestCaseData(new Fraction(-3, 0))
+                .Returns("-1/0");
+            yield return new TestCaseData(new Fraction(-3, 0, false))
+                .Returns("-3/0");
         }
     }
 
@@ -80,12 +90,12 @@ public class When_the_user_calls_ToString_using_a_format_string : Spec {
             yield return new TestCaseData(new Fraction(3, 1), "d", de)
                 .Returns("1");
             yield return new TestCaseData(Fraction.Zero, "d", de)
-                .Returns("0");
+                .Returns("1");
 
             yield return new TestCaseData(new Fraction(1, 3), "n/d", en)
                 .Returns("1/3");
             yield return new TestCaseData(Fraction.Zero, "n/d", en)
-                .Returns("0/0");
+                .Returns("0/1");
 
             yield return new TestCaseData(new Fraction(3, 1), "z", de)
                 .Returns("3");

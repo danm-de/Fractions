@@ -15,10 +15,8 @@ public class If_the_Sqrt_function_is_called : Spec {
     }
 
     [Test]
-    public void The_square_root_of_minus_one_should_fail() {
-        Action act = () => Fraction.MinusOne.Sqrt();
-        act.Should().Throw<OverflowException>()
-            .WithMessage("Cannot calculate square root from a negative number");
+    public void The_square_root_of_minus_one_should_return_NaN() {
+        Fraction.MinusOne.Sqrt().Should().Be(Fraction.NaN, "Cannot calculate square root from a negative number");
     }
 
     private static IEnumerable<TestCaseData> TestCases {
@@ -29,14 +27,22 @@ public class If_the_Sqrt_function_is_called : Spec {
             yield return new TestCaseData(9999999855487);
             yield return new TestCaseData(99999998554865557);
             yield return new TestCaseData(Math.PI);
+            yield return new TestCaseData(double.PositiveInfinity);
+            yield return new TestCaseData(double.NegativeInfinity);
+            yield return new TestCaseData(double.NaN);
+            yield return new TestCaseData(-1.0);
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
     public void The_result_should_be_equal_to_Math_Sqrt(double value) {
+        // Arrange
         var expected = Math.Sqrt(value);
-        var actual = Fraction.FromDouble(value).Sqrt();
+        var fraction = Fraction.FromDouble(value);
+        // Act
+        var actual = fraction.Sqrt();
+        //Assert
         actual.ToDouble().Should().Be(expected);
     }
 }

@@ -19,12 +19,16 @@ public static class FractionExt {
     public static Fraction Sqrt(this Fraction x, int accuracy = 30) {
         //Babylonian Method of computing square roots
 
-        if (x < Fraction.Zero) {
-            throw new OverflowException("Cannot calculate square root from a negative number");
-        }
-
         if (accuracy <= 0) {
             throw new ArgumentOutOfRangeException(nameof(accuracy), accuracy, $"Accuracy of {accuracy} is not allowed! Have to be above 0.");
+        }
+
+        if (x.IsNaN || x.IsNegative) {
+            return Fraction.NaN;
+        }
+
+        if (x.IsInfinity) {
+            return x;
         }
 
         var newGuess = Fraction.Zero;

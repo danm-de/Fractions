@@ -9,51 +9,49 @@ namespace Fractions.Tests.FractionSpecs.FromDouble;
 [TestFixture]
 // German: Wenn ein Bruch anhand einer NaN double Zahl erzeugt wird
 public class When_a_fraction_is_created_from_a_NaN_double : Spec {
-    private Exception _exception;
+    private Fraction _result;
 
     public override void SetUp() {
         base.SetUp();
-        _exception = Catch.Exception(() => Fraction.FromDouble(double.NaN));
+        _result = Fraction.FromDouble(double.NaN);
     }
 
     [Test]
-    // German: Soll dies eine InvalidNumberException auslösen
-    public void Should_throw_an_InvalidNumberException() {
-        _exception.Should().BeOfType<InvalidNumberException>();
+    public void The_result_should_be_NaN() {
+        _result.Should().Be(Fraction.NaN);
     }
 }
 
 [TestFixture]
 // German: Wenn ein Bruch anhand einer positiv unendlichen double Zahl erzeugt wird
 public class When_a_fraction_is_created_from_a_positive_infinite_double : Spec {
-    private Exception _exception;
+    private Fraction _result;
 
     public override void SetUp() {
         base.SetUp();
-        _exception = Catch.Exception(() => Fraction.FromDouble(double.PositiveInfinity));
+        _result = Fraction.FromDouble(double.PositiveInfinity);
     }
 
     [Test]
-    // German: Soll dies eine InvalidNumberException auslösen
-    public void Should_throw_an_InvalidNumberException() {
-        _exception.Should().BeOfType<InvalidNumberException>();
+    public void The_result_should_be_PositiveInfinity() {
+        _result.Should().Be(Fraction.PositiveInfinity);
     }
 }
 
 [TestFixture]
 // German: Wenn ein Bruch anhand einer negativ unendlichen double Zahl erzeugt wird
 public class When_a_fraction_is_created_from_a_negative_infinite_double : Spec {
-    private Exception _exception;
+    private Fraction _result;
 
     public override void SetUp() {
         base.SetUp();
-        _exception = Catch.Exception(() => Fraction.FromDouble(double.NegativeInfinity));
+        _result = Fraction.FromDouble(double.NegativeInfinity);
     }
 
     [Test]
     // German: Soll dies eine InvalidNumberException auslösen
-    public void Should_throw_an_InvalidNumberException() {
-        _exception.Should().BeOfType<InvalidNumberException>();
+    public void The_result_should_be_NegativeInfinity() {
+        _result.Should().Be(Fraction.NegativeInfinity);
     }
 }
 

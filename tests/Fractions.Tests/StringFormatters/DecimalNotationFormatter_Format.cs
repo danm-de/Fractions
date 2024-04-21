@@ -41,8 +41,13 @@ public abstract class DecimalNotationFormatterSpecs : Spec {
         new Fraction(20000001, 3), new Fraction(-20000001, 3), // note: for all but the percent (P) format we could be using two more digits ('00')
         new Fraction(4, 3), new Fraction(-4, 3),
         new Fraction(5, 3), new Fraction(-5, 3),
-        new Fraction(7, 3), new Fraction(-7, 3)
+        new Fraction(7, 3), new Fraction(-7, 3),
     ];
+
+    /// <summary>
+    /// <see cref="Fraction.PositiveInfinity"/>, <see cref="Fraction.NegativeInfinity"/> and <see cref="Fraction.NaN"/>
+    /// </summary>
+    protected static readonly Fraction[] SpecialFractions = [Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NaN];
 }
 
 /// <summary>
@@ -120,7 +125,20 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 #endif
+    
+    public static IEnumerable<TestCaseData> FormatWithSpecialFractionCases =>
+        from stringFormat in GeneralFormats
+        from valueToTest in SpecialFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
+    [Test]
+    [TestCaseSource(nameof(FormatWithSpecialFractionCases))]
+    public string The_general_format_should_match_double_ToString_if_the_fraction_is_NaN_or_Infinity(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
+    }
+    
     public static IEnumerable<TestCaseData> GeneralFormatSupportHighPrecisionCases {
         get {
             var formatProvider = CultureInfo.InvariantCulture;
@@ -176,7 +194,7 @@ public class When_formatting_a_fraction_using_the_fixed_point_format : DecimalNo
 
     public static IEnumerable<TestCaseData> FixedPointFormatsToTest =>
         from stringFormat in FixedPointFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -226,14 +244,14 @@ public class When_formatting_a_fraction_with_the_numeric_format : DecimalNotatio
 
     public static IEnumerable<TestCaseData> NumberFormatsToTest =>
         from stringFormat in NumberFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
     public static IEnumerable<TestCaseData> NumberNegativePatternsToTest =>
         from stringFormat in NumberFormats
-        from valueToTest in new Fraction[] { 0, -0.1m, -1, -1.23456789m }
+        from valueToTest in new Fraction[] { 0, -0.1m, -1, -1.23456789m }.Concat(SpecialFractions)
         from cultureToTest in NumberNegativePatterns.Select(pattern => {
             var culture = (CultureInfo)AmericanCulture.Clone();
             culture.NumberFormat.NumberNegativePattern = pattern;
@@ -289,7 +307,7 @@ public class When_formatting_a_fraction_with_the_exponential_format : DecimalNot
 
     public static IEnumerable<TestCaseData> ScientificFormatsToTest =>
         from stringFormat in ScientificFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -374,7 +392,7 @@ public class When_formatting_a_fraction_with_the_currency_format : DecimalNotati
 
     public static IEnumerable<TestCaseData> CurrencyFormatsToTest =>
         from stringFormat in CurrencyFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -448,7 +466,7 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
 
     public static IEnumerable<TestCaseData> PercentFormatsToTest =>
         from stringFormat in PercentFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -661,6 +679,18 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
     [TestCaseSource(nameof(LargeNegativeValueCases))]
     public string Large_negative_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
+    }
+    public static IEnumerable<TestCaseData> FormatWithSpecialFractionCases =>
+        from stringFormat in new[] {"S", "S1", "S2", "S3", "S4", "s", "s1", "s2", "s3", "s4"}
+        from valueToTest in SpecialFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
+
+    [Test]
+    [TestCaseSource(nameof(FormatWithSpecialFractionCases))]
+    public string The_general_format_should_match_double_ToString_if_the_fraction_is_NaN_or_Infinity(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
     public static IEnumerable<TestCaseData> RoundingErrorsWithSignificantDigitsAfterRadixFormattingCases {

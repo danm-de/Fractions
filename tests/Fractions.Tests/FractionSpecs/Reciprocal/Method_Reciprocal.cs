@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
 
@@ -57,4 +59,46 @@ public class When_the_equivalent_of_minus_1_10_is_checked : Spec {
 
     [Test]
     public void Should_the_result_be_minus_10() => _result.Should().BeTrue();
+}
+
+[TestFixture]
+public class When_Zero_is_reciprocated : Spec{
+    
+    public static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData(Fraction.Zero).Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(default(Fraction)).Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(new Fraction(0, 10, false))
+                .Returns(new Fraction(10, 0 , false)); // TODO see if we want to normalize these cases or not
+            yield return new TestCaseData(new Fraction(0, -10, false))
+                .Returns(new Fraction(-10, 0, false));
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public Fraction The_result_should_be_a_PositiveInfinity(Fraction fraction) {
+        return fraction.Reciprocal();
+    }
+}
+
+[TestFixture]
+public class When_Infinity_is_reciprocated : Spec{
+    
+    public static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData(Fraction.PositiveInfinity).Returns(Fraction.Zero);
+            yield return new TestCaseData(Fraction.NegativeInfinity).Returns(Fraction.Zero);
+            yield return new TestCaseData(new Fraction(10, 0, false)) 
+                .Returns(new Fraction(0, 10 , true)); // TODO see if we want to normalize these cases or not
+            yield return new TestCaseData(new Fraction(-10, 0, true))
+                .Returns(new Fraction(0, -10, true));
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public Fraction The_result_should_be_a_Zero(Fraction fraction) {
+        return fraction.Reciprocal();
+    }
 }
