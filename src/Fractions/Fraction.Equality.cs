@@ -29,7 +29,7 @@ public readonly partial struct Fraction {
     ///     <see cref="NaN" />.
     /// </returns>
     public bool Equals(Fraction other) {
-        return other.Denominator.Equals(Denominator) && other.Numerator.Equals(Numerator);
+        return other.Denominator.Equals(Denominator) && other._numerator.Equals(_numerator);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public readonly partial struct Fraction {
     /// <filterpriority>2</filterpriority>
     public override int GetHashCode() {
         unchecked {
-            return (Denominator.GetHashCode() * 397) ^ Numerator.GetHashCode();
+            return (Denominator.GetHashCode() * 397) ^ _numerator.GetHashCode();
         }
     }
 }

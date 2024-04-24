@@ -74,15 +74,7 @@ public readonly partial struct Fraction
             return numerator2.Sign; // PositiveInfinity -> -1, NegativeInfinity -> 1
         }
 
-        // both values are non-zero fractions with different denominators  // TODO test the performance of skipping the GCD
-        var gcd = BigInteger.GreatestCommonDivisor(denominator1, denominator2);
-
-        var thisMultiplier = BigInteger.Divide(denominator1, gcd);
-        var otherMultiplier = BigInteger.Divide(denominator2, gcd);
-
-        var a = BigInteger.Multiply(numerator1, otherMultiplier);
-        var b = BigInteger.Multiply(numerator2, thisMultiplier);
-
-        return a.CompareTo(b);
+        // both values are non-zero fractions with different denominators  
+        return (numerator1 * denominator2).CompareTo(numerator2 * denominator1);
     }
 }

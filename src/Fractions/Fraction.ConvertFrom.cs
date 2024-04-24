@@ -526,9 +526,8 @@ public readonly partial struct Fraction {
             }
         }
 
-        // TODO see about creating a private overload (without the nan checks)
-        return GetReducedFraction(
-            sign < 0 ? BigInteger.Negate(numerator) : numerator,
+        return ReduceSigned(
+            sign < 0 ? -numerator : numerator,
             new BigInteger(denominator));
     }
 
@@ -605,8 +604,7 @@ public readonly partial struct Fraction {
 
         var denominator = BigInteger.Pow(TEN, decimalPlaces);
         var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
-        // TODO use the private overload
-        return GetReducedFraction(numerator, denominator);
+        return ReduceSigned(numerator, denominator);
     }
     
 
@@ -644,8 +642,6 @@ public readonly partial struct Fraction {
         ]);
         var denominator = BigInteger.Pow(TEN, exp);
 
-        return positiveSign
-            ? GetReducedFraction(numerator, denominator)
-            : GetReducedFraction(BigInteger.Negate(numerator), denominator);
+        return ReduceSigned(positiveSign ? numerator : -numerator, denominator);
     }
 }

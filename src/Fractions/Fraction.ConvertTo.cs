@@ -55,7 +55,7 @@ public readonly partial struct Fraction {
         var withoutDecimalPlaces = (decimal)(_numerator / _denominator);
 
         var remainder = _numerator % _denominator;
-        var lowPart = remainder * BigInteger.Pow(10, 28) / _denominator;
+        var lowPart = remainder * BigInteger.Pow(TEN, 28) / _denominator;
         var decimalPlaces = (decimal)lowPart / (decimal)Math.Pow(10, 28);
 
         return withoutDecimalPlaces + decimalPlaces;

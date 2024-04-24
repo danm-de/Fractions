@@ -379,3 +379,29 @@ public class When_calculating_the_remainder_of_Infinity : Spec{
         return fraction.Remainder(divisor);
     }
 }
+
+
+[TestFixture]
+public class When_calculating_the_remainder_of_a_finite_number_with_Infinity : Spec{
+    
+    public static IEnumerable<TestCaseData> TestCases {
+        get {
+            // positive infinity
+            yield return new TestCaseData(Fraction.Zero, Fraction.PositiveInfinity).Returns(Fraction.Zero);
+            yield return new TestCaseData(new Fraction(4), Fraction.PositiveInfinity).Returns(new Fraction(4));
+            yield return new TestCaseData(new Fraction(-4), Fraction.PositiveInfinity).Returns(new Fraction(-4));
+            yield return new TestCaseData(Fraction.Two, new Fraction(10, BigInteger.Zero, false)).Returns(Fraction.Two);
+            // negative infinity
+            yield return new TestCaseData(Fraction.Zero, Fraction.NegativeInfinity).Returns(Fraction.Zero);
+            yield return new TestCaseData(new Fraction(4), Fraction.NegativeInfinity).Returns(new Fraction(4));
+            yield return new TestCaseData(new Fraction(-4), Fraction.NegativeInfinity).Returns(new Fraction(-4));
+            yield return new TestCaseData(Fraction.Two, new Fraction(-10, BigInteger.Zero, false)).Returns(Fraction.Two);
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public Fraction The_result_should_be_the_same_number(Fraction fraction, Fraction divisor) {
+        return fraction.Remainder(divisor);
+    }
+}
