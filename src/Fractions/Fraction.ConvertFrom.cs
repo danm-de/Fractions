@@ -136,7 +136,7 @@ public readonly partial struct Fraction {
     }
 
 #if NET
-     /// <summary>
+    /// <summary>
     /// Try to convert a ReadOnlySpan of type char to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
     /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
     /// </summary>
@@ -161,7 +161,7 @@ public readonly partial struct Fraction {
         if (count == 2) {
             var numeratorValue = value[ranges[0]];
             var denominatorValue = value[ranges[1]];
-            
+
             var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
             if (!BigInteger.TryParse(
                     value: numeratorValue,
@@ -197,7 +197,7 @@ public readonly partial struct Fraction {
         return CannotParse(out fraction);
     }
 
- private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
+    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
         IFormatProvider formatProvider, out Fraction fraction) {
         parseNumberStyles &= ~NumberStyles.AllowExponent;
         var exponentIndex = value.IndexOfAny(['e', 'E']);
@@ -277,7 +277,7 @@ public readonly partial struct Fraction {
         return CannotParse(out fraction);
     }
 #else
-     private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles,
+    private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles,
         IFormatProvider formatProvider, out Fraction fraction) {
         parseNumberStyles &= ~NumberStyles.AllowExponent;
         var exponentIndex = valueString.IndexOfAny(['e', 'E'], 1);
@@ -437,12 +437,13 @@ public readonly partial struct Fraction {
                 ? NegativeInfinity
                 : PositiveInfinity;
         }
-        
+
         var exponent = (int)((exponentBits >> 52) - K);
 
+        // TODO test without normalization
         // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
-        var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR); // TODO test without normalization
-        
+        var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
+
         var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
         // 2^exponent
         var factor = exponent < 0
@@ -493,7 +494,7 @@ public readonly partial struct Fraction {
             return NaN;
         }
 
-        if (Math.Abs(value - 0) < double.Epsilon) { // TODO does this make any sense or can we replace it with a value == 0 check?
+        if (value == 0d) {
             return Zero;
         }
 
@@ -572,7 +573,7 @@ public readonly partial struct Fraction {
     /// </remarks>
     public static Fraction FromDoubleRounded(double value, int significantDigits) {
         switch (value) {
-            case 0:
+            case 0d:
                 return Zero;
             case double.NaN:
                 return NaN;
@@ -606,7 +607,7 @@ public readonly partial struct Fraction {
         var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
         return ReduceSigned(numerator, denominator);
     }
-    
+
 
     /// <summary>
     /// Converts a decimal value in a fraction. The value will not be rounded.
@@ -628,7 +629,6 @@ public readonly partial struct Fraction {
         var middle = BitConverter.GetBytes(bits[1]);
         var high = BitConverter.GetBytes(bits[2]);
         var scale = BitConverter.GetBytes(bits[3]);
-
 
         var exp = scale[2];
         var positiveSign = (scale[3] & 0x80) == 0;
