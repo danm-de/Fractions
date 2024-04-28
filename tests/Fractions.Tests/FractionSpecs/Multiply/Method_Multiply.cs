@@ -173,37 +173,60 @@ public class When_multiplying_with_infinity {
     private static IEnumerable<TestCaseData> TestCases {
         get {
             // positive infinity with positive infinity
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 0, false)).Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity)
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 0, false))
+                .Returns(Fraction.PositiveInfinity);
+
             // positive infinity with any other number
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 4)).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.One).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(4, 5)).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.Zero).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.MinusOne).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 4)).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-4, 5)).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 0, false)).Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 4))
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.One)
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(4, 5))
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.Zero)
+                .Returns(Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.MinusOne)
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 4))
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-4, 5))
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity)
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 0, false))
+                .Returns(Fraction.NegativeInfinity);
+
             // negative infinity with negative infinity
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 0, false)).Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity)
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 0, false))
+                .Returns(Fraction.PositiveInfinity);
+
             // negative infinity with any other number
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 4)).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.One).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(4, 5)).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.Zero).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.MinusOne).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 4)).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-4, 5)).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity).Returns(Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 0, false)).Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 4))
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.One)
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(4, 5))
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.Zero)
+                .Returns(Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.MinusOne)
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 4))
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-4, 5))
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity)
+                .Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 0, false))
+                .Returns(Fraction.NegativeInfinity);
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction The_result_is_always_NaN_or_Infinity(Fraction a, Fraction b) {
-        return a.Multiply(b);
-    }
+    public Fraction The_result_is_always_NaN_or_Infinity(Fraction a, Fraction b) => a.Multiply(b);
 }

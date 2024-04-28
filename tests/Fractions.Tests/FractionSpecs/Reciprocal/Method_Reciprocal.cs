@@ -62,14 +62,15 @@ public class When_the_equivalent_of_minus_1_10_is_checked : Spec {
 }
 
 [TestFixture]
-public class When_Zero_is_reciprocated : Spec{
-    
+public class When_Zero_is_reciprocated : Spec {
     public static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData(Fraction.Zero).Returns(Fraction.PositiveInfinity);
-            yield return new TestCaseData(default(Fraction)).Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.Zero)
+                .Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(default(Fraction))
+                .Returns(Fraction.PositiveInfinity);
             yield return new TestCaseData(new Fraction(0, 10, false))
-                .Returns(new Fraction(10, 0 , false)); // TODO see if we want to normalize these cases or not
+                .Returns(new Fraction(10, 0, false)); // TODO see if we want to normalize these cases or not
             yield return new TestCaseData(new Fraction(0, -10, false))
                 .Returns(new Fraction(-10, 0, false));
         }
@@ -83,14 +84,15 @@ public class When_Zero_is_reciprocated : Spec{
 }
 
 [TestFixture]
-public class When_Infinity_is_reciprocated : Spec{
-    
+public class When_Infinity_is_reciprocated : Spec {
     public static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData(Fraction.PositiveInfinity).Returns(Fraction.Zero);
-            yield return new TestCaseData(Fraction.NegativeInfinity).Returns(Fraction.Zero);
-            yield return new TestCaseData(new Fraction(10, 0, false)) 
-                .Returns(new Fraction(0, 10 , true)); // TODO see if we want to normalize these cases or not
+            yield return new TestCaseData(Fraction.PositiveInfinity)
+                .Returns(Fraction.Zero);
+            yield return new TestCaseData(Fraction.NegativeInfinity)
+                .Returns(Fraction.Zero);
+            yield return new TestCaseData(new Fraction(10, 0, false))
+                .Returns(new Fraction(0, 10, true)); // TODO see if we want to normalize these cases or not
             yield return new TestCaseData(new Fraction(-10, 0, true))
                 .Returns(new Fraction(0, -10, true));
         }

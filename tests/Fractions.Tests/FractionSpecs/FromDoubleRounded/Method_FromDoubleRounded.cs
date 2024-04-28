@@ -15,7 +15,7 @@ public class When_a_fraction_is_created_based_on_a_NaN_double : Spec {
     public override void SetUp() {
         _result = Fraction.FromDoubleRounded(double.NaN);
     }
-    
+
     [Test]
     public void The_result_should_be_NaN() {
         _result.Should().Be(Fraction.NaN);
@@ -30,7 +30,7 @@ public class When_a_fraction_is_created_based_on_a_positive_infinite_double : Sp
     public override void SetUp() {
         _result = Fraction.FromDoubleRounded(double.PositiveInfinity);
     }
-    
+
     [Test]
     public void The_result_should_be_PositiveInfinity() {
         _result.Should().Be(Fraction.PositiveInfinity);
@@ -237,7 +237,9 @@ public class When_a_fractions_is_created_by_rounding_a_double_without_precision 
 public class When_a_fractions_is_created_by_rounding_a_double_with_maximum_precision : Spec {
     private const double DoubleValue = 1055.05585262;
     private const decimal LiteralValue = 1055.05585262m; // the "true/literal" decimal representation
-    private const int MaxSignificantDigits = 15; // anything that's in the range [minRequiredPrecision, maxExpectedPrecision] should work
+
+    // anything that's in the range [minRequiredPrecision, maxExpectedPrecision] should work
+    private const int MaxSignificantDigits = 15;
 
     private Fraction _fraction;
 
@@ -253,7 +255,8 @@ public class When_a_fractions_is_created_by_rounding_a_double_with_maximum_preci
 
 [TestFixture]
 public class When_a_fractions_is_created_by_rounding_a_double_with_reasonable_number_of_significant_digits : Spec {
-    private const int ReasonableNumberOfSignificantDigits = 15; // anything that's in the range [minRequiredPrecision, maxExpectedPrecision] should work 
+    // anything that's in the range [minRequiredPrecision, maxExpectedPrecision] should work 
+    private const int ReasonableNumberOfSignificantDigits = 15;
 
     private static IEnumerable<TestCaseData> TestCases { get; } = [
         new TestCaseData(0.0, ReasonableNumberOfSignificantDigits).Returns(Fraction.Zero),

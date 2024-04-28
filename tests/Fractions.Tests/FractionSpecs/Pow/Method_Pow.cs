@@ -43,7 +43,7 @@ public class When_exponentiation_is_applied_to_a_fraction : Spec {
             yield return new TestCaseData(Fraction.Zero, 1)
                 .Returns(Fraction.Zero);
             yield return new TestCaseData(Fraction.Zero, -1)
-                .Returns(Fraction.PositiveInfinity); 
+                .Returns(Fraction.PositiveInfinity);
             yield return new TestCaseData(Fraction.Zero, 2)
                 .Returns(Fraction.Zero);
             yield return new TestCaseData(new Fraction(0, 10, false), 0)

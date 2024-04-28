@@ -4,7 +4,6 @@ using NUnit.Framework;
 namespace Tests.Fractions;
 
 public class Spec {
-    
     [OneTimeSetUp]
     public void TestFixtureSetUp() {
         SetUp();

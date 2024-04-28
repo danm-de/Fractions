@@ -53,7 +53,8 @@ public class When_the_user_calls_ToString_without_any_parameters_having_en_US_cu
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public string The_text_output_should_be_the_expected_one(BigInteger numerator, BigInteger denominator, bool normalize) {
+    public string The_text_output_should_be_the_expected_one(BigInteger numerator, BigInteger denominator,
+        bool normalize) {
         return new Fraction(numerator, denominator, normalize).ToString();
     }
 }
@@ -91,7 +92,8 @@ public class When_the_user_calls_ToString_using_invariant_culture : Spec {
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public string The_text_output_should_be_the_expected_one(BigInteger numerator, BigInteger denominator, bool normalize) {
+    public string The_text_output_should_be_the_expected_one(BigInteger numerator, BigInteger denominator,
+        bool normalize) {
         return new Fraction(numerator, denominator, normalize).ToString(CultureInfo.InvariantCulture);
     }
 }
@@ -222,7 +224,8 @@ public class When_the_user_calls_ToString_using_a_format_string : Spec {
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public string The_text_output_should_be_the_expected_one(Fraction fraction, string format, IFormatProvider cultureInfo) {
+    public string The_text_output_should_be_the_expected_one(Fraction fraction, string format,
+        IFormatProvider cultureInfo) {
         return fraction.ToString(format, cultureInfo);
     }
 }

@@ -324,15 +324,15 @@ public class When_negating_a_fraction_with_1_as_numerator_and_1_as_denominator :
 
 [TestFixture]
 public class Negating_a_fraction_using_the_minus_operator : Spec {
-
     private static readonly Fraction[] FractionsToTest = [
         Fraction.MinusOne, Fraction.Zero, Fraction.One,
         -0.5m, 1.5m,
         new Fraction(0, 4, false),
-        Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NaN, 
+        Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NaN,
     ];
 
-    public static IEnumerable<TestCaseData> TestCases => FractionsToTest.Select(x => new TestCaseData(x).Returns(x.Negate()));
+    public static IEnumerable<TestCaseData> TestCases =>
+        FractionsToTest.Select(x => new TestCaseData(x).Returns(x.Negate()));
 
     [Test]
     [TestCaseSource(nameof(TestCases))]

@@ -39,41 +39,71 @@ public class When_converting_a_type_to_Fraction : Spec {
 
     private static IEnumerable<TestCaseData> ConvertFromTests {
         get {
-            yield return new TestCaseData(Fraction.One, CultureInfo.CurrentCulture).Returns(Fraction.One);
-            yield return new TestCaseData(new Fraction(1, 2), CultureInfo.CurrentCulture).Returns(new Fraction(1, 2));
+            yield return new TestCaseData(Fraction.One, CultureInfo.CurrentCulture)
+                .Returns(Fraction.One);
+            yield return new TestCaseData(new Fraction(1, 2), CultureInfo.CurrentCulture)
+                .Returns(new Fraction(1, 2));
 
-            yield return new TestCaseData(0, CultureInfo.CurrentCulture).SetName("0 (integer)").Returns(Fraction.Zero);
-            yield return new TestCaseData(1, CultureInfo.CurrentCulture).SetName("1 (integer)").Returns(Fraction.One);
-            yield return new TestCaseData(-1, CultureInfo.CurrentCulture).SetName("-1 (integer)").Returns(new Fraction(-1));
+            yield return new TestCaseData(0, CultureInfo.CurrentCulture).SetName("0 (integer)")
+                .Returns(Fraction.Zero);
+            yield return new TestCaseData(1, CultureInfo.CurrentCulture).SetName("1 (integer)")
+                .Returns(Fraction.One);
+            yield return new TestCaseData(-1, CultureInfo.CurrentCulture).SetName("-1 (integer)")
+                .Returns(new Fraction(-1));
 
-            yield return new TestCaseData(0L, CultureInfo.CurrentCulture).SetName("0 (long)").Returns(Fraction.Zero);
-            yield return new TestCaseData(1L, CultureInfo.CurrentCulture).SetName("1 (long)").Returns(Fraction.One);
-            yield return new TestCaseData(-1L, CultureInfo.CurrentCulture).SetName("-1 (long)").Returns(new Fraction(-1));
+            yield return new TestCaseData(0L, CultureInfo.CurrentCulture).SetName("0 (long)")
+                .Returns(Fraction.Zero);
+            yield return new TestCaseData(1L, CultureInfo.CurrentCulture).SetName("1 (long)")
+                .Returns(Fraction.One);
+            yield return new TestCaseData(-1L, CultureInfo.CurrentCulture).SetName("-1 (long)")
+                .Returns(new Fraction(-1));
 
-            yield return new TestCaseData(BigInteger.Zero, CultureInfo.CurrentCulture).SetName("0 (big integer)").Returns(Fraction.Zero);
-            yield return new TestCaseData(BigInteger.One, CultureInfo.CurrentCulture).SetName("1 (big integer)").Returns(Fraction.One);
-            yield return new TestCaseData(BigInteger.MinusOne, CultureInfo.CurrentCulture).SetName("-1 (big integer)").Returns(new Fraction(-1));
+            yield return new TestCaseData(BigInteger.Zero, CultureInfo.CurrentCulture)
+                .SetName("0 (big integer)")
+                .Returns(Fraction.Zero);
+            yield return new TestCaseData(BigInteger.One, CultureInfo.CurrentCulture)
+                .SetName("1 (big integer)")
+                .Returns(Fraction.One);
+            yield return new TestCaseData(BigInteger.MinusOne, CultureInfo.CurrentCulture)
+                .SetName("-1 (big integer)")
+                .Returns(new Fraction(-1));
 
-            yield return new TestCaseData(1m, CultureInfo.CurrentCulture).Returns(Fraction.One);
-            yield return new TestCaseData(0.5m, CultureInfo.CurrentCulture).Returns(new Fraction(1, 2));
+            yield return new TestCaseData(1m, CultureInfo.CurrentCulture)
+                .Returns(Fraction.One);
+            yield return new TestCaseData(0.5m, CultureInfo.CurrentCulture)
+                .Returns(new Fraction(1, 2));
 
-            yield return new TestCaseData(1d, CultureInfo.CurrentCulture).Returns(Fraction.One);
-            yield return new TestCaseData(0.5d, CultureInfo.CurrentCulture).Returns(new Fraction(1, 2));
+            yield return new TestCaseData(1d, CultureInfo.CurrentCulture)
+                .Returns(Fraction.One);
+            yield return new TestCaseData(0.5d, CultureInfo.CurrentCulture)
+                .Returns(new Fraction(1, 2));
 
-            yield return new TestCaseData("1", CultureInfo.CurrentCulture).Returns(new Fraction(1));
-            yield return new TestCaseData("123", CultureInfo.CurrentCulture).Returns(new Fraction(123));
-            yield return new TestCaseData("1/2", CultureInfo.CurrentCulture).Returns(new Fraction(1, 2));
-            yield return new TestCaseData("-1/2", CultureInfo.CurrentCulture).Returns(new Fraction(-1, 2));
-            yield return new TestCaseData("1/-2", CultureInfo.CurrentCulture).Returns(new Fraction(-1, 2));
-            yield return new TestCaseData("-1/-2", CultureInfo.CurrentCulture).Returns(new Fraction(1, 2));
-            yield return new TestCaseData("0,5", new CultureInfo("de-DE")).Returns(new Fraction(1, 2));
-            yield return new TestCaseData("-0,5", new CultureInfo("de-DE")).Returns(new Fraction(-1, 2));
-            yield return new TestCaseData("0.5", new CultureInfo("en-US")).Returns(new Fraction(1, 2));
-            yield return new TestCaseData("-0.5", new CultureInfo("en-US")).Returns(new Fraction(-1, 2));
-            yield return
-                new TestCaseData("-0.125", new CultureInfo("en-US")).Returns(new Fraction(-1, 8));
+            yield return new TestCaseData("1", CultureInfo.CurrentCulture)
+                .Returns(new Fraction(1));
+            yield return new TestCaseData("123", CultureInfo.CurrentCulture)
+                .Returns(new Fraction(123));
+            yield return new TestCaseData("1/2", CultureInfo.CurrentCulture)
+                .Returns(new Fraction(1, 2));
+            yield return new TestCaseData("-1/2", CultureInfo.CurrentCulture)
+                .Returns(new Fraction(-1, 2));
+            yield return new TestCaseData("1/-2", CultureInfo.CurrentCulture)
+                .Returns(new Fraction(-1, 2));
+            yield return new TestCaseData("-1/-2", CultureInfo.CurrentCulture)
+                .Returns(new Fraction(1, 2));
 
-            yield return new TestCaseData(null, CultureInfo.CurrentCulture).Returns(Fraction.Zero);
+            yield return new TestCaseData("0,5", new CultureInfo("de-DE"))
+                .Returns(new Fraction(1, 2));
+            yield return new TestCaseData("-0,5", new CultureInfo("de-DE"))
+                .Returns(new Fraction(-1, 2));
+            yield return new TestCaseData("0.5", new CultureInfo("en-US"))
+                .Returns(new Fraction(1, 2));
+            yield return new TestCaseData("-0.5", new CultureInfo("en-US"))
+                .Returns(new Fraction(-1, 2));
+            yield return new TestCaseData("-0.125", new CultureInfo("en-US"))
+                .Returns(new Fraction(-1, 8));
+
+            yield return new TestCaseData(null, CultureInfo.CurrentCulture)
+                .Returns(Fraction.Zero);
         }
     }
 

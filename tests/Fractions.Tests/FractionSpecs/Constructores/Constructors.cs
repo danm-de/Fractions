@@ -182,7 +182,9 @@ public static class Constructing_Zero {
         [Test]
         public void Denominator_should_be_non_zero() {
             ResultingFraction.Denominator.IsZero.Should().BeFalse("0/0 represents NaN");
-            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(ResultingFraction.Denominator.IsOne, "0/n should be reduced to 0/1");
+            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(
+                ResultingFraction.Denominator.IsOne,
+                "0/n should be reduced to 0/1");
         }
 
         [Test]
@@ -611,7 +613,9 @@ public static class Constructing_PositiveInfinity {
         [Test]
         public void Numerator_should_be_positive() {
             ResultingFraction.Numerator.Should().BeGreaterThan(BigInteger.Zero);
-            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(ResultingFraction.Numerator.IsOne, "n/1 should be reduced to 1/0");
+            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(
+                ResultingFraction.Numerator.IsOne,
+                "n/1 should be reduced to 1/0");
         }
 
         [Test]
@@ -654,7 +658,7 @@ public static class Constructing_PositiveInfinity {
             ResultingFraction.IsNegativeInfinity.Should().BeFalse();
         }
     }
-    
+
     [TestFixture]
     public class Using_1_as_numerator_and_0_as_denominator : Result {
         protected override Fraction CreateFraction() {
@@ -671,7 +675,7 @@ public static class Constructing_PositiveInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_1_as_numerator_and_0_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -688,7 +692,7 @@ public static class Constructing_PositiveInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_1_as_numerator_and_0_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -705,7 +709,7 @@ public static class Constructing_PositiveInfinity {
             ResultingFraction.State.Should().Be(FractionState.Unknown);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_0_as_denominator : Result {
         protected override Fraction CreateFraction() {
@@ -722,7 +726,7 @@ public static class Constructing_PositiveInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_0_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -739,7 +743,7 @@ public static class Constructing_PositiveInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_0_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -799,7 +803,8 @@ public static class Constructing_NegativeInfinity {
         [Test]
         public void Numerator_should_be_negative() {
             ResultingFraction.Numerator.Should().BeLessThan(BigInteger.Zero);
-            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(ResultingFraction.Numerator == BigInteger.MinusOne, "-n/1 should be reduced to -1/0");
+            (ResultingFraction.State == FractionState.IsNormalized).Should()
+                .Imply(ResultingFraction.Numerator == BigInteger.MinusOne, "-n/1 should be reduced to -1/0");
         }
 
         [Test]
@@ -842,7 +847,7 @@ public static class Constructing_NegativeInfinity {
             ResultingFraction.IsNegativeInfinity.Should().BeTrue();
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_1_as_numerator_and_0_as_denominator : Result {
         protected override Fraction CreateFraction() {
@@ -859,7 +864,7 @@ public static class Constructing_NegativeInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_1_as_numerator_and_0_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -876,7 +881,7 @@ public static class Constructing_NegativeInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_1_as_numerator_and_0_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -893,7 +898,7 @@ public static class Constructing_NegativeInfinity {
             ResultingFraction.State.Should().Be(FractionState.Unknown);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_0_as_denominator : Result {
         protected override Fraction CreateFraction() {
@@ -910,7 +915,7 @@ public static class Constructing_NegativeInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_0_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -927,7 +932,7 @@ public static class Constructing_NegativeInfinity {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_0_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -992,7 +997,8 @@ public static class Constructing_a_Finite_Positive_Fraction {
         [Test]
         public void Denominator_should_be_non_zero() {
             ResultingFraction.Denominator.IsZero.Should().BeFalse();
-            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(ResultingFraction.Denominator.Sign == 1, "a/-b should be reduced to -a/b");
+            (ResultingFraction.State == FractionState.IsNormalized).Should()
+                .Imply(ResultingFraction.Denominator.Sign == 1, "a/-b should be reduced to -a/b");
         }
 
         [Test]
@@ -1047,7 +1053,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_2_as_numerator_and_3_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1069,7 +1075,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_2_as_numerator_and_3_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1113,7 +1119,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_2_as_numerator_and_minus_3_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1135,7 +1141,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_2_as_numerator_and_minus_3_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1179,7 +1185,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1201,7 +1207,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1245,7 +1251,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_minus_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1267,7 +1273,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_minus_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1313,7 +1319,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     // German: Wenn ein Bruch mit 4 als Zähler und 12 als Nenner normalisiert erzeugt wird dann
     public class Using_4_as_numerator_and_12_as_denominator_with_normalization : Result {
@@ -1338,7 +1344,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_12_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1386,7 +1392,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_minus_12_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1410,7 +1416,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_minus_12_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1438,7 +1444,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
         protected override Fraction CreateFraction() {
             return new Fraction(12, 4);
         }
-        
+
         [Test]
         // German: Soll der resultierende Bruch im Zähler 3 haben
         public void The_resulting_Numerator_should_be_3() {
@@ -1456,14 +1462,14 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     // German: Wenn ein Bruch mit 12 als Zähler und 4 als Nenner normalisiert erzeugt wird dann
     public class Using_12_as_numerator_and_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(12, 4, true);
         }
-        
+
         [Test]
         // German: Soll der resultierende Bruch im Zähler 3 haben
         public void The_resulting_Numerator_should_be_3() {
@@ -1481,14 +1487,14 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     // German: Wenn ein Bruch mit 12 als Zähler und 4 als Nenner normalisiert erzeugt wird dann
     public class Using_12_as_numerator_and_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(12, 4, false);
         }
-        
+
         [Test]
         // German: Soll der resultierende Bruch im Zähler 12 haben
         public void The_resulting_Numerator_should_be_12() {
@@ -1506,13 +1512,13 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.Unknown);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_12_as_numerator_and_minus_4_as_denominator : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(-12, -4);
         }
-        
+
         [Test]
         // German: Soll der resultierende Bruch im Zähler 3 haben
         public void The_resulting_Numerator_should_be_3() {
@@ -1530,13 +1536,13 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_12_as_numerator_and_minus_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(-12, -4, true);
         }
-        
+
         [Test]
         // German: Soll der resultierende Bruch im Zähler 3 haben
         public void The_resulting_Numerator_should_be_3() {
@@ -1554,13 +1560,13 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_12_as_numerator_and_minus_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(-12, -4, false);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_minus_12() {
             ResultingFraction.Numerator.Should().Be(-12);
@@ -1576,7 +1582,7 @@ public static class Constructing_a_Finite_Positive_Fraction {
             ResultingFraction.State.Should().Be(FractionState.Unknown);
         }
     }
-    
+
     [TestFixture]
     // German: Wenn ein Bruch mit int 4 als Zähler erzeugt wird
     public class Using_int_4_as_numerator : Result {
@@ -1750,7 +1756,8 @@ public static class Constructing_a_Finite_Negative_Fraction {
         [Test]
         public void Denominator_should_be_non_zero() {
             ResultingFraction.Denominator.IsZero.Should().BeFalse();
-            (ResultingFraction.State == FractionState.IsNormalized).Should().Imply(ResultingFraction.Denominator.Sign == 1, "a/-b should be reduced to -a/b");
+            (ResultingFraction.State == FractionState.IsNormalized).Should()
+                .Imply(ResultingFraction.Denominator.Sign == 1, "a/-b should be reduced to -a/b");
         }
 
         [Test]
@@ -1783,7 +1790,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.IsNegativeInfinity.Should().BeFalse();
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_2_as_numerator_and_3_as_denominator : Result {
         protected override Fraction CreateFraction() {
@@ -1805,7 +1812,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_2_as_numerator_and_3_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1827,7 +1834,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_2_as_numerator_and_3_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1871,7 +1878,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_2_as_numerator_and_minus_3_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1893,7 +1900,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_2_as_numerator_and_minus_3_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1937,7 +1944,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -1959,7 +1966,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2003,7 +2010,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_minus_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2025,7 +2032,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_minus_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2069,7 +2076,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_12_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2091,7 +2098,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_4_as_numerator_and_12_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2135,7 +2142,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_minus_12_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2157,7 +2164,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_4_as_numerator_and_minus_12_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
@@ -2185,7 +2192,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
         protected override Fraction CreateFraction() {
             return new Fraction(-12, 4);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_minus_3() {
             ResultingFraction.Numerator.Should().Be(-3);
@@ -2201,13 +2208,13 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_12_as_numerator_and_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(-12, 4, true);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_minus_3() {
             ResultingFraction.Numerator.Should().Be(-3);
@@ -2223,13 +2230,13 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_minus_12_as_numerator_and_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(-12, 4, false);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_minus_12() {
             ResultingFraction.Numerator.Should().Be(-12);
@@ -2246,13 +2253,13 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.Unknown);
         }
     }
-    
+
     [TestFixture]
     public class Using_12_as_numerator_and_minus_4_as_denominator : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(12, -4);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_minus_3() {
             ResultingFraction.Numerator.Should().Be(-3);
@@ -2268,13 +2275,13 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_12_as_numerator_and_minus_4_as_denominator_with_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(12, -4, true);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_minus_3() {
             ResultingFraction.Numerator.Should().Be(-3);
@@ -2290,13 +2297,13 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_12_as_numerator_and_minus_4_as_denominator_without_normalization : Result {
         protected override Fraction CreateFraction() {
             return new Fraction(12, -4, false);
         }
-        
+
         [Test]
         public void The_resulting_Numerator_should_be_12() {
             ResultingFraction.Numerator.Should().Be(12);
@@ -2312,7 +2319,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.Unknown);
         }
     }
-    
+
     [TestFixture]
     public class Using_int_minus_4_as_numerator : Result {
         protected override Fraction CreateFraction() {
@@ -2329,7 +2336,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_long_minus_4_as_numerator : Result {
         protected override Fraction CreateFraction() {
@@ -2346,7 +2353,7 @@ public static class Constructing_a_Finite_Negative_Fraction {
             ResultingFraction.State.Should().Be(FractionState.IsNormalized);
         }
     }
-    
+
     [TestFixture]
     public class Using_double_minus_4_as_numerator : Result {
         protected override Fraction CreateFraction() {
