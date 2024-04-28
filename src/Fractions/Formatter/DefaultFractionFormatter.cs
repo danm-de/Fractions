@@ -7,7 +7,7 @@ using Fractions.Properties;
 namespace Fractions.Formatter;
 
 internal class DefaultFractionFormatter : ICustomFormatter {
-    public static readonly ICustomFormatter Instance = new DefaultFractionFormatter();
+    public static ICustomFormatter Instance { get; } = new DefaultFractionFormatter();
 
     public string Format(string format, object arg, IFormatProvider formatProvider) {
         if (arg == null) {
@@ -18,7 +18,7 @@ internal class DefaultFractionFormatter : ICustomFormatter {
             throw new FormatException(string.Format(Resources.TypeXnotSupported, arg.GetType()));
         }
 
-        formatProvider ??= CultureInfo.InvariantCulture;
+        formatProvider ??= CultureInfo.CurrentCulture;
 
         if (string.IsNullOrEmpty(format) || format == "G") {
             return FormatGeneral(fraction, formatProvider);
