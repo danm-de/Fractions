@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Numerics;
 using Fractions.Formatter;
 using NUnit.Framework;
 using Tests.Fractions;
@@ -8,40 +9,90 @@ using Tests.Fractions;
 namespace Fractions.Tests.FractionSpecs.ToString;
 
 [TestFixture]
-public class When_the_user_calls_ToString : Spec {
+[SetUICulture("en-US")]
+[SetCulture("en-US")]
+public class When_the_user_calls_ToString_without_any_parameters_having_en_US_culture : Spec {
     private static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData(new Fraction(3, 0))
-                .Returns("1/0");
-            yield return new TestCaseData(new Fraction(3, 0, false))
+            var en = new CultureInfo("en-US");
+
+            yield return new TestCaseData(new BigInteger(3), new BigInteger(0), true)
+                .Returns(en.NumberFormat.PositiveInfinitySymbol);
+            yield return new TestCaseData(new BigInteger(3), new BigInteger(0), false)
                 .Returns("3/0");
-            yield return new TestCaseData(new Fraction(0, 0))
-                .Returns("0/0");
-            yield return new TestCaseData(new Fraction(0, 3))
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(0), true)
+                .Returns(en.NumberFormat.NaNSymbol);
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(3), true)
                 .Returns("0");
-            yield return new TestCaseData(new Fraction(0, 3, false))
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(3), false)
                 .Returns("0/3");
-            yield return new TestCaseData(new Fraction(0, -3, false))
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(-3), false)
                 .Returns("0/-3");
-            yield return new TestCaseData(new Fraction(1, 3))
+            yield return new TestCaseData(new BigInteger(1), new BigInteger(3), true)
                 .Returns("1/3");
-            yield return new TestCaseData(new Fraction(-1, 3))
+            yield return new TestCaseData(new BigInteger(1), new BigInteger(3000000), true)
+                .Returns("1/3000000");
+            yield return new TestCaseData(new BigInteger(300000), new BigInteger(1), true)
+                .Returns("300000");
+            yield return new TestCaseData(new BigInteger(-1), new BigInteger(3), true)
                 .Returns("-1/3");
-            yield return new TestCaseData(new Fraction(1, -3, false))
+            yield return new TestCaseData(new BigInteger(1), new BigInteger(-3), false)
                 .Returns("1/-3");
-            yield return new TestCaseData(new Fraction(-1, -3, false))
+            yield return new TestCaseData(new BigInteger(100000), new BigInteger(-3), false)
+                .Returns("100000/-3");
+            yield return new TestCaseData(new BigInteger(-1), new BigInteger(-3), false)
                 .Returns("-1/-3");
-            yield return new TestCaseData(new Fraction(-3, 0))
-                .Returns("-1/0");
-            yield return new TestCaseData(new Fraction(-3, 0, false))
+            yield return new TestCaseData(new BigInteger(-1), new BigInteger(-300000), false)
+                .Returns("-1/-300000");
+            yield return new TestCaseData(new BigInteger(-3), new BigInteger(0), true)
+                .Returns(en.NumberFormat.NegativeInfinitySymbol);
+            yield return new TestCaseData(new BigInteger(-3), new BigInteger(0), false)
                 .Returns("-3/0");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public string The_text_output_should_be_the_expected_one(Fraction fraction) {
-        return fraction.ToString();
+    public string The_text_output_should_be_the_expected_one(BigInteger numerator, BigInteger denominator, bool normalize) {
+        return new Fraction(numerator, denominator, normalize).ToString();
+    }
+}
+
+[TestFixture]
+public class When_the_user_calls_ToString_using_invariant_culture : Spec {
+    private static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData(new BigInteger(3), new BigInteger(0), true)
+                .Returns(CultureInfo.InvariantCulture.NumberFormat.PositiveInfinitySymbol);
+            yield return new TestCaseData(new BigInteger(3), new BigInteger(0), false)
+                .Returns("3/0");
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(0), true)
+                .Returns(CultureInfo.InvariantCulture.NumberFormat.NaNSymbol);
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(3), true)
+                .Returns("0");
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(3), false)
+                .Returns("0/3");
+            yield return new TestCaseData(new BigInteger(0), new BigInteger(-3), false)
+                .Returns("0/-3");
+            yield return new TestCaseData(new BigInteger(1), new BigInteger(3), true)
+                .Returns("1/3");
+            yield return new TestCaseData(new BigInteger(-1), new BigInteger(3), true)
+                .Returns("-1/3");
+            yield return new TestCaseData(new BigInteger(1), new BigInteger(-3), false)
+                .Returns("1/-3");
+            yield return new TestCaseData(new BigInteger(-1), new BigInteger(-3), false)
+                .Returns("-1/-3");
+            yield return new TestCaseData(new BigInteger(-3), new BigInteger(0), true)
+                .Returns(CultureInfo.InvariantCulture.NumberFormat.NegativeInfinitySymbol);
+            yield return new TestCaseData(new BigInteger(-3), new BigInteger(0), false)
+                .Returns("-3/0");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public string The_text_output_should_be_the_expected_one(BigInteger numerator, BigInteger denominator, bool normalize) {
+        return new Fraction(numerator, denominator, normalize).ToString(CultureInfo.InvariantCulture);
     }
 }
 
@@ -51,6 +102,7 @@ public class When_the_user_calls_ToString_using_a_format_string : Spec {
         get {
             var de = new CultureInfo("de-DE");
             var en = new CultureInfo("en-US");
+            var invariant = CultureInfo.InvariantCulture;
 
             yield return new TestCaseData(new Fraction(1, 3), string.Empty, en)
                 .Returns("1/3");
@@ -58,6 +110,33 @@ public class When_the_user_calls_ToString_using_a_format_string : Spec {
                 .Returns("1/3");
             yield return new TestCaseData(Fraction.Zero, null, en)
                 .Returns("0");
+
+            yield return new TestCaseData(new Fraction(0, 0), null, en)
+                .Returns(en.NumberFormat.NaNSymbol);
+
+            yield return new TestCaseData(new Fraction(1, 0), null, en)
+                .Returns(en.NumberFormat.PositiveInfinitySymbol);
+
+            yield return new TestCaseData(new Fraction(-1, 0), null, en)
+                .Returns(en.NumberFormat.NegativeInfinitySymbol);
+
+            yield return new TestCaseData(new Fraction(0, 0), null, de)
+                .Returns(de.NumberFormat.NaNSymbol);
+
+            yield return new TestCaseData(new Fraction(1, 0), null, de)
+                .Returns(de.NumberFormat.PositiveInfinitySymbol);
+
+            yield return new TestCaseData(new Fraction(-1, 0), null, de)
+                .Returns(de.NumberFormat.NegativeInfinitySymbol);
+
+            yield return new TestCaseData(new Fraction(0, 0), null, invariant)
+                .Returns(invariant.NumberFormat.NaNSymbol);
+
+            yield return new TestCaseData(new Fraction(1, 0), null, invariant)
+                .Returns(invariant.NumberFormat.PositiveInfinitySymbol);
+
+            yield return new TestCaseData(new Fraction(-1, 0), null, invariant)
+                .Returns(invariant.NumberFormat.NegativeInfinitySymbol);
 
             yield return new TestCaseData(new Fraction(0, 3), "G", de)
                 .Returns("0");
@@ -111,6 +190,18 @@ public class When_the_user_calls_ToString_using_a_format_string : Spec {
                 .Returns("-1/2");
             yield return new TestCaseData(Fraction.Zero, "r", de)
                 .Returns("0");
+            yield return new TestCaseData(Fraction.NaN, "r", de)
+                .Returns(string.Empty);
+            yield return new TestCaseData(Fraction.PositiveInfinity, "r", de)
+                .Returns(string.Empty);
+            yield return new TestCaseData(Fraction.NegativeInfinity, "r", de)
+                .Returns(string.Empty);
+            yield return new TestCaseData(new Fraction(0, 0, normalize: false), "r", de)
+                .Returns(string.Empty);
+            yield return new TestCaseData(new Fraction(1, 0, normalize: false), "r", de)
+                .Returns(string.Empty);
+            yield return new TestCaseData(new Fraction(-1, 0, normalize: false), "r", de)
+                .Returns(string.Empty);
 
             yield return new TestCaseData(new Fraction(3, 2), "m", de)
                 .Returns("1 1/2");
@@ -133,11 +224,5 @@ public class When_the_user_calls_ToString_using_a_format_string : Spec {
     [TestCaseSource(nameof(TestCases))]
     public string The_text_output_should_be_the_expected_one(Fraction fraction, string format, IFormatProvider cultureInfo) {
         return fraction.ToString(format, cultureInfo);
-    }
-
-    [Test]
-    [TestCaseSource(nameof(TestCases))]
-    public string The_text_output_should_be_the_expected_one_when_using_the_simple_ToString_method(Fraction fraction, string format, IFormatProvider cultureInfo) {
-        return fraction.ToString(format);
     }
 }
