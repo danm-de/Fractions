@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Fractions.Properties;
 
 // ReSharper disable once CheckNamespace
 namespace Fractions;
@@ -20,7 +21,10 @@ public static class FractionExt {
         //Babylonian Method of computing square roots
 
         if (accuracy <= 0) {
-            throw new ArgumentOutOfRangeException(nameof(accuracy), accuracy, $"Accuracy of {accuracy} is not allowed! Have to be above 0.");
+            throw new ArgumentOutOfRangeException(
+                paramName: nameof(accuracy),
+                actualValue: accuracy,
+                message: string.Format(Resources.AccuracyIsLessThanOrEqualToZero, accuracy));
         }
 
         if (x.IsNaN || x.IsNegative) {
