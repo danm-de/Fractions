@@ -16,15 +16,15 @@ public readonly partial struct Fraction {
         var denominator2 = divisor.Denominator;
         
         if (numerator2.IsZero) { // 0/0 (NaN) or 0/1 (zero)
-            return _nan;
+            return NaN;
         }
 
         if (numerator1.IsZero) { // 0/0 (NaN) or 0/1 (zero)
-            return denominator1.IsZero ? _nan : _zero;
+            return denominator1.IsZero ? NaN : Zero;
         }
 
         if (denominator1.IsZero) { // a/0 (infinity)
-            return _nan;
+            return NaN;
         }
 
         if (denominator2.IsZero) {  // a % infinity
@@ -57,19 +57,19 @@ public readonly partial struct Fraction {
     /// <param name="summand">Summand</param>
     /// <returns>The result as summation.</returns>
     public Fraction Add(Fraction summand) {
-        var numerator1 = _numerator;
+        var numerator1 = Numerator;
         if (numerator1.IsZero) {  // this is either NaN (NaN + b = NaN) or Zero (0 + b = b)
-            return _denominator.IsZero && _state == FractionState.IsNormalized ? this : summand;
+            return Denominator.IsZero ? this : summand;
         }
         
-        var numerator2 = summand._numerator;
+        var numerator2 = summand.Numerator;
         if (numerator2.IsZero) {  // summand is either NaN (a + NaN = NaN) or Zero (a + 0 = a)
-            return summand._denominator.IsZero && _state == FractionState.IsNormalized ? summand : this;
+            return summand.Denominator.IsZero ? summand : this;
         }
 
         // both fractions are non-zero numbers
-        var denominator1 = _denominator;
-        var denominator2 = summand._denominator;
+        var denominator1 = Denominator;
+        var denominator2 = summand.Denominator;
 
         if (denominator1.IsZero) {
             // fraction1 is (+/-) Infinity
@@ -79,9 +79,9 @@ public readonly partial struct Fraction {
             
             // adding infinities
             return (numerator1.Sign + numerator2.Sign) switch {
-                2 => _positiveInfinity,
-                -2 => _negativeInfinity,
-                _ => _nan
+                2 => PositiveInfinity,
+                -2 => NegativeInfinity,
+                _ => NaN
             };
         }
 
@@ -90,12 +90,12 @@ public readonly partial struct Fraction {
         }
 
         // both values are non-zero: normalizing the signs
-        if (_state == FractionState.Unknown && denominator1.Sign == -1) {
+        if (State == FractionState.Unknown && denominator1.Sign == -1) {
             denominator1 = -denominator1;
             numerator1 = -numerator1;
         }
         
-        if (summand._state == FractionState.Unknown && denominator2.Sign == -1) {
+        if (summand.State == FractionState.Unknown && denominator2.Sign == -1) {
             denominator2 = -denominator2;
             numerator2 = -numerator2;
         }
@@ -132,7 +132,7 @@ public readonly partial struct Fraction {
     /// Negates the fraction. Has the same result as multiplying it by -1.
     /// </summary>
     /// <returns>The negated fraction.</returns>
-    public Fraction Negate() => new (-_numerator, _denominator, _state);
+    public Fraction Negate() => new (-Numerator, Denominator, State);
 
     /// <inheritdoc cref="Negate"/>>
     [Obsolete("The 'Invert' method is obsolete. Please use the the 'Negate' method or the negation operator '-value'.", error: false)]
@@ -148,7 +148,7 @@ public readonly partial struct Fraction {
         var numerator1 = Numerator;
         var denominator1 = Denominator;
         switch (denominator1.Sign) {
-            case 0: return new Fraction(numerator1.Sign * factor._numerator.Sign, BigInteger.Zero, FractionState.IsNormalized);
+            case 0: return new Fraction(numerator1.Sign * factor.Numerator.Sign, BigInteger.Zero, FractionState.IsNormalized);
             case -1: {
                 numerator1 = -numerator1;
                 denominator1 = -denominator1;
@@ -187,7 +187,7 @@ public readonly partial struct Fraction {
         var denominator2 = divisor.Denominator;
 
         if (denominator2.IsZero) { // dividing by NaN or Infinity produces NaN
-            return _nan;
+            return NaN;
         }
         
         var numerator1 = Numerator;
@@ -195,9 +195,9 @@ public readonly partial struct Fraction {
 
         switch (denominator1.Sign) {
             case 0: return numerator1.Sign switch { // +/- Infinity divided by a number
-                1 => numerator2.Sign * denominator2.Sign < 0 ? _negativeInfinity : _positiveInfinity,
-                -1 => numerator2.Sign * denominator2.Sign < 0 ? _positiveInfinity : _negativeInfinity,
-                _ => _nan // NaN divided by a number
+                1 => numerator2.Sign * denominator2.Sign < 0 ? NegativeInfinity : PositiveInfinity,
+                -1 => numerator2.Sign * denominator2.Sign < 0 ? PositiveInfinity : NegativeInfinity,
+                _ => NaN // NaN divided by a number
             };
             case -1:{
                 numerator1 = -numerator1;
@@ -229,7 +229,7 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <returns>A reduced and normalized fraction.</returns>
     public Fraction Reduce() =>
-        _state == FractionState.IsNormalized
+        State == FractionState.IsNormalized
             ? this
             : GetReducedFraction(Numerator, Denominator);
 
@@ -256,9 +256,9 @@ public readonly partial struct Fraction {
     public static Fraction GetReducedFraction(BigInteger numerator, BigInteger denominator) {
         if (denominator.IsZero) {
             return numerator.Sign switch {
-                1 => _positiveInfinity,
-                -1 => _negativeInfinity,
-                _ => _nan
+                1 => PositiveInfinity,
+                -1 => NegativeInfinity,
+                _ => NaN
             };
         }
 

@@ -31,7 +31,7 @@ public readonly partial struct Fraction {
         }
 #endif
 
-        if (fraction._denominator.IsOne || fraction._denominator.IsZero) {
+        if (fraction.Denominator.IsOne || fraction.Denominator.IsZero) {
             return fraction;
         }
 

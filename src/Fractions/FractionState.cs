@@ -8,10 +8,10 @@ public enum FractionState
     /// <summary>
     /// Unknown state.
     /// </summary>
-    Unknown,
+    Unknown = 0x0,
 
     /// <summary>
     /// A reduced/simplified fraction.
     /// </summary>
-    IsNormalized
+    IsNormalized = 0x1
 }

@@ -429,13 +429,13 @@ public readonly partial struct Fraction {
         if (exponentBits == EXPONENT_BITS) {
             // NaN or Infinity
             if (mantissaBits != 0) {
-                return _nan;
+                return NaN;
             }
 
             // Infinity
             return isNegative
-                ? _negativeInfinity
-                : _positiveInfinity;
+                ? NegativeInfinity
+                : PositiveInfinity;
         }
         
         var exponent = (int)((exponentBits >> 52) - K);
@@ -482,15 +482,15 @@ public readonly partial struct Fraction {
     /// </remarks>
     public static Fraction FromDoubleRounded(double value) {
         if (double.IsPositiveInfinity(value)) {
-            return _positiveInfinity;
+            return PositiveInfinity;
         }
 
         if (double.IsNegativeInfinity(value)) {
-            return _negativeInfinity;
+            return NegativeInfinity;
         }
 
         if (double.IsNaN(value)) {
-            return _nan;
+            return NaN;
         }
 
         if (Math.Abs(value - 0) < double.Epsilon) { // TODO does this make any sense or can we replace it with a value == 0 check?
@@ -616,11 +616,11 @@ public readonly partial struct Fraction {
     public static Fraction FromDecimal(decimal value) {
         switch (value) {
             case decimal.Zero:
-                return _zero;
+                return Zero;
             case decimal.One:
-                return _one;
+                return One;
             case decimal.MinusOne:
-                return _minusOne;
+                return MinusOne;
         }
 
         var bits = decimal.GetBits(value);

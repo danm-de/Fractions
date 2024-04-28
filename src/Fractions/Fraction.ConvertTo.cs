@@ -4,6 +4,9 @@ using System.Numerics;
 namespace Fractions;
 
 public readonly partial struct Fraction {
+    private static readonly BigInteger MIN_DECIMAL = new(decimal.MinValue);
+    private static readonly BigInteger MAX_DECIMAL = new(decimal.MaxValue);
+
     /// <summary>
     /// Returns the fraction as signed 32bit integer.
     /// </summary>
@@ -45,17 +48,17 @@ public readonly partial struct Fraction {
             return decimal.Zero;
         }
 
-        if (_numerator >= MIN_DECIMAL && _numerator <= MAX_DECIMAL && _denominator >= MIN_DECIMAL &&
-            _denominator <= MAX_DECIMAL) {
-            return (decimal)_numerator / (decimal)_denominator;
+        if (Numerator >= MIN_DECIMAL && Numerator <= MAX_DECIMAL && Denominator >= MIN_DECIMAL &&
+            Denominator <= MAX_DECIMAL) {
+            return (decimal)Numerator / (decimal)Denominator;
         }
 
         // numerator or denominator is too big. Lets try to split the calculation..
         // Possible OverFlowException!
-        var withoutDecimalPlaces = (decimal)(_numerator / _denominator);
+        var withoutDecimalPlaces = (decimal)(Numerator / Denominator);
 
-        var remainder = _numerator % _denominator;
-        var lowPart = remainder * BigInteger.Pow(TEN, 28) / _denominator;
+        var remainder = Numerator % Denominator;
+        var lowPart = remainder * BigInteger.Pow(TEN, 28) / Denominator;
         var decimalPlaces = (decimal)lowPart / (decimal)Math.Pow(10, 28);
 
         return withoutDecimalPlaces + decimalPlaces;
