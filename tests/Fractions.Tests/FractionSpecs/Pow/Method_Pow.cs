@@ -88,6 +88,10 @@ public class When_exponentiation_is_applied_to_a_fraction : Spec {
             yield return new TestCaseData(new Fraction(-10, 0, false), -2).Returns(Fraction.Zero);
             yield return new TestCaseData(new Fraction(-10, 0, false), 3).Returns(Fraction.NegativeInfinity);
             yield return new TestCaseData(new Fraction(-10, 0, false), -3).Returns(Fraction.Zero);
+            // NaN
+            yield return new TestCaseData(Fraction.NaN, 0).Returns(Fraction.One);
+            yield return new TestCaseData(Fraction.NaN, 1).Returns(Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, -1).Returns(Fraction.NaN);
         }
     }
 
