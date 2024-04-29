@@ -81,6 +81,14 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
         Fraction.FromString(value, new CultureInfo("de-DE"))
             .Should().Be(new Fraction(7, 2));
     }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_invalid_spaces_are_detected(
+        [Values("3 ,5", " 3, 5", "+3 ,5", " +3, 5", "+3, 5 ")]
+        string value) {
+        Invoking(() => Fraction.FromString(value, new CultureInfo("de-DE")))
+            .Should().Throw<FormatException>();
+    }
 }
 
 [TestFixture]
