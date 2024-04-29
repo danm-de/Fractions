@@ -60,7 +60,7 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
     /// <summary>
     /// The denominator
     /// </summary>
-    public BigInteger Denominator => _denominator ?? BigInteger.One;
+    public BigInteger Denominator => _denominator.GetValueOrDefault(BigInteger.One);
 
     /// <summary>
     /// <c>true</c> if the fraction represents a valid number or <c>false</c> otherwise.
