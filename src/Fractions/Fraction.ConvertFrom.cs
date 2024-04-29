@@ -243,16 +243,31 @@ public readonly partial struct Fraction {
             parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
         }
 
-        // 2. find the position of the decimal separator (if any)
         var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        
+        // 2. check for any of the special symbols
+        if (value.SequenceEqual(numberFormatInfo.NaNSymbol.AsSpan())) {
+            fraction = NaN;
+            return true;
+        }
+        if (value.SequenceEqual(numberFormatInfo.PositiveInfinitySymbol.AsSpan())) {
+            fraction = PositiveInfinity;
+            return true;
+        }
+        if (value.SequenceEqual(numberFormatInfo.NegativeInfinitySymbol.AsSpan())) {
+            fraction = NegativeInfinity;
+            return true;
+        }
+        
+        // 3. find the position of the decimal separator (if any)
         var decimalSeparatorIndex =
             value.IndexOf(numberFormatInfo.NumberDecimalSeparator, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            // TODO check if the parseNumberStyles need to be adjusted
             return TryParseInteger(value, parseNumberStyles, formatProvider, out fraction);
         }
-
-        // 3. try to parse the numerator
+        
+        // TODO we should probably be parsing the two parts separately (consider the alloc difference with "1.000012345")
+        // 4. try to parse the numerator
         var numeratorString = string.Concat(
             value[..decimalSeparatorIndex],
             value[(decimalSeparatorIndex + 1)..]);
@@ -260,10 +275,10 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction);
         }
 
-        // 4. construct the fraction using the corresponding decimal power for the denominator
+        // 5. construct the fraction using the corresponding decimal power for the denominator
         var nbDecimals = value.Length - decimalSeparatorIndex - 1;
         var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = new Fraction(numerator, denominator);
+        fraction = ReduceSigned(numerator, denominator);
         return true;
     }
 
@@ -323,26 +338,42 @@ public readonly partial struct Fraction {
             parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
         }
 
-        // 2. find the position of the decimal separator (if any)
         var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        // 2. check for any of the special symbols
+        if (valueString == numberFormatInfo.NaNSymbol) {
+            fraction = NaN;
+            return true;
+        }
+
+        if (valueString == numberFormatInfo.PositiveInfinitySymbol) {
+            fraction = PositiveInfinity;
+            return true;
+        }
+
+        if (valueString == numberFormatInfo.NegativeInfinitySymbol) {
+            fraction = NegativeInfinity;
+            return true;
+        }
+        
+        // 3. find the position of the decimal separator (if any)
         var decimalSeparatorIndex =
             valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, 0, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            // TODO check if the parseNumberStyles need to be adjusted
             return TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction);
         }
-
-        // 3. try to parse the numerator
+        
+        // TODO we should probably be parsing the two parts separately (consider the alloc difference with "1.000012345")
+        // 4. try to parse the numerator
         var numeratorString = valueString.Substring(0, decimalSeparatorIndex) +
                               valueString.Substring(decimalSeparatorIndex + 1);
         if (!BigInteger.TryParse(numeratorString, parseNumberStyles, formatProvider, out var numerator)) {
             return CannotParse(out fraction);
         }
 
-        // 4. construct the fraction using the corresponding decimal power for the denominator
+        // 5. construct the fraction using the corresponding decimal power for the denominator
         var nbDecimals = valueString.Length - decimalSeparatorIndex - 1;
         var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = new Fraction(numerator, denominator);
+        fraction = ReduceSigned(numerator, denominator);
         return true;
     }
 

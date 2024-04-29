@@ -44,6 +44,9 @@ public class When_trying_to_parse_a_fraction : Spec {
             yield return new TestCaseData("+10/0").Returns(Fraction.PositiveInfinity);
             yield return new TestCaseData("-1/0").Returns(Fraction.NegativeInfinity);
             yield return new TestCaseData("-10/0").Returns(Fraction.NegativeInfinity);
+            yield return new TestCaseData(CultureInfo.InvariantCulture.NumberFormat.NaNSymbol).Returns(Fraction.NaN);
+            yield return new TestCaseData(CultureInfo.InvariantCulture.NumberFormat.PositiveInfinitySymbol).Returns(Fraction.PositiveInfinity);
+            yield return new TestCaseData(CultureInfo.InvariantCulture.NumberFormat.NegativeInfinitySymbol).Returns(Fraction.NegativeInfinity);
         }
     }
 
