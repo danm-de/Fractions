@@ -5,9 +5,11 @@ namespace Fractions;
 
 public readonly partial struct Fraction {
 #pragma warning disable 1591
-    public static bool operator ==(Fraction left, Fraction right) => left.Equals(right);
+    // NaN == NaN: False -> see https://learn.microsoft.com/en-us/dotnet/api/system.double.nan?view=net-8.0#system-double-nan
+    public static bool operator ==(Fraction left, Fraction right) => left.Equals(right) && !(left.IsNaN && right.IsNaN);
 
-    public static bool operator !=(Fraction left, Fraction right) => !left.Equals(right);
+    // NaN != NaN : True -> see https://learn.microsoft.com/en-us/dotnet/api/system.double.nan?view=net-8.0#system-double-nan
+    public static bool operator !=(Fraction left, Fraction right) => !left.Equals(right) || (left.IsNaN && right.IsNaN);
 
     public static Fraction operator +(Fraction a, Fraction b) => a.Add(b);
 

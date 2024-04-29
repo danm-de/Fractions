@@ -4,6 +4,8 @@ using Tests.Fractions;
 
 namespace Fractions.Tests.FractionSpecs.ConvertTo;
 
+// TODO see about removing this whole file (tests are redundant with CompareTo and ValueEquals)
+
 [TestFixture]
 // German: Wenn ein Bruch mit NULL verglichen wird
 public class When_comparing_a_fraction_with_NULL : Spec {

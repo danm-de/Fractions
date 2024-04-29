@@ -11,7 +11,7 @@ This package contains a data type to calculate with rational numbers. It support
 - remainder
 - ..
 
-The fraction data type implements operator overloads and implicit type conversion for convenience.
+- The fraction data type implements operator overloads and implicit type conversion for convenience.
 
 ## Creation
 

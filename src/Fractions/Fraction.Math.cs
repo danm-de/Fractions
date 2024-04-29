@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using Fractions.Properties;
 
 namespace Fractions;
 
@@ -11,27 +10,49 @@ public readonly partial struct Fraction {
     /// <param name="divisor">Divisor</param>
     /// <returns>The remainder (left over)</returns>
     public Fraction Remainder(Fraction divisor) {
-        if (divisor.IsZero) {
-            throw new DivideByZeroException();
+        var thisNumerator = Numerator;
+        var thisDenominator = Denominator;
+        var otherNumerator = divisor.Numerator;
+        var otherDenominator = divisor.Denominator;
+
+        if (otherNumerator.IsZero) {
+            return NaN; // x / 0 == NaN
         }
 
-        if (IsZero) {
-            return _zero;
+        if (thisNumerator.IsZero) {
+            return thisDenominator.IsZero
+                ? NaN // 0 / NaN == NaN
+                : Zero; // 0 / x == 0 (where x != 0)
         }
 
-        var gcd = BigInteger.GreatestCommonDivisor(_denominator, divisor.Denominator);
+        if (thisDenominator.IsZero) {
+            // a/0 (infinity)
+            return NaN;
+        }
 
-        var thisMultiplier = BigInteger.Divide(_denominator, gcd);
-        var otherMultiplier = BigInteger.Divide(divisor.Denominator, gcd);
+        if (otherDenominator.IsZero) {
+            // a % infinity
+            return this;
+        }
 
-        var leastCommonMultiple = BigInteger.Multiply(thisMultiplier, divisor.Denominator);
+        var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
+        if (gcd.IsOne) {
+            return GetReducedFraction(
+                (thisNumerator * otherDenominator) % (otherNumerator * thisDenominator),
+                thisDenominator * otherDenominator);
+        }
 
-        var a = BigInteger.Multiply(_numerator, otherMultiplier);
-        var b = BigInteger.Multiply(divisor.Numerator, thisMultiplier);
+        var thisMultiplier = thisDenominator / gcd;
+        var otherMultiplier = otherDenominator / gcd;
 
-        var remainder = BigInteger.Remainder(a, b);
+        var leastCommonMultiple = thisMultiplier * otherDenominator;
 
-        return new Fraction(remainder, leastCommonMultiple);
+        var a = thisNumerator * otherMultiplier;
+        var b = otherNumerator * thisMultiplier;
+
+        var remainder = a % b;
+
+        return GetReducedFraction(remainder, leastCommonMultiple);
     }
 
     /// <summary>
@@ -40,33 +61,70 @@ public readonly partial struct Fraction {
     /// <param name="summand">Summand</param>
     /// <returns>The result as summation.</returns>
     public Fraction Add(Fraction summand) {
-        if (_denominator == summand.Denominator) {
-            return new Fraction(BigInteger.Add(_numerator, summand.Numerator), _denominator, true);
+        var thisNumerator = Numerator;
+        if (thisNumerator.IsZero) {
+            // `this` is either NaN (NaN + summand == NaN) or Zero (0 + summand == summand)
+            return Denominator.IsZero ? this : summand;
         }
 
-        if (IsZero) {
-            // 0 + b = b
-            return summand;
+        var otherNumerator = summand.Numerator;
+        if (otherNumerator.IsZero) {
+            // summand is either NaN (this + NaN == NaN) or Zero (this + 0 == this)
+            return summand.Denominator.IsZero ? summand : this;
         }
 
-        if (summand.IsZero) {
-            // a + 0 = a
-            return this;
+        // both fractions are non-zero numbers
+        var thisDenominator = Denominator;
+        var otherDenominator = summand.Denominator;
+
+        if (thisDenominator.IsZero) {
+            // `this` is (+/-) Infinity
+            if (!otherDenominator.IsZero) {
+                return this; // Inf + b = Inf
+            }
+
+            // adding infinities
+            return (thisNumerator.Sign + otherNumerator.Sign) switch {
+                2 => PositiveInfinity,
+                -2 => NegativeInfinity,
+                _ => NaN
+            };
         }
 
-        var gcd = BigInteger.GreatestCommonDivisor(_denominator, summand.Denominator);
+        if (otherDenominator.IsZero) {
+            return summand; // (+/-) Infinity
+        }
 
-        var thisMultiplier = BigInteger.Divide(_denominator, gcd);
-        var otherMultiplier = BigInteger.Divide(summand.Denominator, gcd);
+        // both values are non-zero: normalizing the signs
+        if (State == FractionState.Unknown && thisDenominator.Sign == -1) {
+            thisDenominator = -thisDenominator;
+            thisNumerator = -thisNumerator;
+        }
 
-        var leastCommonMultiple = BigInteger.Multiply(thisMultiplier, summand.Denominator);
+        if (summand.State == FractionState.Unknown && otherDenominator.Sign == -1) {
+            otherDenominator = -otherDenominator;
+            otherNumerator = -otherNumerator;
+        }
 
-        var calculatedNumerator = BigInteger.Add(
-            BigInteger.Multiply(_numerator, otherMultiplier),
-            BigInteger.Multiply(summand.Numerator, thisMultiplier)
-        );
+        if (thisDenominator == otherDenominator) {
+            return ReduceSigned(thisNumerator + otherNumerator, thisDenominator);
+        }
 
-        return new Fraction(calculatedNumerator, leastCommonMultiple, true);
+        // note: using the GCD here is only useful for very large numbers, however the difference is significant
+        var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
+        if (gcd.IsOne) {
+            return ReduceSigned(
+                thisNumerator * otherDenominator + otherNumerator * thisDenominator,
+                thisDenominator * otherDenominator);
+        }
+
+        var thisMultiplier = thisDenominator / gcd;
+        var otherMultiplier = otherDenominator / gcd;
+
+        var calculatedNumerator = thisNumerator * otherMultiplier + otherNumerator * thisMultiplier;
+        var leastCommonMultiple = thisMultiplier * otherDenominator;
+
+        return ReduceSigned(calculatedNumerator, leastCommonMultiple);
     }
 
     /// <summary>
@@ -80,11 +138,11 @@ public readonly partial struct Fraction {
     /// Negates the fraction. Has the same result as multiplying it by -1.
     /// </summary>
     /// <returns>The negated fraction.</returns>
-    public Fraction Negate() =>
-        IsZero ? _zero : new Fraction(BigInteger.Negate(_numerator), _denominator, _state);
+    public Fraction Negate() => new(-Numerator, Denominator, State);
 
     /// <inheritdoc cref="Negate"/>>
-    [Obsolete("The 'Invert' method is obsolete. Please use the the 'Negate' method or the negation operator '-value'.", error: false)]
+    [Obsolete("The 'Invert' method is obsolete. Please use the the 'Negate' method or the negation operator '-value'.",
+        error: false)]
     public Fraction Invert() => Negate();
 
     /// <summary>
@@ -92,33 +150,113 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="factor">Factor</param>
     /// <returns>The result as product.</returns>
-    public Fraction Multiply(Fraction factor) =>
-        new(
-            _numerator * factor._numerator,
-            _denominator * factor._denominator,
-            true);
+    public Fraction Multiply(Fraction factor) {
+        // we want to skip the multiplications if we know the result is going to be 0/b or a/0
+        var thisNumerator = Numerator;
+        var thisDenominator = Denominator;
+        switch (thisDenominator.Sign) {
+            case 0:
+                // `this` is NaN or Infinity
+                return new Fraction(
+                    numerator: thisNumerator.Sign * factor.Numerator.Sign,
+                    denominator: BigInteger.Zero,
+                    state: FractionState.IsNormalized);
+            case -1:
+                // `this` is not normalized, correct signs
+                thisNumerator = -thisNumerator;
+                thisDenominator = -thisDenominator;
+                break;
+        }
+
+        var otherNumerator = factor.Numerator;
+        var otherDenominator = factor.Denominator;
+        switch (otherDenominator.Sign) {
+            case 0:
+                // factor is NaN or Infinity
+                return new Fraction(
+                    numerator: thisNumerator.Sign * otherNumerator.Sign,
+                    denominator: BigInteger.Zero,
+                    state: FractionState.IsNormalized);
+            case -1:
+                // factor is not normalized, correct signs
+                otherNumerator = -otherNumerator;
+                otherDenominator = -otherDenominator;
+                break;
+        }
+
+        if (thisNumerator.IsZero || otherNumerator.IsZero) {
+            return Zero;
+        }
+
+        return ReduceSigned(
+            thisNumerator * otherNumerator,
+            thisDenominator * otherDenominator);
+    }
 
     /// <summary>
     /// Divides the fraction's value by <paramref name="divisor"/>.
     /// </summary>
     /// <param name="divisor">Divisor</param>
     /// <returns>The result as quotient.</returns>
-    public Fraction Divide(Fraction divisor) =>
-        divisor.IsZero
-            ? throw new DivideByZeroException(string.Format(Resources.DivideByZero, this))
-            : new Fraction(
-                numerator: _numerator * divisor._denominator,
-                denominator: _denominator * divisor._numerator,
-                normalize: true);
+    public Fraction Divide(Fraction divisor) {
+        // we want to skip the multiplications if we know the result is going to be 0/b or a/0
+        var otherNumerator = divisor.Numerator;
+        var otherDenominator = divisor.Denominator;
+
+        if (otherDenominator.IsZero) {
+            // dividing by NaN or Infinity produces NaN
+            return NaN;
+        }
+
+        var thisNumerator = Numerator;
+        var thisDenominator = Denominator;
+
+        switch (thisDenominator.Sign) {
+            case 0:
+                // `this` is NaN or Infinity
+                return thisNumerator.Sign switch {
+                    // +/- Infinity divided by a number
+                    1 => otherNumerator.Sign * otherDenominator.Sign < 0 ? NegativeInfinity : PositiveInfinity,
+                    -1 => otherNumerator.Sign * otherDenominator.Sign < 0 ? PositiveInfinity : NegativeInfinity,
+                    // NaN divided by a number
+                    _ => NaN
+                };
+            case -1:
+                // `this` is not normalized, correct signs
+                thisNumerator = -thisNumerator;
+                thisDenominator = -thisDenominator;
+                break;
+        }
+
+        switch (otherNumerator.Sign) {
+            case 0:
+                // divisor is 0
+                return new Fraction(thisNumerator.Sign * otherDenominator.Sign, BigInteger.Zero,
+                    FractionState.IsNormalized);
+            case -1:
+                // divisor is not normalized, correct signs
+                otherNumerator = -otherNumerator;
+                otherDenominator = -otherDenominator;
+                break;
+        }
+
+        if (thisNumerator.IsZero) {
+            return Zero;
+        }
+
+        return ReduceSigned(
+            thisNumerator * otherDenominator,
+            thisDenominator * otherNumerator);
+    }
 
     /// <summary>
     /// Returns this as reduced/simplified fraction. The fraction's sign will be normalized.
     /// </summary>
     /// <returns>A reduced and normalized fraction.</returns>
     public Fraction Reduce() =>
-        _state == FractionState.IsNormalized
+        State == FractionState.IsNormalized
             ? this
-            : GetReducedFraction(_numerator, _denominator);
+            : GetReducedFraction(Numerator, Denominator);
 
     /// <summary>
     /// Gets the absolute value of a <see cref="Fraction"/> object.
@@ -141,23 +279,39 @@ public readonly partial struct Fraction {
     /// <param name="denominator">Denominator</param>
     /// <returns>A reduced and normalized fraction</returns>
     public static Fraction GetReducedFraction(BigInteger numerator, BigInteger denominator) {
-        if (numerator.IsZero || denominator.IsZero) {
+        if (denominator.IsZero) {
+            return numerator.Sign switch {
+                1 => PositiveInfinity,
+                -1 => NegativeInfinity,
+                _ => NaN
+            };
+        }
+
+        if (numerator.IsZero) {
             return Zero;
         }
 
         if (denominator.Sign == -1) {
             // Denominator must not be negative after normalization
-            numerator = BigInteger.Negate(numerator);
-            denominator = BigInteger.Negate(denominator);
+            numerator = -numerator;
+            denominator = -denominator;
         }
 
+        return ReduceSigned(numerator, denominator);
+    }
+
+    /// <summary>
+    ///     Returns a fraction by reducing the numerator and denominator by their largest common divisor.
+    /// </summary>
+    /// <param name="numerator">The signed numerator</param>
+    /// <param name="denominator">The denominator should be positive</param>
+    /// <returns>A normalized fraction</returns>
+    private static Fraction ReduceSigned(BigInteger numerator, BigInteger denominator) {
         var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
-        if (gcd is { IsOne: false, IsZero: false }) {
-            return new Fraction(BigInteger.Divide(numerator, gcd), BigInteger.Divide(denominator, gcd),
-                FractionState.IsNormalized);
-        }
 
-        return new Fraction(numerator, denominator, FractionState.IsNormalized);
+        return gcd.IsOne
+            ? new Fraction(numerator, denominator, FractionState.IsNormalized)
+            : new Fraction(numerator / gcd, denominator / gcd, FractionState.IsNormalized);
     }
 
     /// <summary>
@@ -166,10 +320,30 @@ public readonly partial struct Fraction {
     /// <param name="base">base to be raised to a power</param>
     /// <param name="exponent">A number that specifies a power (exponent)</param>
     /// <returns>The fraction <paramref name="base"/> raised to the power <paramref name="exponent"/>.</returns>
-    public static Fraction Pow(Fraction @base, int exponent) =>
-        exponent < 0
-            ? Pow(new Fraction(@base._denominator, @base._numerator), -exponent)
-            : new Fraction(BigInteger.Pow(@base._numerator, exponent), BigInteger.Pow(@base._denominator, exponent));
+    public static Fraction Pow(Fraction @base, int exponent) {
+        // Note: if the State is normalized, then it would remain normalized after exponentiation (2*2/3*3),
+        // otherwise: it is better to reduce the fraction now (avoiding a larger allocation later on)
+        Fraction fraction;
+        switch (exponent) {
+            case > 0:
+                fraction = @base.Reduce();
+                break;
+            case < 0 when @base.IsZero:
+                return PositiveInfinity;
+            case < 0:
+                exponent = -exponent;
+                fraction = @base.Reciprocal().Reduce();
+                break;
+            default:
+                // x^0 == 1
+                return One;
+        }
+
+        return new Fraction(
+            numerator: BigInteger.Pow(fraction.Numerator, exponent),
+            denominator: BigInteger.Pow(fraction.Denominator, exponent),
+            state: FractionState.IsNormalized);
+    }
 
     /// <summary>
     /// Returns a fraction with the numerator and denominator exchanged.
@@ -186,14 +360,14 @@ public readonly partial struct Fraction {
     /// <returns>
     /// The fraction with the numerator and denominator exchanged.
     /// </returns>
-    public static Fraction Reciprocal(Fraction fraction) =>
-        fraction is { State: FractionState.IsNormalized, Numerator.Sign: -1 }
-            ? new Fraction(
-                numerator: BigInteger.Negate(fraction.Denominator),
-                denominator: BigInteger.Negate(fraction.Numerator),
-                state: fraction.State)
-            : new Fraction(
-                numerator: fraction.Denominator,
-                denominator: fraction.Numerator,
-                state: fraction.State);
+    public static Fraction Reciprocal(Fraction fraction) {
+        if (fraction.IsInfinity) {
+            // Note: we could technically support "positive" and "negative" zeros as non-normalized fractions
+            return Zero;
+        }
+
+        return fraction is { State: FractionState.IsNormalized, Numerator.Sign: -1 }
+            ? new Fraction(-fraction.Denominator, -fraction.Numerator, fraction.State)
+            : new Fraction(fraction.Denominator, fraction.Numerator, fraction.State);
+    }
 }

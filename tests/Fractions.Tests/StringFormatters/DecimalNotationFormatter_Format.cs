@@ -15,7 +15,13 @@ public abstract class DecimalNotationFormatterSpecs : Spec {
     protected static readonly CultureInfo AmericanCulture = CultureInfo.GetCultureInfo("en-US");
     protected static readonly CultureInfo NorwegianCulture = CultureInfo.GetCultureInfo("nb-NO");
     protected static readonly CultureInfo RussianCulture = CultureInfo.GetCultureInfo("ru-RU");
-    protected static readonly IFormatProvider[] FormatProviders = [null, AmericanCulture, NorwegianCulture, RussianCulture];
+
+    protected static readonly IFormatProvider[] FormatProviders = [
+        null,
+        AmericanCulture,
+        NorwegianCulture,
+        RussianCulture
+    ];
 
     protected static readonly Fraction[] TerminatingFractions = [
         0, 1, -1, 10, -10, 100, -100, 1000, -1000, 10000, -10000, 100000, -100000,
@@ -37,12 +43,20 @@ public abstract class DecimalNotationFormatterSpecs : Spec {
     protected static readonly Fraction[] NonTerminatingFractions = [
         new Fraction(1, 3), new Fraction(-1, 3),
         new Fraction(2, 3), new Fraction(-2, 3),
-        new Fraction(19999991, 3), new Fraction(-19999991, 3), // note: for all but the percent (P) format we could be using two more digits ('99')
-        new Fraction(20000001, 3), new Fraction(-20000001, 3), // note: for all but the percent (P) format we could be using two more digits ('00')
+        new Fraction(19999991, 3),
+        new Fraction(-19999991, 3), // note: for all but the percent (P) format we could be using two more digits ('99')
+        new Fraction(20000001, 3),
+        new Fraction(-20000001, 3), // note: for all but the percent (P) format we could be using two more digits ('00')
         new Fraction(4, 3), new Fraction(-4, 3),
         new Fraction(5, 3), new Fraction(-5, 3),
-        new Fraction(7, 3), new Fraction(-7, 3)
+        new Fraction(7, 3), new Fraction(-7, 3),
     ];
+
+    /// <summary>
+    /// <see cref="Fraction.PositiveInfinity"/>, <see cref="Fraction.NegativeInfinity"/> and <see cref="Fraction.NaN"/>
+    /// </summary>
+    protected static readonly Fraction[] SpecialFractions =
+        [Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NaN];
 }
 
 /// <summary>
@@ -65,7 +79,8 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
 
     [Test]
     [TestCaseSource(nameof(FormatWithTerminatingFractionCases))]
-    public string The_general_format_should_match_double_ToString_if_the_fraction_is_terminating(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_general_format_should_match_double_ToString_if_the_fraction_is_terminating(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -78,7 +93,8 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
 
     [Test]
     [TestCaseSource(nameof(FormatWithNonTerminatingFractionAndSpecificPrecisionCases))]
-    public string The_general_format_should_match_double_ToString_when_the_precision_is_specified(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_general_format_should_match_double_ToString_when_the_precision_is_specified(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -91,7 +107,8 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
 
     [Test]
     [TestCaseSource(nameof(FormatWithNonTerminatingFractionAndDefaultPrecisionCases))]
-    public void The_general_format_should_match_double_ToString_when_the_precision_is_not_specified(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public void The_general_format_should_match_double_ToString_when_the_precision_is_not_specified(
+        Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
         // Arrange
         var doubleToString = valueToTest.ToDouble().ToString(stringFormat, formatProvider);
 
@@ -121,22 +138,44 @@ public class When_formatting_a_fraction_using_the_general_format : DecimalNotati
     }
 #endif
 
+    public static IEnumerable<TestCaseData> FormatWithSpecialFractionCases =>
+        from stringFormat in GeneralFormats
+        from valueToTest in SpecialFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
+
+    [Test]
+    [TestCaseSource(nameof(FormatWithSpecialFractionCases))]
+    public string The_general_format_should_match_double_ToString_if_the_fraction_is_NaN_or_Infinity(
+        Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
+    }
+
     public static IEnumerable<TestCaseData> GeneralFormatSupportHighPrecisionCases {
         get {
             var formatProvider = CultureInfo.InvariantCulture;
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
-            yield return new TestCaseData(valueToTest, "G17", formatProvider).Returns("1.2345678998765432E+17");
-            yield return new TestCaseData(valueToTest, "G18", formatProvider).Returns("123456789987654321");
-            yield return new TestCaseData(valueToTest, "G19", formatProvider).Returns("123456789987654321.1");
-            yield return new TestCaseData(valueToTest, "G35", formatProvider).Returns("123456789987654321.12345678998765432");
-            yield return new TestCaseData(valueToTest, "G36", formatProvider).Returns("123456789987654321.123456789987654321");
-            yield return new TestCaseData(valueToTest, "G37", formatProvider).Returns("123456789987654321.123456789987654321");
+
+            yield return new TestCaseData(valueToTest, "G17", formatProvider)
+                .Returns("1.2345678998765432E+17");
+            yield return new TestCaseData(valueToTest, "G18", formatProvider)
+                .Returns("123456789987654321");
+            yield return new TestCaseData(valueToTest, "G19", formatProvider)
+                .Returns("123456789987654321.1");
+            yield return new TestCaseData(valueToTest, "G35", formatProvider)
+                .Returns("123456789987654321.12345678998765432");
+            yield return new TestCaseData(valueToTest, "G36", formatProvider)
+                .Returns("123456789987654321.123456789987654321");
+            yield return new TestCaseData(valueToTest, "G37", formatProvider)
+                .Returns("123456789987654321.123456789987654321");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(GeneralFormatSupportHighPrecisionCases))]
-    public string The_general_format_support_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_general_format_support_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 
@@ -176,14 +215,15 @@ public class When_formatting_a_fraction_using_the_fixed_point_format : DecimalNo
 
     public static IEnumerable<TestCaseData> FixedPointFormatsToTest =>
         from stringFormat in FixedPointFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
     [Test]
     [TestCaseSource(nameof(FixedPointFormatsToTest))]
-    public string The_fixed_point_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_fixed_point_format_should_match_double_ToString(Fraction valueToTest, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -191,15 +231,20 @@ public class When_formatting_a_fraction_using_the_fixed_point_format : DecimalNo
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
             var formatProvider = CultureInfo.InvariantCulture;
-            yield return new TestCaseData(valueToTest, "F17", formatProvider).Returns("123456789987654321.12345678998765432");
-            yield return new TestCaseData(valueToTest, "F18", formatProvider).Returns("123456789987654321.123456789987654321");
-            yield return new TestCaseData(valueToTest, "F19", formatProvider).Returns("123456789987654321.1234567899876543210");
+
+            yield return new TestCaseData(valueToTest, "F17", formatProvider)
+                .Returns("123456789987654321.12345678998765432");
+            yield return new TestCaseData(valueToTest, "F18", formatProvider)
+                .Returns("123456789987654321.123456789987654321");
+            yield return new TestCaseData(valueToTest, "F19", formatProvider)
+                .Returns("123456789987654321.1234567899876543210");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(FixedPointFormatSupportsHighPrecisionCases))]
-    public string The_fixed_point_format_supports_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_fixed_point_format_supports_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 }
@@ -226,14 +271,14 @@ public class When_formatting_a_fraction_with_the_numeric_format : DecimalNotatio
 
     public static IEnumerable<TestCaseData> NumberFormatsToTest =>
         from stringFormat in NumberFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
     public static IEnumerable<TestCaseData> NumberNegativePatternsToTest =>
         from stringFormat in NumberFormats
-        from valueToTest in new Fraction[] { 0, -0.1m, -1, -1.23456789m }
+        from valueToTest in new Fraction[] { 0, -0.1m, -1, -1.23456789m }.Concat(SpecialFractions)
         from cultureToTest in NumberNegativePatterns.Select(pattern => {
             var culture = (CultureInfo)AmericanCulture.Clone();
             culture.NumberFormat.NumberNegativePattern = pattern;
@@ -244,13 +289,15 @@ public class When_formatting_a_fraction_with_the_numeric_format : DecimalNotatio
 
     [Test]
     [TestCaseSource(nameof(NumberFormatsToTest))]
-    public string The_number_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_number_format_should_match_double_ToString(Fraction valueToTest, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
     [Test]
     [TestCaseSource(nameof(NumberNegativePatternsToTest))]
-    public string The_numeric_format_should_respect_the_number_negative_patterns(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_numeric_format_should_respect_the_number_negative_patterns(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -258,15 +305,20 @@ public class When_formatting_a_fraction_with_the_numeric_format : DecimalNotatio
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
             var formatProvider = CultureInfo.InvariantCulture;
-            yield return new TestCaseData(valueToTest, "N17", formatProvider).Returns("123,456,789,987,654,321.12345678998765432");
-            yield return new TestCaseData(valueToTest, "N18", formatProvider).Returns("123,456,789,987,654,321.123456789987654321");
-            yield return new TestCaseData(valueToTest, "N19", formatProvider).Returns("123,456,789,987,654,321.1234567899876543210");
+
+            yield return new TestCaseData(valueToTest, "N17", formatProvider)
+                .Returns("123,456,789,987,654,321.12345678998765432");
+            yield return new TestCaseData(valueToTest, "N18", formatProvider)
+                .Returns("123,456,789,987,654,321.123456789987654321");
+            yield return new TestCaseData(valueToTest, "N19", formatProvider)
+                .Returns("123,456,789,987,654,321.1234567899876543210");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(StandardNumberFormatSupportsHighPrecisionCases))]
-    public string The_standard_number_format_supports_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_standard_number_format_supports_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 }
@@ -289,14 +341,15 @@ public class When_formatting_a_fraction_with_the_exponential_format : DecimalNot
 
     public static IEnumerable<TestCaseData> ScientificFormatsToTest =>
         from stringFormat in ScientificFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
     [Test]
     [TestCaseSource(nameof(ScientificFormatsToTest))]
-    public string The_scientific_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_scientific_format_should_match_double_ToString(Fraction valueToTest, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -304,18 +357,26 @@ public class When_formatting_a_fraction_with_the_exponential_format : DecimalNot
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
             var formatProvider = CultureInfo.InvariantCulture;
-            yield return new TestCaseData(valueToTest, "E16", formatProvider).Returns("1.2345678998765432E+017");
-            yield return new TestCaseData(valueToTest, "E17", formatProvider).Returns("1.23456789987654321E+017");
-            yield return new TestCaseData(valueToTest, "E18", formatProvider).Returns("1.234567899876543211E+017");
-            yield return new TestCaseData(valueToTest, "E34", formatProvider).Returns("1.2345678998765432112345678998765432E+017");
-            yield return new TestCaseData(valueToTest, "E35", formatProvider).Returns("1.23456789987654321123456789987654321E+017");
-            yield return new TestCaseData(valueToTest, "E36", formatProvider).Returns("1.234567899876543211234567899876543210E+017");
+
+            yield return new TestCaseData(valueToTest, "E16", formatProvider)
+                .Returns("1.2345678998765432E+017");
+            yield return new TestCaseData(valueToTest, "E17", formatProvider)
+                .Returns("1.23456789987654321E+017");
+            yield return new TestCaseData(valueToTest, "E18", formatProvider)
+                .Returns("1.234567899876543211E+017");
+            yield return new TestCaseData(valueToTest, "E34", formatProvider)
+                .Returns("1.2345678998765432112345678998765432E+017");
+            yield return new TestCaseData(valueToTest, "E35", formatProvider)
+                .Returns("1.23456789987654321123456789987654321E+017");
+            yield return new TestCaseData(valueToTest, "E36", formatProvider)
+                .Returns("1.234567899876543211234567899876543210E+017");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(ScientificFormatSupportsHighPrecisionCases))]
-    public string The_scientific_format_supports_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_scientific_format_supports_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 
@@ -374,7 +435,7 @@ public class When_formatting_a_fraction_with_the_currency_format : DecimalNotati
 
     public static IEnumerable<TestCaseData> CurrencyFormatsToTest =>
         from stringFormat in CurrencyFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
@@ -403,19 +464,22 @@ public class When_formatting_a_fraction_with_the_currency_format : DecimalNotati
 
     [Test]
     [TestCaseSource(nameof(CurrencyFormatsToTest))]
-    public string The_currency_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_currency_format_should_match_double_ToString(Fraction valueToTest, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
     [Test]
     [TestCaseSource(nameof(CurrencyPositivePatternsToTest))]
-    public string The_currency_format_should_respect_the_currency_positive_patterns(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_currency_format_should_respect_the_currency_positive_patterns(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
     [Test]
     [TestCaseSource(nameof(CurrencyNegativePatternsToTest))]
-    public string The_currency_format_should_respect_the_currency_negative_patterns(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_currency_format_should_respect_the_currency_negative_patterns(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -423,15 +487,20 @@ public class When_formatting_a_fraction_with_the_currency_format : DecimalNotati
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
             var formatProvider = AmericanCulture;
-            yield return new TestCaseData(valueToTest, "C17", formatProvider).Returns("$123,456,789,987,654,321.12345678998765432");
-            yield return new TestCaseData(valueToTest, "C18", formatProvider).Returns("$123,456,789,987,654,321.123456789987654321");
-            yield return new TestCaseData(valueToTest, "C19", formatProvider).Returns("$123,456,789,987,654,321.1234567899876543210");
+
+            yield return new TestCaseData(valueToTest, "C17", formatProvider)
+                .Returns("$123,456,789,987,654,321.12345678998765432");
+            yield return new TestCaseData(valueToTest, "C18", formatProvider)
+                .Returns("$123,456,789,987,654,321.123456789987654321");
+            yield return new TestCaseData(valueToTest, "C19", formatProvider)
+                .Returns("$123,456,789,987,654,321.1234567899876543210");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(CurrencyFormatSupportsHighPrecisionCases))]
-    public string The_currency_format_supports_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_currency_format_supports_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 }
@@ -448,14 +517,15 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
 
     public static IEnumerable<TestCaseData> PercentFormatsToTest =>
         from stringFormat in PercentFormats
-        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions)
+        from valueToTest in TerminatingFractions.Concat(NonTerminatingFractions).Concat(SpecialFractions)
         from cultureToTest in FormatProviders
         select new TestCaseData(valueToTest, stringFormat, cultureToTest)
             .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
 
     [Test]
     [TestCaseSource(nameof(PercentFormatsToTest))]
-    public string The_percentage_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_percentage_format_should_match_double_ToString(Fraction valueToTest, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -479,7 +549,8 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
 
     [Test]
     [TestCaseSource(nameof(PercentPositivePatternsToTest))]
-    public string The_percent_format_should_respect_the_percent_positive_patterns(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_percent_format_should_respect_the_percent_positive_patterns(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -512,7 +583,8 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
 
     [Test]
     [TestCaseSource(nameof(PercentNegativePatternsToTest))]
-    public string The_percent_format_should_respect_the_percent_negative_patterns(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_percent_format_should_respect_the_percent_negative_patterns(Fraction valueToTest,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
@@ -520,15 +592,20 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
             var formatProvider = CultureInfo.InvariantCulture;
-            yield return new TestCaseData(valueToTest, "P15", formatProvider).Returns("12,345,678,998,765,432,112.345678998765432 %");
-            yield return new TestCaseData(valueToTest, "P16", formatProvider).Returns("12,345,678,998,765,432,112.3456789987654321 %");
-            yield return new TestCaseData(valueToTest, "P17", formatProvider).Returns("12,345,678,998,765,432,112.34567899876543210 %");
+
+            yield return new TestCaseData(valueToTest, "P15", formatProvider)
+                .Returns("12,345,678,998,765,432,112.345678998765432 %");
+            yield return new TestCaseData(valueToTest, "P16", formatProvider)
+                .Returns("12,345,678,998,765,432,112.3456789987654321 %");
+            yield return new TestCaseData(valueToTest, "P17", formatProvider)
+                .Returns("12,345,678,998,765,432,112.34567899876543210 %");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(PercentFormatSupportsHighPrecisionCases))]
-    public string The_percent_format_supports_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_percent_format_supports_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 }
@@ -538,7 +615,8 @@ public class When_formatting_a_fraction_with_the_percent_format : DecimalNotatio
 ///     precision of the Fraction object with a variable number of digits after the radix point.
 /// </summary>
 [TestFixture]
-public class When_formatting_a_fraction_with_the_significant_digits_after_the_radix_format : DecimalNotationFormatterSpecs {
+public class
+    When_formatting_a_fraction_with_the_significant_digits_after_the_radix_format : DecimalNotationFormatterSpecs {
     /// <summary>
     ///     Values with exponent in the interval [-3 ≤ e ≤ 5] are formatted using the decimal point notation (no extra digits).
     /// </summary>
@@ -555,15 +633,18 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
                 yield return new TestCaseData(new Fraction(-999.99), format, culture).Returns("-999.99");
                 yield return new TestCaseData(new Fraction(-1.1m), format, culture).Returns("-1.1");
                 yield return new TestCaseData(Fraction.MinusOne, format, culture).Returns("-1");
+
                 // from -1 to 0
                 yield return new TestCaseData(new Fraction(-0.1), format, culture).Returns("-0.1");
                 yield return new TestCaseData(new Fraction(-0.01), format, culture).Returns("-0.01");
                 yield return new TestCaseData(new Fraction(-0.001), format, culture).Returns("-0.001");
+
                 // from 0 to 1
                 yield return new TestCaseData(Fraction.Zero, format, culture).Returns("0");
                 yield return new TestCaseData(new Fraction(0.001), format, culture).Returns("0.001");
                 yield return new TestCaseData(new Fraction(0.01), format, culture).Returns("0.01");
                 yield return new TestCaseData(new Fraction(0.1), format, culture).Returns("0.1");
+
                 // from 1 to 1000000
                 yield return new TestCaseData(new Fraction(1.1m), format, culture).Returns("1.1");
                 yield return new TestCaseData(new Fraction(999.99), format, culture).Returns("999.99");
@@ -584,7 +665,8 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
 
     [Test]
     [TestCaseSource(nameof(NormalValueCases))]
-    public string Normal_values_are_formatted_in_decimal_point_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+    public string Normal_values_are_formatted_in_decimal_point_notation(Fraction fraction, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
     }
 
@@ -613,7 +695,8 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
 
     [Test]
     [TestCaseSource(nameof(SmallAbsoluteValueCases))]
-    public string Values_with_small_absolute_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+    public string Values_with_small_absolute_values_are_formatted_in_scientific_notation(Fraction fraction,
+        string stringFormat, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
     }
 
@@ -636,7 +719,8 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
 
     [Test]
     [TestCaseSource(nameof(LargePositiveValueCases))]
-    public string Large_positive_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+    public string Large_positive_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
     }
 
@@ -659,8 +743,23 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
 
     [Test]
     [TestCaseSource(nameof(LargeNegativeValueCases))]
-    public string Large_negative_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat, IFormatProvider formatProvider) {
+    public string Large_negative_values_are_formatted_in_scientific_notation(Fraction fraction, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, fraction, formatProvider);
+    }
+
+    public static IEnumerable<TestCaseData> FormatWithSpecialFractionCases =>
+        from stringFormat in new[] { "S", "S1", "S2", "S3", "S4", "s", "s1", "s2", "s3", "s4" }
+        from valueToTest in SpecialFractions
+        from cultureToTest in FormatProviders
+        select new TestCaseData(valueToTest, stringFormat, cultureToTest)
+            .Returns(valueToTest.ToDouble().ToString(stringFormat, cultureToTest));
+
+    [Test]
+    [TestCaseSource(nameof(FormatWithSpecialFractionCases))]
+    public string The_general_format_should_match_double_ToString_if_the_fraction_is_NaN_or_Infinity(
+        Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+        return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 
     public static IEnumerable<TestCaseData> RoundingErrorsWithSignificantDigitsAfterRadixFormattingCases {
@@ -677,7 +776,8 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
 
     [Test]
     [TestCaseSource(nameof(RoundingErrorsWithSignificantDigitsAfterRadixFormattingCases))]
-    public string Values_are_rounded_according_to_the_specified_number_of_significant_digits_after_the_radix(Fraction fraction, string format, IFormatProvider formatProvider) {
+    public string Values_are_rounded_according_to_the_specified_number_of_significant_digits_after_the_radix(
+        Fraction fraction, string format, IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, fraction, formatProvider);
     }
 
@@ -695,19 +795,28 @@ public class When_formatting_a_fraction_with_the_significant_digits_after_the_ra
         get {
             var valueToTest = Fraction.FromString("123456789987654321.123456789987654321", AmericanCulture);
             var formatProvider = CultureInfo.InvariantCulture;
-            yield return new TestCaseData(valueToTest, "S16", formatProvider).Returns("1.2345678998765432E+17");
-            yield return new TestCaseData(valueToTest, "S17", formatProvider).Returns("1.23456789987654321E+17");
-            yield return new TestCaseData(valueToTest, "S18", formatProvider).Returns("1.234567899876543211E+17");
-            yield return new TestCaseData(valueToTest, "S19", formatProvider).Returns("1.2345678998765432112E+17");
-            yield return new TestCaseData(valueToTest, "S34", formatProvider).Returns("1.2345678998765432112345678998765432E+17");
-            yield return new TestCaseData(valueToTest, "S35", formatProvider).Returns("1.23456789987654321123456789987654321E+17");
-            yield return new TestCaseData(valueToTest, "S36", formatProvider).Returns("1.23456789987654321123456789987654321E+17");
+
+            yield return new TestCaseData(valueToTest, "S16", formatProvider)
+                .Returns("1.2345678998765432E+17");
+            yield return new TestCaseData(valueToTest, "S17", formatProvider)
+                .Returns("1.23456789987654321E+17");
+            yield return new TestCaseData(valueToTest, "S18", formatProvider)
+                .Returns("1.234567899876543211E+17");
+            yield return new TestCaseData(valueToTest, "S19", formatProvider)
+                .Returns("1.2345678998765432112E+17");
+            yield return new TestCaseData(valueToTest, "S34", formatProvider)
+                .Returns("1.2345678998765432112345678998765432E+17");
+            yield return new TestCaseData(valueToTest, "S35", formatProvider)
+                .Returns("1.23456789987654321123456789987654321E+17");
+            yield return new TestCaseData(valueToTest, "S36", formatProvider)
+                .Returns("1.23456789987654321123456789987654321E+17");
         }
     }
 
     [Test]
     [TestCaseSource(nameof(SpecialFormatSupportsHighPrecisionCases))]
-    public string The_special_format_support_high_precision(Fraction valueToTest, string format, IFormatProvider formatProvider) {
+    public string The_special_format_support_high_precision(Fraction valueToTest, string format,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(format, valueToTest, formatProvider);
     }
 }
@@ -735,7 +844,8 @@ public class When_formatting_a_fraction_using_the_round_tripping_format : Decima
 
     [Test]
     [TestCaseSource(nameof(GeneralFormatsToTest))]
-    public string The_round_tripping_format_should_match_double_ToString(Fraction valueToTest, string stringFormat, IFormatProvider formatProvider) {
+    public string The_round_tripping_format_should_match_double_ToString(Fraction valueToTest, string stringFormat,
+        IFormatProvider formatProvider) {
         return DecimalFormatter.Format(stringFormat, valueToTest, formatProvider);
     }
 }
@@ -770,7 +880,8 @@ public class When_formatting_a_fraction_using_a_custom_format : DecimalNotationF
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public string The_result_matches_ToDouble_ToString(string format, Fraction fraction, IFormatProvider formatProvider) {
+    public string
+        The_result_matches_ToDouble_ToString(string format, Fraction fraction, IFormatProvider formatProvider) {
         var result = DecimalFormatter.Format(format, fraction, formatProvider);
         result.Should().Be(fraction.ToDouble().ToString(format, formatProvider)); // just double-checking
         return result;

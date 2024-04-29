@@ -29,32 +29,52 @@ public readonly partial struct Fraction
     }
 
     /// <summary>
-    /// Compares the calculated value with the supplied <paramref name="other"/>.
+    ///     Compares the calculated value with the supplied <paramref name="other" />.
     /// </summary>
     /// <param name="other">Fraction that shall be compared with.</param>
     /// <returns>
-    /// Less than 0 if <paramref name="other"/> is greater.
-    /// Zero (0) if both calculated values are equal.
-    /// Greater than zero (0) if <paramref name="other"/> less.</returns>
+    ///     1 if <paramref name="other" /> is greater.
+    ///     0 if both calculated values are equal.
+    ///     -1 if <paramref name="other" /> less.
+    /// </returns>
+    /// <remarks>Comparing with <see cref="NaN" /> as the first argument always returns -1</remarks>
     public int CompareTo(Fraction other) {
-        if (_denominator == other._denominator) {
-            return _numerator.CompareTo(other._numerator);
+        if (IsNaN) {
+            return other.IsNaN ? 0 : -1;
         }
 
-        if (IsZero != other.IsZero) {
-            return IsZero
-                ? other.IsPositive ? -1 : 1
-                : IsPositive ? 1 : -1;
+        if (other.IsNaN) {
+            return 1;
+        }
+        
+        var numerator1 = Numerator;
+        var denominator1 = Denominator;
+        var numerator2 = other.Numerator;
+        var denominator2 = other.Denominator;
+        
+        if (denominator1 == denominator2) { 
+            return denominator1.IsZero ? 
+                numerator1.Sign.CompareTo(numerator2.Sign) :  // both fractions represent infinities
+                numerator1.CompareTo(numerator2); // any other two numbers (includes all integers)
         }
 
-        var gcd = BigInteger.GreatestCommonDivisor(_denominator, other._denominator);
+        if (numerator1.IsZero) {
+            return other.IsPositive ? -1 : 1;
+        }
 
-        var thisMultiplier = BigInteger.Divide(_denominator, gcd);
-        var otherMultiplier = BigInteger.Divide(other._denominator, gcd);
+        if (numerator2.IsZero) {
+            return IsPositive ? 1 : -1;
+        }
 
-        var a = BigInteger.Multiply(_numerator, otherMultiplier);
-        var b = BigInteger.Multiply(other._numerator, thisMultiplier);
+        if (denominator1.IsZero) {
+            return numerator1.Sign; // PositiveInfinity -> 1, NegativeInfinity -> -1
+        }
 
-        return a.CompareTo(b);
+        if (denominator2.IsZero) {
+            return numerator2.Sign; // PositiveInfinity -> -1, NegativeInfinity -> 1
+        }
+
+        // both values are non-zero fractions with different denominators  
+        return (numerator1 * denominator2).CompareTo(numerator2 * denominator1);
     }
 }

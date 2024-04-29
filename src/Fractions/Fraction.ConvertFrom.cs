@@ -136,7 +136,7 @@ public readonly partial struct Fraction {
     }
 
 #if NET
-     /// <summary>
+    /// <summary>
     /// Try to convert a ReadOnlySpan of type char to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
     /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
     /// </summary>
@@ -161,7 +161,7 @@ public readonly partial struct Fraction {
         if (count == 2) {
             var numeratorValue = value[ranges[0]];
             var denominatorValue = value[ranges[1]];
-            
+
             var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
             if (!BigInteger.TryParse(
                     value: numeratorValue,
@@ -197,7 +197,7 @@ public readonly partial struct Fraction {
         return CannotParse(out fraction);
     }
 
- private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
+    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
         IFormatProvider formatProvider, out Fraction fraction) {
         parseNumberStyles &= ~NumberStyles.AllowExponent;
         var exponentIndex = value.IndexOfAny(['e', 'E']);
@@ -243,16 +243,31 @@ public readonly partial struct Fraction {
             parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
         }
 
-        // 2. find the position of the decimal separator (if any)
         var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        
+        // 2. check for any of the special symbols
+        if (value.SequenceEqual(numberFormatInfo.NaNSymbol.AsSpan())) {
+            fraction = NaN;
+            return true;
+        }
+        if (value.SequenceEqual(numberFormatInfo.PositiveInfinitySymbol.AsSpan())) {
+            fraction = PositiveInfinity;
+            return true;
+        }
+        if (value.SequenceEqual(numberFormatInfo.NegativeInfinitySymbol.AsSpan())) {
+            fraction = NegativeInfinity;
+            return true;
+        }
+        
+        // 3. find the position of the decimal separator (if any)
         var decimalSeparatorIndex =
             value.IndexOf(numberFormatInfo.NumberDecimalSeparator, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            // TODO check if the parseNumberStyles need to be adjusted
             return TryParseInteger(value, parseNumberStyles, formatProvider, out fraction);
         }
-
-        // 3. try to parse the numerator
+        
+        // TODO we should probably be parsing the two parts separately (consider the alloc difference with "1.000012345")
+        // 4. try to parse the numerator
         var numeratorString = string.Concat(
             value[..decimalSeparatorIndex],
             value[(decimalSeparatorIndex + 1)..]);
@@ -260,10 +275,10 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction);
         }
 
-        // 4. construct the fraction using the corresponding decimal power for the denominator
+        // 5. construct the fraction using the corresponding decimal power for the denominator
         var nbDecimals = value.Length - decimalSeparatorIndex - 1;
         var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = new Fraction(numerator, denominator);
+        fraction = ReduceSigned(numerator, denominator);
         return true;
     }
 
@@ -277,7 +292,7 @@ public readonly partial struct Fraction {
         return CannotParse(out fraction);
     }
 #else
-     private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles,
+    private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles,
         IFormatProvider formatProvider, out Fraction fraction) {
         parseNumberStyles &= ~NumberStyles.AllowExponent;
         var exponentIndex = valueString.IndexOfAny(['e', 'E'], 1);
@@ -323,26 +338,42 @@ public readonly partial struct Fraction {
             parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
         }
 
-        // 2. find the position of the decimal separator (if any)
         var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        // 2. check for any of the special symbols
+        if (valueString == numberFormatInfo.NaNSymbol) {
+            fraction = NaN;
+            return true;
+        }
+
+        if (valueString == numberFormatInfo.PositiveInfinitySymbol) {
+            fraction = PositiveInfinity;
+            return true;
+        }
+
+        if (valueString == numberFormatInfo.NegativeInfinitySymbol) {
+            fraction = NegativeInfinity;
+            return true;
+        }
+        
+        // 3. find the position of the decimal separator (if any)
         var decimalSeparatorIndex =
             valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, 0, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            // TODO check if the parseNumberStyles need to be adjusted
             return TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction);
         }
-
-        // 3. try to parse the numerator
+        
+        // TODO we should probably be parsing the two parts separately (consider the alloc difference with "1.000012345")
+        // 4. try to parse the numerator
         var numeratorString = valueString.Substring(0, decimalSeparatorIndex) +
                               valueString.Substring(decimalSeparatorIndex + 1);
         if (!BigInteger.TryParse(numeratorString, parseNumberStyles, formatProvider, out var numerator)) {
             return CannotParse(out fraction);
         }
 
-        // 4. construct the fraction using the corresponding decimal power for the denominator
+        // 5. construct the fraction using the corresponding decimal power for the denominator
         var nbDecimals = valueString.Length - decimalSeparatorIndex - 1;
         var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = new Fraction(numerator, denominator);
+        fraction = ReduceSigned(numerator, denominator);
         return true;
     }
 
@@ -429,20 +460,21 @@ public readonly partial struct Fraction {
         if (exponentBits == EXPONENT_BITS) {
             // NaN or Infinity
             if (mantissaBits != 0) {
-                throw new InvalidNumberException(Resources.NaNNotSupported);
+                return NaN;
             }
 
             // Infinity
-            throw isNegative
-                ? new InvalidNumberException(Resources.NegativeInfinityNotSupported)
-                : new InvalidNumberException(Resources.PositiveInfinityNotSupported);
+            return isNegative
+                ? NegativeInfinity
+                : PositiveInfinity;
         }
-        
+
         var exponent = (int)((exponentBits >> 52) - K);
 
+        // TODO test without normalization
         // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
         var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
-        
+
         var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
         // 2^exponent
         var factor = exponent < 0
@@ -481,12 +513,19 @@ public readonly partial struct Fraction {
     ///     </see>
     /// </remarks>
     public static Fraction FromDoubleRounded(double value) {
-        if (double.IsNaN(value) || double.IsInfinity(value)) {
-            throw new InvalidNumberException();
+        if (double.IsPositiveInfinity(value)) {
+            return PositiveInfinity;
         }
 
-        // Null?
-        if (Math.Abs(value - 0.0) < double.Epsilon) {
+        if (double.IsNegativeInfinity(value)) {
+            return NegativeInfinity;
+        }
+
+        if (double.IsNaN(value)) {
+            return NaN;
+        }
+
+        if (value == 0d) {
             return Zero;
         }
 
@@ -519,10 +558,9 @@ public readonly partial struct Fraction {
             }
         }
 
-        return new Fraction(
-            sign < 0 ? BigInteger.Negate(numerator) : numerator,
-            new BigInteger(denominator),
-            true);
+        return ReduceSigned(
+            sign < 0 ? -numerator : numerator,
+            new BigInteger(denominator));
     }
 
 
@@ -566,14 +604,14 @@ public readonly partial struct Fraction {
     /// </remarks>
     public static Fraction FromDoubleRounded(double value, int significantDigits) {
         switch (value) {
-            case 0:
+            case 0d:
                 return Zero;
             case double.NaN:
-                throw new InvalidNumberException(Resources.NaNNotSupported);
+                return NaN;
             case double.PositiveInfinity:
-                throw new InvalidNumberException(Resources.PositiveInfinityNotSupported);
+                return PositiveInfinity;
             case double.NegativeInfinity:
-                throw new InvalidNumberException(Resources.NegativeInfinityNotSupported);
+                return NegativeInfinity;
         }
 
         // Determine the number of decimal places to keep
@@ -598,9 +636,9 @@ public readonly partial struct Fraction {
 
         var denominator = BigInteger.Pow(TEN, decimalPlaces);
         var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
-        return new Fraction(numerator, denominator);
+        return ReduceSigned(numerator, denominator);
     }
-    
+
 
     /// <summary>
     /// Converts a decimal value in a fraction. The value will not be rounded.
@@ -608,16 +646,13 @@ public readonly partial struct Fraction {
     /// <param name="value">A decimal value.</param>
     /// <returns>A fraction.</returns>
     public static Fraction FromDecimal(decimal value) {
-        if (value == decimal.Zero) {
-            return _zero;
-        }
-
-        if (value == decimal.One) {
-            return _one;
-        }
-
-        if (value == decimal.MinusOne) {
-            return _minusOne;
+        switch (value) {
+            case decimal.Zero:
+                return Zero;
+            case decimal.One:
+                return One;
+            case decimal.MinusOne:
+                return MinusOne;
         }
 
         var bits = decimal.GetBits(value);
@@ -625,7 +660,6 @@ public readonly partial struct Fraction {
         var middle = BitConverter.GetBytes(bits[1]);
         var high = BitConverter.GetBytes(bits[2]);
         var scale = BitConverter.GetBytes(bits[3]);
-
 
         var exp = scale[2];
         var positiveSign = (scale[3] & 0x80) == 0;
@@ -637,10 +671,8 @@ public readonly partial struct Fraction {
             high[0], high[1], high[2], high[3],
             0x00
         ]);
-        var denominator = BigInteger.Pow(10, exp);
+        var denominator = BigInteger.Pow(TEN, exp);
 
-        return positiveSign
-            ? new Fraction(numerator, denominator, true)
-            : new Fraction(BigInteger.Negate(numerator), denominator, true);
+        return ReduceSigned(positiveSign ? numerator : -numerator, denominator);
     }
 }

@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractions", "src\Fractions\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB32586E-70BB-4EEE-A0D0-F5BA24988419}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
 		Changelog.md = Changelog.md
+		Directory.Build.props = Directory.Build.props
 		license.txt = license.txt
 		Readme.md = Readme.md
 	EndProjectSection
@@ -29,13 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fractions.Benchmarks", "ben
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{FCF0C10D-9EEC-4985-9413-527D2009FC51}"
 	ProjectSection(SolutionItems) = preProject
+		benchmarks\results\Fractions.Benchmarks.BasicMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.BasicMathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ComparisonBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ComparisonBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ConstructorBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ConstructorBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ConvertToNumberBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ConvertToNumberBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.DecimalNotationFormatterBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.DecimalNotationFormatterBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.FromDoubleBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.FromDoubleBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.FromStringBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.FromStringBenchmarks-report-github.md
-		benchmarks\results\Fractions.Benchmarks.MathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.MathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ParseStringBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ParseStringBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ToStringBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ToStringBenchmarks-report-github.md

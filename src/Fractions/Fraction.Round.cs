@@ -31,7 +31,7 @@ public readonly partial struct Fraction {
         }
 #endif
 
-        if (fraction.IsZero || fraction.Denominator.IsOne) {
+        if (fraction.Denominator.IsOne || fraction.Denominator.IsZero) {
             return fraction;
         }
 
@@ -65,6 +65,10 @@ public readonly partial struct Fraction {
     /// <param name="mode">Specifies the strategy that mathematical rounding methods should use to round a number.</param>
     /// <returns>The number rounded to using the <paramref name="mode" /> rounding strategy.</returns>
     private static BigInteger RoundToBigInteger(BigInteger numerator, BigInteger denominator, MidpointRounding mode) {
+        if (denominator.IsZero) {
+            throw new DivideByZeroException();
+        }
+        
         if (numerator.IsZero || denominator.IsOne) {
             return numerator;
         }

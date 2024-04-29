@@ -81,6 +81,14 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
         Fraction.FromString(value, new CultureInfo("de-DE"))
             .Should().Be(new Fraction(7, 2));
     }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_invalid_spaces_are_detected(
+        [Values("3 ,5", " 3, 5", "+3 ,5", " +3, 5", "+3, 5 ")]
+        string value) {
+        Invoking(() => Fraction.FromString(value, new CultureInfo("de-DE")))
+            .Should().Throw<FormatException>();
+    }
 }
 
 [TestFixture]
@@ -346,5 +354,143 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_nega
         Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
             .Should()
             .Throw<FormatException>();
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_0_over_0 : Spec {
+    [Test]
+    public void The_result_should_be_NaN(
+        [Values("0/0", "-0/0", " -0/0", "-0/ 0", "0 /-0", "0 / -0")]
+        string value) {
+        Fraction.FromString(value).Should().Be(Fraction.NaN);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_0_over_1 : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("0/1", "-0/1", " -0/1", "0 /1", "0 / 1", "+0 / +1")]
+        string value) {
+        Fraction.FromString(value).Should().Be(Fraction.Zero);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_0_over_10_with_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("0/10", "0 /10", "-0 /10", "+0 / +10")]
+        string value) {
+        Fraction.FromString(value).Should().Be(Fraction.Zero);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_0_over_10_without_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("0/10", "0 / 10", "-0 / 10", "+0 / +10")]
+        string value) {
+        // TODO see about creating an overload for FromString(without normalization)
+        Fraction.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, false, out var result).Should()
+            .BeTrue();
+        result.IsZero.Should().BeTrue(); // this is still considered "a zero"
+        result.Should().NotBe(Fraction.Zero); // however it isn't strictly equal to the Zero
+        result.Should().Be(new Fraction(0, 10, false)); // rather it's a non-normalized version
+        result.IsEquivalentTo(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_0_over_minus_10_with_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("0 /-10", "0 / -10")] string value) {
+        Fraction.FromString(value).Should().Be(Fraction.Zero);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_0_over_minus_10_without_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("0 /-10", "0 / -10")] string value) {
+        // TODO see about creating an overload for FromString(without normalization)
+        Fraction.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, false, out var result).Should()
+            .BeTrue();
+        result.IsZero.Should().BeTrue(); // this is still considered "a zero"
+        result.Should().NotBe(Fraction.Zero); // however it isn't strictly equal to the Zero
+        result.Should().Be(new Fraction(0, -10, false)); // rather it's a non-normalized version
+        result.IsEquivalentTo(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_1_over_0 : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("1/0", "1 /-0", "1 / -0")] string value) {
+        Fraction.FromString(value).Should().Be(Fraction.PositiveInfinity);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_10_over_0_with_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("10/0", "10 /-0", "10 / -0")] string value) {
+        Fraction.FromString(value).Should().Be(Fraction.PositiveInfinity);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_10_over_0_without_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("10/0", "10 /-0", "10 / -0")] string value) {
+        // TODO see about creating an overload for FromString(without normalization)
+        Fraction.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, false, out var result).Should()
+            .BeTrue();
+        result.IsPositiveInfinity.Should().BeTrue(); // this is still considered "a positive infinity"
+        result.Should().NotBe(Fraction.PositiveInfinity); // however it isn't strictly equal to the PositiveInfinity
+        result.Should().Be(new Fraction(10, 0, false)); // rather it's a non-normalized version
+        result.IsEquivalentTo(Fraction.PositiveInfinity).Should().BeTrue(); // which can be reduced to PositiveInfinity
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_minus_1_over_0 : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("-1/0", "-1 /-0", "-1 / -0")] string value) {
+        Fraction.FromString(value).Should().Be(Fraction.NegativeInfinity);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_minus_10_over_0_with_normalization : Spec {
+    [Test]
+    public void The_result_should_be_PositiveInfinity(
+        [Values("-10/0", "-10 /-0", "-10 / -0")]
+        string value) {
+        Fraction.FromString(value).Should().Be(Fraction.NegativeInfinity);
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_the_string_minus_10_over_0_without_normalization : Spec {
+    [Test]
+    public void The_result_should_be_NegativeInfinity(
+        [Values("-10/0", "-10 /-0", "-10 / -0")]
+        string value) {
+        // TODO see about creating an overload for FromString(without normalization)
+        Fraction.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, false, out var result).Should()
+            .BeTrue();
+        result.IsNegativeInfinity.Should().BeTrue(); // this is still considered "a negative infinity"
+        result.Should().NotBe(Fraction.NegativeInfinity); // however it isn't strictly equal to the NegativeInfinity
+        result.Should().Be(new Fraction(-10, 0, false)); // rather it's a non-normalized version
+        result.IsEquivalentTo(Fraction.NegativeInfinity).Should().BeTrue(); // which can be reduced to NegativeInfinity
     }
 }

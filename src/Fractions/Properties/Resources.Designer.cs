@@ -61,6 +61,15 @@ namespace Fractions.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accuracy of {0} is not allowed! Have to be above 0..
+        /// </summary>
+        internal static string AccuracyIsLessThanOrEqualToZero {
+            get {
+                return ResourceManager.GetString("AccuracyIsLessThanOrEqualToZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The string &apos;{0}&apos; cannot be converted to fraction..
         /// </summary>
         internal static string CannotConvertToFraction {

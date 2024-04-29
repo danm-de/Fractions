@@ -10,6 +10,7 @@ charset = utf-8-bom
 end_of_line = crlf
 indent_style = space
 indent_size = 4
+tab_width = 4
 insert_final_newline = false
 trim_trailing_whitespace = true
 
@@ -24,18 +25,22 @@ indent_style = tab
 # Visual Studio XML Project Files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
 indent_size = 2
+tab_width = 2
 
 # XML Configuration Files
 [*.{xml,config,props,targets,nuspec,resx,ruleset,vsixmanifest,vsct}]
 indent_size = 2
+tab_width = 2
 
 # JSON Files
 [*.{json,json5}]
 indent_size = 2
+tab_width = 2
 
 # YAML Files
 [*.{yml,yaml}]
 indent_size = 2
+tab_width = 2
 
 # Markdown Files
 [*.md]
@@ -54,19 +59,60 @@ end_of_line = crlf
 [*.sh]
 end_of_line = lf
 
-[*.fsx]
-indent_size = 2
-insert_final_newline = true
-
-[*.{cs,vb}]
-insert_final_newline = true
-
 ###########################
 # .NET Language Conventions
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference#language-conventions
 ###########################
 
-[*.{cs,csx,cake,vb}]
+[*.cs]
+insert_final_newline = true
+csharp_indent_labels = one_less_than_current
+csharp_using_directive_placement = outside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_braces = true:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_expression_bodied_methods = false:none
+csharp_style_expression_bodied_constructors = false:none
+csharp_style_expression_bodied_operators = false:none
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_indexers = true:suggestion
+csharp_style_expression_bodied_accessors = true:suggestion
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+csharp_style_throw_expression = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_prefer_simple_default_expression = true:suggestion
+csharp_style_prefer_local_over_anonymous_function = true:silent
+csharp_style_prefer_index_operator = true:suggestion
+csharp_style_prefer_range_operator = true:suggestion
+csharp_style_prefer_tuple_swap = true:suggestion
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_prefer_utf8_string_literals = true:suggestion
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+csharp_style_deconstructed_variable_declaration = true:none
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent
+csharp_style_prefer_readonly_struct = true:suggestion
+csharp_prefer_static_local_function = true:suggestion
+csharp_style_prefer_readonly_struct_member = true:suggestion
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
+csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true:silent
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:silent
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:silent
+csharp_style_conditional_delegate_call = true:warning
+csharp_style_prefer_switch_expression = true:silent
+csharp_style_prefer_pattern_matching = true:silent
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+csharp_style_prefer_extended_property_pattern = true:suggestion
+
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+
 # "This." and "Me." qualifiers
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference#this_and_me
 dotnet_style_qualification_for_field = false:suggestion
@@ -114,7 +160,7 @@ dotnet_style_null_propagation = true:warning
 
 # IDE0065:  Prefer using directives to be placed outside the namespace
 # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0065#csharp_using_directive_placement
-csharp_using_directive_placement = outside_namespace
+csharp_using_directive_placement = outside_namespace:silent
 
 # IDE0161: Convert to file-scoped namespace
 # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0160-ide0161
@@ -223,8 +269,6 @@ csharp_preserve_single_line_blocks = true
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions
 #########################
 
-[*.{cs,csx,cake,vb}]
-
 ### Naming Symbols ###
 # constant_fields - Define constant fields
 dotnet_naming_symbols.constant_fields.applicable_kinds = field
@@ -305,7 +349,7 @@ dotnet_naming_rule.private_instance_fields_must_be_camel_case_with_underscore.st
 # Private readonly fields must be camelCase
 dotnet_naming_rule.private_readonly_fields_must_be_camel_case.severity = warning
 dotnet_naming_rule.private_readonly_fields_must_be_camel_case.symbols = private_readonly_fields
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.style = camel_case
+dotnet_naming_rule.private_readonly_fields_must_be_camel_case.style = prefix_underscore_camel_case
 # Public and internal fields must be PascalCase
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.symbols = public_internal_fields
@@ -342,3 +386,11 @@ dotnet_naming_rule.local_functions_should_be_camel_case.style = camel_case
 dotnet_naming_rule.locals_should_be_camel_case.severity = suggestion
 dotnet_naming_rule.locals_should_be_camel_case.symbols = locals
 dotnet_naming_rule.locals_should_be_camel_case.style = camel_case
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
+dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
+dotnet_style_allow_multiple_blank_lines_experimental = true:silent
+dotnet_code_quality_unused_parameters = all:suggestion
