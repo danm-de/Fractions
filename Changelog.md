@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+## 8.0.0
+
+### Breaking changes
+
+- Added support for NaN and Infinity by https://github.com/lipchev
+- `ToString()` uses CultureInfo.CurrentCulture
+- ... TODO
+
 ## 7.7.0
 
 - Added DecimalNotationFormatter + documentation by https://github.com/lipchev
