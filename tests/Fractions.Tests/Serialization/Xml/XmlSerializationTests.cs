@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using FluentAssertions;
 using NUnit.Framework;
@@ -17,33 +18,27 @@ public class If_the_user_serializes_a_fraction_using_the_XML_serializer {
         get {
             yield return new TestCaseData(Fraction.Zero)
                 .Returns("""
-                         <?xml version="1.0" encoding="utf-16"?>
-                         <Fraction Numerator="0" Denominator="1" />
+                         <?xml version="1.0" encoding="utf-16"?><Fraction Numerator="0" Denominator="1" />
                          """);
             yield return new TestCaseData(Fraction.One)
                 .Returns("""
-                         <?xml version="1.0" encoding="utf-16"?>
-                         <Fraction Numerator="1" Denominator="1" />
+                         <?xml version="1.0" encoding="utf-16"?><Fraction Numerator="1" Denominator="1" />
                          """);
             yield return new TestCaseData(Fraction.NaN)
                 .Returns("""
-                         <?xml version="1.0" encoding="utf-16"?>
-                         <Fraction Numerator="0" Denominator="0" />
+                         <?xml version="1.0" encoding="utf-16"?><Fraction Numerator="0" Denominator="0" />
                          """);
             yield return new TestCaseData(Fraction.PositiveInfinity)
                 .Returns("""
-                         <?xml version="1.0" encoding="utf-16"?>
-                         <Fraction Numerator="1" Denominator="0" />
+                         <?xml version="1.0" encoding="utf-16"?><Fraction Numerator="1" Denominator="0" />
                          """);
             yield return new TestCaseData(Fraction.NegativeInfinity)
                 .Returns("""
-                         <?xml version="1.0" encoding="utf-16"?>
-                         <Fraction Numerator="-1" Denominator="0" />
+                         <?xml version="1.0" encoding="utf-16"?><Fraction Numerator="-1" Denominator="0" />
                          """);
             yield return new TestCaseData(new Fraction(2, 4, normalize: false))
                 .Returns("""
-                         <?xml version="1.0" encoding="utf-16"?>
-                         <Fraction Numerator="2" Denominator="4" NormalizationNotApplied="True" />
+                         <?xml version="1.0" encoding="utf-16"?><Fraction Numerator="2" Denominator="4" NormalizationNotApplied="True" />
                          """);
         }
     }
@@ -80,7 +75,11 @@ public class If_the_user_serializes_a_fraction_using_the_XML_serializer {
 
     private string Serialize(Fraction value) {
         var sb = new StringBuilder();
-        using var writer = new StringWriter(sb);
+        var settings = new XmlWriterSettings() {
+            Indent = false,
+            NewLineHandling = NewLineHandling.None
+        };
+        using var writer = XmlWriter.Create(sb, settings);
         _serializer.Serialize(writer, value);
         writer.Flush();
         return sb.ToString();
