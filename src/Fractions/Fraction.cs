@@ -12,7 +12,7 @@ namespace Fractions;
 /// </summary>
 [TypeConverter(typeof(FractionTypeConverter))]
 [StructLayout(LayoutKind.Sequential)]
-public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
+public partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger TEN = new(10);
 
     private readonly BigInteger? _denominator; 

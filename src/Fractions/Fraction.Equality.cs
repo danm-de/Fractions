@@ -1,6 +1,6 @@
 ﻿namespace Fractions;
 
-public readonly partial struct Fraction {
+public partial struct Fraction {
     /// <summary>
     ///     Tests if the calculated value of this fraction equals to the calculated value of <paramref name="other" />.
     ///     It does not matter if either of them is not normalized. Both values will be reduced (normalized) before performing

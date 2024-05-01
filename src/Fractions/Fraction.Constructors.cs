@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Fractions;
 
-public readonly partial struct Fraction
+public partial struct Fraction
 {
     /// <summary>
     ///     Initializes a new instance of the Fraction struct with the specified numerator and denominator.

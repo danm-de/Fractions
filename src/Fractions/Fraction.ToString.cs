@@ -6,7 +6,7 @@ using Fractions.Formatter;
 
 namespace Fractions;
 
-public readonly partial struct Fraction {
+public partial struct Fraction {
     /// <summary>
     /// Returns the fraction in default format "G".
     /// </summary>

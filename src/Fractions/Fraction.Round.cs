@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Fractions;
 
-public readonly partial struct Fraction {
+public partial struct Fraction {
     /// <summary>
     /// Rounds the given Fraction to the specified precision using <see cref="MidpointRounding.ToEven"/> rounding strategy.
     /// </summary>

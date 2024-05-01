@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Numerics;
 using Fractions.Properties;
 
 namespace Fractions;
 
-public readonly partial struct Fraction
+public partial struct Fraction
 {
     /// <summary>
     /// Compares the calculated value with the supplied <paramref name="other"/>.

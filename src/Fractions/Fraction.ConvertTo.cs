@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Fractions;
 
-public readonly partial struct Fraction {
+public partial struct Fraction {
     private static readonly BigInteger MIN_DECIMAL = new(decimal.MinValue);
     private static readonly BigInteger MAX_DECIMAL = new(decimal.MaxValue);
 

@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Fractions;
 
-public readonly partial struct Fraction {
+public partial struct Fraction {
     /// <summary>
     /// Calculates the remainder of the division with the fraction's value and the supplied <paramref name="divisor"/> (% operator).
     /// </summary>
