@@ -50,6 +50,7 @@ public readonly partial struct Fraction
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(int numerator) {
         _numerator = new BigInteger(numerator);
+        _denominator = BigInteger.One;
     }
 
     /// <summary>
@@ -58,6 +59,7 @@ public readonly partial struct Fraction
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(long numerator) {
         _numerator = new BigInteger(numerator);
+        _denominator = BigInteger.One;
     }
 
     /// <summary>
@@ -67,6 +69,7 @@ public readonly partial struct Fraction
     [CLSCompliant(false)]
     public Fraction(uint numerator) {
         _numerator = new BigInteger(numerator);
+        _denominator = BigInteger.One;
     }
 
 
@@ -77,6 +80,7 @@ public readonly partial struct Fraction
     [CLSCompliant(false)]
     public Fraction(ulong numerator) {
         _numerator = new BigInteger(numerator);
+        _denominator = BigInteger.One;
     }
 
     /// <summary>
@@ -85,8 +89,8 @@ public readonly partial struct Fraction
     /// <param name="numerator">big integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(BigInteger numerator) {
         _numerator = numerator;
+        _denominator = BigInteger.One;
     }
-    
 
     /// <summary>
     ///     Creates a <see cref="Fraction"/> by converting a floating point value. Due to the fact that no rounding is applied to the input, values
