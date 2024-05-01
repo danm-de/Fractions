@@ -2,10 +2,15 @@
 
 ## 8.0.0
 
+- Great thanks to https://github.com/lipchev for added NaN and Infinity support!
+- New properties IsNaN, IsInfinity, IsPositiveInfinity, IsNegativeInfinity
+- ... TODO
+
 ### Breaking changes
 
 - Added support for NaN and Infinity by https://github.com/lipchev
-- `ToString()` uses CultureInfo.CurrentCulture
+- A fraction of 0/0 no longer has the value 0, but instead means NaN (not a number). Any fraction in the form x/0 is no longer a valid number. A denominator with the value 0 corresponds - depending on the numerator - to NaN, PositiveInfinity or NegativeInfinity. 
+- The standard function `ToString()` now depends on the active culture (`CultureInfo.CurrentCulture`). The reason is that NaN and Infinity should be displayed in the system language or the corresponding symbol should be used.
 - ... TODO
 
 ## 7.7.0
