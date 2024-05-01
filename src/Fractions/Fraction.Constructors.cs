@@ -6,17 +6,15 @@ namespace Fractions;
 public readonly partial struct Fraction
 {
     /// <summary>
-    /// Create a fraction with <paramref name="numerator"/>, <paramref name="denominator"/> and the fraction's <paramref name="state"/>. 
-    /// Warning: if you use unreduced values combined with a state of <see cref="FractionState.IsNormalized"/> 
-    /// you will get wrong results when working with the fraction value.
+    ///     Initializes a new instance of the Fraction struct with the specified numerator and denominator.
     /// </summary>
-    /// <param name="numerator"></param>
-    /// <param name="denominator"></param>
-    /// <param name="state"></param>
-    private Fraction(BigInteger numerator, BigInteger denominator, FractionState state) {
-        Numerator = numerator;
+    /// <param name="normalizationNotApplied">Indicates whether the fraction is not normalized.</param>
+    /// <param name="numerator">The numerator of the fraction.</param>
+    /// <param name="denominator">The denominator of the fraction.</param>
+    private Fraction(bool normalizationNotApplied, BigInteger numerator, BigInteger denominator) {
+        _numerator = numerator;
         _denominator = denominator;
-        State = state;
+        _normalizationNotApplied = normalizationNotApplied;
     }
 
     /// <summary>
@@ -24,8 +22,9 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">Numerator</param>
     /// <param name="denominator">Denominator</param>
-    public Fraction(BigInteger numerator, BigInteger denominator)
-        : this(numerator, denominator, true) { }
+    public Fraction(BigInteger numerator, BigInteger denominator) {
+        this = GetReducedFraction(numerator, denominator); 
+    }
 
     /// <summary>
     /// Creates a normalized (reduced/simplified) or non-normalized fraction using <paramref name="numerator"/> and <paramref name="denominator"/>.
@@ -39,9 +38,9 @@ public readonly partial struct Fraction
         if (normalize) {
             this = GetReducedFraction(numerator, denominator);
         } else {
-            Numerator = numerator;
+            _numerator = numerator;
             _denominator = denominator;
-            State = FractionState.Unknown;
+            _normalizationNotApplied = true;
         }
     }
 
@@ -50,9 +49,8 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(int numerator) {
-        Numerator = new BigInteger(numerator);
+        _numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
-        State = FractionState.IsNormalized;
     }
 
     /// <summary>
@@ -60,9 +58,8 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(long numerator) {
-        Numerator = new BigInteger(numerator);
+        _numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
-        State = FractionState.IsNormalized;
     }
 
     /// <summary>
@@ -71,9 +68,8 @@ public readonly partial struct Fraction
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     [CLSCompliant(false)]
     public Fraction(uint numerator) {
-        Numerator = new BigInteger(numerator);
+        _numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
-        State = FractionState.IsNormalized;
     }
 
 
@@ -83,9 +79,8 @@ public readonly partial struct Fraction
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     [CLSCompliant(false)]
     public Fraction(ulong numerator) {
-        Numerator = new BigInteger(numerator);
+        _numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
-        State = FractionState.IsNormalized;
     }
 
     /// <summary>
@@ -93,11 +88,9 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">big integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(BigInteger numerator) {
-        Numerator = numerator;
+        _numerator = numerator;
         _denominator = BigInteger.One;
-        State = FractionState.IsNormalized;
     }
-    
 
     /// <summary>
     ///     Creates a <see cref="Fraction"/> by converting a floating point value. Due to the fact that no rounding is applied to the input, values

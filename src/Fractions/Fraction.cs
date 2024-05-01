@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using Fractions.TypeConverters;
 
 namespace Fractions;
@@ -11,51 +12,59 @@ namespace Fractions;
 /// The data type is not capable to store NaN (not a number) or infinite.
 /// </summary>
 [TypeConverter(typeof(FractionTypeConverter))]
-[StructLayout(LayoutKind.Sequential)]
+// [StructLayout(LayoutKind.Sequential)] // TODO do we need a particular order?
+[DataContract]
 public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger TEN = new(10);
+    
+    [DataMember(Name = "Numerator", Order = 1, EmitDefaultValue = false)]
+    private readonly BigInteger _numerator; 
+    
+    [DataMember(Name = "Denominator", Order = 2, EmitDefaultValue = false)]
+    private readonly BigInteger? _denominator; 
 
-    private readonly BigInteger? _denominator;
+    [DataMember(Name = "NormalizationNotApplied", Order = 3, EmitDefaultValue = false)]
+    private readonly bool _normalizationNotApplied;
 
     /// <summary>
     /// A fraction representing the positive infinity.
     /// </summary>
-    public static Fraction PositiveInfinity { get; } = new(BigInteger.One, BigInteger.Zero, FractionState.IsNormalized);
+    public static Fraction PositiveInfinity { get; } = new(false, BigInteger.One, BigInteger.Zero);
 
     /// <summary>
     /// A fraction representing the negative infinity.
     /// </summary>
-    public static Fraction NegativeInfinity { get; } = new(BigInteger.MinusOne, BigInteger.Zero, FractionState.IsNormalized);
+    public static Fraction NegativeInfinity { get; } = new(false, BigInteger.MinusOne, BigInteger.Zero);
 
     /// <summary>
     /// A fraction representing the result of dividing zero by zero.
     /// </summary>
-    public static Fraction NaN { get; } = new(BigInteger.Zero, BigInteger.Zero, FractionState.IsNormalized);
+    public static Fraction NaN { get; } = new(false, BigInteger.Zero, BigInteger.Zero);
 
     /// <summary>
-    /// A fraction with the reduced/simplified value of 0.
+    ///     A fraction with the reduced/simplified value of 0.
     /// </summary>
-    public static Fraction Zero { get; } = new(BigInteger.Zero, BigInteger.One, FractionState.IsNormalized);
+    public static Fraction Zero { get; } = new(BigInteger.Zero);
 
     /// <summary>
-    /// A fraction with the reduced/simplified value of 1.
+    ///     A fraction with the reduced/simplified value of 1.
     /// </summary>
-    public static Fraction One { get; } = new(BigInteger.One, BigInteger.One, FractionState.IsNormalized);
+    public static Fraction One { get; } = new(BigInteger.One);
 
     /// <summary>
-    /// A fraction with the reduced/simplified value of 2.
+    ///     A fraction with the reduced/simplified value of 2.
     /// </summary>
-    public static Fraction Two { get; } = new(new BigInteger(2), BigInteger.One, FractionState.IsNormalized);
+    public static Fraction Two { get; } = new(new BigInteger(2));
 
     /// <summary>
-    /// A fraction with the reduced/simplified value of -1.
+    ///     A fraction with the reduced/simplified value of -1.
     /// </summary>
-    public static Fraction MinusOne { get; } = new(BigInteger.MinusOne, BigInteger.One, FractionState.IsNormalized);
+    public static Fraction MinusOne { get; } = new(BigInteger.MinusOne);
 
     /// <summary>
     /// The numerator.
     /// </summary>
-    public BigInteger Numerator { get; }
+    public BigInteger Numerator => _numerator;
 
     /// <summary>
     /// The denominator
@@ -108,5 +117,5 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
     /// <summary>
     /// The fraction's state.
     /// </summary>
-    public FractionState State { get; }
+    public FractionState State => _normalizationNotApplied ? FractionState.Unknown : FractionState.IsNormalized;
 }

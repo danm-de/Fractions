@@ -96,12 +96,12 @@ public readonly partial struct Fraction {
         }
 
         // both values are non-zero: normalizing the signs
-        if (State == FractionState.Unknown && thisDenominator.Sign == -1) {
+        if (_normalizationNotApplied && thisDenominator.Sign == -1) {
             thisDenominator = -thisDenominator;
             thisNumerator = -thisNumerator;
         }
 
-        if (summand.State == FractionState.Unknown && otherDenominator.Sign == -1) {
+        if (summand._normalizationNotApplied && otherDenominator.Sign == -1) {
             otherDenominator = -otherDenominator;
             otherNumerator = -otherNumerator;
         }
@@ -138,7 +138,7 @@ public readonly partial struct Fraction {
     /// Negates the fraction. Has the same result as multiplying it by -1.
     /// </summary>
     /// <returns>The negated fraction.</returns>
-    public Fraction Negate() => new(-Numerator, Denominator, State);
+    public Fraction Negate() => new(_normalizationNotApplied, -Numerator, Denominator);
 
     /// <inheritdoc cref="Negate"/>>
     [Obsolete("The 'Invert' method is obsolete. Please use the the 'Negate' method or the negation operator '-value'.",
@@ -158,9 +158,9 @@ public readonly partial struct Fraction {
             case 0:
                 // `this` is NaN or Infinity
                 return new Fraction(
+                    normalizationNotApplied: false,
                     numerator: thisNumerator.Sign * factor.Numerator.Sign,
-                    denominator: BigInteger.Zero,
-                    state: FractionState.IsNormalized);
+                    denominator: BigInteger.Zero);
             case -1:
                 // `this` is not normalized, correct signs
                 thisNumerator = -thisNumerator;
@@ -174,9 +174,9 @@ public readonly partial struct Fraction {
             case 0:
                 // factor is NaN or Infinity
                 return new Fraction(
+                    normalizationNotApplied: false,
                     numerator: thisNumerator.Sign * otherNumerator.Sign,
-                    denominator: BigInteger.Zero,
-                    state: FractionState.IsNormalized);
+                    denominator: BigInteger.Zero);
             case -1:
                 // factor is not normalized, correct signs
                 otherNumerator = -otherNumerator;
@@ -231,8 +231,7 @@ public readonly partial struct Fraction {
         switch (otherNumerator.Sign) {
             case 0:
                 // divisor is 0
-                return new Fraction(thisNumerator.Sign * otherDenominator.Sign, BigInteger.Zero,
-                    FractionState.IsNormalized);
+                return new Fraction(false, thisNumerator.Sign * otherDenominator.Sign, BigInteger.Zero);
             case -1:
                 // divisor is not normalized, correct signs
                 otherNumerator = -otherNumerator;
@@ -250,13 +249,12 @@ public readonly partial struct Fraction {
     }
 
     /// <summary>
-    /// Returns this as reduced/simplified fraction. The fraction's sign will be normalized.
+    ///     Returns this as reduced/simplified fraction. The fraction's sign will be normalized.
     /// </summary>
     /// <returns>A reduced and normalized fraction.</returns>
-    public Fraction Reduce() =>
-        State == FractionState.IsNormalized
-            ? this
-            : GetReducedFraction(Numerator, Denominator);
+    public Fraction Reduce() {
+        return _normalizationNotApplied ? GetReducedFraction(Numerator, Denominator) : this;
+    }
 
     /// <summary>
     /// Gets the absolute value of a <see cref="Fraction"/> object.
@@ -269,8 +267,11 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="fraction">The fraction.</param>
     /// <returns>The absolute value.</returns>
-    public static Fraction Abs(Fraction fraction) =>
-        new(BigInteger.Abs(fraction.Numerator), BigInteger.Abs(fraction.Denominator), fraction.State);
+    public static Fraction Abs(Fraction fraction) {
+        return fraction._normalizationNotApplied
+            ? new Fraction(true, BigInteger.Abs(fraction.Numerator), BigInteger.Abs(fraction.Denominator))
+            : new Fraction(false, BigInteger.Abs(fraction.Numerator), fraction.Denominator);
+    }
 
     /// <summary>
     /// Returns a reduced and normalized fraction.
@@ -310,8 +311,8 @@ public readonly partial struct Fraction {
         var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
 
         return gcd.IsOne
-            ? new Fraction(numerator, denominator, FractionState.IsNormalized)
-            : new Fraction(numerator / gcd, denominator / gcd, FractionState.IsNormalized);
+            ? new Fraction(false, numerator, denominator)
+            : new Fraction(false, numerator / gcd, denominator / gcd);
     }
 
     /// <summary>
@@ -340,9 +341,9 @@ public readonly partial struct Fraction {
         }
 
         return new Fraction(
+            normalizationNotApplied: false,
             numerator: BigInteger.Pow(fraction.Numerator, exponent),
-            denominator: BigInteger.Pow(fraction.Denominator, exponent),
-            state: FractionState.IsNormalized);
+            denominator: BigInteger.Pow(fraction.Denominator, exponent));
     }
 
     /// <summary>
@@ -366,8 +367,8 @@ public readonly partial struct Fraction {
             return Zero;
         }
 
-        return fraction is { State: FractionState.IsNormalized, Numerator.Sign: -1 }
-            ? new Fraction(-fraction.Denominator, -fraction.Numerator, fraction.State)
-            : new Fraction(fraction.Denominator, fraction.Numerator, fraction.State);
+        return fraction is { _normalizationNotApplied: false, Numerator.Sign: -1 }
+            ? new Fraction(false, -fraction.Denominator, -fraction.Numerator)
+            : new Fraction(fraction._normalizationNotApplied, fraction.Denominator, fraction.Numerator);
     }
 }

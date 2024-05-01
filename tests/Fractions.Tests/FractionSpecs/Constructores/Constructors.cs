@@ -252,9 +252,8 @@ public static class Constructing_Zero {
         }
 
         [Test]
-        public void The_resulting_State_should_be_Unknown() {
-            // note: alternatively we could have the Fraction._denominator be a Nullable<BigInteger> which would allow us to check for it in the State property
-            ResultingFraction.State.Should().Be(FractionState.Unknown, "We aren't going through any constructor");
+        public void The_resulting_State_should_be_Normalized() {
+            ResultingFraction.State.Should().Be(FractionState.IsNormalized, "_normalizationNotApplied: defaults to false");
         }
     }
 
