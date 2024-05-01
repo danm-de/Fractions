@@ -12,7 +12,7 @@ public readonly partial struct Fraction
     /// <param name="numerator">The numerator of the fraction.</param>
     /// <param name="denominator">The denominator of the fraction.</param>
     private Fraction(bool normalizationNotApplied, BigInteger numerator, BigInteger denominator) {
-        _numerator = numerator;
+        Numerator = numerator;
         _denominator = denominator;
         _normalizationNotApplied = normalizationNotApplied;
     }
@@ -38,7 +38,7 @@ public readonly partial struct Fraction
         if (normalize) {
             this = GetReducedFraction(numerator, denominator);
         } else {
-            _numerator = numerator;
+            Numerator = numerator;
             _denominator = denominator;
             _normalizationNotApplied = true;
         }
@@ -49,7 +49,7 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(int numerator) {
-        _numerator = new BigInteger(numerator);
+        Numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
     }
 
@@ -58,7 +58,7 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(long numerator) {
-        _numerator = new BigInteger(numerator);
+        Numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
     }
 
@@ -68,7 +68,7 @@ public readonly partial struct Fraction
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     [CLSCompliant(false)]
     public Fraction(uint numerator) {
-        _numerator = new BigInteger(numerator);
+        Numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
     }
 
@@ -79,7 +79,7 @@ public readonly partial struct Fraction
     /// <param name="numerator">integer value that will be used for the numerator. The denominator will be 1.</param>
     [CLSCompliant(false)]
     public Fraction(ulong numerator) {
-        _numerator = new BigInteger(numerator);
+        Numerator = new BigInteger(numerator);
         _denominator = BigInteger.One;
     }
 
@@ -88,7 +88,7 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="numerator">big integer value that will be used for the numerator. The denominator will be 1.</param>
     public Fraction(BigInteger numerator) {
-        _numerator = numerator;
+        Numerator = numerator;
         _denominator = BigInteger.One;
     }
 

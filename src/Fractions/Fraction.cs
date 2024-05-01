@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using Fractions.TypeConverters;
 
 namespace Fractions;
@@ -12,18 +11,11 @@ namespace Fractions;
 /// The data type is not capable to store NaN (not a number) or infinite.
 /// </summary>
 [TypeConverter(typeof(FractionTypeConverter))]
-// [StructLayout(LayoutKind.Sequential)] // TODO do we need a particular order?
-[DataContract]
+[StructLayout(LayoutKind.Sequential)]
 public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger TEN = new(10);
-    
-    [DataMember(Name = "Numerator", Order = 1, EmitDefaultValue = false)]
-    private readonly BigInteger _numerator; 
-    
-    [DataMember(Name = "Denominator", Order = 2, EmitDefaultValue = false)]
-    private readonly BigInteger? _denominator; 
 
-    [DataMember(Name = "NormalizationNotApplied", Order = 3, EmitDefaultValue = false)]
+    private readonly BigInteger? _denominator; 
     private readonly bool _normalizationNotApplied;
 
     /// <summary>
@@ -64,7 +56,7 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
     /// <summary>
     /// The numerator.
     /// </summary>
-    public BigInteger Numerator => _numerator;
+    public BigInteger Numerator { get; }
 
     /// <summary>
     /// The denominator
