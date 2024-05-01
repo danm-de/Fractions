@@ -15,7 +15,7 @@ namespace Fractions;
 public partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger TEN = new(10);
 
-    private readonly BigInteger? _denominator; 
+    private readonly BigInteger? _denominator;
     private readonly bool _normalizationNotApplied;
 
     /// <summary>
