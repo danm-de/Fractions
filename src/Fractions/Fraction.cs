@@ -12,6 +12,9 @@ namespace Fractions;
 /// </summary>
 [TypeConverter(typeof(FractionTypeConverter))]
 [StructLayout(LayoutKind.Sequential)]
+#if NET
+[System.Text.Json.Serialization.JsonConverter(typeof(JsonConverters.DefaultFractionJsonConverter))]
+#endif
 public partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger TEN = new(10);
 

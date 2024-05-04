@@ -97,6 +97,33 @@ namespace Fractions.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid denominator value: {0}..
+        /// </summary>
+        internal static string InvalidDenominatorValue {
+            get {
+                return ResourceManager.GetString("InvalidDenominatorValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid numerator value: {0}..
+        /// </summary>
+        internal static string InvalidNumeratorValue {
+            get {
+                return ResourceManager.GetString("InvalidNumeratorValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid token type {0} (expected {1})..
+        /// </summary>
+        internal static string InvalidTokenType {
+            get {
+                return ResourceManager.GetString("InvalidTokenType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NaN values are not supported..
         /// </summary>
         internal static string NaNNotSupported {

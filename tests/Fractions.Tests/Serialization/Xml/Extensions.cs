@@ -8,7 +8,7 @@ namespace Fractions.Tests.Serialization.Xml;
 internal static class Extensions {
     public static string Serialize<TModel>(this XmlSerializer xmlSerializer, TModel value) {
         var sb = new StringBuilder();
-        var settings = new XmlWriterSettings() {
+        var settings = new XmlWriterSettings {
             Indent = false,
             NewLineHandling = NewLineHandling.None
         };

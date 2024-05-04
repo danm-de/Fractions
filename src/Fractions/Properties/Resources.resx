@@ -141,4 +141,13 @@
   <data name="AccuracyIsLessThanOrEqualToZero" xml:space="preserve">
     <value>Accuracy of {0} is not allowed! Have to be above 0.</value>
   </data>
+  <data name="InvalidNumeratorValue" xml:space="preserve">
+    <value>Invalid numerator value: {0}.</value>
+  </data>
+  <data name="InvalidDenominatorValue" xml:space="preserve">
+    <value>Invalid denominator value: {0}.</value>
+  </data>
+  <data name="InvalidTokenType" xml:space="preserve">
+    <value>Invalid token type {0} (expected {1}).</value>
+  </data>
 </root>

@@ -11,7 +11,7 @@ public partial struct Fraction
     /// <param name="normalizationNotApplied">Indicates whether the fraction is not normalized.</param>
     /// <param name="numerator">The numerator of the fraction.</param>
     /// <param name="denominator">The denominator of the fraction.</param>
-    private Fraction(bool normalizationNotApplied, BigInteger numerator, BigInteger denominator) {
+    internal Fraction(bool normalizationNotApplied, BigInteger numerator, BigInteger denominator) {
         Numerator = numerator;
         _denominator = denominator;
         _normalizationNotApplied = normalizationNotApplied;
@@ -22,6 +22,9 @@ public partial struct Fraction
     /// </summary>
     /// <param name="numerator">Numerator</param>
     /// <param name="denominator">Denominator</param>
+#if NET
+    [System.Text.Json.Serialization.JsonConstructor]
+#endif
     public Fraction(BigInteger numerator, BigInteger denominator) {
         this = GetReducedFraction(numerator, denominator); 
     }

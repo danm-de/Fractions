@@ -22,7 +22,7 @@ public sealed class FractionTypeConverter : TypeConverter {
 
     private static readonly Dictionary<Type, Func<object, CultureInfo, object>> CONVERT_TO_DICTIONARY =
         new Dictionary<Type, Func<object, CultureInfo, object>> {
-            {typeof (string), (o, info) => ((Fraction) o).ToString()},
+            {typeof (string), (o, info) => ((Fraction) o).ToString(info)},
             {typeof (int), (o, info) => ((Fraction) o).ToInt32()},
             {typeof (long), (o, info) => ((Fraction) o).ToInt64()},
             {typeof (decimal), (o, info) => ((Fraction) o).ToDecimal()},
