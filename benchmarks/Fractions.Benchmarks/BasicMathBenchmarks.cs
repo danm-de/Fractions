@@ -1,10 +1,13 @@
 ﻿using System.Numerics;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
-[ShortRunJob]
+// [ShortRunJob]
+[ShortRunJob(RuntimeMoniker.Net48)]
+[ShortRunJob(RuntimeMoniker.Net80)]
 public class BasicMathBenchmarks {
     public static IEnumerable<object[]> Operands() {
         yield return [Fraction.Zero, Fraction.One];

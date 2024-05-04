@@ -1,10 +1,12 @@
 ﻿using System.Globalization;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
-[ShortRunJob]
+[SimpleJob(RuntimeMoniker.Net48)]
+[SimpleJob(RuntimeMoniker.Net80)]
 public class FromStringBenchmarks {
 
     public static IEnumerable<string> ValidStrings => ["0", "1", "-1", "10242048", "1/5", "-1/5", "3.5", "-3.5", "1.2345678901234567890"];
@@ -15,22 +17,10 @@ public class FromStringBenchmarks {
     public bool TryParseValidString(string validString) {
         return Fraction.TryParse(validString, NumberStyles.Number, CultureInfo.InvariantCulture, false, out _);
     }
-
-    [Benchmark]
-    [ArgumentsSource(nameof(ValidStrings))]
-    public bool TryParseValidReadOnlySpan(string validString) {
-        return Fraction.TryParse(validString.AsSpan(), NumberStyles.Number, CultureInfo.InvariantCulture, false, out _);
-    }
     
     [Benchmark]
     [ArgumentsSource(nameof(InvalidStrings))]
     public bool TryParseInvalidString(string invalidString) {
         return Fraction.TryParse(invalidString, NumberStyles.Number, CultureInfo.InvariantCulture, false, out _);
-    }
-
-    [Benchmark]
-    [ArgumentsSource(nameof(InvalidStrings))]
-    public bool TryParseInvalidReadOnlySpan(string invalidString) {
-        return Fraction.TryParse(invalidString.AsSpan(), NumberStyles.Number, CultureInfo.InvariantCulture, false, out _);
     }
 }
