@@ -17,27 +17,27 @@ public class If_the_user_serializes_a_fraction_using_the_DataContract_serializer
         get {
             yield return new TestCaseData(Fraction.Zero)
                 .Returns("""
-                         <Fraction Numerator="0" Denominator="1" xmlns="http://schemas.datacontract.org/2004/07/Fractions"/>
+                         <Fraction xmlns="http://schemas.datacontract.org/2004/07/Fractions"><Numerator>0</Numerator><Denominator>1</Denominator></Fraction>
                          """);
             yield return new TestCaseData(Fraction.One)
                 .Returns("""
-                         <Fraction Numerator="1" Denominator="1" xmlns="http://schemas.datacontract.org/2004/07/Fractions"/>
+                         <Fraction xmlns="http://schemas.datacontract.org/2004/07/Fractions"><Numerator>1</Numerator><Denominator>1</Denominator></Fraction>
                          """);
             yield return new TestCaseData(Fraction.NaN)
                 .Returns("""
-                         <Fraction Numerator="0" Denominator="0" xmlns="http://schemas.datacontract.org/2004/07/Fractions"/>
+                         <Fraction xmlns="http://schemas.datacontract.org/2004/07/Fractions"><Numerator>0</Numerator><Denominator>0</Denominator></Fraction>
                          """);
             yield return new TestCaseData(Fraction.PositiveInfinity)
                 .Returns("""
-                         <Fraction Numerator="1" Denominator="0" xmlns="http://schemas.datacontract.org/2004/07/Fractions"/>
+                         <Fraction xmlns="http://schemas.datacontract.org/2004/07/Fractions"><Numerator>1</Numerator><Denominator>0</Denominator></Fraction>
                          """);
             yield return new TestCaseData(Fraction.NegativeInfinity)
                 .Returns("""
-                         <Fraction Numerator="-1" Denominator="0" xmlns="http://schemas.datacontract.org/2004/07/Fractions"/>
+                         <Fraction xmlns="http://schemas.datacontract.org/2004/07/Fractions"><Numerator>-1</Numerator><Denominator>0</Denominator></Fraction>
                          """);
             yield return new TestCaseData(new Fraction(2, 4, normalize: false))
                 .Returns("""
-                         <Fraction Numerator="2" Denominator="4" NormalizationNotApplied="True" xmlns="http://schemas.datacontract.org/2004/07/Fractions"/>
+                         <Fraction xmlns="http://schemas.datacontract.org/2004/07/Fractions"><Numerator>2</Numerator><Denominator>4</Denominator><NormalizationNotApplied>True</NormalizationNotApplied></Fraction>
                          """);
         }
     }

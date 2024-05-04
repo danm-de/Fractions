@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿#if true
+using System.Globalization;
 using System.Numerics;
 using System.Xml;
 using System.Xml.Schema;
@@ -10,25 +11,53 @@ public partial struct Fraction : IXmlSerializable  {
     readonly XmlSchema IXmlSerializable.GetSchema() => null;
 
     void IXmlSerializable.ReadXml(XmlReader reader) {
-        var numerator = reader.MoveToAttribute(nameof(Numerator))
-            ? BigInteger.Parse(reader.Value, CultureInfo.InvariantCulture)
-            : BigInteger.Zero;
+        var numerator = BigInteger.Zero;
+        var denominator = BigInteger.One;
+        var normalizationNotApplied = false;
 
-        var denominator = reader.MoveToAttribute(nameof(Denominator))
-            ? BigInteger.Parse(reader.Value, CultureInfo.InvariantCulture)
-            : BigInteger.Zero;
+        reader.ReadStartElement();
 
-        var normalizationNotApplied = reader.MoveToAttribute("NormalizationNotApplied") &&
-                                      bool.Parse(reader.Value);
+        while (reader.IsStartElement()) {
+            switch (reader.Name) {
+                case nameof(Numerator):
+                    reader.ReadStartElement();
+                    numerator = BigInteger.Parse(reader.ReadContentAsString(), CultureInfo.InvariantCulture);
+                    reader.ReadEndElement();
+                    break;
+                case nameof(Denominator):
+                    reader.ReadStartElement();
+                    denominator = BigInteger.Parse(reader.ReadContentAsString(), CultureInfo.InvariantCulture);
+                    reader.ReadEndElement();
+                    break;
+                case "NormalizationNotApplied":
+                    reader.ReadStartElement();
+                    normalizationNotApplied = bool.Parse(reader.ReadContentAsString());
+                    reader.ReadEndElement();
+                    break;
+            }
+        }
+
+        if (reader.NodeType == XmlNodeType.EndElement) {
+            reader.ReadEndElement();
+        }
 
         this = new Fraction(normalizationNotApplied, numerator, denominator);
     }
 
     void IXmlSerializable.WriteXml(XmlWriter writer) {
-        writer.WriteAttributeString(nameof(Numerator), Numerator.ToString(CultureInfo.InvariantCulture)!);
-        writer.WriteAttributeString(nameof(Denominator), Denominator.ToString(CultureInfo.InvariantCulture)!);
+        writer.WriteStartElement(nameof(Numerator));
+        writer.WriteValue(Numerator.ToString(CultureInfo.InvariantCulture));
+        writer.WriteEndElement();
+
+        writer.WriteStartElement(nameof(Denominator));
+        writer.WriteValue(Denominator.ToString(CultureInfo.InvariantCulture));
+        writer.WriteEndElement();
+
         if (_normalizationNotApplied) {
-            writer.WriteAttributeString("NormalizationNotApplied", bool.TrueString);
+            writer.WriteStartElement("NormalizationNotApplied");
+            writer.WriteValue(bool.TrueString);
+            writer.WriteEndElement();
         }
     }
 }
+#endif
