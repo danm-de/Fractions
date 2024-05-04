@@ -34,8 +34,8 @@ public class ComparisonBenchmarks {
 
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
-    public int GetHashCode(Fraction a, Fraction b) {
-        return HashCode.Combine(a, b);
+    public bool GetHashCode(Fraction a, Fraction b) {
+        return a.GetHashCode() == b.GetHashCode();
     }
 
     [Benchmark]
