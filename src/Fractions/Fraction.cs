@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Fractions.TypeConverters;
@@ -12,6 +13,7 @@ namespace Fractions;
 /// </summary>
 [TypeConverter(typeof(FractionTypeConverter))]
 [StructLayout(LayoutKind.Sequential)]
+[DebuggerTypeProxy(typeof(FractionDebugView))]
 public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
     private static readonly BigInteger TEN = new(10);
 
