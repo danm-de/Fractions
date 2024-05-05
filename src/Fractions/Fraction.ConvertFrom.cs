@@ -879,7 +879,7 @@ public readonly partial struct Fraction {
 
         var nbDecimals = endIndex - decimalSeparatorIndex - decimalSeparatorLength;
         if (nbDecimals == 0) {
-            fraction = new Fraction(false, isNegative ? -numerator : numerator, BigInteger.One);
+            fraction = new Fraction(isNegative ? -numerator : numerator);
             return true;
         }
 

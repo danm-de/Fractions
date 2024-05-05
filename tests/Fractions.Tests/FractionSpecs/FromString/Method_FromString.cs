@@ -410,7 +410,6 @@ public class When_creating_a_fraction_from_a_very_long_decimal_string : Spec {
             BigInteger.Pow(10, 18))
         );
     }
-
 }
 
 [TestFixture]
