@@ -75,8 +75,9 @@ public readonly partial struct Fraction {
         out Fraction fraction) =>
         TryParse(fractionString, numberStyles, formatProvider, true, out fraction);
 
+#if NET
     /// <summary>
-    /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
+    /// Try to convert a ReadOnlySpan of type char to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
     /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
     /// </summary>
     /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
@@ -88,80 +89,28 @@ public readonly partial struct Fraction {
     /// <para><c>true</c> if <paramref name="fractionString"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
     /// <para><c>false</c> if <paramref name="fractionString"/> was invalid.</para>
     /// </returns>
-    public static bool TryParse(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider,
+    public static bool TryParse(ReadOnlySpan<char> fractionString, NumberStyles numberStyles, IFormatProvider formatProvider,
         bool normalize, out Fraction fraction) {
-        if (fractionString == null) {
+        if (fractionString.IsEmpty) {
             return CannotParse(out fraction);
         }
 
-        var components = fractionString.Split('/');
-
-        if (components.Length >= 2) {
-            var numeratorString = components[0];
-            var denominatorString = components[1];
-
-            var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
-            if (!BigInteger.TryParse(
-                    value: numeratorString,
-                    style: withoutDecimalPoint,
-                    provider: formatProvider,
-                    result: out var numerator)
-                || !BigInteger.TryParse(
-                    value: denominatorString,
-                    style: withoutDecimalPoint,
-                    provider: formatProvider,
-                    result: out var denominator)) {
+        if (fractionString.Length == 1) {
+            if (!BigInteger.TryParse(fractionString, numberStyles, formatProvider, out var singleDigit)) {
                 return CannotParse(out fraction);
             }
 
-            fraction = new Fraction(numerator, denominator, normalize);
+            fraction = new Fraction(singleDigit);
             return true;
         }
-
-        if (numberStyles.HasFlag(NumberStyles.AllowExponent)) {
-            return TryParseWithExponent(fractionString, numberStyles, formatProvider, out fraction);
-        }
-
-        if (numberStyles.HasFlag(NumberStyles.AllowDecimalPoint)) {
-            return TryParseDecimalNumber(fractionString, numberStyles, formatProvider, out fraction);
-        }
-
-        if (BigInteger.TryParse(fractionString, numberStyles, formatProvider, out var bigInteger)) {
-            fraction = bigInteger;
-            return true;
-        }
-
-        // Technically it should not be possible to reach this line of code..
-        return CannotParse(out fraction);
-    }
-
-#if NET
-     /// <summary>
-    /// Try to convert a ReadOnlySpan of type char to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
-    /// </summary>
-    /// <param name="value">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="value"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="value"/>.</param>
-    /// <param name="normalize">If <c>true</c> the parsed fraction will be reduced.</param>
-    /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
-    /// <returns>
-    /// <para><c>true</c> if <paramref name="value"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="value"/> was invalid.</para>
-    /// </returns>
-    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider formatProvider,
-        bool normalize, out Fraction fraction) {
-        if (value == null) {
-            return CannotParse(out fraction);
-        }
-
+        
         var ranges = new Span<Range>(new Range[2]);
-        var count = value.Split(ranges, '/');
+        var nbRangesFilled = fractionString.Split(ranges, '/');
 
-        if (count == 2) {
-            var numeratorValue = value[ranges[0]];
-            var denominatorValue = value[ranges[1]];
-            
+        if (nbRangesFilled == 2) {
+            var numeratorValue = fractionString[ranges[0]];
+            var denominatorValue = fractionString[ranges[1]];
+
             var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
             if (!BigInteger.TryParse(
                     value: numeratorValue,
@@ -180,182 +129,747 @@ public readonly partial struct Fraction {
             return true;
         }
 
-        if (numberStyles.HasFlag(NumberStyles.AllowExponent)) {
-            return TryParseWithExponent(value, numberStyles, formatProvider, out fraction);
+        // parsing a number using to the selected NumberStyles: e.g. " $ 12345.1234321e-4- " should result in -1.23451234321 with NumberStyles.Any
+        var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+
+        var currencyAllowed = (numberStyles & NumberStyles.AllowCurrencySymbol) != 0;
+        var currencyDetected = false; // there "special" rules regarding the white-spaces after a leading currency symbol is detected
+        ReadOnlySpan<char> currencySymbol;
+        if (currencyAllowed) {
+            currencySymbol = numberFormatInfo.CurrencySymbol.AsSpan();
+            if (currencySymbol.IsEmpty) {
+                currencyAllowed = false;
+                numberStyles &= ~NumberStyles.AllowCurrencySymbol; // no currency symbol available
+            }
+        } else {
+            currencySymbol = [];
         }
 
-        if (numberStyles.HasFlag(NumberStyles.AllowDecimalPoint)) {
-            return TryParseDecimalNumber(value, numberStyles, formatProvider, out fraction);
+        ReadOnlySpan<char> decimalSeparator; // note: decimal.TryParse relies on the CurrencySymbol (when currency is detected)
+        var decimalsAllowed = (numberStyles & NumberStyles.AllowDecimalPoint) != 0;
+        if (decimalsAllowed) {
+            decimalSeparator = numberFormatInfo.NumberDecimalSeparator.AsSpan();
+            if (decimalSeparator.IsEmpty) {
+                decimalsAllowed = false;
+                numberStyles &= ~NumberStyles.AllowDecimalPoint; // no decimal separator available
+            }
+        } else {
+            decimalSeparator = [];
         }
+        
+        var startIndex = 0;
+        var endIndex = fractionString.Length;
+        var isNegative = false;
 
-        if (BigInteger.TryParse(value, numberStyles, formatProvider, out var bigInteger)) {
-            fraction = bigInteger;
-            return true;
-        }
+        // examine the leading characters
+        do {
+            var character = fractionString[startIndex];
+            if (char.IsDigit(character)) {
+                break;
+            }
 
-        // Technically it should not be possible to reach this line of code..
-        return CannotParse(out fraction);
-    }
+            if (char.IsWhiteSpace(character)) {
+                if ((numberStyles & NumberStyles.AllowLeadingWhite) == 0) {
+                    return CannotParse(out fraction);
+                }
 
- private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
-        IFormatProvider formatProvider, out Fraction fraction) {
-        parseNumberStyles &= ~NumberStyles.AllowExponent;
-        var exponentIndex = value.IndexOfAny(['e', 'E']);
-        if (exponentIndex <= 0) {
-            return parseNumberStyles.HasFlag(NumberStyles.AllowDecimalPoint)
-                ? TryParseDecimalNumber(value, parseNumberStyles, formatProvider, out fraction)
-                : TryParseInteger(value, parseNumberStyles, formatProvider, out fraction);
-        }
+                startIndex++;
+                continue;
+            }
 
-        var exponentValue = value[(exponentIndex + 1)..];
-        if (!int.TryParse(exponentValue, parseNumberStyles, formatProvider, out var exponent)) {
+            if (character == '(') {
+                if ((numberStyles & NumberStyles.AllowParentheses) == 0) {
+                    return CannotParse(out fraction); // not allowed
+                }
+
+                if (startIndex == endIndex - 1) {
+                    return CannotParse(out fraction); // not enough characters
+                }
+                
+                startIndex++; // consume the current character
+                isNegative = true; // the closing parenthesis will be validated in the backwards iteration
+
+                if (currencyDetected) {
+                    // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                }
+                else if (currencyAllowed && startsWith(fractionString, currencySymbol, startIndex)) {
+                    // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
+                    currencyDetected = true;
+                    startIndex += currencySymbol.Length;
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                } else {
+                    // if next character is a white space the format should be rejected
+                    numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    break;
+                }
+
+                continue;
+            }
+
+            if ((numberStyles & NumberStyles.AllowLeadingSign) != 0) {
+                if (numberFormatInfo.NegativeSign.AsSpan() is { IsEmpty: false } negativeSign && startsWith(fractionString, negativeSign, startIndex)) {
+                    isNegative = true;
+                    startIndex += negativeSign.Length;
+                    if (currencyDetected) {
+                        // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                    }
+                    else if (currencyAllowed && startsWith(fractionString, currencySymbol, startIndex)) {
+                        // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
+                        currencyDetected = true;
+                        startIndex += currencySymbol.Length;
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                    } else {
+                        // if next character is a white space the format should be rejected
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        break;
+                    }
+                    
+                    continue;
+                }
+
+                if (numberFormatInfo.PositiveSign.AsSpan() is { IsEmpty: false } positiveSign && startsWith(fractionString, positiveSign, startIndex)) {
+                    isNegative = false;
+                    startIndex += positiveSign.Length;
+                    if (currencyDetected) {
+                        // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                    }
+                    else if (currencyAllowed && startsWith(fractionString, currencySymbol, startIndex)) {
+                        // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
+                        currencyDetected = true;
+                        startIndex += currencySymbol.Length;
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                    } else {
+                        // if next character is a white space the format should be rejected
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        break;
+                    }
+                    
+                    continue;
+                }
+            }
+
+            if (currencyAllowed && !currencyDetected && startsWith(fractionString, currencySymbol, startIndex)) {
+                // there can be no more currency symbols but there could be more white-spaces (we skip and continue)
+                currencyDetected = true;
+                numberStyles &= ~NumberStyles.AllowCurrencySymbol;
+                startIndex += currencySymbol.Length;
+                continue;
+            }
+
+            if (decimalsAllowed && startsWith(fractionString, decimalSeparator, startIndex)) {
+                break; // decimal string with no leading zeros
+            }
+
+            // this is either an expected hex string or an invalid format
+            return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
+                ? TryParseInteger(fractionString[startIndex..endIndex], numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, isNegative, out fraction)
+                : CannotParse(out fraction); // unexpected character
+        } while (startIndex < endIndex);
+
+        if (startIndex >= endIndex) {
             return CannotParse(out fraction);
         }
 
-        // we've got an exponent: try to parse the coefficient
-        var coefficientValue = value[..exponentIndex];
-        if (parseNumberStyles.HasFlag(NumberStyles.AllowDecimalPoint)) {
-            if (!TryParseDecimalNumber(coefficientValue, parseNumberStyles, formatProvider, out fraction)) {
+        if (isNegative) {
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign);
+        } else {
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowParentheses);
+        }
+
+        // examine the trailing characters
+        do {
+            var character = fractionString[endIndex - 1];
+            if (char.IsDigit(character)) {
+                break;
+            }
+
+            if (char.IsWhiteSpace(character)) {
+                if ((numberStyles & NumberStyles.AllowTrailingWhite) == 0) {
+                    return CannotParse(out fraction);
+                }
+
+                endIndex--;
+                continue;
+            }
+
+            if (character == ')') {
+                if ((numberStyles & NumberStyles.AllowParentheses) == 0) {
+                    return CannotParse(out fraction); // not allowed
+                }
+
+                numberStyles &= ~(NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol);
+                endIndex--;
+                continue;
+            }
+
+            if ((numberStyles & NumberStyles.AllowTrailingSign) != 0) {
+                if (numberFormatInfo.NegativeSign.AsSpan() is { IsEmpty: false } negativeSign && endsWith(fractionString, negativeSign, endIndex)) {
+                    isNegative = true;
+                    numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    endIndex -= negativeSign.Length;
+                    continue;
+                }
+
+                if (numberFormatInfo.PositiveSign.AsSpan() is { IsEmpty: false } positiveSign && endsWith(fractionString, positiveSign, endIndex)) {
+                    isNegative = false;
+                    numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    endIndex -= positiveSign.Length;
+                    continue;
+                }
+            }
+
+            if (currencyAllowed && !currencyDetected && endsWith(fractionString, currencySymbol, endIndex)) {
+                // there can be no more currency symbols but there could be more white-spaces (we skip and continue)
+                currencyDetected = true;
+                numberStyles &= ~NumberStyles.AllowCurrencySymbol;
+                endIndex -= currencySymbol.Length;
+                continue;
+            }
+
+            if (decimalsAllowed && endsWith(fractionString, decimalSeparator, endIndex)) {
+                break;
+            }
+
+            // this is either an expected hex string or an invalid format
+            return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
+                ? TryParseInteger(fractionString[startIndex..endIndex], numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, isNegative, out fraction)
+                : CannotParse(out fraction); // unexpected character
+        } while (startIndex < endIndex);
+
+        if (startIndex >= endIndex) {
+            return CannotParse(out fraction); // not enough characters
+        }
+
+        if (isNegative && (numberStyles & NumberStyles.AllowParentheses) != 0) {
+            return CannotParse(out fraction); // failed to find a closing parentheses
+        }
+
+        numberStyles &= ~(NumberStyles.AllowTrailingWhite | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol);
+        // at this point fractionString[startIndex, endIndex] should correspond to the number without the sign (or the format is invalid)
+        var unsignedValue = fractionString[startIndex..endIndex];
+
+        if (unsignedValue.Length == 1) {
+            // this can only be a single digit (integer)
+            return TryParseInteger(unsignedValue, numberStyles, formatProvider, isNegative, out fraction);
+        }
+
+        if ((numberStyles & NumberStyles.AllowExponent) != 0) {
+            return TryParseWithExponent(unsignedValue, numberStyles, numberFormatInfo, isNegative, out fraction);
+        }
+
+        return decimalsAllowed
+            ? TryParseDecimalNumber(unsignedValue, numberStyles, numberFormatInfo, isNegative, out fraction)
+            : TryParseInteger(unsignedValue, numberStyles, formatProvider, isNegative, out fraction);
+
+        static bool startsWith(ReadOnlySpan<char> fractionString, ReadOnlySpan<char> testString, int startIndex) {
+            return fractionString.Slice(startIndex, testString.Length).SequenceEqual(testString);
+        }
+        
+        static bool endsWith(ReadOnlySpan<char> fractionString, ReadOnlySpan<char> testString, int endIndex) {
+            return fractionString.Slice(endIndex - testString.Length, testString.Length).SequenceEqual(testString);
+        }
+    }
+
+    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative,
+        out Fraction fraction) {
+        // 1. try to find the exponent character (extracting the left and right sides)
+        parseNumberStyles &= ~NumberStyles.AllowExponent;
+        var ranges = new Span<Range>(new Range[2]);
+        var nbRangesFilled = value.SplitAny(ranges, ['e', 'E']);
+
+        if (nbRangesFilled != 2) {
+            // no exponent found
+            return (parseNumberStyles & NumberStyles.AllowDecimalPoint) != 0
+                ? TryParseDecimalNumber(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction)
+                : TryParseInteger(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction);
+        }
+
+        // 2. try to parse the exponent (w.r.t. the scientific notation format)
+        var exponentSpan = value[ranges[1]];
+        if (!int.TryParse(exponentSpan, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo, out var exponent)) {
+            return CannotParse(out fraction);
+        }
+
+        // 3. try to parse the coefficient (w.r.t. the decimal separator allowance)
+        var coefficientSpan = value[ranges[0]];
+        if (coefficientSpan.IsEmpty) {
+            return CannotParse(out fraction); // nothing in the coefficient
+        }
+
+        if (coefficientSpan.Length == 1 || (parseNumberStyles & NumberStyles.AllowDecimalPoint) == 0) {
+            if (!TryParseInteger(coefficientSpan, parseNumberStyles, numberFormatInfo, isNegative, out fraction)) {
                 return false;
             }
         } else {
-            if (!TryParseInteger(coefficientValue, parseNumberStyles, formatProvider, out fraction)) {
+            if (!TryParseDecimalNumber(coefficientSpan, parseNumberStyles, numberFormatInfo, isNegative, out fraction)) {
                 return false;
             }
         }
 
+        // 4. multiply the coefficient by 10 to the power of the exponent
         fraction *= Pow(TEN, exponent);
         return true;
     }
 
-    private static bool TryParseDecimalNumber(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
-        IFormatProvider formatProvider, out Fraction fraction) {
-        // 1. clean up the whitespaces
-        if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite) &&
-            parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite)) {
-            value = value.Trim();
-            parseNumberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite);
-        } else if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite)) {
-            value = value.TrimStart();
-            parseNumberStyles &= ~NumberStyles.AllowLeadingWhite;
-        } else if (parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite)) {
-            value = value.TrimEnd();
-            parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
+    private static bool TryParseDecimalNumber(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative,
+        out Fraction fraction) {
+        // 1. try to find the decimal separator (extracting the left and right sides)
+        var ranges = new Span<Range>(new Range[2]);
+        var nbRangesFilled = value.Split(ranges, numberFormatInfo.NumberDecimalSeparator);
+        
+        if (nbRangesFilled != 2) {
+            return TryParseInteger(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction);
         }
+        
+        var integerSpan = value[ranges[0]];
+        var fractionalSpan = value[ranges[1]];
 
-        // 2. find the position of the decimal separator (if any)
-        var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
-        var decimalSeparatorIndex =
-            value.IndexOf(numberFormatInfo.NumberDecimalSeparator, StringComparison.Ordinal);
-        if (decimalSeparatorIndex == -1) {
-            // TODO check if the parseNumberStyles need to be adjusted
-            return TryParseInteger(value, parseNumberStyles, formatProvider, out fraction);
-        }
-
-        // 3. try to parse the numerator
-        var numeratorString = string.Concat(
-            value[..decimalSeparatorIndex],
-            value[(decimalSeparatorIndex + 1)..]);
-        if (!BigInteger.TryParse(numeratorString, parseNumberStyles, formatProvider, out var numerator)) {
+        // 2. validate the format of the string after the radix
+        if (integerSpan.IsEmpty && fractionalSpan.IsEmpty) {
+            // after excluding the sign, the input was reduced to just the decimal separator (with nothing on either sides)
             return CannotParse(out fraction);
         }
 
-        // 4. construct the fraction using the corresponding decimal power for the denominator
-        var nbDecimals = value.Length - decimalSeparatorIndex - 1;
-        var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = new Fraction(numerator, denominator);
-        return true;
-    }
+        if (fractionalSpan.IsEmpty) {
+            // after excluding the sign, the input was reduced to just an integer part (e.g. "1 234.")
+            return TryParseInteger(integerSpan, parseNumberStyles, numberFormatInfo, isNegative, out fraction);
+        }
 
-    private static bool TryParseInteger(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
-        IFormatProvider formatProvider, out Fraction fraction) {
-        if (BigInteger.TryParse(value, parseNumberStyles, formatProvider, out var bigInteger)) {
-            fraction = new Fraction(bigInteger);
+        if ((parseNumberStyles & NumberStyles.AllowThousands) != 0) {
+            if (fractionalSpan.Contains(numberFormatInfo.NumberGroupSeparator.AsSpan(), StringComparison.Ordinal)) {
+                return CannotParse(out fraction);  // number group separator detected in the fractional part (e.g. "1.2 34")
+            }
+        }
+
+        // 3. extract the value of the string corresponding to the number without the decimal separator: "0.123 " should return "0123"
+        var integerString = string.Concat(integerSpan, fractionalSpan);
+        if (!BigInteger.TryParse(integerString, parseNumberStyles, numberFormatInfo, out var numerator)) {
+            return CannotParse(out fraction);
+        }
+
+        if (numerator.IsZero) {
+            fraction = Zero;
             return true;
         }
 
-        return CannotParse(out fraction);
+        if (isNegative) {
+            numerator = -numerator;
+        }
+        
+        var nbDecimals = fractionalSpan.Length;
+        if (nbDecimals == 0) {
+            fraction = new Fraction(numerator);
+            return true;
+        }
+        
+        // 4. construct the fractional part using the corresponding decimal power for the denominator
+        var denominator = BigInteger.Pow(TEN, nbDecimals);
+        fraction = GetReducedFraction(numerator, denominator);
+        return true;
     }
-#else
-     private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles,
-        IFormatProvider formatProvider, out Fraction fraction) {
+
+    private static bool TryParseInteger(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, IFormatProvider formatProvider, bool isNegative, out Fraction fraction) {
+        if (!BigInteger.TryParse(value, parseNumberStyles, formatProvider, out var bigInteger)) {
+            return CannotParse(out fraction);
+        }
+
+        fraction = new Fraction(isNegative ? -bigInteger: bigInteger);
+        return true;
+    }
+    #else
+    /// <summary>
+    /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
+    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    /// </summary>
+    /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
+    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="fractionString"/>.</param>
+    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
+    /// <param name="normalize">If <c>true</c> the parsed fraction will be reduced.</param>
+    /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
+    /// <returns>
+    /// <para><c>true</c> if <paramref name="fractionString"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
+    /// <para><c>false</c> if <paramref name="fractionString"/> was invalid.</para>
+    /// </returns>
+    public static bool TryParse(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
+        if (string.IsNullOrWhiteSpace(fractionString)) {
+            return CannotParse(out fraction);
+        }
+
+        if (fractionString.Length == 1) {
+            if (!BigInteger.TryParse(fractionString, numberStyles, formatProvider, out var singleDigit)) {
+                return CannotParse(out fraction);
+            }
+
+            fraction = new Fraction(singleDigit);
+            return true;
+        }
+
+        var components = fractionString.Split('/');
+
+        if (components.Length >= 2) {
+            var numeratorString = components[0];
+            var denominatorString = components[1];
+
+            var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
+            if (!BigInteger.TryParse(
+                    numeratorString,
+                    withoutDecimalPoint,
+                    formatProvider,
+                    out var numerator)
+                || !BigInteger.TryParse(
+                    denominatorString,
+                    withoutDecimalPoint,
+                    formatProvider,
+                    out var denominator)) {
+                return CannotParse(out fraction);
+            }
+
+            fraction = new Fraction(numerator, denominator, normalize);
+            return true;
+        }
+
+        // parsing a number using to the selected NumberStyles: e.g. " $ 12345.1234321e-4- " should result in -1.23451234321 with NumberStyles.Any
+        var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
+        
+        var currencyAllowed = (numberStyles & NumberStyles.AllowCurrencySymbol) != 0;
+        var currencyDetected = false; // there "special" rules regarding the white-spaces after a leading currency symbol is detected
+        var currencySymbol = numberFormatInfo.CurrencySymbol;
+        if (currencyAllowed && string.IsNullOrEmpty(currencySymbol)) {
+            numberStyles &= ~NumberStyles.AllowCurrencySymbol; // no currency symbol available
+            currencyAllowed = false;
+        }
+
+        var decimalSeparator = numberFormatInfo.NumberDecimalSeparator; // note: decimal.TryParse relies on the CurrencySymbol (when currency is detected)
+        var decimalsAllowed = (numberStyles & NumberStyles.AllowDecimalPoint) != 0;
+        if (decimalsAllowed && string.IsNullOrEmpty(decimalSeparator)) {
+            numberStyles &= ~NumberStyles.AllowDecimalPoint; // no decimal separator available
+            decimalsAllowed = false;
+        }
+
+        var startIndex = 0;
+        var endIndex = fractionString.Length;
+        var isNegative = false;
+
+        // examine the leading characters
+        do {
+            var character = fractionString[startIndex];
+            if (char.IsDigit(character)) {
+                break;
+            }
+
+            if (char.IsWhiteSpace(character)) {
+                if ((numberStyles & NumberStyles.AllowLeadingWhite) == 0) {
+                    return CannotParse(out fraction);
+                }
+
+                startIndex++;
+                continue;
+            }
+
+            if (character == '(') {
+                if ((numberStyles & NumberStyles.AllowParentheses) == 0) {
+                    return CannotParse(out fraction); // not allowed
+                }
+
+                if (startIndex == endIndex - 1) {
+                    return CannotParse(out fraction); // not enough characters
+                }
+                
+                startIndex++; // consume the current character
+                isNegative = true; // the closing parenthesis will be validated in the backwards iteration
+
+                if (currencyDetected) {
+                    // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                }
+                else if (currencyAllowed && startsWith(fractionString, currencySymbol, startIndex)) {
+                    // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
+                    currencyDetected = true;
+                    startIndex += currencySymbol.Length;
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                } else {
+                    // if next character is a white space the format should be rejected
+                    numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    break;
+                }
+
+                continue;
+            }
+
+            if ((numberStyles & NumberStyles.AllowLeadingSign) != 0) {
+                if (numberFormatInfo.NegativeSign is { Length: > 0 } negativeSign && startsWith(fractionString, negativeSign, startIndex)) {
+                    isNegative = true;
+                    startIndex += negativeSign.Length;
+                    if (currencyDetected) {
+                        // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                    }
+                    else if (currencyAllowed && startsWith(fractionString, currencySymbol, startIndex)) {
+                        // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
+                        currencyDetected = true;
+                        startIndex += currencySymbol.Length;
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                    } else {
+                        // if next character is a white space the format should be rejected
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        break;
+                    }
+                    
+                    continue;
+                }
+
+                if (numberFormatInfo.PositiveSign is { Length: > 0 } positiveSign && startsWith(fractionString, positiveSign, startIndex)) {
+                    isNegative = false;
+                    startIndex += positiveSign.Length;
+                    if (currencyDetected) {
+                        // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                    }
+                    else if (currencyAllowed && startsWith(fractionString, currencySymbol, startIndex)) {
+                        // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
+                        currencyDetected = true;
+                        startIndex += currencySymbol.Length;
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                    } else {
+                        // if next character is a white space the format should be rejected
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        break;
+                    }
+
+                    continue;
+                }
+            }
+
+            if (currencyAllowed && !currencyDetected && startsWith(fractionString, currencySymbol, startIndex)) {
+                // there can be no more currency symbols but there could be more white-spaces (we skip and continue)
+                currencyDetected = true;
+                numberStyles &= ~NumberStyles.AllowCurrencySymbol;
+                startIndex += currencySymbol.Length;
+                continue;
+            }
+
+            if (decimalsAllowed && startsWith(fractionString, decimalSeparator, startIndex)) {
+                break; // decimal string with no leading zeros
+            }
+
+            // this is either an expected hex string or an invalid format
+            return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
+                ? TryParseInteger(fractionString, numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, startIndex, endIndex, isNegative, out fraction)
+                : CannotParse(out fraction); // unexpected character
+        } while (startIndex < endIndex);
+
+        if (startIndex >= endIndex) {
+            return CannotParse(out fraction);
+        }
+
+        if (isNegative) {
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign);
+        } else {
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowParentheses);
+        }
+
+        // examine the trailing characters
+        do {
+            var character = fractionString[endIndex - 1];
+            if (char.IsDigit(character)) {
+                break;
+            }
+
+            if (char.IsWhiteSpace(character)) {
+                if ((numberStyles & NumberStyles.AllowTrailingWhite) == 0) {
+                    return CannotParse(out fraction);
+                }
+
+                endIndex--;
+                continue;
+            }
+
+            if (character == ')') {
+                if ((numberStyles & NumberStyles.AllowParentheses) == 0) {
+                    return CannotParse(out fraction); // not allowed
+                }
+
+                numberStyles &= ~(NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol);
+                endIndex--;
+                continue;
+            }
+
+            if ((numberStyles & NumberStyles.AllowTrailingSign) != 0) {
+                if (numberFormatInfo.NegativeSign is { Length: > 0 } negativeSign && endsWith(fractionString, negativeSign, endIndex)) {
+                    isNegative = true;
+                    numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    endIndex -= negativeSign.Length;
+                    continue;
+                }
+
+                if (numberFormatInfo.PositiveSign is { Length: > 0 } positiveSign && endsWith(fractionString, positiveSign, endIndex)) {
+                    isNegative = false;
+                    numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    endIndex -= positiveSign.Length;
+                    continue;
+                }
+            }
+
+            if (currencyAllowed && !currencyDetected && endsWith(fractionString, currencySymbol, endIndex)) {
+                // there can be no more currency symbols but there could be more white-spaces (we skip and continue)
+                currencyDetected = true;
+                numberStyles &= ~NumberStyles.AllowCurrencySymbol;
+                endIndex -= currencySymbol.Length;
+                continue;
+            }
+
+            if (decimalsAllowed && endsWith(fractionString, decimalSeparator, endIndex)) {
+                break;
+            }
+
+            // this is either an expected hex string or an invalid format
+            return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
+                ? TryParseInteger(fractionString, numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, startIndex, endIndex, isNegative, out fraction)
+                : CannotParse(out fraction); // unexpected character
+        } while (startIndex < endIndex);
+
+        if (startIndex >= endIndex) {
+            return CannotParse(out fraction); // not enough characters
+        }
+
+        if (isNegative && (numberStyles & NumberStyles.AllowParentheses) != 0) {
+            return CannotParse(out fraction); // failed to find a closing parentheses
+        }
+
+        numberStyles &= ~(NumberStyles.AllowTrailingWhite | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol);
+        // at this point fractionString[startIndex, endIndex] should correspond to the number without the sign (or the format is invalid)
+
+        if (startIndex == endIndex - 1) {
+            // this can only be a single digit (integer)
+            return TryParseInteger(fractionString, numberStyles, formatProvider, startIndex, endIndex, isNegative, out fraction);
+        }
+
+        if ((numberStyles & NumberStyles.AllowExponent) != 0) {
+            return TryParseWithExponent(fractionString, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
+        }
+
+        return decimalsAllowed
+            ? TryParseDecimalNumber(fractionString, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction)
+            : TryParseInteger(fractionString, numberStyles, formatProvider, startIndex, endIndex, isNegative, out fraction);
+
+        static bool startsWith(string fractionString, string testString, int startIndex) {
+            if (fractionString.Length - startIndex < testString.Length) {
+                return false;
+            }
+
+            for (var i = 0; i < testString.Length; i++) {
+                if (fractionString[i + startIndex] != testString[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        static bool endsWith(string fractionString, string testString, int endIndex) {
+            return startsWith(fractionString, testString, endIndex - testString.Length);
+        }
+    }
+
+    private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo,
+        int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
+        // 1. try to find the exponent character index
         parseNumberStyles &= ~NumberStyles.AllowExponent;
-        var exponentIndex = valueString.IndexOfAny(['e', 'E'], 1);
+        var exponentIndex = valueString.IndexOfAny(['e', 'E'], startIndex + 1, endIndex - startIndex - 1);
         if (exponentIndex == -1) {
-            return parseNumberStyles.HasFlag(NumberStyles.AllowDecimalPoint)
-                ? TryParseDecimalNumber(valueString, parseNumberStyles, formatProvider, out fraction)
-                : TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction);
+            // no exponent found
+            return (parseNumberStyles & NumberStyles.AllowDecimalPoint) != 0
+                ? TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction)
+                : TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
         }
 
-        var exponentString = valueString.Substring(exponentIndex + 1);
-        if (!int.TryParse(exponentString, parseNumberStyles, formatProvider, out var exponent)) {
+        if (startIndex == exponentIndex) {
+            return CannotParse(out fraction); // no characters on the left of the exponent symbol
+        }
+
+        // 2. try to parse the exponent (w.r.t. the scientific notation format)
+        var exponentString = valueString.Substring(exponentIndex + 1, endIndex - exponentIndex - 1);
+        if (!int.TryParse(exponentString, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo, out var exponent)) {
             return CannotParse(out fraction);
         }
-
-        // we've got an exponent: try to parse the coefficient
-        var coefficientString = valueString.Substring(0, exponentIndex);
-        if (parseNumberStyles.HasFlag(NumberStyles.AllowDecimalPoint)) {
-            if (!TryParseDecimalNumber(coefficientString, parseNumberStyles, formatProvider, out fraction)) {
+        
+        // 3. try to parse the coefficient (w.r.t. the decimal separator allowance)
+        if (startIndex == endIndex - 1 || (parseNumberStyles & NumberStyles.AllowDecimalPoint) == 0) {
+            if (!TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, out fraction)) {
                 return false;
             }
         } else {
-            if (!TryParseInteger(coefficientString, parseNumberStyles, formatProvider, out fraction)) {
+            if (!TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, out fraction)) {
                 return false;
             }
         }
-
+        
+        // 4. multiply the coefficient by 10 to the power of the exponent
         fraction *= Pow(TEN, exponent);
         return true;
     }
 
-    private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles,
-        IFormatProvider formatProvider, out Fraction fraction) {
-        // 1. clean up the whitespaces
-        if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite) &&
-            parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite)) {
-            valueString = valueString.Trim();
-            parseNumberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite);
-        } else if (parseNumberStyles.HasFlag(NumberStyles.AllowLeadingWhite)) {
-            valueString = valueString.TrimStart();
-            parseNumberStyles &= ~NumberStyles.AllowLeadingWhite;
-        } else if (parseNumberStyles.HasFlag(NumberStyles.AllowTrailingWhite)) {
-            valueString = valueString.TrimEnd();
-            parseNumberStyles &= ~NumberStyles.AllowTrailingWhite;
-        }
-
-        // 2. find the position of the decimal separator (if any)
-        var numberFormatInfo = NumberFormatInfo.GetInstance(formatProvider);
-        var decimalSeparatorIndex =
-            valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, 0, StringComparison.Ordinal);
+    private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo,
+        int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
+        // 1. find the position of the decimal separator (if any)
+        var decimalSeparatorIndex = valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, startIndex, endIndex - startIndex, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            // TODO check if the parseNumberStyles need to be adjusted
-            return TryParseInteger(valueString, parseNumberStyles, formatProvider, out fraction);
+            return TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
         }
 
-        // 3. try to parse the numerator
-        var numeratorString = valueString.Substring(0, decimalSeparatorIndex) +
-                              valueString.Substring(decimalSeparatorIndex + 1);
-        if (!BigInteger.TryParse(numeratorString, parseNumberStyles, formatProvider, out var numerator)) {
+        // 2. validate the format of the string after the radix
+        var decimalSeparatorLength = numberFormatInfo.NumberDecimalSeparator.Length;
+        if (startIndex + decimalSeparatorLength == endIndex) {
+            // after excluding the sign, the input was reduced to just the decimal separator (with nothing on either sides)
             return CannotParse(out fraction);
         }
 
-        // 4. construct the fraction using the corresponding decimal power for the denominator
-        var nbDecimals = valueString.Length - decimalSeparatorIndex - 1;
-        var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = new Fraction(numerator, denominator);
-        return true;
-    }
+        if ((parseNumberStyles & NumberStyles.AllowThousands) != 0) {
+            if (valueString.IndexOf(numberFormatInfo.NumberGroupSeparator, decimalSeparatorIndex + decimalSeparatorLength, StringComparison.Ordinal) != -1) {
+                return CannotParse(out fraction);
+            }
+        }
 
-    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles,
-        IFormatProvider formatProvider, out Fraction fraction) {
-        if (BigInteger.TryParse(valueString, parseNumberStyles, formatProvider, out var bigInteger)) {
-            fraction = new Fraction(bigInteger);
+        // 3. extract the value of the string corresponding to the number without the decimal separator: " 0.123 " should return "0123"
+        var integerString = string.Concat(
+            valueString.Substring(startIndex, decimalSeparatorIndex - startIndex),
+            valueString.Substring(decimalSeparatorIndex + decimalSeparatorLength, endIndex - decimalSeparatorIndex - decimalSeparatorLength));
+
+        if (!BigInteger.TryParse(integerString, parseNumberStyles, numberFormatInfo, out var numerator)) {
+            return CannotParse(out fraction);
+        }
+
+        if (numerator.IsZero) {
+            fraction = Zero;
             return true;
         }
 
-        return CannotParse(out fraction);
+        var nbDecimals = endIndex - decimalSeparatorIndex - decimalSeparatorLength;
+        if (nbDecimals == 0) {
+            fraction = new Fraction(isNegative ? -numerator : numerator);
+            return true;
+        }
+
+        // 4. construct the fractional part using the corresponding decimal power for the denominator
+        var denominator = BigInteger.Pow(TEN, nbDecimals);
+        fraction = GetReducedFraction(isNegative ? -numerator : numerator, denominator);
+        return true;
     }
-#endif
+    
+    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles, IFormatProvider formatProvider,
+        int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
+        if (!BigInteger.TryParse(valueString.Substring(startIndex, endIndex - startIndex), parseNumberStyles, formatProvider, out var bigInteger)) {
+            return CannotParse(out fraction);
+        }
+
+        fraction = new Fraction(isNegative ? -bigInteger : bigInteger);
+        return true;
+    }
+    #endif
+    
 
     /// <summary>
     /// Returns false. <paramref name="fraction"/> contains an invalid value.
