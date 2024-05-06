@@ -76,17 +76,227 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
     [Test]
     // German: Das Ergebnis sollte 7 durch 2 sein
     public void The_result_should_be_7_over_2(
-        [Values("3,5", " 3,5", "3,5 ", "+3,5", " +3,5", "+3,5 ")]
+        [Values("3,5", " 3,5", "3,5 "," 3,5 ",
+            "+3,5", " +3,5", "+3,5 ", " +3,5 ",
+            "3,5+"," 3,5+", "3,5+ ", " 3,5+ ",
+            "3,5 +"," 3,5 +", "3,5 + ", " 3,5 + "  // any spaces before or after the trailing sign are ok
+            )]
         string value) {
-        Fraction.FromString(value, new CultureInfo("de-DE"))
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeTrue("making sure the format is also recognized by double.TryParse");
+        
+        Fraction.FromString(value, germanCulture)
             .Should().Be(new Fraction(7, 2));
     }
 
     [Test]
     public void A_FormatException_should_be_thrown_when_invalid_spaces_are_detected(
-        [Values("3 ,5", " 3, 5", "+3 ,5", " +3, 5", "+3, 5 ")]
+        [Values("3 ,5", " 3, 5",
+            "+3 ,5", "+3, 5",
+            "+ 3,5"  // this one is peculiar: any spaces after the leading sign are rejected
+            )]
         string value) {
-        Invoking(() => Fraction.FromString(value, new CultureInfo("de-DE")))
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_multiple_sings_are_detected(
+        [Values("+3,5+", "+3,5-", "+(3,5)")]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, NumberStyles.Any, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+}
+
+[TestFixture]
+// German: Wenn aus minus 3,5 mit deutscher Kultur ein Bruch erzeugt wird
+public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec {
+    [Test]
+    // German: Das Ergebnis sollte minus 7 durch 2 sein
+    public void The_result_should_be_minus_7_over_2([Values(
+        "-3,5", " -3,5", "-3,5 ", " -3,5 ",
+        "3,5-"," 3,5-", "3,5- ", " 3,5- ",
+        "3,5 -"," 3,5 -", "3,5 - ", " 3,5 - "  // any spaces before or after the trailing sign are ok
+        )]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeTrue("making sure the format is also recognized by double.TryParse");
+        
+        Fraction.FromString(value, germanCulture)
+            .Should().Be(new Fraction(-7, 2));
+    }
+    
+    [Test]
+    public void The_result_should_be_minus_7_over_2_when_the_parentheses_are_allowed(
+        [Values("(3,5)", " (3,5)", "(3,5) ", " (3,5) ")]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeTrue("making sure the format is also recognized by double.TryParse");
+        
+        Fraction.FromString(value, NumberStyles.Any, germanCulture)
+            .Should().Be(new Fraction(-7, 2));
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_parentheses_are_detected_but_not_allowed(
+        [Values("-3,5+", "-3,5-", "-(3,5)", "(3,5)-")]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value,  germanCulture))
+            .Should().Throw<FormatException>();
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_invalid_spaces_are_detected(
+        [Values("-3 ,5", "-3, 5", " -3, 5",
+            "- 3,5"  // this one is peculiar: any spaces after the leading sign are rejected
+        )]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_multiple_sings_are_detected(
+        [Values("-3,5+", "-3,5-", "-(3,5)", "(3,5)-")]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, NumberStyles.Any, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+}
+
+[TestFixture]
+// German: Wenn aus 3,5 € mit deutscher Kultur ein Bruch erzeugt wird
+public class When_creating_a_fraction_from_3_5_eur_with_German_culture : Spec {
+    [Test]
+    // German: Das Ergebnis sollte 7 durch 2 sein
+    public void The_result_should_be_7_over_2(
+        [Values("€3,5", "€ 3,5", "€3,5 ", "€+3,5", "€ +3,5", "€+3,5 ",
+            "+€3,5",
+            "€3,5+", "€3,5+ ", "€3,5 + ", " €3,5 + ", "€ 3,5+", " € 3,5+", " € 3,5 +", " € 3,5 + ",
+            "3,5€", " 3,5€", "3,5 € ", "+3,5€", " +3,5€", "+3,5 €", " +3,5 €", " +3,5 € ",
+            "3,5€+", " 3,5€+", "3,5 €+ ", "3,5 € + "," 3,5 € + ", // any spaces before or after the trailing symbols are ok
+            "3,5 €+", " 3,5€ +", " 3,5+ €", " 3,5 + € ",
+            // this one is extra peculiar: as long as there is a currency symbol directly before or after the sign, any spaces are ok (note that "+ 3,5" is rejected)
+            "€+ 3,5", "+€ 3,5", " € + 3,5", " +€ 3,5"  
+        )]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeTrue("making sure the format is also recognized by double.TryParse");
+        
+        Fraction.FromString(value, NumberStyles.Any, germanCulture)
+            .Should().Be(new Fraction(7, 2));
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_invalid_spaces_are_detected(
+        [Values("+ 3,5€", "+ €3,5", "+ € 3,5"   // this one is peculiar: any spaces after the leading sign are rejected (as long as there isn't a currency symbol preceding it)
+        )]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, NumberStyles.Any, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_multiple_currencies_are_detected(
+        [Values("€3,5€", "€+3,5€", "+€3,5€", "€3,5€+", "€3,5+€")]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+}
+
+[TestFixture]
+// German: Wenn aus -3,5 € mit deutscher Kultur ein Bruch erzeugt wird
+public class When_creating_a_fraction_from_minus_3_5_eur_with_German_culture : Spec {
+    [Test]
+    // German: Das Ergebnis sollte minus 7 durch 2 sein
+    public void The_result_should_be_minus_7_over_2(
+        [Values("-€3,5",
+            "€3,5-", "€3,5- ", "€3,5 - ", " €3,5 - ", "€ 3,5-", " € 3,5-", " € 3,5 -", " € 3,5 - ",
+            "-3,5€", " -3,5€", "-3,5 €", " -3,5 €", " -3,5 € ",
+            "3,5€-", " 3,5€-", "3,5 €- ", "3,5 € - "," 3,5 € - ", // any spaces before or after the trailing symbols are ok
+            "3,5 €-", " 3,5€ -", " 3,5- €", " 3,5 - € ",
+            // this one is extra peculiar: as long as there is a currency symbol directly before or after the sign, any spaces are ok (note that "+ 3,5" is rejected)
+            "€- 3,5", "-€ 3,5", " € - 3,5", " -€ 3,5"  
+        )]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeTrue("making sure the format is also recognized by double.TryParse");
+        
+        Fraction.FromString(value, NumberStyles.Any, germanCulture)
+            .Should().Be(new Fraction(-7, 2));
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_invalid_spaces_are_detected(
+        [Values("- 3,5€", "- €3,5", "- € 3,5"   // this one is peculiar: any spaces after the leading sign are rejected (as long as there isn't a currency symbol preceding it)
+        )]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Any, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, NumberStyles.Any, germanCulture))
+            .Should().Throw<FormatException>();
+    }
+
+    [Test]
+    public void A_FormatException_should_be_thrown_when_multiple_currencies_are_detected(
+        [Values("€-3,5€", "-€3,5€", "€3,5€-", "€3,5-€")]
+        string value) {
+        var germanCulture = new CultureInfo("de-DE");
+        
+        double.TryParse(value, NumberStyles.Number, germanCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+        
+        Invoking(() => Fraction.FromString(value, germanCulture))
             .Should().Throw<FormatException>();
     }
 }
@@ -102,17 +312,6 @@ public class When_creating_a_fraction_from_3_5_without_explicit_culture_specific
         string value) {
         Fraction.FromString(value)
             .Should().Be(new Fraction(7, 2));
-    }
-}
-
-[TestFixture]
-// German: Wenn aus minus 3,5 mit deutscher Kultur ein Bruch erzeugt wird
-public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec {
-    [Test]
-    // German: Das Ergebnis sollte minus 7 durch 2 sein
-    public void The_result_should_be_minus_7_over_2([Values("-3,5", " -3,5", "-3,5 ")] string value) {
-        Fraction.FromString(value, new CultureInfo("de-DE"))
-            .Should().Be(new Fraction(-7, 2));
     }
 }
 
@@ -214,6 +413,124 @@ public class When_creating_a_fraction_from_a_very_long_decimal_string : Spec {
 }
 
 [TestFixture]
+public class Parsing_a_fraction_from_a_long_decimal_string_with_specific_number_style : Spec {
+    public static IEnumerable<TestCaseData> ValidTestCases {
+        get {
+            var invariantCulture = CultureInfo.InvariantCulture;
+            // negative decimals
+            var expectedResult = new Fraction(
+                BigInteger.Parse("-123456789987654321123456789987654321"),
+                BigInteger.Pow(10, 18));
+            yield return new TestCaseData("-123456789987654321.123456789987654321", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("123456789987654321.123456789987654321-", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("-123456789987654321.123456789987654321", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("1234,56789987654321.123456789987654321-", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("(1234,56789987654321.123456789987654321)", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData(" (1234,56789987654321.123456789987654321)", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData(" (1234,56789987654321.123456789987654321) ", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData(" (1234,56789987654321.123456789987654321 ) ", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            // negative decimals with nothing after the radix
+            expectedResult = new Fraction(BigInteger.Parse("-123456789987654321"));
+            yield return new TestCaseData("-123456789987654321.0", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("123456789987654321.0-", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("-123456789987654321.0", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("1234,56789987654321.0-", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("-123456789987654321.", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("123456789987654321.-", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("-123456789987654321.", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("1234,56789987654321.-", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData("(1234,56789987654321.)", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData(" (1234,56789987654321.)", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData(" (1234,56789987654321.) ", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            yield return new TestCaseData(" (1234,56789987654321. ) ", NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            // negative decimals with nothing before the radix
+            expectedResult = new Fraction(-1, 10);
+            foreach (var minusPointOne in new[] { "-.1", ".1-", " -.1", ".1- ", "(.1)", " (.1)", " (.1) " }) {
+                yield return new TestCaseData(minusPointOne, NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            }
+
+            expectedResult = new Fraction(1, 10);
+            // positive decimals with nothing before the radix
+            foreach (var plusPointOne in new[] { ".1", " .1", ".1 ", "+.1", ".1+", " +.1", ".1+ " }) {
+                yield return new TestCaseData(plusPointOne, NumberStyles.Any, invariantCulture).Returns(expectedResult);
+            }
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(ValidTestCases))]
+    public Fraction Should_return_the_expected_value_when_the_string_is_valid(string valueToParse, NumberStyles numberStyles, IFormatProvider culture) {
+        double.TryParse(valueToParse, numberStyles, culture, out _).Should().BeTrue("the format is also recognized by double.TryParse");
+        return Fraction.FromString(valueToParse, numberStyles, culture);
+    }
+
+    [Test]
+    public void Should_not_work_with_trailing_signs_when_it_is_not_allowed(
+        [Values("123456789987654321.123456789987654321-", "123456789987654321.123456789987654321+")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any & ~NumberStyles.AllowTrailingSign, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+
+    [Test]
+    public void Should_not_work_with_leading_signs_when_it_is_not_allowed(
+        [Values("-123456789987654321.123456789987654321", "+123456789987654321.123456789987654321")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any & ~NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+
+    [Test]
+    public void Should_not_work_with_signs_on_both_sides(
+        [Values("-123456789987654321.123456789987654321-", "+123456789987654321.123456789987654321+",
+            "+123456789987654321.123456789987654321-", "-123456789987654321.123456789987654321+")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+
+    [Test]
+    public void Should_not_work_with_groups_in_the_middle(
+        [Values("123456789987654321.123456789,987654321", "123456789987654321.,123456789987654321")]
+        string valueToParse) {
+        double.TryParse(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+
+    [Test]
+    public void Should_not_work_with_signs_in_the_middle(
+        [Values("123456789987654321.-123456789987654321", "123456789987654321-.123456789987654321",
+            "123456789987654321.+123456789987654321", "123456789987654321+.123456789987654321")]
+        string valueToParse) {
+        double.TryParse(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+    
+    [Test]
+    public void Should_not_work_without_digits(
+        [Values(" ", " .", ". ", "-", "+", " .-", "+.", "+. ")]
+        string valueToParse) {
+        double.TryParse(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture, out _)
+            .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
+
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+}
+
+[TestFixture]
 public class Parsing_a_string_with_scientific_notation_representing_a_large_positive_number : Spec {
     private Fraction _expectedFraction;
 
@@ -225,7 +542,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_posi
     public void Should_not_work_by_default(
         [Values("1.23456789987654321E+41", "1.23456789987654321e+41")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
@@ -234,7 +551,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_posi
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("1.23456789987654321E+41", "1.23456789987654321e+41")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+        Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture)
             .Should()
             .Be(_expectedFraction);
     }
@@ -243,7 +560,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_posi
     public void Should_not_work_for_decimal_exponents(
         [Values("1.23456789987654321E+41.5", "1.23456789987654321e+41.5")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
@@ -261,7 +578,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_nega
     public void Should_not_work_by_default(
         [Values("-1.23456789987654321E+41", "-1.23456789987654321e+41")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
@@ -270,7 +587,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_nega
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("-1.23456789987654321E+41", "-1.23456789987654321e+41")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+        Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture)
             .Should()
             .Be(_expectedFraction);
     }
@@ -279,7 +596,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_large_nega
     public void Should_not_work_for_decimal_exponents(
         [Values("-1.23456789987654321E+41.5", "-1.23456789987654321e+41.5")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
@@ -297,16 +614,24 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_posi
     public void Should_not_work_by_default(
         [Values("1.23456789987654321E-24", "1.23456789987654321e-24")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
 
     [Test]
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
-        [Values("1.23456789987654321E-24", "1.23456789987654321e-24")]
+        [Values("1.23456789987654321E-24", "1.23456789987654321e-24",
+            "1.23456789987654321E-24+", "1.23456789987654321e-24+",
+            "12345.6789987654321E-28", "12345.6789987654321e-28",
+            "12,345.6789987654321E-28", "12,345.6789987654321e-28")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+        var cultureInfo = CultureInfo.InvariantCulture;
+        
+        double.TryParse(valueToParse, NumberStyles.Any, cultureInfo, out _)
+            .Should().BeTrue("making sure the format is also recognized by double.TryParse");
+        
+        Fraction.FromString(valueToParse, NumberStyles.Any, cultureInfo)
             .Should()
             .Be(_expectedFraction);
     }
@@ -315,7 +640,16 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_posi
     public void Should_not_work_for_decimal_exponents(
         [Values("1.23456789987654321E-24.5", "1.23456789987654321e-24.5")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+
+    [Test]
+    public void Should_not_work_with_groups_in_the_middle(
+        [Values("1.23456789,987654321E-24", "1.23456789,987654321e-24")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
@@ -333,7 +667,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_nega
     public void Should_not_work_by_default(
         [Values("-1.23456789987654321E-24", "-1.23456789987654321e-24")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
     }
@@ -342,7 +676,7 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_nega
     public void Should_work_without_loss_of_precision_with_NumberStyle_Any(
         [Values("-1.23456789987654321E-24", "-1.23456789987654321e-24")]
         string valueToParse) {
-        Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US"))
+        Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture)
             .Should()
             .Be(_expectedFraction);
     }
@@ -351,9 +685,66 @@ public class Parsing_a_string_with_scientific_notation_representing_a_small_nega
     public void Should_not_work_for_decimal_exponents(
         [Values("-1.23456789987654321E-24.5", "-1.23456789987654321e-24.5")]
         string valueToParse) {
-        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, new CultureInfo("en-US")))
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
             .Should()
             .Throw<FormatException>();
+    }
+
+    [Test]
+    public void Should_not_work_with_groups_in_the_middle(
+        [Values("-1.23456789,987654321E-24", "-1.23456789,987654321e-24")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_from_2A: Spec {
+    [Test]
+    public void Should_not_work_when_parsing_as_number(
+        [Values("2A")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.Number, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+
+    [Test]
+    public void The_result_should_be_42_when_parsing_as_hex(
+        [Values("2A", "2A ", " 2A", " 2A ")]
+        string valueToParse) {
+        Fraction.FromString(valueToParse, NumberStyles.HexNumber, CultureInfo.InvariantCulture)
+            .Should().Be(new Fraction(42));
+    }
+
+    [Test]
+    public void Should_not_work_with_spaces_in_the_middle(
+        [Values("2 A")]
+        string valueToParse) {
+        Invoking(() => Fraction.FromString(valueToParse, NumberStyles.HexNumber, CultureInfo.InvariantCulture))
+            .Should()
+            .Throw<FormatException>();
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_with_custom_culture: Spec {
+    [Test]
+    public void The_result_should_be_the_expected_fraction() {
+        // Arrange
+        var customCulture = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+        customCulture.NumberFormat.NegativeSign = "_minus_";
+        customCulture.NumberFormat.NumberGroupSeparator = "_group_";
+        customCulture.NumberFormat.NumberDecimalSeparator = "_decimal_";
+        var valueToParse = "_minus_1_group_234_decimal_56";
+        
+        // Act
+        var fraction = Fraction.FromString(valueToParse, NumberStyles.Number, customCulture);
+
+        // Assert
+        fraction.Should().Be(new Fraction(-1234.56m));
     }
 }
 
@@ -485,6 +876,7 @@ public class When_creating_a_fraction_from_the_string_minus_10_over_0_without_no
     public void The_result_should_be_NegativeInfinity(
         [Values("-10/0", "-10 /-0", "-10 / -0")]
         string value) {
+        // Fraction.TryParse("1.0000000000000000001", NumberStyles.Number, CultureInfo.InvariantCulture, false, out _);
         // TODO see about creating an overload for FromString(without normalization)
         Fraction.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, false, out var result).Should()
             .BeTrue();

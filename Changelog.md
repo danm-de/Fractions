@@ -13,6 +13,10 @@
 - The standard function `ToString()` now depends on the active culture (`CultureInfo.CurrentCulture`). The reason is that NaN and Infinity should be displayed in the system language or the corresponding symbol should be used.
 - ... TODO
 
+## 7.7.1
+
+- Added hotfix FromString supporting all NumberStyles https://github.com/lipchev
+
 ## 7.7.0
 
 - Added DecimalNotationFormatter + documentation by https://github.com/lipchev
