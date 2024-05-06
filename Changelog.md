@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## 7.7.1
+
+- Added hotfix FromString supporting all NumberStyles https://github.com/lipchev
+
 ## 7.7.0
 
 - Added DecimalNotationFormatter + documentation by https://github.com/lipchev
