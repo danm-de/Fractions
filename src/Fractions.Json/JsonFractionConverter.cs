@@ -84,7 +84,7 @@ public class JsonFractionConverter : JsonConverter {
 
         var value = reader.Value.ToString();
         if (Fraction.TryParse(
-                fractionString: value,
+                value: value,
                 numberStyles: NumberStyles.Number,
                 formatProvider: _formatProvider,
                 normalize: _normalizeOnDeserialization,

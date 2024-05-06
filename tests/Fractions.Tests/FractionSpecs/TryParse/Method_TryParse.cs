@@ -53,7 +53,7 @@ public class When_trying_to_parse_a_fraction : Spec {
     [Test, TestCaseSource(nameof(TestCases))]
     public Fraction? The_result_should_be_as_expected(string value) =>
         Fraction.TryParse(
-            fractionString: value,
+            value: value,
             numberStyles: NumberStyles.Number | NumberStyles.AllowExponent,
             formatProvider: CultureInfo.InvariantCulture,
             normalize: true,
