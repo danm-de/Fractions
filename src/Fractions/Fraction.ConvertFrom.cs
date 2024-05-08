@@ -3,6 +3,9 @@ using System.Globalization;
 using System.Numerics;
 using Fractions.Extensions;
 using Fractions.Properties;
+#if NET
+using System.Buffers.Binary;
+#endif
 
 namespace Fractions;
 
@@ -1187,7 +1190,20 @@ public readonly partial struct Fraction {
             case decimal.MinusOne:
                 return MinusOne;
         }
-
+#if NET
+        Span<int> bits = stackalloc int[4];
+        decimal.GetBits(value, bits);
+        Span<byte> buffer = stackalloc byte[16];
+        // Assume BitConverter.IsLittleEndian = true
+        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(0, 4), bits[0]);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(4, 4), bits[1]);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(8, 4), bits[2]);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(12, 4), bits[3]);
+        var exp = buffer[14];
+        var positiveSign = (buffer[15] & 0x80) == 0;
+        // Pass false to the isBigEndian parameter
+        var numerator = new BigInteger(buffer.Slice(0, 13), isUnsigned: false, isBigEndian: false);
+#else
         var bits = decimal.GetBits(value);
         var low = BitConverter.GetBytes(bits[0]);
         var middle = BitConverter.GetBytes(bits[1]);
@@ -1204,8 +1220,14 @@ public readonly partial struct Fraction {
             high[0], high[1], high[2], high[3],
             0x00
         ]);
+        #endif
+        
+        if (!positiveSign) {
+            numerator = -numerator;
+        }
+        
         var denominator = BigInteger.Pow(TEN, exp);
 
-        return ReduceSigned(positiveSign ? numerator : -numerator, denominator);
+        return ReduceSigned(numerator, denominator);
     }
 }

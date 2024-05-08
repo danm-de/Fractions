@@ -308,6 +308,10 @@ public readonly partial struct Fraction {
     /// <param name="denominator">The denominator should be positive</param>
     /// <returns>A normalized fraction</returns>
     private static Fraction ReduceSigned(BigInteger numerator, BigInteger denominator) {
+        if (numerator.IsOne || denominator.IsOne) {
+            return new Fraction(false, numerator, denominator);
+        }
+
         var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
 
         return gcd.IsOne
