@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Numerics;
+using BenchmarkDotNet.Attributes;
 
 namespace Fractions.Benchmarks;
 
@@ -11,6 +12,7 @@ public class ConvertToNumberBenchmarks {
         10,
         new Fraction(1, 10),
         new Fraction(1, 3),
+        new Fraction(int.MaxValue),
         new Fraction(decimal.MaxValue)
     ];
     
@@ -24,5 +26,11 @@ public class ConvertToNumberBenchmarks {
     [ArgumentsSource(nameof(FractionsToConvert))]
     public decimal ConvertToDecimal(Fraction fraction) {
         return fraction.ToDecimal();
+    }
+
+    [Benchmark]
+    [ArgumentsSource(nameof(FractionsToConvert))]
+    public BigInteger ConvertToBigInteger(Fraction fraction) {
+        return fraction.ToBigInteger();
     }
 }
