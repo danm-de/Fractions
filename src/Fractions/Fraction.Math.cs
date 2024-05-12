@@ -337,14 +337,14 @@ public readonly partial struct Fraction {
     /// <returns>A normalized fraction</returns>
     private static Fraction ReduceSigned(BigInteger numerator, BigInteger denominator) {
         if (numerator.IsOne || denominator.IsOne || numerator == BigInteger.MinusOne) {
-            return new Fraction(false, numerator, denominator);
+            return new Fraction(normalizationNotApplied: false, numerator, denominator);
         }
 
         var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
 
         return gcd.IsOne
-            ? new Fraction(false, numerator, denominator)
-            : new Fraction(false, numerator / gcd, denominator / gcd);
+            ? new Fraction(normalizationNotApplied: false, numerator, denominator)
+            : new Fraction(normalizationNotApplied: false, numerator / gcd, denominator / gcd);
     }
 
     /// <summary>

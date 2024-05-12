@@ -1201,7 +1201,6 @@ public readonly partial struct Fraction {
         BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(12, 4), bits[3]);
         var exp = buffer[14];
         var positiveSign = (buffer[15] & 0x80) == 0;
-        // Pass false to the isBigEndian parameter
         var numerator = new BigInteger(buffer.Slice(0, 13), isUnsigned: false, isBigEndian: false);
 #else
         var bits = decimal.GetBits(value);
