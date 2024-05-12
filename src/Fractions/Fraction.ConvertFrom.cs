@@ -940,6 +940,7 @@ public readonly partial struct Fraction {
     ///     very large values in the numerator and denominator.
     /// </summary>
     /// <param name="value">A floating point value.</param>
+    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
     /// <returns>A fraction corresponding to the binary floating-point representation of the value</returns>
     /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
     /// <remarks>
@@ -970,7 +971,7 @@ public readonly partial struct Fraction {
     ///         page.
     ///     </see>
     /// </remarks>
-    public static Fraction FromDouble(double value) {
+    public static Fraction FromDouble(double value, bool reduceTerms = true) {
         // No rounding here! It will convert the actual number that is stored as double! 
         // See https://csharpindepth.com/Articles/FloatingPoint
         const ulong SIGN_BIT = 0x8000000000000000;
@@ -1007,17 +1008,29 @@ public readonly partial struct Fraction {
 
         var exponent = (int)((exponentBits >> 52) - K);
 
-        // TODO test without normalization
+        // construct the fraction from the mantissa bits and the exponent
         // (1 + 2^(-1) + 2^(-2) .. + 2^(-52))
-        var mantissa = new Fraction(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
+        if (reduceTerms) {
+            var mantissa = ReduceSigned(mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
 
-        var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
-        // 2^exponent
-        var factor = exponent < 0
-            ? new Fraction(factorSign, BigInteger.One << -exponent)
-            : new Fraction(factorSign << exponent);
+            var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
+            // 2^exponent
+            var factor = exponent < 0
+                ? ReduceSigned(factorSign, BigInteger.One << -exponent)
+                : new Fraction(factorSign << exponent);
 
-        return mantissa * factor;
+            return mantissa * factor;
+        } else {
+            var mantissa = new Fraction(true, mantissaBits + MANTISSA_DIVISOR, MANTISSA_DIVISOR);
+
+            var factorSign = isNegative ? BigInteger.MinusOne : BigInteger.One;
+            // 2^exponent
+            var factor = exponent < 0
+                ? new Fraction(true, factorSign, BigInteger.One << -exponent)
+                : new Fraction(factorSign << exponent);
+            
+            return mantissa * factor;
+        }
     }
 
     /// <summary>
@@ -1025,6 +1038,7 @@ public readonly partial struct Fraction {
     ///     This method is designed to avoid large numbers in the numerator and denominator.
     /// </summary>
     /// <param name="value">A floating point value.</param>
+    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
     /// <returns>
     ///     A fraction that approximates the input value, rounded to the nearest rational number. If converted back to
     ///     double, it would produce the same value.
@@ -1048,7 +1062,7 @@ public readonly partial struct Fraction {
     ///         page.
     ///     </see>
     /// </remarks>
-    public static Fraction FromDoubleRounded(double value) {
+    public static Fraction FromDoubleRounded(double value, bool reduceTerms = true) {
         if (double.IsPositiveInfinity(value)) {
             return PositiveInfinity;
         }
@@ -1094,9 +1108,13 @@ public readonly partial struct Fraction {
             }
         }
 
-        return ReduceSigned(
-            sign < 0 ? -numerator : numerator,
-            new BigInteger(denominator));
+        if (sign < 0) {
+            numerator = -numerator;
+        }
+
+        return reduceTerms ?
+            ReduceSigned(numerator, new BigInteger(denominator)) :
+            new Fraction(true, numerator, new BigInteger(denominator));
     }
 
 
@@ -1111,6 +1129,7 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="value">The floating point value to convert.</param>
     /// <param name="significantDigits">The maximum number of significant digits to consider when rounding the value.</param>
+    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
     /// <returns>A Fraction representing the rounded floating point value.</returns>
     /// <remarks>
     ///     The double data type stores its values as 64-bit floating point numbers in accordance with the <see href="https://en.wikipedia.org/wiki/IEEE_754">IEC 60559:1989 (IEEE
@@ -1129,7 +1148,7 @@ public readonly partial struct Fraction {
     ///     <para>
     ///         If you care only about minimizing the size of the numerator/denominator, and do not expect to use the
     ///         fraction in any strict comparison operations, then creating an approximated fraction using the
-    ///         <see cref="FromDoubleRounded(double)" /> overload should offer much better performance.
+    ///         <see cref="FromDoubleRounded(double, bool)" /> overload should offer much better performance.
     ///     </para>
     ///     For more information, visit the
     ///     <see
@@ -1138,7 +1157,7 @@ public readonly partial struct Fraction {
     ///         page.
     ///     </see>
     /// </remarks>
-    public static Fraction FromDoubleRounded(double value, int significantDigits) {
+    public static Fraction FromDoubleRounded(double value, int significantDigits, bool reduceTerms = true) {
         switch (value) {
             case 0d:
                 return Zero;
@@ -1172,7 +1191,9 @@ public readonly partial struct Fraction {
 
         var denominator = BigInteger.Pow(TEN, decimalPlaces);
         var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
-        return ReduceSigned(numerator, denominator);
+        return reduceTerms ?
+            ReduceSigned(numerator, denominator) :
+            new Fraction(true, numerator, denominator);
     }
 
 
@@ -1180,15 +1201,18 @@ public readonly partial struct Fraction {
     /// Converts a decimal value in a fraction. The value will not be rounded.
     /// </summary>
     /// <param name="value">A decimal value.</param>
+    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
     /// <returns>A fraction.</returns>
-    public static Fraction FromDecimal(decimal value) {
-        switch (value) {
-            case decimal.Zero:
-                return Zero;
-            case decimal.One:
-                return One;
-            case decimal.MinusOne:
-                return MinusOne;
+    public static Fraction FromDecimal(decimal value, bool reduceTerms = true) {
+        if (reduceTerms) {
+            switch (value) {
+                case decimal.Zero:
+                    return Zero;
+                case decimal.One:
+                    return One;
+                case decimal.MinusOne:
+                    return MinusOne;
+            }
         }
 #if NET
         Span<int> bits = stackalloc int[4];
@@ -1201,6 +1225,7 @@ public readonly partial struct Fraction {
         BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(12, 4), bits[3]);
         var exp = buffer[14];
         var positiveSign = (buffer[15] & 0x80) == 0;
+        // Pass false to the isBigEndian parameter
         var numerator = new BigInteger(buffer.Slice(0, 13), isUnsigned: false, isBigEndian: false);
 #else
         var bits = decimal.GetBits(value);
@@ -1219,7 +1244,7 @@ public readonly partial struct Fraction {
             high[0], high[1], high[2], high[3],
             0x00
         ]);
-        #endif
+#endif
         
         if (!positiveSign) {
             numerator = -numerator;
@@ -1227,6 +1252,8 @@ public readonly partial struct Fraction {
         
         var denominator = BigInteger.Pow(TEN, exp);
 
-        return ReduceSigned(numerator, denominator);
+        return reduceTerms ?
+            ReduceSigned(numerator, denominator) :
+            new Fraction(true, numerator, denominator);
     }
 }

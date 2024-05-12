@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using FluentAssertions;
 using NUnit.Framework;
@@ -157,5 +158,49 @@ public class When_a_fraction_is_created_with_decimal_test_numbers : Spec {
     public void The_fraction_should_have_the_same_value_after_being_converted_back_to_decimal(decimal value) {
         var fraction = Fraction.FromDecimal(value);
         fraction.ToDecimal().Should().Be(value);
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCaseSource))]
+    public void The_unreduced_fraction_preserves_the_decimal_precision(decimal value) {
+        var fraction = Fraction.FromDecimal(value, reduceTerms:false);
+        fraction.ToDecimalWithTrailingZeros().ToString(CultureInfo.InvariantCulture)
+            .Should().Be(value.ToString(CultureInfo.InvariantCulture));
+    }
+}
+
+
+[TestFixture]
+public class When_a_fraction_is_created_with_decimal_without_reduction : Spec {
+    private static IEnumerable<TestCaseData> TestCaseSource {
+        get {
+            // positive cases
+            yield return new TestCaseData(1.0m)
+                .Returns(new Fraction(10, 10, false));
+            yield return new TestCaseData(1.00m)
+                .Returns(new Fraction(100, 100, false));
+            yield return new TestCaseData(10.0m)
+                .Returns(new Fraction(100, 10, false));
+            // zero
+            yield return new TestCaseData(decimal.Zero)
+                .Returns(new Fraction(0, 1, false));
+            yield return new TestCaseData(0.0m)
+                .Returns(new Fraction(0, 10, false));
+            // negative cases
+            yield return new TestCaseData(-1.0m)
+                .Returns(new Fraction(-10, 10, false));
+            yield return new TestCaseData(-1.00m)
+                .Returns(new Fraction(-100, 100, false));
+            yield return new TestCaseData(-10.0m)
+                .Returns(new Fraction(- 100,10, false));
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCaseSource))]
+    public Fraction The_fraction_should_maintain_the_initial_precision(decimal value) {
+        var fraction = Fraction.FromDecimal(value, reduceTerms:false);
+        fraction.ToDecimal().Should().Be(value);
+        return fraction;
     }
 }
