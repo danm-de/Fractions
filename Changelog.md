@@ -5,7 +5,8 @@
 - Added support for NaN and Infinity by https://github.com/lipchev
 - New properties IsNaN, IsInfinity, IsPositiveInfinity, IsNegativeInfinity by https://github.com/lipchev
 - Adding a debugger display proxy by https://github.com/lipchev
-- - ... TODO
+- Various methods were optimized by https://github.com/lipchev
+- Use the potential of Span<T> where sensible and possible (TryParse, FromDecimal) by https://github.com/lipchev
 
 ### Breaking changes
 

@@ -276,9 +276,9 @@ Example:
 Please note that `.Equals(Fraction)` will compare the exact values of numerator and denominator. That said:
 
 ```csharp
-var a = new Fraction(1, 2, true);
-var b = new Fraction(1, 2, false);
-var c = new Fraction(2, 4, false);
+var a = new Fraction(1, 2, normalize: true);
+var b = new Fraction(1, 2, normalize: false);
+var c = new Fraction(2, 4, normalize: false);
 
 // result1 is true
 var result1 = a == a;
@@ -299,7 +299,6 @@ The data type stores the numerator and denominator as `BigInteger`. Per default 
 ## Performance considerations
 We have a suite of benchmarks that test the performance of various operations in the Fractions library. These benchmarks provide valuable insights into the relative performance of different test cases.
 For more detailed information about these benchmarks and how to interpret them, please refer to the [Fractions Benchmarks Readme](./benchmarks/Readme.md) in the benchmarks subfolder.
-
 
 ## Build from source
 

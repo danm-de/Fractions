@@ -11,13 +11,13 @@ public class ConstructorBenchmarks {
 
     public IEnumerable<object[]> BigIntegerValues() 
     {
-        yield return [new BigInteger(0), new BigInteger(1)];
-        yield return [new BigInteger(42), new BigInteger(1)];
-        yield return [new BigInteger(int.MinValue), new BigInteger(1)];
-        yield return [new BigInteger(int.MaxValue), new BigInteger(int.MaxValue)];
-        yield return [new BigInteger(decimal.MinValue), new BigInteger(int.MaxValue)]; // TODO check if this is reduced
-        yield return [new BigInteger(int.MaxValue), new BigInteger(double.MaxValue)];
-        yield return [new BigInteger(245850922), new BigInteger(78256779)]; // ~ PI
+        yield return [new BigInteger(0), new BigInteger(1)];                           // zero
+        yield return [new BigInteger(42), new BigInteger(1)];                          // small integer
+        yield return [new BigInteger(int.MinValue), new BigInteger(1)];                // large integer
+        yield return [new BigInteger(int.MaxValue), new BigInteger(int.MaxValue)];     // large integers reduced to 1
+        yield return [new BigInteger(decimal.MinValue), new BigInteger(int.MaxValue)]; // not reducible
+        yield return [new BigInteger(int.MaxValue), new BigInteger(double.MaxValue)];  // not reducible (huge denominator)
+        yield return [new BigInteger(245850922), new BigInteger(78256779)];            // ~ PI
     }
 
     [Benchmark]
