@@ -391,7 +391,8 @@ public readonly partial struct Fraction {
     }
     
     private static void ReduceTerms(ref BigInteger numerator, ref BigInteger denominator) {
-        if (numerator.IsOne || denominator.IsOne) {
+        if (numerator.IsZero || numerator.IsOne || denominator.IsOne ||
+            numerator == BigInteger.MinusOne || denominator == BigInteger.MinusOne) {
             return;
         }
         

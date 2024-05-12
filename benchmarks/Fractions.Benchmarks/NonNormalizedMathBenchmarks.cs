@@ -7,7 +7,7 @@ namespace Fractions.Benchmarks;
 [MemoryDiagnoser]
 [ShortRunJob(RuntimeMoniker.Net48)]
 [ShortRunJob(RuntimeMoniker.Net80)]
-public class UnreducedMathBenchmarks {
+public class NonNormalizedMathBenchmarks {
     public static IEnumerable<object[]> Operands() {
         // zero
         yield return [
