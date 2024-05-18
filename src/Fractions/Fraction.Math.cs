@@ -35,36 +35,69 @@ public readonly partial struct Fraction {
             return this;
         }
 
-        if (thisDenominator == otherDenominator) {
-            return GetReducedFraction(thisNumerator % otherNumerator, thisDenominator);
+        if (_normalizationNotApplied || divisor._normalizationNotApplied) {
+            if (thisDenominator == otherDenominator) {
+                return new Fraction(true, thisNumerator % otherNumerator, thisDenominator);
+            }
+
+            var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
+            if (gcd.IsOne) {
+                return new Fraction(true,
+                    thisNumerator * otherDenominator % (otherNumerator * thisDenominator),
+                    thisDenominator * otherDenominator);
+            }
+
+            if (gcd == thisDenominator) {
+                return new Fraction(true, otherDenominator / gcd * thisNumerator % otherNumerator, otherDenominator);
+            }
+
+            if (gcd == otherDenominator) {
+                return new Fraction(true, thisNumerator % (thisDenominator / gcd * otherNumerator), thisDenominator);
+            }
+
+            var thisMultiplier = thisDenominator / gcd;
+            var otherMultiplier = otherDenominator / gcd;
+
+            var leastCommonMultiple = thisMultiplier * otherDenominator;
+
+            var a = thisNumerator * otherMultiplier;
+            var b = otherNumerator * thisMultiplier;
+
+            var remainder = a % b;
+
+            return new Fraction(true, remainder, leastCommonMultiple);
+        } else {
+            if (thisDenominator == otherDenominator) {
+                return GetReducedFraction(thisNumerator % otherNumerator, thisDenominator);
+            }
+
+            var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
+            if (gcd.IsOne) {
+                return GetReducedFraction(
+                    thisNumerator * otherDenominator % (otherNumerator * thisDenominator),
+                    thisDenominator * otherDenominator);
+            }
+
+            if (gcd == thisDenominator) {
+                return ReduceSigned(otherDenominator / gcd * thisNumerator % otherNumerator, otherDenominator);
+            }
+
+            if (gcd == otherDenominator) {
+                return ReduceSigned(thisNumerator % (thisDenominator / gcd * otherNumerator), thisDenominator);
+            }
+
+            var thisMultiplier = thisDenominator / gcd;
+            var otherMultiplier = otherDenominator / gcd;
+
+            var leastCommonMultiple = thisMultiplier * otherDenominator;
+
+            var a = thisNumerator * otherMultiplier;
+            var b = otherNumerator * thisMultiplier;
+
+            var remainder = a % b;
+
+            return GetReducedFraction(remainder, leastCommonMultiple);
         }
-
-        var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
-        if (gcd.IsOne) {
-            return GetReducedFraction(
-                (thisNumerator * otherDenominator) % (otherNumerator * thisDenominator),
-                thisDenominator * otherDenominator);
-        }
-
-        if (gcd == thisDenominator) {
-            return ReduceSigned((otherDenominator / gcd * thisNumerator) % otherNumerator, otherDenominator);
-        }
-
-        if (gcd == otherDenominator) {
-            return ReduceSigned(thisNumerator % (thisDenominator / gcd * otherNumerator), thisDenominator);
-        }
-
-        var thisMultiplier = thisDenominator / gcd;
-        var otherMultiplier = otherDenominator / gcd;
-
-        var leastCommonMultiple = thisMultiplier * otherDenominator;
-
-        var a = thisNumerator * otherMultiplier;
-        var b = otherNumerator * thisMultiplier;
-
-        var remainder = a % b;
-
-        return GetReducedFraction(remainder, leastCommonMultiple);
     }
 
     /// <summary>
@@ -242,20 +275,33 @@ public readonly partial struct Fraction {
         }
 
         if (_normalizationNotApplied || factor._normalizationNotApplied) {
+            if (thisNumerator.IsZero) {
+                return this;
+            }
+
+            if (otherNumerator.IsZero) {
+                return factor;
+            }
+
             ReduceTerms(ref thisNumerator, ref otherDenominator); // TODO benchmark for both cases
             ReduceTerms(ref otherNumerator, ref thisDenominator);
+
             return new Fraction(true,
-                thisNumerator * otherNumerator,
-                thisDenominator * otherDenominator);
+                MultiplyTerms(thisNumerator, otherNumerator),
+                MultiplyTerms(thisDenominator, otherDenominator));
         }
 
         if (thisNumerator.IsZero || otherNumerator.IsZero) {
             return Zero;
         }
-
+            
         return ReduceSigned(
-            thisNumerator * otherNumerator,
-            thisDenominator * otherDenominator);
+            MultiplyTerms(thisNumerator, otherNumerator),
+            MultiplyTerms(thisDenominator, otherDenominator));
+    }
+
+    private static BigInteger MultiplyTerms(BigInteger thisNumerator, BigInteger otherNumerator) {
+        return thisNumerator.IsOne ? otherNumerator : otherNumerator.IsOne ? thisNumerator : thisNumerator * otherNumerator;
     }
 
     /// <summary>
@@ -277,26 +323,20 @@ public readonly partial struct Fraction {
         var thisDenominator = Denominator;
 
         if (_normalizationNotApplied || divisor._normalizationNotApplied) {
-            return new Fraction(true,
-                thisNumerator * otherDenominator,
-                thisDenominator * otherNumerator);
+            var numerator = thisNumerator.IsZero ? thisNumerator : MultiplyTerms(thisNumerator, otherDenominator);
+            var denominator = otherNumerator.IsZero ? otherNumerator : MultiplyTerms(thisDenominator, otherNumerator);
+            return new Fraction(true, numerator, denominator);
         }
 
-        switch (thisDenominator.Sign) {
-            case 0:
-                // `this` is NaN or Infinity
-                return thisNumerator.Sign switch {
-                    // +/- Infinity divided by a number
-                    1 => otherNumerator.Sign * otherDenominator.Sign < 0 ? NegativeInfinity : PositiveInfinity,
-                    -1 => otherNumerator.Sign * otherDenominator.Sign < 0 ? PositiveInfinity : NegativeInfinity,
-                    // NaN divided by a number
-                    _ => NaN
-                };
-            case -1:
-                // `this` is not normalized, correct signs
-                thisNumerator = -thisNumerator;
-                thisDenominator = -thisDenominator;
-                break;
+        if (thisDenominator.IsZero) {
+            // `this` is NaN or Infinity
+            return thisNumerator.Sign switch {
+                // +/- Infinity divided by a number
+                1 => otherNumerator.Sign * otherDenominator.Sign < 0 ? NegativeInfinity : PositiveInfinity,
+                -1 => otherNumerator.Sign * otherDenominator.Sign < 0 ? PositiveInfinity : NegativeInfinity,
+                // NaN divided by a number
+                _ => NaN
+            };
         }
 
         switch (otherNumerator.Sign) {
@@ -304,7 +344,7 @@ public readonly partial struct Fraction {
                 // divisor is 0
                 return new Fraction(false, thisNumerator.Sign * otherDenominator.Sign, BigInteger.Zero);
             case -1:
-                // divisor is not normalized, correct signs
+                // the divisor is negative, correct signs
                 otherNumerator = -otherNumerator;
                 otherDenominator = -otherDenominator;
                 break;
@@ -315,8 +355,8 @@ public readonly partial struct Fraction {
         }
 
         return ReduceSigned(
-            thisNumerator * otherDenominator,
-            thisDenominator * otherNumerator);
+            MultiplyTerms(thisNumerator, otherDenominator),
+            MultiplyTerms(thisDenominator, otherNumerator));
     }
 
     /// <summary>

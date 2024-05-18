@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 using System.Numerics;
 using FluentAssertions;
 using NUnit.Framework;
@@ -40,8 +41,7 @@ public class When_fraction_with_long_MaxValue_is_converted_to_int : Spec {
 }
 
 [TestFixture]
-// German: Wenn ein Bruch mit sehr großen Zahlen in Zähler und Nenner in ein Decimal konvertiert wird
-public class When_fraction_with_large_numerator_and_denominator_is_converted_to_decimal : Spec {
+public class When_fraction_with_non_decimal_denominator_is_converted_to_decimal : Spec {
     private Fraction _fraction;
     private decimal _result;
 
@@ -59,6 +59,26 @@ public class When_fraction_with_large_numerator_and_denominator_is_converted_to_
     // German: Das Resultat soll dem erwarteten Ergebnis entsprechen
     public void Result_should_match_expected_value() {
         Math.Round(_result, 27).Should().Be(0.222222222222222222222222222m);
+    }
+}
+
+[TestFixture]
+// German: Wenn ein Bruch mit sehr großen Zahlen in Zähler und Nenner in ein Decimal konvertiert wird
+public class When_fraction_with_large_numerator_and_denominator_is_converted_to_decimal : Spec {
+    private Fraction _fraction;
+    private decimal _result;
+
+    public override void SetUp() {
+        _fraction = new Fraction(new BigInteger(decimal.MaxValue) * -10, new BigInteger(decimal.MaxValue) * 20, false);
+    }
+
+    public override void Act() {
+        _result = _fraction.ToDecimal();
+    }
+
+    [Test]
+    public void Result_should_match_expected_value() {
+        _result.Should().Be(-0.5m);
     }
 }
 
@@ -199,5 +219,99 @@ public class When_converting_NegativeInfinity : Spec {
     [Test]
     public void ToDouble_should_return_NegativeInfinity() {
         Fraction.NegativeInfinity.ToDouble().Should().Be(double.NegativeInfinity);
+    }
+}
+
+[TestFixture]
+public class When_converting_to_decimal_with_trailing_zeros : Spec {
+    [Test]
+    public void Zero_fraction_converts_with_exact_precision() {
+        var fraction = new Fraction(0, 100, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("0.00");
+    }
+
+    [Test]
+    public void Zero_fraction_with_negative_denominator_converts_with_exact_precision() {
+        var fraction = new Fraction(0, -100, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("0.00");
+    }
+
+    [Test]
+    public void Zero_fraction_without_trailing_zeros_converts_with_exact_precision() {
+        var fraction = Fraction.Zero;
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("0");
+    }
+
+    [Test]
+    public void Positive_integer_fraction_converts_with_exact_precision() {
+        var fraction = new Fraction(49500, 550, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("90.0");
+    }
+
+    [Test]
+    public void Positive_decimal_fraction_converts_with_exact_precision() {
+        var fraction = new Fraction(49500, 27500, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("1.800");
+    }
+
+    [Test]
+    public void Positive_decimal_fraction_with_no_trailing_zeros_converts_with_exact_precision() {
+        var fraction = new Fraction(18, 1000, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("0.018");
+    }
+
+    [Test]
+    public void Positive_non_terminating_fraction_converts_without_extra_zeros() {
+        var fraction = new Fraction(200, 90, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("2.2222222222222222222222222222");
+    }
+
+    [Test]
+    public void Positive_fraction_outside_the_decimal_range_converts_with_exact_precision() {
+        var fraction = new Fraction(new BigInteger(decimal.MaxValue) * 10, new BigInteger(decimal.MaxValue) * 20, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("0.50");
+    }
+
+    [Test]
+    public void Negative_integer_fraction_converts_with_exact_precision() {
+        var fraction = new Fraction(-49500, 550, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("-90.0");
+    }
+
+    [Test]
+    public void Negative_decimal_fraction_converts_with_exact_precision() {
+        var fraction = new Fraction(49500, -27500, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("-1.800");
+    }
+
+    [Test]
+    public void Negative_decimal_fraction_with_no_trailing_zeros_converts_with_exact_precision() {
+        var fraction = new Fraction(18, -1000, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("-0.018");
+    }
+
+    [Test]
+    public void Negative_non_terminating_fraction_converts_without_extra_zeros() {
+        var fraction = new Fraction(-200, 90, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("-2.2222222222222222222222222222");
+    }
+
+    [Test]
+    public void Negative_fraction_outside_the_decimal_range_converts_with_exact_precision() {
+        var fraction = new Fraction(new BigInteger(decimal.MaxValue) * -10, new BigInteger(decimal.MaxValue) * 20, false);
+        var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
+        decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("-0.50");
     }
 }

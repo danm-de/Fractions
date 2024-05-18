@@ -100,9 +100,8 @@ public readonly partial struct Fraction {
 
         // If the numerator or denominator is too large, we attempt to avoid the OverflowException by splitting the calculation.
         // However, the line below can still throw an OverflowException if the result of the division is outside the decimal range.
-        var withoutDecimalPlaces = (decimal)(numerator / denominator);
+        var withoutDecimalPlaces = (decimal)BigInteger.DivRem(numerator, denominator, out var remainder);
 
-        var remainder = numerator % denominator;
         var lowPart = remainder * BigInteger.Pow(TEN, 28) / denominator;
         var decimalPlaces = (decimal)lowPart / (decimal)Math.Pow(10, 28);
 
@@ -129,6 +128,10 @@ public readonly partial struct Fraction {
     ///     For example, the number 1.20 represented by the fraction 120/100 has one trailing zero.
     /// </remarks>
     public decimal ToDecimalWithTrailingZeros() {
+        if (!_normalizationNotApplied) {
+            return ToDecimal();
+        }
+
         var numerator = Numerator;
         var denominator = Denominator;
         if (denominator.IsZero) {
@@ -139,23 +142,46 @@ public readonly partial struct Fraction {
             return (decimal)Numerator; // the possible overflow is unavoidable
         }
 
+        var extraZeroes = getNumberOfTrailingZeros(BigInteger.GreatestCommonDivisor(numerator, denominator));
+        decimal exactResult;
         if (numerator >= MIN_DECIMAL && numerator <= MAX_DECIMAL &&
             denominator >= MIN_DECIMAL && denominator <= MAX_DECIMAL) {
-            var exactResult = (decimal)numerator / (decimal)denominator;
-            var gcd = (decimal)BigInteger.GreatestCommonDivisor(numerator, denominator);
-            exactResult *= 1m / gcd * gcd; // apply the corresponding number of decimal places
+            exactResult = (decimal)numerator / (decimal)denominator;
+        } else {
+            var withoutDecimalPlaces = (decimal)BigInteger.DivRem(numerator, denominator, out var remainder);
+            // If the denominator is too large, we attempt to avoid the OverflowException by splitting the calculation.
+            var lowPart = remainder * BigInteger.Pow(TEN, 28) / denominator;
+            var decimalPlaces = (decimal)lowPart / (decimal)Math.Pow(10, 28);
+            exactResult = withoutDecimalPlaces + decimalPlaces;
+        }
+
+        if (extraZeroes == 0) {
             return exactResult;
         }
 
-        // If the numerator or denominator is too large, we attempt to avoid the OverflowException by splitting the calculation.
-        // However, the line below can still throw an OverflowException if the result of the division is outside the decimal range.
-        var withoutDecimalPlaces = (decimal)(numerator / denominator);
+        var extraDigits = (decimal)BigInteger.Pow(TEN, extraZeroes);
+        var shiftedResult = exactResult * (1m / extraDigits) * extraDigits; // we shift the result to the right and then back to the left
+        return exactResult != shiftedResult ? exactResult : shiftedResult; // unless the exactResult represents a non-terminating decimal, return the zero-padded result
 
-        var remainder = numerator % denominator;
-        var lowPart = remainder * BigInteger.Pow(TEN, 28) / denominator;
-        var decimalPlaces = (decimal)lowPart / (decimal)Math.Pow(10, 28);
+        static int getNumberOfTrailingZeros(BigInteger number) {
+            if (number.IsOne) {
+                return 0;
+            }
 
-        return withoutDecimalPlaces + decimalPlaces;
+            var trailingZeroCount = 0;
+
+            // Continue dividing the number by 10 until remainder is non-zero
+            while (true) {
+                number = BigInteger.DivRem(number, TEN, out var remainder);
+                if (remainder != 0) {
+                    break;
+                }
+
+                trailingZeroCount++;
+            }
+
+            return trailingZeroCount;
+        }
     }
 
     /// <summary>

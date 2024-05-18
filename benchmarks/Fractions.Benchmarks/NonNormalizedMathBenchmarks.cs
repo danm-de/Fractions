@@ -11,7 +11,7 @@ public class NonNormalizedMathBenchmarks {
     public static IEnumerable<object[]> Operands() {
         // zero
         yield return [
-            new Fraction(BigInteger.One, BigInteger.Zero, false),
+            new Fraction(BigInteger.Zero, BigInteger.One, false),
             new Fraction(BigInteger.One, BigInteger.One, false)];
         // basic integers (powers of 10)
         yield return [
@@ -76,13 +76,13 @@ public class NonNormalizedMathBenchmarks {
     public Fraction Add(Fraction a, Fraction b) {
         return a + b;
     }
-
+    
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
     public Fraction Subtract(Fraction a, Fraction b) {
         return a - b;
     }
-
+    
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
     public Fraction Multiply(Fraction a, Fraction b) {

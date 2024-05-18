@@ -150,6 +150,27 @@ public class When_a_fraction_is_created_with_decimal_test_numbers : Spec {
             yield return new TestCaseData(4294967295.0m);
             yield return new TestCaseData(18446744073709551615.0m);
             yield return new TestCaseData(7.9228162514264337593543950335m);
+            yield return new TestCaseData(7.05m);
+            yield return new TestCaseData(7.050m);
+            yield return new TestCaseData(70.05m);
+            yield return new TestCaseData(70.050m);
+            yield return new TestCaseData(50.0m);
+            yield return new TestCaseData(0.50m);
+            yield return new TestCaseData(-10000000000000000000000000000.0m);
+            yield return new TestCaseData(-100000000000000.0m);
+            yield return new TestCaseData(-100000000000000.00000000000000m);
+            yield return new TestCaseData(-123456789.0m);
+            yield return new TestCaseData(-0.123456789m);
+            yield return new TestCaseData(-0.000000000123456789m);
+            yield return new TestCaseData(-4294967295.0m);
+            yield return new TestCaseData(-18446744073709551615.0m);
+            yield return new TestCaseData(-7.9228162514264337593543950335m);
+            yield return new TestCaseData(-7.05m);
+            yield return new TestCaseData(-7.050m);
+            yield return new TestCaseData(-70.05m);
+            yield return new TestCaseData(-70.050m);
+            yield return new TestCaseData(-50.0m);
+            yield return new TestCaseData(-0.50m);
         }
     }
 
