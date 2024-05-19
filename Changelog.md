@@ -6,10 +6,12 @@
 - New properties IsNaN, IsInfinity, IsPositiveInfinity, IsNegativeInfinity by https://github.com/lipchev
 - Adding a debugger display proxy by https://github.com/lipchev
 - Various methods were optimized by https://github.com/lipchev
-- Use the potential of Span<T> where sensible and possible (TryParse, FromDecimal) by https://github.com/lipchev
+- Use the potential of Span&lt;T&gt; where sensible and possible (TryParse, FromDecimal) by https://github.com/lipchev
+- No longer reduce non-normalized fractions when used in mathematical operations - by https://github.com/lipchev
 
 ### Breaking changes
 
+- Mathematical operations no longer automatically generate normalized fractions if one of the operands is an improper (i.e. non-normalized) fraction. This has an impact on your calculations, especially if you have used the `JsonFractionConverter` with default settings. In such cases, deserialized fractions create improper fractions, which can lead to changed behavior when calling `Equals` and `ToString`. Please refer the README section [Working with non-normalized fractions](Readme.md#working-with-non-normalized-fractions)
 - The standard function `ToString()` now depends on the active culture (`CultureInfo.CurrentCulture`). The reason is that NaN and Infinity should be displayed in the system language or the corresponding symbol should be used.
 - Argument name for `Fraction.TryParse(..)` changed from `fractionString` to `value`.
 - A fraction of 0/0 no longer has the value 0, but means NaN (not a number). Any fraction in the form x/0 is no longer a valid number. A denominator with the value 0 corresponds to, depending on the numerator, NaN, PositiveInfinity or NegativeInfinity.
