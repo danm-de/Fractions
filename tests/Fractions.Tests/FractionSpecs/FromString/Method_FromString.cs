@@ -694,10 +694,18 @@ public class When_creating_a_fraction_from_3_5_without_explicit_culture_specific
     
     [Test]
     public void The_result_should_be_35_over_10_when_not_normalized(
-        [Values("3,5", " 3,5", "3,5 ", "+3,5", " +3,5", "+3,5 ", "+3,50 ")]
+        [Values("3,5", " 3,5", "3,5 ", "+3,5", " +3,5", "+3,5 ")]
         string value) {
-        Fraction.FromString(value, false)
+        Fraction.FromString(value, normalize: false)
             .Should().Be(new Fraction(35, 10, false));
+    }
+
+    [Test]
+    public void The_result_should_be_350_over_100_when_not_normalized(
+        [Values("3,50", " 3,50", "3,50 ", "+3,50", " +3,50", "+3,50 ")]
+        string value) {
+        Fraction.FromString(value, normalize: false)
+            .Should().Be(new Fraction(350, 100, false));
     }
 }
 

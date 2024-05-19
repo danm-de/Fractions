@@ -11,110 +11,27 @@ namespace Fractions;
 
 public readonly partial struct Fraction {
 
-    /// <inheritdoc cref="FromString(string,bool)"/>>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
     public static Fraction FromString(string fractionString) {
         return FromString(fractionString, NumberStyles.Number, null, normalize: true);
     }
 
-    /// <summary>
-    ///     Converts a string representation of a fraction or a decimal number to a Fraction object.
-    /// </summary>
-    /// <param name="fractionString">
-    ///     A string that contains a fraction or a decimal number to convert. The fraction must be in the format
-    ///     'numerator/denominator' or the decimal number must be in a format that is compatible with
-    ///     <see cref="NumberStyles.Number" /> format style using the thread current culture.
-    /// </param>
-    /// <param name="normalize">
-    ///     A boolean value that indicates whether the resulting Fraction object should be reduced to the lowest terms. If
-    ///     normalize is true, the resulting Fraction object is reduced to the lowest terms; otherwise, it is not.
-    /// </param>
-    /// <returns>
-    ///     A Fraction object that is equivalent to the fraction or decimal number contained in fractionString, as specified by
-    ///     the <see cref="NumberStyles.Number" /> format style and the thread current culture.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when fractionString is null.
-    /// </exception>
-    /// <exception cref="FormatException">
-    ///     Thrown when fractionString is not in the correct format.
-    /// </exception>
-    /// <remarks>
-    ///     Here are some examples of how to use the
-    ///     <see cref="FromString(string, IFormatProvider, bool)" /> method:
-    ///     <example>
-    ///         <code>
-    /// Fraction.FromString("3/4", NumberStyles.Number, null, true);
-    /// </code>
-    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
-    ///         denominator of 4.
-    ///         <code>
-    /// Fraction.FromString("1.25", NumberStyles.Number, null, true);
-    /// </code>
-    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
-    ///         denominator of 4.
-    ///         <code>
-    /// Fraction.FromString("1.23e-2", NumberStyles.Number, null, true);
-    /// </code>
-    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
-    ///         a denominator of 10000.
-    ///     </example>
-    /// </remarks>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
     public static Fraction FromString(string fractionString, bool normalize) {
         return FromString(fractionString, NumberStyles.Number, null, normalize);
     }
 
-    /// <inheritdoc cref="FromString(string, IFormatProvider, bool)"/>>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
     public static Fraction FromString(string fractionString, IFormatProvider formatProvider) {
         return FromString(fractionString, NumberStyles.Number, formatProvider, normalize: true);
     }
 
-    /// <summary>
-    ///     Converts a string representation of a fraction or a decimal number to a Fraction object.
-    /// </summary>
-    /// <param name="fractionString">
-    ///     A string that contains a fraction or a decimal number to convert. The fraction must be in the format
-    ///     'numerator/denominator' or the decimal number must be in a format that is compatible with
-    ///     <see cref="NumberStyles.Number" /> format style.
-    /// </param>
-    /// <param name="formatProvider">
-    ///     An object that supplies culture-specific formatting information about fractionString. If formatProvider is null,
-    ///     the thread current culture is used.
-    /// </param>
-    /// <param name="normalize">
-    ///     A boolean value that indicates whether the resulting Fraction object should be reduced to the lowest terms. If
-    ///     normalize is true, the resulting Fraction object is reduced to the lowest terms; otherwise, it is not.
-    /// </param>
-    /// <returns>
-    ///     A Fraction object that is equivalent to the fraction or decimal number contained in fractionString, as specified by
-    ///     the <see cref="NumberStyles.Number" /> format style and the provided formatProvider.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when fractionString is null.
-    /// </exception>
-    /// <exception cref="FormatException">
-    ///     Thrown when fractionString is not in the correct format.
-    /// </exception>
-    /// <remarks>
-    ///     Here are some examples of how to use the
-    ///     <see cref="FromString(string, IFormatProvider, bool)" /> method:
-    ///     <example>
-    ///         <code>
-    /// Fraction.FromString("3/4", NumberStyles.Number, null, true);
-    /// </code>
-    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
-    ///         denominator of 4.
-    ///         <code>
-    /// Fraction.FromString("1.25", NumberStyles.Number, null, true);
-    /// </code>
-    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
-    ///         denominator of 4.
-    ///         <code>
-    /// Fraction.FromString("1.23e-2", NumberStyles.Number, null, true);
-    /// </code>
-    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
-    ///         a denominator of 10000.
-    ///     </example>
-    /// </remarks>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider) {
+        return FromString(fractionString, numberStyles, formatProvider, normalize: true);
+    }
+
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
     public static Fraction FromString(string fractionString, IFormatProvider formatProvider, bool normalize) {
         return FromString(fractionString, NumberStyles.Number, formatProvider, normalize);
     }
@@ -222,7 +139,6 @@ public readonly partial struct Fraction {
     public static bool TryParse(string value, out Fraction fraction) {
         return TryParse(value, NumberStyles.Number, null, true, out fraction);
     }
-
 
     /// <summary>
     ///     Attempts to parse a string of characters into a fraction.
