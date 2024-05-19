@@ -11,107 +11,444 @@ namespace Fractions;
 
 public readonly partial struct Fraction {
     /// <summary>
-    /// Converts a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character is depending on the system culture).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Converts a string representation of a fraction or a decimal number to a Fraction object.
     /// </summary>
-    /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <returns>A normalized <see cref="Fraction"/></returns>
-    public static Fraction FromString(string fractionString) =>
-        FromString(fractionString, NumberStyles.Number, null);
+    /// <param name="fractionString">
+    ///     A string that contains a fraction or a decimal number to convert. The fraction must be in the format
+    ///     'numerator/denominator' or the decimal number must be in a format that is compatible with
+    ///     <see cref="NumberStyles.Number" /> format style using the thread current culture.
+    /// </param>
+    /// <param name="normalize">
+    ///     A boolean value that indicates whether the resulting Fraction object should be reduced to the lowest terms. If
+    ///     normalize is true, the resulting Fraction object is reduced to the lowest terms; otherwise, it is not.
+    /// </param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in fractionString, as specified by
+    ///     the <see cref="NumberStyles.Number" /> format style and the thread current culture.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when fractionString is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when fractionString is not in the correct format.
+    /// </exception>
+    /// <remarks>
+    ///     Here are some examples of how to use the
+    ///     <see cref="FromString(string, IFormatProvider, bool)" /> method:
+    ///     <example>
+    ///         <code>
+    /// Fraction.FromString("3/4", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.FromString("1.25", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.FromString("1.23e-2", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///         a denominator of 10000.
+    ///     </example>
+    /// </remarks>
+    public static Fraction FromString(string fractionString, bool normalize = true) {
+        return FromString(fractionString, NumberStyles.Number, null, normalize);
+    }
 
     /// <summary>
-    /// Converts a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Converts a string representation of a fraction or a decimal number to a Fraction object.
     /// </summary>
-    /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
-    /// <returns>A normalized <see cref="Fraction"/></returns>
-    public static Fraction FromString(string fractionString, IFormatProvider formatProvider) =>
-        FromString(fractionString, NumberStyles.Number, formatProvider);
+    /// <param name="fractionString">
+    ///     A string that contains a fraction or a decimal number to convert. The fraction must be in the format
+    ///     'numerator/denominator' or the decimal number must be in a format that is compatible with
+    ///     <see cref="NumberStyles.Number" /> format style.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An object that supplies culture-specific formatting information about fractionString. If formatProvider is null,
+    ///     the thread current culture is used.
+    /// </param>
+    /// <param name="normalize">
+    ///     A boolean value that indicates whether the resulting Fraction object should be reduced to the lowest terms. If
+    ///     normalize is true, the resulting Fraction object is reduced to the lowest terms; otherwise, it is not.
+    /// </param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in fractionString, as specified by
+    ///     the <see cref="NumberStyles.Number" /> format style and the provided formatProvider.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when fractionString is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when fractionString is not in the correct format.
+    /// </exception>
+    /// <remarks>
+    ///     Here are some examples of how to use the
+    ///     <see cref="FromString(string, IFormatProvider, bool)" /> method:
+    ///     <example>
+    ///         <code>
+    /// Fraction.FromString("3/4", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.FromString("1.25", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.FromString("1.23e-2", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///         a denominator of 10000.
+    ///     </example>
+    /// </remarks>
+    public static Fraction FromString(string fractionString, IFormatProvider formatProvider, bool normalize = true) {
+        return FromString(fractionString, NumberStyles.Number, formatProvider, normalize);
+    }
 
     /// <summary>
-    /// Converts a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Converts a string representation of a fraction or a decimal number to a Fraction object.
     /// </summary>
-    /// <param name="fractionString">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="fractionString"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="fractionString"/>.</param>
-    /// <returns>A normalized <see cref="Fraction"/></returns>
-    public static Fraction FromString(string fractionString, NumberStyles numberStyles,
-        IFormatProvider formatProvider) {
+    /// <param name="fractionString">
+    ///     A string that contains a fraction or a decimal number to convert. The fraction must be in the format
+    ///     'numerator/denominator'. The decimal number must be in a format that is compatible with the specified format
+    ///     provider.
+    /// </param>
+    /// <param name="numberStyles">
+    ///     A bitwise combination of enumeration values that indicates the style elements that can be present in
+    ///     fractionString. A typical value to specify is NumberStyles.Number.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An object that supplies culture-specific formatting information about fractionString. If formatProvider is null,
+    ///     the thread current culture is used.
+    /// </param>
+    /// <param name="normalize">
+    ///     A boolean value that indicates whether the resulting Fraction object should be reduced to the lowest terms. If
+    ///     normalize is true, the resulting Fraction object is reduced to the lowest terms; otherwise, it is not.
+    /// </param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in fractionString, as specified by
+    ///     numberStyles and formatProvider.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when fractionString is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when fractionString is not in the correct format.
+    /// </exception>
+    /// <remarks>
+    ///     Here are some examples of how to use the
+    ///     <see cref="FromString(string, NumberStyles, IFormatProvider, bool)" /> method:
+    ///     <example>
+    ///         <code>
+    /// Fraction.FromString("3/4", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.FromString("1.25", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.FromString("1.23e-2", NumberStyles.Number, null, true);
+    /// </code>
+    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///         a denominator of 10000.
+    ///     </example>
+    /// </remarks>
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize = true) {
         if (fractionString == null) {
             throw new ArgumentNullException(nameof(fractionString));
         }
 
-        if (!TryParse(fractionString, numberStyles, formatProvider, true, out var fraction)) {
+        if (!TryParse(fractionString, numberStyles, formatProvider, normalize, out var fraction)) {
             throw new FormatException(string.Format(Resources.CannotConvertToFraction, fractionString));
         }
 
         return fraction;
     }
 
-    /// <summary>
-    /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on the system's culture).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
-    /// </summary>
-    /// <param name="value">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="fraction">A normalized <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
-    /// <returns>
-    /// <para><c>true</c> if <paramref name="value"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="value"/> was invalid.</para></returns>
-    public static bool TryParse(string value, out Fraction fraction) =>
-        TryParse(value, NumberStyles.Number, null, true, out fraction);
 
     /// <summary>
-    /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Attempts to parse a ReadOnlySpan of characters into a fraction.
     /// </summary>
-    /// <param name="value">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="value"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="value"/>.</param>
-    /// <param name="fraction">A normalized <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
+    /// <param name="value">
+    ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
+    ///     For example, "3/4". If the string is not in this format, string is parsed using the
+    ///     <see cref="NumberStyles.Number" /> style and the thread current culture.
+    /// </param>
+    /// <param name="fraction">
+    ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
+    ///     it contains an invalid fraction.
+    /// </param>
     /// <returns>
-    /// <para><c>true</c> if <paramref name="value"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="value"/> was invalid.</para>
+    ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
     /// </returns>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider,
-        out Fraction fraction) =>
-        TryParse(value, numberStyles, formatProvider, true, out fraction);
+    /// <remarks>
+    ///     Here are some examples of how to use the
+    ///     <see cref="TryParse(string, out Fraction)" /> method:
+    ///     <example>
+    ///         <code>
+    /// Fraction.TryParse("3/4", out Fraction fraction);
+    /// </code>
+    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.TryParse("1.25", out Fraction fraction);
+    /// </code>
+    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.TryParse("1.23e-2", out Fraction fraction);
+    /// </code>
+    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///         a denominator of 10000.
+    ///     </example>
+    /// </remarks>
+    public static bool TryParse(string value, out Fraction fraction) {
+        return TryParse(value, NumberStyles.Number, null, true, out fraction);
+    }
+
+
+    /// <summary>
+    ///     Attempts to parse a string of characters into a fraction.
+    /// </summary>
+    /// <param name="value">
+    ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
+    ///     For example, "3/4". If the string is not in this format, the parsing behavior is influenced by the
+    ///     <paramref name="numberStyles" /> and <paramref name="formatProvider" /> parameters.
+    /// </param>
+    /// <param name="numberStyles">
+    ///     A bitwise combination of number styles permitted in the input string. This is relevant when the string
+    ///     is not in the numerator/denominator format. For instance, <see cref="NumberStyles.Float" /> allows decimal
+    ///     points and scientific notation.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
+    ///     This is relevant when the string is not in the numerator/denominator format. For example,
+    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    /// </param>
+    /// <param name="fraction">
+    ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
+    ///     it contains an invalid fraction.
+    /// </param>
+    /// <returns>
+    ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    ///     The <paramref name="numberStyles" /> parameter allows you to specify which number styles are allowed in the input
+    ///     string while the <paramref name="formatProvider" /> parameter provides culture-specific formatting information.
+    ///     <para>
+    ///         Here are some examples of how to use the
+    ///         <see cref="TryParse(string, NumberStyles, IFormatProvider, out Fraction)" /> method:
+    ///         <example>
+    ///             <code>
+    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), out Fraction fraction);
+    /// </code>
+    ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), out Fraction fraction);
+    /// </code>
+    ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), out Fraction fraction);
+    /// </code>
+    ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///             a denominator of 10000.
+    ///         </example>
+    ///     </para>
+    /// </remarks>
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider, out Fraction fraction) {
+        return TryParse(value, numberStyles, formatProvider, true, out fraction);
+    }
 
 #if NET
     /// <summary>
-    /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Attempts to parse a string of characters into a fraction.
     /// </summary>
-    /// <param name="value">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="value"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="value"/>.</param>
-    /// <param name="normalize">If <c>true</c> the parsed fraction will be reduced.</param>
-    /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
+    /// <param name="value">
+    ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
+    ///     For example, "3/4". If the string is not in this format, the parsing behavior is influenced by the
+    ///     <paramref name="numberStyles" /> and <paramref name="formatProvider" /> parameters.
+    /// </param>
+    /// <param name="numberStyles">
+    ///     A bitwise combination of number styles permitted in the input string. This is relevant when the string
+    ///     is not in the numerator/denominator format. For instance, <see cref="NumberStyles.Float" /> allows decimal
+    ///     points and scientific notation.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
+    ///     This is relevant when the string is not in the numerator/denominator format. For example,
+    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    /// </param>
+    /// <param name="normalize">
+    ///     A boolean value indicating whether the parsed fraction should be reduced to its simplest form.
+    ///     For example, if true, "4/8" will be reduced to "1/2".
+    /// </param>
+    /// <param name="fraction">
+    ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
+    ///     it contains an invalid fraction.
+    /// </param>
     /// <returns>
-    /// <para><c>true</c> if <paramref name="value"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="value"/> was invalid.</para>
+    ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
     /// </returns>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider,
-        bool normalize, out Fraction fraction) {
+    /// <remarks>
+    ///     The <paramref name="numberStyles" /> parameter allows you to specify which number styles are allowed in the input
+    ///     string while the <paramref name="formatProvider" /> parameter provides culture-specific formatting information.
+    ///     <para>
+    ///         Here are some examples of how to use the
+    ///         <see cref="TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, bool, out Fraction)" /> method:
+    ///         <example>
+    ///             <code>
+    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), true, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), true, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1,234.56", NumberStyles.Number, new CultureInfo("en-US"), false, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "1,234.56" into a <see cref="Fraction" /> object with a numerator of 12345
+    ///             and a
+    ///             denominator of 100.
+    ///             <code>
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), false, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///             a
+    ///             denominator of 10000.
+    ///         </example>
+    ///     </para>
+    /// </remarks>
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
         return TryParse(value.AsSpan(), numberStyles, formatProvider, normalize, out fraction);
     }
 
     /// <summary>
-    /// Try to convert a ReadOnlySpan of type char to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Attempts to parse a ReadOnlySpan of characters into a fraction.
     /// </summary>
-    /// <param name="value">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="value"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="value"/>.</param>
-    /// <param name="normalize">If <c>true</c> the parsed fraction will be reduced.</param>
-    /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
+    /// <param name="value">
+    ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
+    ///     For example, "3/4". If the string is not in this format, the parsing behavior is influenced by the
+    ///     <paramref name="numberStyles" /> and <paramref name="formatProvider" /> parameters.
+    /// </param>
+    /// <param name="numberStyles">
+    ///     A bitwise combination of number styles permitted in the input string. This is relevant when the string
+    ///     is not in the numerator/denominator format. For instance, <see cref="NumberStyles.Float" /> allows decimal
+    ///     points and scientific notation.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
+    ///     This is relevant when the string is not in the numerator/denominator format. For example,
+    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    /// </param>
+    /// <param name="fraction">
+    ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
+    ///     it contains an invalid fraction.
+    /// </param>
     /// <returns>
-    /// <para><c>true</c> if <paramref name="value"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="value"/> was invalid.</para>
+    ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
     /// </returns>
-    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider formatProvider,
-        bool normalize, out Fraction fraction) {
+    /// <remarks>
+    ///     The <paramref name="numberStyles" /> parameter allows you to specify which number styles are allowed in the input
+    ///     string while the <paramref name="formatProvider" /> parameter provides culture-specific formatting information.
+    ///     <para>
+    ///         Here are some examples of how to use the
+    ///         <see cref="TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, out Fraction)" /> method:
+    ///         <example>
+    ///             <code>
+    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), out Fraction fraction);
+    /// </code>
+    ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), out Fraction fraction);
+    /// </code>
+    ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), out Fraction fraction);
+    /// </code>
+    ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///             a denominator of 10000.
+    ///         </example>
+    ///     </para>
+    /// </remarks>
+    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider formatProvider, out Fraction fraction) {
+        return TryParse(value, numberStyles, formatProvider, true, out fraction);
+    }
+
+    /// <summary>
+    ///     Attempts to parse a ReadOnlySpan of characters into a fraction.
+    /// </summary>
+    /// <param name="value">
+    ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
+    ///     For example, "3/4". If the string is not in this format, the parsing behavior is influenced by the
+    ///     <paramref name="numberStyles" /> and <paramref name="formatProvider" /> parameters.
+    /// </param>
+    /// <param name="numberStyles">
+    ///     A bitwise combination of number styles permitted in the input string. This is relevant when the string
+    ///     is not in the numerator/denominator format. For instance, <see cref="NumberStyles.Float" /> allows decimal
+    ///     points and scientific notation.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
+    ///     This is relevant when the string is not in the numerator/denominator format. For example,
+    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    /// </param>
+    /// <param name="normalize">
+    ///     A boolean value indicating whether the parsed fraction should be reduced to its simplest form.
+    ///     For example, if true, "4/8" will be reduced to "1/2".
+    /// </param>
+    /// <param name="fraction">
+    ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
+    ///     it contains an invalid fraction.
+    /// </param>
+    /// <returns>
+    ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    ///     The <paramref name="numberStyles" /> parameter allows you to specify which number styles are allowed in the input
+    ///     string while the <paramref name="formatProvider" /> parameter provides culture-specific formatting information.
+    ///     <para>
+    ///         Here are some examples of how to use the
+    ///         <see cref="TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, bool, out Fraction)" /> method:
+    ///         <example>
+    ///             <code>
+    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), true, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), true, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///             denominator of 4.
+    ///             <code>
+    /// Fraction.TryParse("1,234.56", NumberStyles.Number, new CultureInfo("en-US"), false, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "1,234.56" into a <see cref="Fraction" /> object with a numerator of 12345
+    ///             and a
+    ///             denominator of 100.
+    ///             <code>
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), false, out Fraction fraction);
+    ///         </code>
+    ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
+    ///             a
+    ///             denominator of 10000.
+    ///         </example>
+    ///     </para>
+    /// </remarks>
+    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
         if (value.IsEmpty) {
             return CannotParse(out fraction);
         }
@@ -124,7 +461,7 @@ public readonly partial struct Fraction {
             fraction = new Fraction(singleDigit);
             return true;
         }
-        
+
         var ranges = new Span<Range>(new Range[2]);
         var nbRangesFilled = value.Split(ranges, '/');
 
@@ -134,15 +471,15 @@ public readonly partial struct Fraction {
 
             var withoutDecimalPoint = numberStyles & ~NumberStyles.AllowDecimalPoint;
             if (!BigInteger.TryParse(
-                    value: numeratorValue,
-                    style: withoutDecimalPoint,
-                    provider: formatProvider,
-                    result: out var numerator)
+                    numeratorValue,
+                    withoutDecimalPoint,
+                    formatProvider,
+                    out var numerator)
                 || !BigInteger.TryParse(
-                    value: denominatorValue,
-                    style: withoutDecimalPoint,
-                    provider: formatProvider,
-                    result: out var denominator)) {
+                    denominatorValue,
+                    withoutDecimalPoint,
+                    formatProvider,
+                    out var denominator)) {
                 return CannotParse(out fraction);
             }
 
@@ -157,12 +494,12 @@ public readonly partial struct Fraction {
             fraction = NaN;
             return true;
         }
-        
+
         if (value.SequenceEqual(numberFormatInfo.PositiveInfinitySymbol.AsSpan())) {
             fraction = PositiveInfinity;
             return true;
         }
-        
+
         if (value.SequenceEqual(numberFormatInfo.NegativeInfinitySymbol.AsSpan())) {
             fraction = NegativeInfinity;
             return true;
@@ -192,7 +529,7 @@ public readonly partial struct Fraction {
         } else {
             decimalSeparator = [];
         }
-        
+
         var startIndex = 0;
         var endIndex = value.Length;
         var isNegative = false;
@@ -221,15 +558,14 @@ public readonly partial struct Fraction {
                 if (startIndex == endIndex - 1) {
                     return CannotParse(out fraction); // not enough characters
                 }
-                
+
                 startIndex++; // consume the current character
                 isNegative = true; // the closing parenthesis will be validated in the backwards iteration
 
                 if (currencyDetected) {
                     // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
                     numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
-                }
-                else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
+                } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                     // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                     currencyDetected = true;
                     startIndex += currencySymbol.Length;
@@ -250,18 +586,21 @@ public readonly partial struct Fraction {
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
                         numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
-                    }
-                    else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
+                    } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                        numberStyles &=
+                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
+                              NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        numberStyles &=
+                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
+                              NumberStyles.AllowHexSpecifier);
                         break;
                     }
-                    
+
                     continue;
                 }
 
@@ -271,18 +610,21 @@ public readonly partial struct Fraction {
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
                         numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
-                    }
-                    else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
+                    } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                        numberStyles &=
+                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
+                              NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        numberStyles &=
+                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
+                              NumberStyles.AllowHexSpecifier);
                         break;
                     }
-                    
+
                     continue;
                 }
             }
@@ -393,23 +735,23 @@ public readonly partial struct Fraction {
         }
 
         if ((numberStyles & NumberStyles.AllowExponent) != 0) {
-            return TryParseWithExponent(unsignedValue, numberStyles, numberFormatInfo, isNegative, out fraction);
+            return TryParseWithExponent(unsignedValue, numberStyles, numberFormatInfo, isNegative, normalize, out fraction);
         }
 
         return decimalsAllowed
-            ? TryParseDecimalNumber(unsignedValue, numberStyles, numberFormatInfo, isNegative, out fraction)
+            ? TryParseDecimalNumber(unsignedValue, numberStyles, numberFormatInfo, isNegative, normalize, out fraction)
             : TryParseInteger(unsignedValue, numberStyles, formatProvider, isNegative, out fraction);
 
         static bool startsWith(ReadOnlySpan<char> fractionString, ReadOnlySpan<char> testString, int startIndex) {
             return fractionString.Slice(startIndex, testString.Length).SequenceEqual(testString);
         }
-        
+
         static bool endsWith(ReadOnlySpan<char> fractionString, ReadOnlySpan<char> testString, int endIndex) {
             return fractionString.Slice(endIndex - testString.Length, testString.Length).SequenceEqual(testString);
         }
     }
 
-    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative,
+    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative, bool reduceTerms,
         out Fraction fraction) {
         // 1. try to find the exponent character (extracting the left and right sides)
         parseNumberStyles &= ~NumberStyles.AllowExponent;
@@ -419,7 +761,7 @@ public readonly partial struct Fraction {
         if (nbRangesFilled != 2) {
             // no exponent found
             return (parseNumberStyles & NumberStyles.AllowDecimalPoint) != 0
-                ? TryParseDecimalNumber(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction)
+                ? TryParseDecimalNumber(value, parseNumberStyles, numberFormatInfo, isNegative, reduceTerms, out fraction)
                 : TryParseInteger(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction);
         }
 
@@ -440,7 +782,7 @@ public readonly partial struct Fraction {
                 return false;
             }
         } else {
-            if (!TryParseDecimalNumber(coefficientSpan, parseNumberStyles, numberFormatInfo, isNegative, out fraction)) {
+            if (!TryParseDecimalNumber(coefficientSpan, parseNumberStyles, numberFormatInfo, isNegative, reduceTerms, out fraction)) {
                 return false;
             }
         }
@@ -450,16 +792,16 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseDecimalNumber(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative,
+    private static bool TryParseDecimalNumber(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative, bool reduceTerms,
         out Fraction fraction) {
         // 1. try to find the decimal separator (extracting the left and right sides)
         var ranges = new Span<Range>(new Range[2]);
         var nbRangesFilled = value.Split(ranges, numberFormatInfo.NumberDecimalSeparator);
-        
+
         if (nbRangesFilled != 2) {
             return TryParseInteger(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction);
         }
-        
+
         var integerSpan = value[ranges[0]];
         var fractionalSpan = value[ranges[1]];
 
@@ -476,7 +818,7 @@ public readonly partial struct Fraction {
 
         if ((parseNumberStyles & NumberStyles.AllowThousands) != 0) {
             if (fractionalSpan.Contains(numberFormatInfo.NumberGroupSeparator.AsSpan(), StringComparison.Ordinal)) {
-                return CannotParse(out fraction);  // number group separator detected in the fractional part (e.g. "1.2 34")
+                return CannotParse(out fraction); // number group separator detected in the fractional part (e.g. "1.2 34")
             }
         }
 
@@ -486,7 +828,7 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction);
         }
 
-        if (numerator.IsZero) {
+        if (numerator.IsZero && reduceTerms) {
             fraction = Zero;
             return true;
         }
@@ -494,16 +836,16 @@ public readonly partial struct Fraction {
         if (isNegative) {
             numerator = -numerator;
         }
-        
+
         var nbDecimals = fractionalSpan.Length;
         if (nbDecimals == 0) {
             fraction = new Fraction(numerator);
             return true;
         }
-        
+
         // 4. construct the fractional part using the corresponding decimal power for the denominator
         var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = ReduceSigned(numerator, denominator);
+        fraction = reduceTerms ? ReduceSigned(numerator, denominator) : new Fraction(true, numerator, denominator);
         return true;
     }
 
@@ -512,25 +854,65 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction);
         }
 
-        fraction = new Fraction(isNegative ? -bigInteger: bigInteger);
+        fraction = new Fraction(isNegative ? -bigInteger : bigInteger);
         return true;
     }
 
-    #else
-
+#else
     /// <summary>
-    /// Try to convert a string to a fraction. Example: "3/4" or "4.5" (the decimal separator character depends on <paramref name="formatProvider"/>).
-    /// If the number contains a decimal separator it will be parsed as <see cref="decimal"/>.
+    ///     Attempts to parse a string of characters into a fraction.
     /// </summary>
-    /// <param name="value">A fraction or a (decimal) number. The numerator and denominator must be separated with a '/' (slash) character.</param>
-    /// <param name="numberStyles">A bitwise combination of number styles that are allowed in <paramref name="value"/>.</param>
-    /// <param name="formatProvider">Provides culture specific information that will be used to parse the <paramref name="value"/>.</param>
-    /// <param name="normalize">If <c>true</c> the parsed fraction will be reduced.</param>
-    /// <param name="fraction">A <see cref="Fraction"/> if the method returns with <c>true</c>. Otherwise, the value is invalid.</param>
+    /// <param name="value">
+    ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
+    ///     For example, "3/4". If the string is not in this format, the parsing behavior is influenced by the
+    ///     <paramref name="numberStyles" /> and <paramref name="formatProvider" /> parameters.
+    /// </param>
+    /// <param name="numberStyles">
+    ///     A bitwise combination of number styles permitted in the input string. This is relevant when the string
+    ///     is not in the numerator/denominator format. For instance, <see cref="NumberStyles.Float" /> allows decimal
+    ///     points and scientific notation.
+    /// </param>
+    /// <param name="formatProvider">
+    ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
+    ///     This is relevant when the string is not in the numerator/denominator format. For example,
+    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    /// </param>
+    /// <param name="normalize">
+    ///     A boolean value indicating whether the parsed fraction should be reduced to its simplest form.
+    ///     For example, if true, "4/8" will be reduced to "1/2".
+    /// </param>
+    /// <param name="fraction">
+    ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
+    ///     it contains an invalid fraction.
+    /// </param>
     /// <returns>
-    /// <para><c>true</c> if <paramref name="value"/> was well-formed. The parsing result will be written to <paramref name="fraction"/>. </para>
-    /// <para><c>false</c> if <paramref name="value"/> was invalid.</para>
+    ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
     /// </returns>
+    /// <remarks>
+    ///     The <paramref name="numberStyles" /> parameter allows you to specify which number styles are allowed in the input
+    ///     string.
+    ///     For example, <see cref="NumberStyles.Float" /> allows decimal points and scientific notation.
+    ///     The <paramref name="formatProvider" /> parameter provides culture-specific formatting information.
+    ///     For example, you can use <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     Here are some examples of how to use the <see cref="TryParse(string,out Fraction)" /> method:
+    ///     <example>
+    ///         <code>
+    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// </code>
+    ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// </code>
+    ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
+    ///         denominator of 4.
+    ///         <code>
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// </code>
+    ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and a
+    ///         denominator of 10000.
+    ///     </example>
+    /// </remarks>
     public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
         if (string.IsNullOrWhiteSpace(value)) {
             return CannotParse(out fraction);
@@ -630,15 +1012,14 @@ public readonly partial struct Fraction {
                 if (startIndex == endIndex - 1) {
                     return CannotParse(out fraction); // not enough characters
                 }
-                
+
                 startIndex++; // consume the current character
                 isNegative = true; // the closing parenthesis will be validated in the backwards iteration
 
                 if (currencyDetected) {
                     // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
                     numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
-                }
-                else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
+                } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                     // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                     currencyDetected = true;
                     startIndex += currencySymbol.Length;
@@ -659,18 +1040,19 @@ public readonly partial struct Fraction {
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
                         numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
-                    }
-                    else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
+                    } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
+                                          NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
+                                          NumberStyles.AllowHexSpecifier);
                         break;
                     }
-                    
+
                     continue;
                 }
 
@@ -680,15 +1062,16 @@ public readonly partial struct Fraction {
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
                         numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
-                    }
-                    else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
+                    } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
+                                          NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
+                                          NumberStyles.AllowHexSpecifier);
                         break;
                     }
 
@@ -801,11 +1184,11 @@ public readonly partial struct Fraction {
         }
 
         if ((numberStyles & NumberStyles.AllowExponent) != 0) {
-            return TryParseWithExponent(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
+            return TryParseWithExponent(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, normalize, out fraction);
         }
 
         return decimalsAllowed
-            ? TryParseDecimalNumber(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction)
+            ? TryParseDecimalNumber(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, normalize, out fraction)
             : TryParseInteger(value, numberStyles, formatProvider, startIndex, endIndex, isNegative, out fraction);
 
         static bool startsWith(string fractionString, string testString, int startIndex) {
@@ -828,14 +1211,14 @@ public readonly partial struct Fraction {
     }
 
     private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo,
-        int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
+        int startIndex, int endIndex, bool isNegative, bool reduceTerms, out Fraction fraction) {
         // 1. try to find the exponent character index
         parseNumberStyles &= ~NumberStyles.AllowExponent;
         var exponentIndex = valueString.IndexOfAny(['e', 'E'], startIndex + 1, endIndex - startIndex - 1);
         if (exponentIndex == -1) {
             // no exponent found
             return (parseNumberStyles & NumberStyles.AllowDecimalPoint) != 0
-                ? TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction)
+                ? TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, reduceTerms, out fraction)
                 : TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
         }
 
@@ -848,25 +1231,25 @@ public readonly partial struct Fraction {
         if (!int.TryParse(exponentString, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo, out var exponent)) {
             return CannotParse(out fraction);
         }
-        
+
         // 3. try to parse the coefficient (w.r.t. the decimal separator allowance)
         if (startIndex == endIndex - 1 || (parseNumberStyles & NumberStyles.AllowDecimalPoint) == 0) {
             if (!TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, out fraction)) {
                 return false;
             }
         } else {
-            if (!TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, out fraction)) {
+            if (!TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, reduceTerms, out fraction)) {
                 return false;
             }
         }
-        
+
         // 4. multiply the coefficient by 10 to the power of the exponent
         fraction *= Pow(TEN, exponent);
         return true;
     }
 
     private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo,
-        int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
+        int startIndex, int endIndex, bool isNegative, bool reduceTerms, out Fraction fraction) {
         // 1. find the position of the decimal separator (if any)
         var decimalSeparatorIndex = valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, startIndex, endIndex - startIndex, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
@@ -895,23 +1278,27 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction);
         }
 
-        if (numerator.IsZero) {
+        if (numerator.IsZero && reduceTerms) {
             fraction = Zero;
             return true;
         }
 
+        if (isNegative) {
+            numerator = -numerator;
+        }
+
         var nbDecimals = endIndex - decimalSeparatorIndex - decimalSeparatorLength;
         if (nbDecimals == 0) {
-            fraction = new Fraction(isNegative ? -numerator : numerator);
+            fraction = new Fraction(numerator);
             return true;
         }
 
         // 4. construct the fractional part using the corresponding decimal power for the denominator
         var denominator = BigInteger.Pow(TEN, nbDecimals);
-        fraction = ReduceSigned(isNegative ? -numerator : numerator, denominator);
+        fraction = reduceTerms ? ReduceSigned(numerator, denominator) : new Fraction(true, numerator, denominator);
         return true;
     }
-    
+
     private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles, IFormatProvider formatProvider,
         int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
         if (!BigInteger.TryParse(valueString.Substring(startIndex, endIndex - startIndex), parseNumberStyles, formatProvider, out var bigInteger)) {
@@ -922,13 +1309,14 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    #endif
+#endif
 
     /// <summary>
-    /// Returns false. <paramref name="fraction"/> contains an invalid value.
+    ///     Sets the out parameter to the default value of Fraction and returns false.
+    ///     This method is used when the parsing of a string to a Fraction fails.
     /// </summary>
-    /// <param name="fraction">Returns <c>default()</c> of <see cref="Fraction"/></param>
-    /// <returns><c>false</c></returns>
+    /// <param name="fraction">The Fraction object that will be set to its default value.</param>
+    /// <returns>Always returns false.</returns>
     private static bool CannotParse(out Fraction fraction) {
         fraction = default;
         return false;
@@ -940,27 +1328,37 @@ public readonly partial struct Fraction {
     ///     very large values in the numerator and denominator.
     /// </summary>
     /// <param name="value">A floating point value.</param>
-    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
+    /// <param name="reduceTerms">
+    ///     Indicates whether the terms of the fraction should be reduced by their greatest common
+    ///     denominator.
+    /// </param>
     /// <returns>A fraction corresponding to the binary floating-point representation of the value</returns>
     /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
     /// <remarks>
-    ///     The <see cref="double"/> data type in C# uses a binary floating-point representation, which can't accurately represent all
-    ///     decimal fractions. When you convert a <see cref="double"/> to a <see cref="Fraction"/> using this method, the resulting fraction is an
-    ///     exact representation of the <see cref="double"/> value, not the decimal number that the <see cref="double"/> is intended to approximate.
+    ///     The <see cref="double" /> data type in C# uses a binary floating-point representation, which can't accurately
+    ///     represent all
+    ///     decimal fractions. When you convert a <see cref="double" /> to a <see cref="Fraction" /> using this method, the
+    ///     resulting fraction is an
+    ///     exact representation of the <see cref="double" /> value, not the decimal number that the <see cref="double" /> is
+    ///     intended to approximate.
     ///     This is why you can end up with large numerators and denominators.
     ///     <code>
     /// var value = Fraction.FromDouble(0.1);
     /// Console.WriteLine(value);  // Outputs "3602879701896397/36028797018963968"
     /// </code>
-    ///     The output fraction is an exact representation of the <see cref="double"/> value 0.1, which is actually slightly more than 0.1
+    ///     The output fraction is an exact representation of the <see cref="double" /> value 0.1, which is actually slightly
+    ///     more than 0.1
     ///     due to the limitations of binary floating-point representation.
-    /// <para>
-    ///     Additionally, as the <see cref="double"/> value approaches the limits of its precision,
-    ///     `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator
-    ///     of the <see cref="Fraction"/> are both very large numbers. When these numbers are converted to <see cref="double"/> for the division
-    ///     operation in the <see cref="ToDouble"/> method, they can exceed the precision limit of the <see cref="double"/> type, resulting in
-    ///     a loss of precision.
-    /// </para>
+    ///     <para>
+    ///         Additionally, as the <see cref="double" /> value approaches the limits of its precision,
+    ///         `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and
+    ///         denominator
+    ///         of the <see cref="Fraction" /> are both very large numbers. When these numbers are converted to
+    ///         <see cref="double" /> for the division
+    ///         operation in the <see cref="ToDouble" /> method, they can exceed the precision limit of the
+    ///         <see cref="double" /> type, resulting in
+    ///         a loss of precision.
+    ///     </para>
     ///     <code>
     /// var value = Fraction.FromDouble(double.Epsilon);
     /// Console.WriteLine(value.ToDouble() == double.Epsilon);  // Outputs "False"
@@ -992,7 +1390,7 @@ public readonly partial struct Fraction {
         var mantissaBits = valueBits & MANTISSA;
 
         // (exponent-K)
-        var exponentBits = (valueBits & EXPONENT_BITS);
+        var exponentBits = valueBits & EXPONENT_BITS;
 
         if (exponentBits == EXPONENT_BITS) {
             // NaN or Infinity
@@ -1028,7 +1426,7 @@ public readonly partial struct Fraction {
             var factor = exponent < 0
                 ? new Fraction(true, factorSign, BigInteger.One << -exponent)
                 : new Fraction(factorSign << exponent);
-            
+
             return mantissa * factor;
         }
     }
@@ -1038,7 +1436,10 @@ public readonly partial struct Fraction {
     ///     This method is designed to avoid large numbers in the numerator and denominator.
     /// </summary>
     /// <param name="value">A floating point value.</param>
-    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
+    /// <param name="reduceTerms">
+    ///     Indicates whether the terms of the fraction should be reduced by their greatest common
+    ///     denominator.
+    /// </param>
     /// <returns>
     ///     A fraction that approximates the input value, rounded to the nearest rational number. If converted back to
     ///     double, it would produce the same value.
@@ -1057,7 +1458,8 @@ public readonly partial struct Fraction {
     ///     Console.WriteLine(roundedValue.ToDouble() == doubleValue); // Outputs "true" as the actual difference is smaller than the precision of the doubles
     ///     </code>
     ///     For more information, visit the
-    ///     <see href="https://github.com/danm-de/Fractions?tab=readme-ov-file#creation-from-double-with-maximum-number-of-significant-digits">
+    ///     <see
+    ///         href="https://github.com/danm-de/Fractions?tab=readme-ov-file#creation-from-double-with-maximum-number-of-significant-digits">
     ///         official GitHub repository
     ///         page.
     ///     </see>
@@ -1112,9 +1514,7 @@ public readonly partial struct Fraction {
             numerator = -numerator;
         }
 
-        return reduceTerms ?
-            ReduceSigned(numerator, new BigInteger(denominator)) :
-            new Fraction(true, numerator, new BigInteger(denominator));
+        return reduceTerms ? ReduceSigned(numerator, new BigInteger(denominator)) : new Fraction(true, numerator, new BigInteger(denominator));
     }
 
 
@@ -1129,11 +1529,19 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="value">The floating point value to convert.</param>
     /// <param name="significantDigits">The maximum number of significant digits to consider when rounding the value.</param>
-    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
+    /// <param name="reduceTerms">
+    ///     Indicates whether the terms of the fraction should be reduced by their greatest common
+    ///     denominator.
+    /// </param>
     /// <returns>A Fraction representing the rounded floating point value.</returns>
     /// <remarks>
-    ///     The double data type stores its values as 64-bit floating point numbers in accordance with the <see href="https://en.wikipedia.org/wiki/IEEE_754">IEC 60559:1989 (IEEE
-    ///     754)</see> standard for binary <see href="https://en.wikipedia.org/wiki/Floating-point_arithmetic">floating-point arithmetic</see>.
+    ///     The double data type stores its values as 64-bit floating point numbers in accordance with the
+    ///     <see href="https://en.wikipedia.org/wiki/IEEE_754">
+    ///         IEC 60559:1989 (IEEE
+    ///         754)
+    ///     </see>
+    ///     standard for binary
+    ///     <see href="https://en.wikipedia.org/wiki/Floating-point_arithmetic">floating-point arithmetic</see>.
     ///     However, the double data type cannot precisely store some binary fractions. For instance, 1/10, which is accurately
     ///     represented by .1 as a decimal fraction, is represented by .0001100110011... as a binary fraction, with the pattern
     ///     0011 repeating indefinitely.
@@ -1191,17 +1599,18 @@ public readonly partial struct Fraction {
 
         var denominator = BigInteger.Pow(TEN, decimalPlaces);
         var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
-        return reduceTerms ?
-            ReduceSigned(numerator, denominator) :
-            new Fraction(true, numerator, denominator);
+        return reduceTerms ? ReduceSigned(numerator, denominator) : new Fraction(true, numerator, denominator);
     }
 
 
     /// <summary>
-    /// Converts a decimal value in a fraction. The value will not be rounded.
+    ///     Converts a decimal value in a fraction. The value will not be rounded.
     /// </summary>
     /// <param name="value">A decimal value.</param>
-    /// <param name="reduceTerms">Indicates whether the terms of the fraction should be reduced by their greatest common denominator.</param>
+    /// <param name="reduceTerms">
+    ///     Indicates whether the terms of the fraction should be reduced by their greatest common
+    ///     denominator.
+    /// </param>
     /// <returns>A fraction.</returns>
     public static Fraction FromDecimal(decimal value, bool reduceTerms = true) {
         if (reduceTerms) {
@@ -1226,7 +1635,7 @@ public readonly partial struct Fraction {
         var exp = buffer[14];
         var positiveSign = (buffer[15] & 0x80) == 0;
         // Pass false to the isBigEndian parameter
-        var numerator = new BigInteger(buffer.Slice(0, 13), isUnsigned: false, isBigEndian: false);
+        var numerator = new BigInteger(buffer.Slice(0, 13), false, false);
 #else
         var bits = decimal.GetBits(value);
         var low = BitConverter.GetBytes(bits[0]);
@@ -1245,15 +1654,13 @@ public readonly partial struct Fraction {
             0x00
         ]);
 #endif
-        
+
         if (!positiveSign) {
             numerator = -numerator;
         }
-        
+
         var denominator = BigInteger.Pow(TEN, exp);
 
-        return reduceTerms ?
-            ReduceSigned(numerator, denominator) :
-            new Fraction(true, numerator, denominator);
+        return reduceTerms ? ReduceSigned(numerator, denominator) : new Fraction(true, numerator, denominator);
     }
 }

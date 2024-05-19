@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{FCF0
 	ProjectSection(SolutionItems) = preProject
 		benchmarks\results\Fractions.Benchmarks.BasicMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.BasicMathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ComparisonBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ComparisonBenchmarks-report-github.md
+		benchmarks\results\Fractions.Benchmarks.ConsecutiveMathOperationBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ConsecutiveMathOperationBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ConstructorBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ConstructorBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ConvertToFractionBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ConvertToFractionBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ConvertToNumberBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ConvertToNumberBenchmarks-report-github.md
@@ -42,8 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{FCF0
 		benchmarks\results\Fractions.Benchmarks.ExampleScenarioBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ExampleScenarioBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.FromDoubleBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.FromDoubleBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.FromStringBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.FromStringBenchmarks-report-github.md
-		benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.NonNormalizedMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.NonNormalizedMathBenchmarks-report-github.md
+		benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ToStringBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ToStringBenchmarks-report-github.md
 	EndProjectSection
 EndProject
