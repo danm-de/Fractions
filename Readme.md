@@ -292,22 +292,22 @@ $NF ⊙ NF = NF$
 That said, the following applies for normalized fractions:
 
 ```csharp
-var a = new Fraction(1, 2, normalize: true);
-var b = new Fraction(2);    // is 2/1 (automatically normalized)
-var result = a * b;         // result is 1/1
+var a = new Fraction(4, 4, normalize: true); // a is 1/1
+var b = new Fraction(2);    // b is 2/1 (automatically normalized)
+var result = a / b;         // result is 1/2
 ```
 
-$\frac{1}{2}*\frac{2}{1}=\frac{1}{1}$
+$\frac{1}{1}/\frac{2}{1}=\frac{1}{2}$
 
 However, for non-normalized fractions the following applies:
 
 ```csharp
-var a = new Fraction(1, 2, normalize: false);
-var b = new Fraction(2);    // is 2/1 (automatically normalized)
-var result = a * b;         // result is 2/2
+var a = new Fraction(4, 4, normalize: false);
+var b = new Fraction(2);    // b is 2/1 (automatically normalized)
+var result = a / b;         // result is 4/8
 ```
 
-$\frac{1}{2}*\frac{2}{1}=\frac{2}{2}$
+$\frac{4}{4}/\frac{2}{1}=\frac{4}{8}$
 
 ## Equality operators
 
