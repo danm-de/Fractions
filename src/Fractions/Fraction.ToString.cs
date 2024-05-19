@@ -27,7 +27,7 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="format"><inheritdoc cref="ToString(string,IFormatProvider)" path="/param[@name='format']" /></param>
     /// <returns><inheritdoc cref="ToString(string,IFormatProvider)" path="/returns" /></returns>
-    public string ToString(string format) => ToString(format, CultureInfo.CurrentCulture);
+    public string ToString(string? format) => ToString(format, CultureInfo.CurrentCulture);
 
     /// <summary>
     /// Formats the value of the current instance using the specified format. The numbers are however culture invariant.

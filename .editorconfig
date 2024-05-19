@@ -113,6 +113,11 @@ csharp_style_prefer_extended_property_pattern = true:suggestion
 
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 
+# Suppress warnings
+# CA1510: Use ArgumentNullException throw helper
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1510
+dotnet_diagnostic.CA1510.severity = none
+
 # "This." and "Me." qualifiers
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference#this_and_me
 dotnet_style_qualification_for_field = false:suggestion
@@ -341,7 +346,7 @@ dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.style = pasca
 # Static readonly fields must be PascalCase
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.symbols = static_readonly_fields
-dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.style = pascal_case
+dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.style = prefix_underscore_camel_case
 # Private fields must be camelCase with underscore
 dotnet_naming_rule.private_instance_fields_must_be_camel_case_with_underscore.severity = warning
 dotnet_naming_rule.private_instance_fields_must_be_camel_case_with_underscore.symbols = private_fields

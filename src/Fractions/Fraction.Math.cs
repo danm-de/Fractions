@@ -242,7 +242,7 @@ public readonly partial struct Fraction {
     /// <returns>The negated fraction.</returns>
     public Fraction Negate() => new(_normalizationNotApplied, -Numerator, Denominator);
 
-    /// <inheritdoc cref="Negate"/>>
+    /// <inheritdoc cref="Negate"/>
     [Obsolete("The 'Invert' method is obsolete. Please use the the 'Negate' method or the negation operator '-value'.",
         error: false)]
     public Fraction Invert() => Negate();
@@ -283,8 +283,8 @@ public readonly partial struct Fraction {
                 return factor;
             }
 
-            ReduceTerms(ref thisNumerator, ref otherDenominator); // TODO benchmark for both cases
-            ReduceTerms(ref otherNumerator, ref thisDenominator);
+            reduceTerms(ref thisNumerator, ref otherDenominator); // TODO benchmark for both cases
+            reduceTerms(ref otherNumerator, ref thisDenominator);
 
             return new Fraction(true,
                 MultiplyTerms(thisNumerator, otherNumerator),
@@ -298,6 +298,21 @@ public readonly partial struct Fraction {
         return ReduceSigned(
             MultiplyTerms(thisNumerator, otherNumerator),
             MultiplyTerms(thisDenominator, otherDenominator));
+
+        static void reduceTerms(ref BigInteger numerator, ref BigInteger denominator) {
+            if (numerator.IsOne || denominator.IsOne ||
+                numerator == BigInteger.MinusOne || denominator == BigInteger.MinusOne) {
+                return;
+            }
+        
+            var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
+            if (gcd.IsOne) {
+                return;
+            }
+
+            numerator /= gcd;
+            denominator /= gcd;
+        }
     }
 
     private static BigInteger MultiplyTerms(BigInteger thisNumerator, BigInteger otherNumerator) {
@@ -436,21 +451,6 @@ public readonly partial struct Fraction {
             : new Fraction(false, numerator / gcd, denominator / gcd);
     }
     
-    private static void ReduceTerms(ref BigInteger numerator, ref BigInteger denominator) {
-        if (numerator.IsOne || denominator.IsOne ||
-            numerator == BigInteger.MinusOne || denominator == BigInteger.MinusOne) {
-            return;
-        }
-        
-        var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
-        if (gcd.IsOne) {
-            return;
-        }
-
-        numerator /= gcd;
-        denominator /= gcd;
-    }
-
     /// <summary>
     /// Returns a fraction raised to the specified power.
     /// </summary>

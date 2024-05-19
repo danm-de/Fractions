@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿#nullable disable
+
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 
 namespace Fractions.Benchmarks;

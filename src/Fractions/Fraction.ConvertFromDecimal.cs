@@ -41,14 +41,14 @@ public readonly partial struct Fraction {
         decimal.GetBits(value, bits);
         Span<byte> buffer = stackalloc byte[16];
         // Assume BitConverter.IsLittleEndian = true
-        BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(0, 4), bits[0]);
+        BinaryPrimitives.WriteInt32LittleEndian(buffer[..4], bits[0]);
         BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(4, 4), bits[1]);
         BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(8, 4), bits[2]);
         BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(12, 4), bits[3]);
         var exp = buffer[14];
         var positiveSign = (buffer[15] & 0x80) == 0;
         // Pass false to the isBigEndian parameter
-        var numerator = new BigInteger(buffer.Slice(0, 13), isUnsigned: false, isBigEndian: false);
+        var numerator = new BigInteger(buffer[..13], isUnsigned: false, isBigEndian: false);
 #else
         var bits = decimal.GetBits(value);
         var low = BitConverter.GetBytes(bits[0]);

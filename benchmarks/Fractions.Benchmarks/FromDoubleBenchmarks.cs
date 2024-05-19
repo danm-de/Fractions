@@ -1,10 +1,15 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿#pragma warning disable CA1822
+
+using BenchmarkDotNet.Attributes;
 
 namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
 public class FromDoubleBenchmarks {
-    private static readonly Fraction Zero = Fraction.Zero; // helps with the static initializers
+    public FromDoubleBenchmarks() {
+        // initialize static
+        _ = Fraction.Zero;
+    }
     
     public static IEnumerable<double> DoubleValues => [
         0, double.NaN, double.PositiveInfinity, double.NegativeInfinity,

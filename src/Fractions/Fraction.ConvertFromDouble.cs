@@ -67,11 +67,13 @@ public readonly partial struct Fraction {
     public static Fraction FromDouble(double value, bool reduceTerms) {
         // No rounding here! It will convert the actual number that is stored as double! 
         // See https://csharpindepth.com/Articles/FloatingPoint
+#pragma warning disable IDE1006
         const ulong SIGN_BIT = 0x8000000000000000;
         const ulong EXPONENT_BITS = 0x7FF0000000000000;
         const ulong MANTISSA = 0x000FFFFFFFFFFFFF;
         const ulong MANTISSA_DIVISOR = 0x0010000000000000;
         const ulong K = 1023;
+#pragma warning restore IDE1006
 
         // value = (-1 * sign)   *   (1 + 2^(-1) + 2^(-2) .. + 2^(-52))   *   2^(exponent-K)
         var valueBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(value));
