@@ -7,7 +7,11 @@ using System.Buffers.Binary;
 namespace Fractions;
 
 public readonly partial struct Fraction {
-    /// <inheritdoc cref="FromDecimal(decimal, bool)"/>>
+    /// <summary>
+    /// <inheritdoc cref="FromDecimal(decimal, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="value"><inheritdoc cref="FromDecimal(decimal, bool)" path="/param[@name='value']"/></param>
+    /// <returns>A fraction reduced to the lowest common denominator.</returns>
     public static Fraction FromDecimal(decimal value) {
         return FromDecimal(value, reduceTerms: true);
     }

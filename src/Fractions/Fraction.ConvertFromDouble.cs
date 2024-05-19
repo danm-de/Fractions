@@ -5,7 +5,15 @@ using Fractions.Extensions;
 namespace Fractions;
 
 public readonly partial struct Fraction {
-     /// <inheritdoc cref="FromDouble(double, bool)"/>>
+    /// <summary>
+    /// <inheritdoc cref="FromDouble(double, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="value"><inheritdoc cref="FromDouble(double, bool)" path="/param[@name='value']"/></param>
+    /// <returns>
+    ///     A fraction that corresponds to the floating-point binary representation of the value,
+    ///     with its terms reduced by their greatest common denominator.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromDouble(double, bool)" path="/remarks"/></remarks>
     public static Fraction FromDouble(double value) {
         return FromDouble(value, true);
     }
@@ -118,9 +126,18 @@ public readonly partial struct Fraction {
         }
     }
 
-    /// <inheritdoc cref="FromDoubleRounded(double, bool)"/>
+    /// <summary>
+    /// <inheritdoc cref="FromDoubleRounded(double, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="value"><inheritdoc cref="FromDoubleRounded(double, bool)" path="/param[@name='value']"/></param>
+    /// <returns>
+    ///     A fraction that approximates the input value, rounded to the nearest rational number and
+    ///     with its terms reduced by their greatest common denominator.
+    ///     If converted back to double, it would produce the same value.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromDoubleRounded(double, bool)" path="/remarks"/></remarks>
     public static Fraction FromDoubleRounded(double value) {
-        return FromDoubleRounded(value, true);
+        return FromDoubleRounded(value, reduceTerms: true);
     }
 
     /// <summary>
@@ -208,7 +225,13 @@ public readonly partial struct Fraction {
         return reduceTerms ? ReduceSigned(numerator, new BigInteger(denominator)) : new Fraction(true, numerator, new BigInteger(denominator));
     }
 
-    /// <inheritdoc cref="FromDoubleRounded(double, int, bool)"/>>
+    /// <summary>
+    /// <inheritdoc cref="FromDoubleRounded(double, int, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="value"><inheritdoc cref="FromDoubleRounded(double, int, bool)" path="/param[@name='value']"/></param>
+    /// <param name="significantDigits"><inheritdoc cref="FromDoubleRounded(double, int, bool)" path="/param[@name='significantDigits']"/></param>
+    /// <returns>A Fraction representing the rounded floating point value with its terms reduced by their greatest common denominator.</returns>
+    /// <remarks><inheritdoc cref="FromDoubleRounded(double, int, bool)" path="/remarks"/></remarks>
     public static Fraction FromDoubleRounded(double value, int significantDigits) {
         return FromDoubleRounded(value, significantDigits, reduceTerms: true);
     }
