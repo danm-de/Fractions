@@ -20,7 +20,7 @@ public readonly partial struct Fraction {
     /// <param name="formatProvider"><inheritdoc cref="IFormatProvider" path="/summary"/></param>
     /// <returns>Either numerator/denominator, <see cref="NumberFormatInfo.NaNSymbol"/>, <see cref="NumberFormatInfo.PositiveInfinitySymbol"/>, <see cref="NumberFormatInfo.NegativeInfinitySymbol"/> or just the numerator if the faction is normalized.</returns>
     /// <remarks><i>Note: This method will always return numerator/denominator if the fraction is not normalized.</i></remarks>
-    public string ToString(IFormatProvider formatProvider) => ToString("G", formatProvider);
+    public string ToString(IFormatProvider? formatProvider) => ToString("G", formatProvider);
 
     /// <summary>
     /// Formats the value of the current instance using the specified format.
