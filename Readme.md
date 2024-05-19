@@ -284,12 +284,10 @@ For performance reasons, as of version 8.0.0, mathematical operations no longer 
 
 The following rules apply:
 
-$
-F ⊙ F = F\\
-F ⊙ NF = NF\\
-NF ⊙ F = NF\\
-NF ⊙ NF = NF
-$
+$F ⊙ F = F$  
+$F ⊙ NF = NF$  
+$NF ⊙ F = NF$  
+$NF ⊙ NF = NF$  
 
 That said, the following applies for normalized fractions:
 
