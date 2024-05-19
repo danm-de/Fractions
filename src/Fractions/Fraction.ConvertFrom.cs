@@ -10,6 +10,12 @@ using System.Buffers.Binary;
 namespace Fractions;
 
 public readonly partial struct Fraction {
+
+    /// <inheritdoc cref="FromString(string,bool)"/>>
+    public static Fraction FromString(string fractionString) {
+        return FromString(fractionString, NumberStyles.Number, null, normalize: true);
+    }
+
     /// <summary>
     ///     Converts a string representation of a fraction or a decimal number to a Fraction object.
     /// </summary>
@@ -53,8 +59,13 @@ public readonly partial struct Fraction {
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static Fraction FromString(string fractionString, bool normalize = true) {
+    public static Fraction FromString(string fractionString, bool normalize) {
         return FromString(fractionString, NumberStyles.Number, null, normalize);
+    }
+
+    /// <inheritdoc cref="FromString(string, IFormatProvider, bool)"/>>
+    public static Fraction FromString(string fractionString, IFormatProvider formatProvider) {
+        return FromString(fractionString, NumberStyles.Number, formatProvider, normalize: true);
     }
 
     /// <summary>
@@ -104,7 +115,7 @@ public readonly partial struct Fraction {
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static Fraction FromString(string fractionString, IFormatProvider formatProvider, bool normalize = true) {
+    public static Fraction FromString(string fractionString, IFormatProvider formatProvider, bool normalize) {
         return FromString(fractionString, NumberStyles.Number, formatProvider, normalize);
     }
 
@@ -159,7 +170,7 @@ public readonly partial struct Fraction {
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize = true) {
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize) {
         if (fractionString == null) {
             throw new ArgumentNullException(nameof(fractionString));
         }
@@ -1322,6 +1333,11 @@ public readonly partial struct Fraction {
         return false;
     }
 
+    /// <inheritdoc cref="FromDouble(double, bool)"/>>
+    public static Fraction FromDouble(double value) {
+        return FromDouble(value, true);
+    }
+
     /// <summary>
     ///     Converts a floating point value to a fraction. Due to the fact that no rounding is applied to the input, values
     ///     such as 0.2 or 0.3, which do not have an exact representation as a <see cref="double" />, would result in
@@ -1369,7 +1385,7 @@ public readonly partial struct Fraction {
     ///         page.
     ///     </see>
     /// </remarks>
-    public static Fraction FromDouble(double value, bool reduceTerms = true) {
+    public static Fraction FromDouble(double value, bool reduceTerms) {
         // No rounding here! It will convert the actual number that is stored as double! 
         // See https://csharpindepth.com/Articles/FloatingPoint
         const ulong SIGN_BIT = 0x8000000000000000;
@@ -1431,6 +1447,11 @@ public readonly partial struct Fraction {
         }
     }
 
+    /// <inheritdoc cref="FromDoubleRounded(double, bool)"/>
+    public static Fraction FromDoubleRounded(double value) {
+        return FromDoubleRounded(value, true);
+    }
+
     /// <summary>
     ///     Converts a floating point value to a fraction by rounding to the nearest rational number.
     ///     This method is designed to avoid large numbers in the numerator and denominator.
@@ -1464,7 +1485,7 @@ public readonly partial struct Fraction {
     ///         page.
     ///     </see>
     /// </remarks>
-    public static Fraction FromDoubleRounded(double value, bool reduceTerms = true) {
+    public static Fraction FromDoubleRounded(double value, bool reduceTerms) {
         if (double.IsPositiveInfinity(value)) {
             return PositiveInfinity;
         }
@@ -1517,6 +1538,10 @@ public readonly partial struct Fraction {
         return reduceTerms ? ReduceSigned(numerator, new BigInteger(denominator)) : new Fraction(true, numerator, new BigInteger(denominator));
     }
 
+    /// <inheritdoc cref="FromDoubleRounded(double, int, bool)"/>>
+    public static Fraction FromDoubleRounded(double value, int significantDigits) {
+        return FromDoubleRounded(value, significantDigits, reduceTerms: true);
+    }
 
     /// <summary>
     ///     Converts a floating point value to a Fraction by rounding to the nearest rational number with a specified number of
@@ -1565,7 +1590,7 @@ public readonly partial struct Fraction {
     ///         page.
     ///     </see>
     /// </remarks>
-    public static Fraction FromDoubleRounded(double value, int significantDigits, bool reduceTerms = true) {
+    public static Fraction FromDoubleRounded(double value, int significantDigits, bool reduceTerms) {
         switch (value) {
             case 0d:
                 return Zero;
@@ -1602,6 +1627,10 @@ public readonly partial struct Fraction {
         return reduceTerms ? ReduceSigned(numerator, denominator) : new Fraction(true, numerator, denominator);
     }
 
+    /// <inheritdoc cref="FromDecimal(decimal, bool)"/>>
+    public static Fraction FromDecimal(decimal value) {
+        return FromDecimal(value, reduceTerms: true);
+    }
 
     /// <summary>
     ///     Converts a decimal value in a fraction. The value will not be rounded.
@@ -1612,7 +1641,7 @@ public readonly partial struct Fraction {
     ///     denominator.
     /// </param>
     /// <returns>A fraction.</returns>
-    public static Fraction FromDecimal(decimal value, bool reduceTerms = true) {
+    public static Fraction FromDecimal(decimal value, bool reduceTerms) {
         if (reduceTerms) {
             switch (value) {
                 case decimal.Zero:
