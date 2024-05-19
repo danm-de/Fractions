@@ -21,7 +21,6 @@ public readonly partial struct Fraction {
     ///     denominator.
     /// </param>
     /// <returns>A fraction corresponding to the binary floating-point representation of the value</returns>
-    /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
     /// <remarks>
     ///     The <see cref="double" /> data type in C# uses a binary floating-point representation, which can't accurately
     ///     represent all
@@ -137,7 +136,6 @@ public readonly partial struct Fraction {
     ///     A fraction that approximates the input value, rounded to the nearest rational number. If converted back to
     ///     double, it would produce the same value.
     /// </returns>
-    /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
     /// <remarks>
     ///     This method is the fastest among the three methods for converting a double to a fraction. However, it shouldn't be
     ///     used for strict comparisons with other fractions due to the heuristic approach it uses.

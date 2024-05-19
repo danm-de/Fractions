@@ -23,43 +23,27 @@ public class FromDoubleBenchmarks {
         Math.PI
     ];
 
-    [Benchmark()]
+    [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDouble(double value) {
-        try {
-            return Fraction.FromDouble(value);
-        } catch (InvalidNumberException) {
-            return Zero;
-        }
+        return Fraction.FromDouble(value);
     }
 
     [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDoubleRounded(double value) {
-        try {
-            return Fraction.FromDoubleRounded(value);
-        } catch (InvalidNumberException) {
-            return Zero;
-        }
+        return Fraction.FromDoubleRounded(value);
     }
 
     [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDoubleRoundedToFifteenDigits(double value) {
-        try {
-            return Fraction.FromDoubleRounded(value, 15);
-        } catch (InvalidNumberException) {
-            return Zero;
-        }
+        return Fraction.FromDoubleRounded(value, 15);
     }
 
     [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDoubleRoundedToEighteenDigits(double value) {
-        try {
-            return Fraction.FromDoubleRounded(value, 18);
-        } catch (InvalidNumberException) {
-            return Zero;
-        }
+        return Fraction.FromDoubleRounded(value, 18);
     }
 }
