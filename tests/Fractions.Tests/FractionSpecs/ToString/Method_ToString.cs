@@ -14,7 +14,7 @@ namespace Fractions.Tests.FractionSpecs.ToString;
 public class When_the_user_calls_ToString_without_any_parameters_having_en_US_culture : Spec {
     private static IEnumerable<TestCaseData> TestCases {
         get {
-            var en = new CultureInfo("en-US");
+            var en = CultureInfo.GetCultureInfo("en-US");
 
             yield return new TestCaseData(new BigInteger(3), new BigInteger(0), true)
                 .Returns(en.NumberFormat.PositiveInfinitySymbol);
@@ -102,8 +102,8 @@ public class When_the_user_calls_ToString_using_invariant_culture : Spec {
 public class When_the_user_calls_ToString_using_a_format_string : Spec {
     private static IEnumerable<TestCaseData> TestCases {
         get {
-            var de = new CultureInfo("de-DE");
-            var en = new CultureInfo("en-US");
+            var de = CultureInfo.GetCultureInfo("de-DE");
+            var en = CultureInfo.GetCultureInfo("en-US");
             var invariant = CultureInfo.InvariantCulture;
 
             yield return new TestCaseData(new Fraction(1, 3), string.Empty, en)

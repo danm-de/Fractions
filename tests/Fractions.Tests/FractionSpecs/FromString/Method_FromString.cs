@@ -82,7 +82,7 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
             "3,5 +"," 3,5 +", "3,5 + ", " 3,5 + "  // any spaces before or after the trailing sign are ok
             )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -99,7 +99,7 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
             "3,5 +"," 3,5 +", "3,5 + ", " 3,5 + "  // any spaces before or after the trailing sign are ok
             )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -115,7 +115,7 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
             "+ 3,5"  // this one is peculiar: any spaces after the leading sign are rejected
             )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -128,7 +128,7 @@ public class When_creating_a_fraction_from_3_5_with_German_culture : Spec {
     public void A_FormatException_should_be_thrown_when_multiple_sings_are_detected(
         [Values("+3,5+", "+3,5-", "+(3,5)")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -150,7 +150,7 @@ public class When_creating_a_fraction_from_3_50_with_German_culture : Spec {
             "3,50 +"," 3,50 +", "3,50 + ", " 3,50 + "  // any spaces before or after the trailing sign are ok
             )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -167,7 +167,7 @@ public class When_creating_a_fraction_from_3_50_with_German_culture : Spec {
             "3,50 +"," 3,50 +", "3,50 + ", " 3,50 + "  // any spaces before or after the trailing sign are ok
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -184,7 +184,7 @@ public class When_creating_a_fraction_from_3_50_with_German_culture : Spec {
             "+ 3,50"  // this one is peculiar: any spaces after the leading sign are rejected
             )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -197,7 +197,7 @@ public class When_creating_a_fraction_from_3_50_with_German_culture : Spec {
     public void A_FormatException_should_be_thrown_when_multiple_sings_are_detected(
         [Values("+3,50+", "+3,50-", "+(3,50)")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -218,7 +218,7 @@ public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec 
         "3,5 -"," 3,5 -", "3,5 - ", " 3,5 - "  // any spaces before or after the trailing sign are ok
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -234,7 +234,7 @@ public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec 
         "3,5 -"," 3,5 -", "3,5 - ", " 3,5 - "  // any spaces before or after the trailing sign are ok
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -247,7 +247,7 @@ public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec 
     public void The_result_should_be_minus_7_over_2_when_the_parentheses_are_allowed(
         [Values("(3,5)", " (3,5)", "(3,5) ", " (3,5) ")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -260,7 +260,7 @@ public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec 
     public void A_FormatException_should_be_thrown_when_parentheses_are_detected_but_not_allowed(
         [Values("-3,5+", "-3,5-", "-(3,5)", "(3,5)-")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -275,7 +275,7 @@ public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec 
             "- 3,5"  // this one is peculiar: any spaces after the leading sign are rejected
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -288,7 +288,7 @@ public class When_creating_a_fraction_from_minus_3_5_with_German_culture : Spec 
     public void A_FormatException_should_be_thrown_when_multiple_sings_are_detected(
         [Values("-3,5+", "-3,5-", "-(3,5)", "(3,5)-")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -309,7 +309,7 @@ public class When_creating_a_fraction_from_minus_3_50_with_German_culture : Spec
         "3,50 -"," 3,50 -", "3,50 - ", " 3,50 - "  // any spaces before or after the trailing sign are ok
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -324,7 +324,7 @@ public class When_creating_a_fraction_from_minus_3_50_with_German_culture : Spec
         "3,50 -"," 3,50 -", "3,50 - ", " 3,50 - "  // any spaces before or after the trailing sign are ok
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -337,7 +337,7 @@ public class When_creating_a_fraction_from_minus_3_50_with_German_culture : Spec
     public void The_result_should_be_minus_7_over_2_when_the_parentheses_are_allowed(
         [Values("(3,50)", " (3,50)", "(3,50) ", " (3,50) ")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -350,7 +350,7 @@ public class When_creating_a_fraction_from_minus_3_50_with_German_culture : Spec
     public void A_FormatException_should_be_thrown_when_parentheses_are_detected_but_not_allowed(
         [Values("-3,50+", "-3,50-", "-(3,50)", "(3,50)-")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -365,7 +365,7 @@ public class When_creating_a_fraction_from_minus_3_50_with_German_culture : Spec
             "- 3,5"  // this one is peculiar: any spaces after the leading sign are rejected
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -378,7 +378,7 @@ public class When_creating_a_fraction_from_minus_3_50_with_German_culture : Spec
     public void A_FormatException_should_be_thrown_when_multiple_sings_are_detected(
         [Values("-3,50+", "-3,50-", "-(3,50)", "(3,50)-")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -404,7 +404,7 @@ public class When_creating_a_fraction_from_3_5_eur_with_German_culture : Spec {
             "€+ 3,5", "+€ 3,5", " € + 3,5", " +€ 3,5"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -424,7 +424,7 @@ public class When_creating_a_fraction_from_3_5_eur_with_German_culture : Spec {
             "€+ 3,5", "+€ 3,5", " € + 3,5", " +€ 3,5"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -438,7 +438,7 @@ public class When_creating_a_fraction_from_3_5_eur_with_German_culture : Spec {
         [Values("+ 3,5€", "+ €3,5", "+ € 3,5"   // this one is peculiar: any spaces after the leading sign are rejected (as long as there isn't a currency symbol preceding it)
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -451,7 +451,7 @@ public class When_creating_a_fraction_from_3_5_eur_with_German_culture : Spec {
     public void A_FormatException_should_be_thrown_when_multiple_currencies_are_detected(
         [Values("€3,5€", "€+3,5€", "+€3,5€", "€3,5€+", "€3,5+€")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -477,7 +477,7 @@ public class When_creating_a_fraction_from_3_50_eur_with_German_culture : Spec {
             "€+ 3,50", "+€ 3,50", " € + 3,50", " +€ 3,50"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -498,7 +498,7 @@ public class When_creating_a_fraction_from_3_50_eur_with_German_culture : Spec {
             "€+ 3,50", "+€ 3,50", " € + 3,50", " +€ 3,50"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -512,7 +512,7 @@ public class When_creating_a_fraction_from_3_50_eur_with_German_culture : Spec {
         [Values("+ 3,50€", "+ €3,50", "+ € 3,50"   // this one is peculiar: any spaces after the leading sign are rejected (as long as there isn't a currency symbol preceding it)
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -525,7 +525,7 @@ public class When_creating_a_fraction_from_3_50_eur_with_German_culture : Spec {
     public void A_FormatException_should_be_thrown_when_multiple_currencies_are_detected(
         [Values("€3,50€", "€+3,50€", "+€3,50€", "€3,50€+", "€3,50+€")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -550,7 +550,7 @@ public class When_creating_a_fraction_from_minus_3_5_eur_with_German_culture : S
             "€- 3,5", "-€ 3,5", " € - 3,5", " -€ 3,5"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -570,7 +570,7 @@ public class When_creating_a_fraction_from_minus_3_5_eur_with_German_culture : S
             "€- 3,5", "-€ 3,5", " € - 3,5", " -€ 3,5"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -584,7 +584,7 @@ public class When_creating_a_fraction_from_minus_3_5_eur_with_German_culture : S
         [Values("- 3,5€", "- €3,5", "- € 3,5"   // this one is peculiar: any spaces after the leading sign are rejected (as long as there isn't a currency symbol preceding it)
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -597,7 +597,7 @@ public class When_creating_a_fraction_from_minus_3_5_eur_with_German_culture : S
     public void A_FormatException_should_be_thrown_when_multiple_currencies_are_detected(
         [Values("€-3,5€", "-€3,5€", "€3,5€-", "€3,5-€")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -622,7 +622,7 @@ public class When_creating_a_fraction_from_minus_3_50_eur_with_German_culture : 
             "€- 3,50", "-€ 3,50", " € - 3,50", " -€ 3,50"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -642,7 +642,7 @@ public class When_creating_a_fraction_from_minus_3_50_eur_with_German_culture : 
             "€- 3,50", "-€ 3,50", " € - 3,50", " -€ 3,50"  
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeTrue("making sure the format is also recognized by double.TryParse");
@@ -656,7 +656,7 @@ public class When_creating_a_fraction_from_minus_3_50_eur_with_German_culture : 
         [Values("- 3,50€", "- €3,50", "- € 3,50"   // this one is peculiar: any spaces after the leading sign are rejected (as long as there isn't a currency symbol preceding it)
         )]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Any, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -669,7 +669,7 @@ public class When_creating_a_fraction_from_minus_3_50_eur_with_German_culture : 
     public void A_FormatException_should_be_thrown_when_multiple_currencies_are_detected(
         [Values("€-3,50€", "-€3,50€", "€3,50€-", "€3,50-€")]
         string value) {
-        var germanCulture = new CultureInfo("de-DE");
+        var germanCulture = CultureInfo.GetCultureInfo("de-DE");
         
         double.TryParse(value, NumberStyles.Number, germanCulture, out _)
             .Should().BeFalse("the format isn't supposed to be recognized by double.TryParse");
@@ -715,7 +715,7 @@ public class When_creating_a_fraction_from_3_5_with_American_culture : Spec {
     private Fraction _result;
 
     public override void Act() {
-        _result = Fraction.FromString("3.5", new CultureInfo("en-US"));
+        _result = Fraction.FromString("3.5", CultureInfo.GetCultureInfo("en-US"));
     }
 
     [Test]
@@ -794,7 +794,7 @@ public class When_creating_a_fraction_from_a_very_long_decimal_string : Spec {
     private Fraction _result;
 
     public override void Act() {
-        _result = Fraction.FromString("123456789987654321.1234567899876543210", new CultureInfo("en-US"));
+        _result = Fraction.FromString("123456789987654321.1234567899876543210", CultureInfo.GetCultureInfo("en-US"));
     }
 
     [Test]
@@ -811,7 +811,7 @@ public class When_creating_a_fraction_from_a_very_long_decimal_string_without_no
     private Fraction _result;
 
     public override void Act() {
-        _result = Fraction.FromString("123456789987654321.1234567899876543210", new CultureInfo("en-US"), false);
+        _result = Fraction.FromString("123456789987654321.1234567899876543210", CultureInfo.GetCultureInfo("en-US"), false);
     }
 
     [Test]

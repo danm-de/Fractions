@@ -118,7 +118,7 @@ public readonly partial struct Fraction {
         }
     }
 
-    /// <inheritdoc cref="FromDoubleRounded(double, int, bool)"/>
+    /// <inheritdoc cref="FromDoubleRounded(double, bool)"/>
     public static Fraction FromDoubleRounded(double value) {
         return FromDoubleRounded(value, true);
     }

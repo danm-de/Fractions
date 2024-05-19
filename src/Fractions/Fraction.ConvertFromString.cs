@@ -1,4 +1,6 @@
-﻿using Fractions.Properties;
+﻿#nullable enable
+
+using Fractions.Properties;
 using System.Globalization;
 using System;
 
@@ -35,15 +37,15 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="fractionString">
     ///     A string that contains a fraction or a decimal number to convert. The fraction must be in the format
-    ///     'numerator/denominator'. The decimal number must be in a format that is compatible with the specified format
-    ///     provider.
+    ///     'numerator/denominator'. The decimal number must be in a format compatible with the specified format
+    ///     provider (if specified).
     /// </param>
     /// <param name="numberStyles">
     ///     A bitwise combination of enumeration values that indicates the style elements that can be present in
-    ///     fractionString. A typical value to specify is NumberStyles.Number.
+    ///     fractionString. A typical value to specify is <see cref="NumberStyles.Number"/>.
     /// </param>
     /// <param name="formatProvider">
-    ///     An object that supplies culture-specific formatting information about fractionString. If formatProvider is null,
+    ///     An object that supplies culture-specific formatting information about <paramref name="fractionString"/>. If <paramref name="formatProvider"/> is <c>null</c>,
     ///     the thread current culture is used.
     /// </param>
     /// <param name="normalize">
@@ -81,7 +83,7 @@ public readonly partial struct Fraction {
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize) {
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize) {
         if (fractionString == null) {
             throw new ArgumentNullException(nameof(fractionString));
         }

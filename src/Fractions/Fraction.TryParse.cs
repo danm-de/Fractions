@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Globalization;
 using System.Numerics;
 
@@ -6,7 +8,7 @@ namespace Fractions;
 
 public readonly partial struct Fraction {
     /// <summary>
-    ///     Attempts to parse a ReadOnlySpan of characters into a fraction.
+    ///     Attempts to parse a string into a fraction.
     /// </summary>
     /// <param name="value">
     ///     The input string to parse. The numerator and denominator must be separated by a '/' (slash) character.
@@ -15,35 +17,38 @@ public readonly partial struct Fraction {
     /// </param>
     /// <param name="fraction">
     ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
-    ///     it contains an invalid fraction.
+    ///     it contains the default value of <see cref="Fraction"/>.
     /// </param>
     /// <returns>
     ///     <c>true</c> if the input string is well-formed and could be parsed into a fraction; otherwise, <c>false</c>.
     /// </returns>
     /// <remarks>
-    ///     Here are some examples of how to use the
-    ///     <see cref="TryParse(string, out Fraction)" /> method:
+    ///     Here are some examples of how to use the <see cref="TryParse(string, out Fraction)" /> method:
     ///     <example>
     ///         <code>
-    /// Fraction.TryParse("3/4", out Fraction fraction);
+    /// Fraction.TryParse("3/4", out var fraction);
     /// </code>
     ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
     ///         denominator of 4.
     ///         <code>
-    /// Fraction.TryParse("1.25", out Fraction fraction);
+    /// Fraction.TryParse("1.25", out var fraction);
     /// </code>
     ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
     ///         denominator of 4.
     ///         <code>
-    /// Fraction.TryParse("1.23e-2", out Fraction fraction);
+    /// Fraction.TryParse("1.23e-2", out var fraction);
     /// </code>
     ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static bool TryParse(string value, out Fraction fraction) {
-        return TryParse(value, NumberStyles.Number, null, true, out fraction);
-    }
+    public static bool TryParse(string value, out Fraction fraction) =>
+        TryParse(
+            value: value,
+            numberStyles: NumberStyles.Number,
+            formatProvider: null,
+            normalize: true,
+            fraction: out fraction);
 
     /// <summary>
     ///     Attempts to parse a string of characters into a fraction.
@@ -61,7 +66,7 @@ public readonly partial struct Fraction {
     /// <param name="formatProvider">
     ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
     ///     This is relevant when the string is not in the numerator/denominator format. For example,
-    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     <c>CultureInfo.GetCultureInfo("en-US")</c> for US English culture.
     /// </param>
     /// <param name="fraction">
     ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
@@ -78,24 +83,24 @@ public readonly partial struct Fraction {
     ///         <see cref="TryParse(string, NumberStyles, IFormatProvider, out Fraction)" /> method:
     ///         <example>
     ///             <code>
-    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), out Fraction fraction);
+    /// Fraction.TryParse("3/4", NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out var fraction);
     /// </code>
     ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), out Fraction fraction);
+    /// Fraction.TryParse("1.25", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), out var fraction);
     /// </code>
     ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), out Fraction fraction);
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out var fraction);
     /// </code>
     ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
     ///             a denominator of 10000.
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider, out Fraction fraction) {
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider, out Fraction fraction) {
         return TryParse(value, numberStyles, formatProvider, true, out fraction);
     }
 
@@ -116,7 +121,7 @@ public readonly partial struct Fraction {
     /// <param name="formatProvider">
     ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
     ///     This is relevant when the string is not in the numerator/denominator format. For example,
-    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     <c>CultureInfo.GetCultureInfo("en-US")</c> for US English culture.
     /// </param>
     /// <param name="normalize">
     ///     A boolean value indicating whether the parsed fraction should be reduced to its simplest form.
@@ -137,23 +142,23 @@ public readonly partial struct Fraction {
     ///         <see cref="TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, bool, out Fraction)" /> method:
     ///         <example>
     ///             <code>
-    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("3/4", NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("1.25", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1,234.56", NumberStyles.Number, new CultureInfo("en-US"), false, out Fraction fraction);
+    /// Fraction.TryParse("1,234.56", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), false, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "1,234.56" into a <see cref="Fraction" /> object with a numerator of 12345
     ///             and a
     ///             denominator of 100.
     ///             <code>
-    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), false, out Fraction fraction);
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), false, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
     ///             a
@@ -161,7 +166,7 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize, out Fraction fraction) {
         return TryParse(value.AsSpan(), numberStyles, formatProvider, normalize, out fraction);
     }
 
@@ -181,7 +186,7 @@ public readonly partial struct Fraction {
     /// <param name="formatProvider">
     ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
     ///     This is relevant when the string is not in the numerator/denominator format. For example,
-    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     <c>CultureInfo.GetCultureInfo("en-US")</c> for US English culture.
     /// </param>
     /// <param name="fraction">
     ///     When this method returns, contains the parsed fraction if the operation was successful; otherwise,
@@ -198,24 +203,24 @@ public readonly partial struct Fraction {
     ///         <see cref="TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, out Fraction)" /> method:
     ///         <example>
     ///             <code>
-    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), out Fraction fraction);
+    /// Fraction.TryParse("3/4", NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), out Fraction fraction);
     /// </code>
     ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), out Fraction fraction);
+    /// Fraction.TryParse("1.25", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), out Fraction fraction);
     /// </code>
     ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), out Fraction fraction);
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out Fraction fraction);
     /// </code>
     ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
     ///             a denominator of 10000.
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider formatProvider, out Fraction fraction) {
+    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider? formatProvider, out Fraction fraction) {
         return TryParse(value, numberStyles, formatProvider, true, out fraction);
     }
 
@@ -235,7 +240,7 @@ public readonly partial struct Fraction {
     /// <param name="formatProvider">
     ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
     ///     This is relevant when the string is not in the numerator/denominator format. For example,
-    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     <c>CultureInfo.GetCultureInfo("en-US")</c> for US English culture.
     /// </param>
     /// <param name="normalize">
     ///     A boolean value indicating whether the parsed fraction should be reduced to its simplest form.
@@ -256,23 +261,23 @@ public readonly partial struct Fraction {
     ///         <see cref="TryParse(ReadOnlySpan{char}, NumberStyles, IFormatProvider, bool, out Fraction)" /> method:
     ///         <example>
     ///             <code>
-    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("3/4", NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("1.25", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
     ///             denominator of 4.
     ///             <code>
-    /// Fraction.TryParse("1,234.56", NumberStyles.Number, new CultureInfo("en-US"), false, out Fraction fraction);
+    /// Fraction.TryParse("1,234.56", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), false, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "1,234.56" into a <see cref="Fraction" /> object with a numerator of 12345
     ///             and a
     ///             denominator of 100.
     ///             <code>
-    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), false, out Fraction fraction);
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), false, out Fraction fraction);
     ///         </code>
     ///             This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and
     ///             a
@@ -280,7 +285,7 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
+    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize, out Fraction fraction) {
         if (value.IsEmpty) {
             return CannotParse(out fraction);
         }
@@ -681,7 +686,7 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseInteger(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, IFormatProvider formatProvider, bool isNegative, out Fraction fraction) {
+    private static bool TryParseInteger(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, IFormatProvider? formatProvider, bool isNegative, out Fraction fraction) {
         if (!BigInteger.TryParse(value, parseNumberStyles, formatProvider, out var bigInteger)) {
             return CannotParse(out fraction);
         }
@@ -707,7 +712,7 @@ public readonly partial struct Fraction {
     /// <param name="formatProvider">
     ///     An <see cref="IFormatProvider" /> that supplies culture-specific information used to parse the input string.
     ///     This is relevant when the string is not in the numerator/denominator format. For example,
-    ///     <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     <c>CultureInfo.GetCultureInfo("en-US")</c> for US English culture.
     /// </param>
     /// <param name="normalize">
     ///     A boolean value indicating whether the parsed fraction should be reduced to its simplest form.
@@ -725,27 +730,27 @@ public readonly partial struct Fraction {
     ///     string.
     ///     For example, <see cref="NumberStyles.Float" /> allows decimal points and scientific notation.
     ///     The <paramref name="formatProvider" /> parameter provides culture-specific formatting information.
-    ///     For example, you can use <c>new CultureInfo("en-US")</c> for US English culture.
+    ///     For example, you can use <c>CultureInfo.GetCultureInfo("en-US")</c> for US English culture.
     ///     Here are some examples of how to use the <see cref="TryParse(string,out Fraction)" /> method:
     ///     <example>
     ///         <code>
-    /// Fraction.TryParse("3/4", NumberStyles.Any, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("3/4", NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     /// </code>
     ///         This example parses the string "3/4" into a <see cref="Fraction" /> object with a numerator of 3 and a
     ///         denominator of 4.
     ///         <code>
-    /// Fraction.TryParse("1.25", NumberStyles.Number, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("1.25", NumberStyles.Number, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     /// </code>
     ///         This example parses the string "1.25" into a <see cref="Fraction" /> object with a numerator of 5 and a
     ///         denominator of 4.
     ///         <code>
-    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, new CultureInfo("en-US"), true, out Fraction fraction);
+    /// Fraction.TryParse("1.23e-2", NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), true, out Fraction fraction);
     /// </code>
     ///         This example parses the string "1.23e-2" into a <see cref="Fraction" /> object with a numerator of 123 and a
     ///         denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider formatProvider, bool normalize, out Fraction fraction) {
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize, out Fraction fraction) {
         if (string.IsNullOrWhiteSpace(value)) {
             return CannotParse(out fraction);
         }
@@ -1131,7 +1136,7 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles, IFormatProvider formatProvider,
+    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles, IFormatProvider? formatProvider,
         int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
         if (!BigInteger.TryParse(valueString.Substring(startIndex, endIndex - startIndex), parseNumberStyles, formatProvider, out var bigInteger)) {
             return CannotParse(out fraction);

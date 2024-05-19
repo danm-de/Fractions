@@ -129,7 +129,7 @@ The following string patterns can be parsed:
 Example:
 
 ```csharp
-var value = Fraction.FromString("1,5", new CultureInfo("de-DE"))
+var value = Fraction.FromString("1,5", CultureInfo.GetCultureInfo("de-DE"))
 // Returns 3/2 which is 1.5
 Console.WriteLine(value);
 ```
@@ -180,7 +180,7 @@ Example:
 ```csharp
 var value = new Fraction(3, 2);
 // returns 1 1/2
-Console.WriteLine(value.ToString("m", new CultureInfo("de-DE")));
+Console.WriteLine(value.ToString("m", CultureInfo.GetCultureInfo("de-DE")));
 ```
 ## Decimal Notation Formatter
 
