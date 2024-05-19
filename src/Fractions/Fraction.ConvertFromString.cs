@@ -7,28 +7,99 @@ using System;
 namespace Fractions;
 
 public readonly partial struct Fraction {
-     /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
+    /// <summary>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="fractionString"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='fractionString']"/></param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in <paramref name="fractionString"/> and reduced to the lowest terms.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/remarks"/></remarks>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="fractionString"/> is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
+    /// </exception>
     public static Fraction FromString(string fractionString) {
         return FromString(fractionString, NumberStyles.Number, null, normalize: true);
     }
 
-    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
+    /// <summary>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="fractionString"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='fractionString']"/></param>
+    /// <param name="normalize"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='normalize']"/></param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in <paramref name="fractionString"/>.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/remarks"/></remarks>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="fractionString"/> is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
+    /// </exception>
     public static Fraction FromString(string fractionString, bool normalize) {
         return FromString(fractionString, NumberStyles.Number, null, normalize);
     }
 
-    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
-    public static Fraction FromString(string fractionString, IFormatProvider formatProvider) {
+    /// <summary>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="fractionString"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='fractionString']"/></param>
+    /// <param name="formatProvider"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='formatProvider']"/></param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in <paramref name="fractionString"/> and reduced to the lowest terms.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/remarks"/></remarks>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="fractionString"/> is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
+    /// </exception>
+    public static Fraction FromString(string fractionString, IFormatProvider? formatProvider) {
         return FromString(fractionString, NumberStyles.Number, formatProvider, normalize: true);
     }
 
-    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
-    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider formatProvider) {
+    /// <summary>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="fractionString"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='fractionString']"/></param>
+    /// <param name="numberStyles"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='numberStyles']"/></param>
+    /// <param name="formatProvider"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='formatProvider']"/></param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in <paramref name="fractionString"/> and reduced to the lowest terms.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/remarks"/></remarks>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="fractionString"/> is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
+    /// </exception>
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider? formatProvider) {
         return FromString(fractionString, numberStyles, formatProvider, normalize: true);
     }
 
-    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)"/>
-    public static Fraction FromString(string fractionString, IFormatProvider formatProvider, bool normalize) {
+    /// <summary>
+    /// <inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/summary"/>
+    /// </summary>
+    /// <param name="fractionString"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='fractionString']"/></param>
+    /// <param name="formatProvider"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='formatProvider']"/></param>
+    /// <param name="normalize"><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/param[@name='normalize']"/></param>
+    /// <returns>
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in <paramref name="fractionString"/>.
+    /// </returns>
+    /// <remarks><inheritdoc cref="FromString(string, NumberStyles, IFormatProvider, bool)" path="/remarks"/></remarks>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="fractionString"/> is null.
+    /// </exception>
+    /// <exception cref="FormatException">
+    ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
+    /// </exception>
+    public static Fraction FromString(string fractionString, IFormatProvider? formatProvider, bool normalize) {
         return FromString(fractionString, NumberStyles.Number, formatProvider, normalize);
     }
 
@@ -53,14 +124,14 @@ public readonly partial struct Fraction {
     ///     normalize is true, the resulting Fraction object is reduced to the lowest terms; otherwise, it is not.
     /// </param>
     /// <returns>
-    ///     A Fraction object that is equivalent to the fraction or decimal number contained in fractionString, as specified by
+    ///     A Fraction object that is equivalent to the fraction or decimal number contained in <paramref name="fractionString"/>, as specified by
     ///     numberStyles and formatProvider.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    ///     Thrown when fractionString is null.
+    ///     Thrown when <paramref name="fractionString"/> is null.
     /// </exception>
     /// <exception cref="FormatException">
-    ///     Thrown when fractionString is not in the correct format.
+    ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
     /// </exception>
     /// <remarks>
     ///     Here are some examples of how to use the
