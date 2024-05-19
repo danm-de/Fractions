@@ -301,7 +301,13 @@ public readonly partial struct Fraction {
     }
 
     private static BigInteger MultiplyTerms(BigInteger thisNumerator, BigInteger otherNumerator) {
-        return thisNumerator.IsOne ? otherNumerator : otherNumerator.IsOne ? thisNumerator : thisNumerator * otherNumerator;
+        if (thisNumerator.IsOne) {
+            return otherNumerator;
+        }
+
+        return otherNumerator.IsOne
+            ? thisNumerator
+            : thisNumerator * otherNumerator;
     }
 
     /// <summary>

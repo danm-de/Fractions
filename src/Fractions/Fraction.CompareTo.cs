@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 using Fractions.Properties;
 
 namespace Fractions;
