@@ -41,6 +41,9 @@ There a three types of constructors available:
 - `new Fraction (<numerator>, <denominator>)` using `BigInteger` for numerator and denominator.
 - `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator + `bool` to indicate if the resulting fraction shall be normalized (reduced).
 
+> [!IMPORTANT]
+> When creating improper fractions (by specifying the parameter `reduce: false`), please be sure to refer to the [Working with non-normalized fractions](#working-with-non-normalized-fractions) and the [Equality operators](#equality-operators) section for more information about the (side) effects.
+
 ### Static creation methods
 
 - `Fraction.FromDecimal(decimal)`
@@ -54,11 +57,12 @@ There a three types of constructors available:
 - `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)`
 - `Fraction.TryParse(ReadOnlySpan<char>, NumberStyles, IFormatProvider, bool, out Fraction)`
 
-### Creation from `double` _without rounding_
+### Creation from `double` without rounding
 
 The `double` data type in C# uses a binary floating-point representation, which complies with the [IEC 60559:1989 (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754) standard for [binary floating-point arithmetic](https://en.wikipedia.org/wiki/Floating-point_arithmetic). This representation can't accurately represent all decimal fractions. For example, the decimal fraction _0.1_ is represented as the repeating binary fraction _.0001100110011..._. As a result, a `double` value can only provide an approximate representation of the decimal number it's intended to represent.
 
 #### Large values in the numerator / denominator
+
 When you convert a `double` to a `Fraction` using the `Fraction.FromDouble` method, the resulting fraction is an exact representation of the `double` value, not the decimal number that the `double` is intended to approximate. This is why you can end up with large numerators and denominators. 
 
 ```csharp
@@ -69,6 +73,7 @@ Console.WriteLine(value); // Ouputs "3602879701896397/36028797018963968" which i
 The output fraction is an exact representation of the `double` value 0.1, which is actually slightly more than 0.1 due to the limitations of binary floating-point representation.
 
 #### Comparing fractions created with double precision
+
 Using a `Fraction` that was created using this method for strict Equality/Comparison should be avoided. For example:
 
 ```csharp
@@ -80,6 +85,7 @@ Console.WriteLine(fraction1 == fraction2); // Outputs "False"
 If you need to compare a `Fraction` created from `double` with others fractions you should either do so by using a tolerance or consider constructing the `Fraction` by [specifying the maximum number of significant digits.](#creation-from-double-with-maximum-number-of-significant-digits)
 
 #### Possible rounding errors near the limits of the double precision
+
 When a `double` value is very close to the limits of its precision, `Fraction.FromDouble(value).ToDouble() == value` might not hold true. This is because the numerator and denominator of the `Fraction` are both very large numbers. When these numbers are converted to `double` for the division operation in the `Fraction.ToDouble` method, they can exceed the precision limit of the `double` type, resulting in a loss of precision.
 
 ```csharp
@@ -100,7 +106,7 @@ Console.WriteLine(value); // Outputs "1/10"
 
 If you care only about minimizing the size of the numerator/denominator, and do not expect to use the fraction in any strict comparison operations, then [creating an approximated fraction](#creation-from-double-with-rounding-to-a-close-approximation) using the `Fraction.FromDoubleRounded(double)` overload should offer the best performance.
 
-### Creation from `double` with rounding to a _close approximation_
+### Creation from `double` with rounding to a close approximation
 
 You can use the `Fraction.FromDoubleRounded(double)` method to avoid big numbers in numerator and denominator. Example:
 
@@ -129,7 +135,7 @@ The following string patterns can be parsed:
 Example:
 
 ```csharp
-var value = Fraction.FromString("1,5", new CultureInfo("de-DE"))
+var value = Fraction.FromString("1,5", CultureInfo.GetCultureInfo("de-DE"))
 // Returns 3/2 which is 1.5
 Console.WriteLine(value);
 ```
@@ -180,8 +186,9 @@ Example:
 ```csharp
 var value = new Fraction(3, 2);
 // returns 1 1/2
-Console.WriteLine(value.ToString("m", new CultureInfo("de-DE")));
+Console.WriteLine(value.ToString("m", CultureInfo.GetCultureInfo("de-DE")));
 ```
+
 ## Decimal Notation Formatter
 
 The `DecimalNotationFormatter` class allows for formatting `Fraction` objects using the standard decimal notation, and the specified format and culture-specific format information. 
@@ -265,6 +272,43 @@ Example:
  Console.WriteLine(result);
 ```
 
+### Working with non-normalized fractions
+
+For performance reasons, as of version 8.0.0, mathematical operations no longer automatically generate normalized fractions if one of the operands is an improper (i.e. non-normalized) fraction. This has an impact on your calculations, especially if you have used the `JsonFractionConverter` with default settings. In such cases, deserialized fractions create improper fractions, which can lead to changed behavior when calling `Equals` and `ToString`.
+
+| Symbol | Description                                                                                          |
+| ------ | ---------------------------------------------------------------------------------------------------- |
+| $NF$   | Non-normalized (possibly improper) fraction, created with `normalize: false`                         |
+| $F$    | Fraction created with `normalize: true`                                                              |
+| $⊙$   | Mathematical operation having two operands ($+$, $-$, $*$, $/$, $mod$).                              |
+
+The following rules apply:
+
+$F ⊙ F = F$  
+$F ⊙ NF = NF$  
+$NF ⊙ F = NF$  
+$NF ⊙ NF = NF$  
+
+That said, the following applies for normalized fractions:
+
+```csharp
+var a = new Fraction(4, 4, normalize: true); // a is 1/1
+var b = new Fraction(2);    // b is 2/1 (automatically normalized)
+var result = a / b;         // result is 1/2
+```
+
+$\frac{1}{1}/\frac{2}{1}=\frac{1}{2}$
+
+However, for non-normalized fractions the following applies:
+
+```csharp
+var a = new Fraction(4, 4, normalize: false);
+var b = new Fraction(2);    // b is 2/1 (automatically normalized)
+var result = a / b;         // result is 4/8
+```
+
+$\frac{4}{4}/\frac{2}{1}=\frac{4}{8}$
+
 ## Equality operators
 
 `Fraction` implements the following interfaces:
@@ -273,12 +317,12 @@ Example:
 - `IComparable`,
 - `IComparable<Fraction>`
 
-Please note that `.Equals(Fraction)` will compare the exact values of numerator and denominator. That said:
+Please note that `.Equals(Fraction)` will compare the **exact** values of numerator and denominator. That said:
 
 ```csharp
 var a = new Fraction(1, 2, normalize: true);
 var b = new Fraction(1, 2, normalize: false);
-var c = new Fraction(2, 4, normalize: false);
+var c = new Fraction(2, 4, normalize: false); // improper fraction
 
 // result1 is true
 var result1 = a == a;
@@ -286,17 +330,19 @@ var result1 = a == a;
 // result2 is true
 var result2 = a == b;
 
-// result3 is false
+// result3 is false!
 var result3 = a == c;
 ```
 
-You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fractions for value-equality.
+> [!IMPORTANT]
+> The `Equals` method does not correspond to the mathematical equality test! You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fractions for value-equality.
 
 ## Under the hood
 
 The data type stores the numerator and denominator as `BigInteger`. Per default it will reduce fractions to its normalized form during creation. The result of each mathematical operation will be reduced as well. There is a special constructor to create a non-normalized fraction. Be aware that `Equals` relies on normalized values when comparing two different instances.
 
 ## Performance considerations
+
 We have a suite of benchmarks that test the performance of various operations in the Fractions library. These benchmarks provide valuable insights into the relative performance of different test cases.
 For more detailed information about these benchmarks and how to interpret them, please refer to the [Fractions Benchmarks Readme](./benchmarks/Readme.md) in the benchmarks subfolder.
 

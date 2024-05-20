@@ -37,6 +37,14 @@ public class When_exponentiation_is_applied_to_a_fraction : Spec {
                 .Returns(new Fraction(9, 9, true));
             yield return new TestCaseData(new Fraction(3, 3, false), -2)
                 .Returns(new Fraction(9, 9, true));
+            yield return new TestCaseData(Fraction.FromDecimal(1.0000m, false), 2)
+                .Returns(Fraction.FromDecimal(1m));
+            yield return new TestCaseData(Fraction.FromDecimal(0.1000m, false), 2)
+                .Returns(Fraction.FromDecimal(0.01m));
+            yield return new TestCaseData(Fraction.FromDecimal(1.0000m, false), -2)
+                .Returns(Fraction.FromDecimal(1m));
+            yield return new TestCaseData(Fraction.FromDecimal(0.1000m, false), -2)
+                .Returns(Fraction.FromDecimal(100m));
             // zero
             yield return new TestCaseData(Fraction.Zero, 0)
                 .Returns(Fraction.One);

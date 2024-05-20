@@ -99,7 +99,6 @@ public readonly partial struct Fraction
     /// </summary>
     /// <param name="value">A floating point value.</param>
     /// <returns>A fraction corresponding to the binary floating-point representation of the value</returns>
-    /// <exception cref="InvalidNumberException">If <paramref name="value" /> is NaN (not a number) or infinite.</exception>
     /// <remarks>
     ///     The <see cref="double"/> data type in C# uses a binary floating-point representation, which can't accurately represent all
     ///     decimal fractions. When you convert a <see cref="double"/> to a <see cref="Fraction"/> using this method, the resulting fraction is an

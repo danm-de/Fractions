@@ -49,7 +49,6 @@ public class When_a_fraction_is_created_from_a_negative_infinite_double : Spec {
     }
 
     [Test]
-    // German: Soll dies eine InvalidNumberException auslösen
     public void The_result_should_be_NegativeInfinity() {
         _result.Should().Be(Fraction.NegativeInfinity);
     }

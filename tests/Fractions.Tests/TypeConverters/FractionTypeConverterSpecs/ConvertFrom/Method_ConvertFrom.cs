@@ -91,15 +91,15 @@ public class When_converting_a_type_to_Fraction : Spec {
             yield return new TestCaseData("-1/-2", CultureInfo.CurrentCulture)
                 .Returns(new Fraction(1, 2));
 
-            yield return new TestCaseData("0,5", new CultureInfo("de-DE"))
+            yield return new TestCaseData("0,5", CultureInfo.GetCultureInfo("de-DE"))
                 .Returns(new Fraction(1, 2));
-            yield return new TestCaseData("-0,5", new CultureInfo("de-DE"))
+            yield return new TestCaseData("-0,5", CultureInfo.GetCultureInfo("de-DE"))
                 .Returns(new Fraction(-1, 2));
-            yield return new TestCaseData("0.5", new CultureInfo("en-US"))
+            yield return new TestCaseData("0.5", CultureInfo.GetCultureInfo("en-US"))
                 .Returns(new Fraction(1, 2));
-            yield return new TestCaseData("-0.5", new CultureInfo("en-US"))
+            yield return new TestCaseData("-0.5", CultureInfo.GetCultureInfo("en-US"))
                 .Returns(new Fraction(-1, 2));
-            yield return new TestCaseData("-0.125", new CultureInfo("en-US"))
+            yield return new TestCaseData("-0.125", CultureInfo.GetCultureInfo("en-US"))
                 .Returns(new Fraction(-1, 8));
 
             yield return new TestCaseData(null, CultureInfo.CurrentCulture)

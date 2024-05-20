@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
@@ -51,14 +50,17 @@ public class When_an_improper_fraction_is_reciprocated : Spec {
 }
 
 [TestFixture]
-public class When_the_equivalent_of_minus_1_10_is_checked : Spec {
-    private bool _result;
+public class When_the_fraction_minus_1_over_10_is_reciprocated : Spec {
+    private Fraction _result;
 
-    public override void Act() =>
-        _result = new Fraction(-1, 10).Reciprocal().IsEquivalentTo(new Fraction(-10));
+    public override void Act() {
+        _result = new Fraction(-1, 10).Reciprocal();
+    }
 
     [Test]
-    public void Should_the_result_be_minus_10() => _result.Should().BeTrue();
+    public void Should_the_result_be_minus_10() {
+        _result.Should().Be(new Fraction(-10));
+    }
 }
 
 [TestFixture]

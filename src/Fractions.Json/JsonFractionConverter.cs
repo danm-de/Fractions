@@ -36,7 +36,9 @@ public class JsonFractionConverter : JsonConverter {
     /// <param name="formatProvider">The provider to use to format the value. -or- A null reference (Nothing in Visual Basic) to obtain the numeric format information from the current locale setting of the operating system.</param>
     /// <param name="normalizeOnSerialization">The fraction will be normalized during serialization.</param>
     /// <param name="normalizeOnDeserialization">The fraction will be normalized during deserialization.</param>
-    public JsonFractionConverter(IFormatProvider formatProvider, bool normalizeOnSerialization,
+    public JsonFractionConverter(
+        IFormatProvider formatProvider,
+        bool normalizeOnSerialization,
         bool normalizeOnDeserialization) {
         _formatProvider = formatProvider;
         _normalizeOnSerialization = normalizeOnSerialization;

@@ -26,13 +26,16 @@ public class If_an_object_containing_a_fraction_property_is_being_serialized : S
         public Fraction Value { get; set; }
     }
 
-    private readonly StringBuilder _sb = new StringBuilder();
+    private readonly StringBuilder _sb = new();
     private JsonSerializer _serializer;
     private Test _testObject;
 
     [Culture("de-DE")]
     public override void Arrange() {
-        var converter = new JsonFractionConverter(null, true, true);
+        var converter = new JsonFractionConverter(
+            formatProvider: null,
+            normalizeOnSerialization: true,
+            normalizeOnDeserialization: true);
         _serializer = new JsonSerializer();
         _serializer.Converters.Add(converter);
 
@@ -68,7 +71,10 @@ public class If_the_user_serializes_a_Fraction_without_normalization : Spec
 
     [Culture("de-DE")]
     public override void Arrange() {
-        var converter = new JsonFractionConverter(null, false, true);
+        var converter = new JsonFractionConverter(
+            formatProvider: null,
+            normalizeOnSerialization: false,
+            normalizeOnDeserialization: true);
         _serializer = new JsonSerializer();
         _serializer.Converters.Add(converter);
     }
@@ -100,7 +106,10 @@ public class If_the_user_serializes_a_Fraction_with_normalization : Spec
 
     [Culture("de-DE")]
     public override void Arrange() {
-        var converter = new JsonFractionConverter(null, true, false);
+        var converter = new JsonFractionConverter(
+            formatProvider: null,
+            normalizeOnSerialization: true,
+            normalizeOnDeserialization: false);
         _serializer = new JsonSerializer();
         _serializer.Converters.Add(converter);
     }
@@ -132,21 +141,24 @@ public class If_the_user_deserializes_a_json_text_without_normalization : Spec
 
     [Culture("de-DE")]
     public override void Arrange() {
-        var converter = new JsonFractionConverter(null, true, false);
+        var converter = new JsonFractionConverter(
+            formatProvider: null,
+            normalizeOnSerialization: true,
+            normalizeOnDeserialization: false);
         _serializer = new JsonSerializer();
         _serializer.Converters.Add(converter);
     }
 
     private static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData("3,5").Returns(new Fraction(7, 2, true));
-            yield return new TestCaseData("-3,5").Returns(new Fraction(-7, 2, true));
-            yield return new TestCaseData("7/2").Returns(new Fraction(7, 2, true));
-            yield return new TestCaseData("+3,5").Returns(new Fraction(7, 2, true));
-            yield return new TestCaseData("+7/2").Returns(new Fraction(7, 2, true));
-            yield return new TestCaseData("7/+2").Returns(new Fraction(7, 2, true));
+            yield return new TestCaseData("3,5").Returns(new Fraction(35, 10, false));
+            yield return new TestCaseData("-3,5").Returns(new Fraction(-35, 10, false));
+            yield return new TestCaseData("7/2").Returns(new Fraction(7, 2, false));
+            yield return new TestCaseData("+3,5").Returns(new Fraction(35, 10, false));
+            yield return new TestCaseData("+7/2").Returns(new Fraction(7, 2, false));
+            yield return new TestCaseData("7/+2").Returns(new Fraction(7, 2, false));
             yield return new TestCaseData("7/-2").Returns(new Fraction(7, -2, false));
-            yield return new TestCaseData("-7/2").Returns(new Fraction(-7, 2, true));
+            yield return new TestCaseData("-7/2").Returns(new Fraction(-7, 2, false));
             yield return new TestCaseData("-7/-2").Returns(new Fraction(-7, -2, false));
         }
     }
@@ -169,7 +181,10 @@ public class If_the_user_deserializes_a_json_text_with_normalization : Spec
 
     [Culture("de-DE")]
     public override void Arrange() {
-        var converter = new JsonFractionConverter(null, true, true);
+        var converter = new JsonFractionConverter(
+            formatProvider: null,
+            normalizeOnSerialization: true,
+            normalizeOnDeserialization: true);
         _serializer = new JsonSerializer();
         _serializer.Converters.Add(converter);
     }
@@ -182,9 +197,9 @@ public class If_the_user_deserializes_a_json_text_with_normalization : Spec
             yield return new TestCaseData("+3,5").Returns(new Fraction(7, 2, true));
             yield return new TestCaseData("+7/2").Returns(new Fraction(7, 2, true));
             yield return new TestCaseData("7/+2").Returns(new Fraction(7, 2, true));
-            yield return new TestCaseData("7/-2").Returns(new Fraction(-7, 2, false));
+            yield return new TestCaseData("7/-2").Returns(new Fraction(-7, 2, true));
             yield return new TestCaseData("-7/2").Returns(new Fraction(-7, 2, true));
-            yield return new TestCaseData("-7/-2").Returns(new Fraction(7, 2, false));
+            yield return new TestCaseData("-7/-2").Returns(new Fraction(7, 2, true));
         }
     }
 

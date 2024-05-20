@@ -15,7 +15,9 @@ namespace Fractions;
 [StructLayout(LayoutKind.Sequential)]
 [DebuggerTypeProxy(typeof(FractionDebugView))]
 public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, IComparable<Fraction>, IFormattable {
+#pragma warning disable IDE1006
     private static readonly BigInteger TEN = new(10);
+#pragma warning restore IDE1006
 
     private readonly BigInteger? _denominator; 
     private readonly bool _normalizationNotApplied;
