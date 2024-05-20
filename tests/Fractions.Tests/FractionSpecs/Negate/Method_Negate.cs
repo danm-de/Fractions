@@ -65,7 +65,6 @@ public class When_negating_a_fraction_with_0_as_numerator_and_1_as_denominator :
 }
 
 [TestFixture]
-// German: Wenn ein Bruch mit 0 als Zähler und -1 als Nenner negiert wird
 public class When_negating_a_fraction_with_0_as_numerator_and_minus_1_as_denominator : Spec {
     private Fraction _result;
 
@@ -74,29 +73,25 @@ public class When_negating_a_fraction_with_0_as_numerator_and_minus_1_as_denomin
     }
 
     [Test]
-    // German: Der resultierende Bruch sollte 0 als Zähler haben
     public void The_resulting_fraction_should_have_0_as_numerator() {
         _result.Numerator.Should().Be(0);
     }
 
     [Test]
-    // German: Der resultierende Bruch sollte 1 als Nenner haben
     public void The_resulting_fraction_should_have_minus_1_as_denominator() {
         _result.Denominator.Should().Be(-1);
     }
 
     [Test]
-    // German: Der Bruch sollte 0 sein
     public void The_fraction_should_be_equivalent_to_zero() {
         _result.IsZero.Should().BeTrue();
-        _result.Should().NotBe(Fraction.Zero);
+        ((object)_result).Should().NotBe(Fraction.Zero, StrictTestComparer.Instance);
         _result.State.Should().Be(FractionState.Unknown);
         _result.Equals(Fraction.Zero).Should().BeTrue();
     }
 }
 
 [TestFixture]
-// German: Wenn ein Bruch mit 0 als Zähler und 4 als Nenner negiert wird
 public class When_negating_a_fraction_with_0_as_numerator_and_4_as_denominator : Spec {
     private Fraction _result;
 
@@ -105,30 +100,26 @@ public class When_negating_a_fraction_with_0_as_numerator_and_4_as_denominator :
     }
 
     [Test]
-    // German: Der resultierende Bruch sollte 0 als Zähler haben
     public void The_resulting_fraction_should_have_0_as_numerator() {
         _result.Numerator.Should().Be(0);
     }
 
     [Test]
-    // German: Der resultierende Bruch sollte 4 als Nenner haben
     public void The_resulting_fraction_should_have_4_as_denominator() {
         _result.Denominator
             .Should().Be(4);
     }
 
     [Test]
-    // German: Der Bruch sollte 0 sein
     public void The_fraction_should_be_equivalent_to_zero() {
         _result.IsZero.Should().BeTrue();
-        _result.Should().NotBe(Fraction.Zero);
+        ((object)_result).Should().NotBe(Fraction.Zero, StrictTestComparer.Instance);
         _result.State.Should().Be(FractionState.Unknown);
         _result.Equals(Fraction.Zero).Should().BeTrue();
     }
 }
 
 [TestFixture]
-// German: Wenn ein Bruch mit 0 als Zähler und -4 als Nenner negiert wird
 public class When_negating_a_fraction_with_0_as_numerator_and_minus_4_as_denominator : Spec {
     private Fraction _result;
 
@@ -137,23 +128,20 @@ public class When_negating_a_fraction_with_0_as_numerator_and_minus_4_as_denomin
     }
 
     [Test]
-    // German: Der resultierende Bruch sollte 0 als Zähler haben
     public void The_resulting_fraction_should_have_0_as_numerator() {
         _result.Numerator
             .Should().Be(0);
     }
 
     [Test]
-    // German: Der resultierende Bruch sollte 4 als Nenner haben
     public void The_resulting_fraction_should_have_minus_4_as_denominator() {
         _result.Denominator.Should().Be(-4);
     }
 
     [Test]
-    // German: Der Bruch sollte 0 sein
     public void The_fraction_should_be_0() {
         _result.IsZero.Should().BeTrue();
-        _result.Should().NotBe(Fraction.Zero);
+        ((object)_result).Should().NotBe(Fraction.Zero, StrictTestComparer.Instance);
         _result.State.Should().Be(FractionState.Unknown);
         _result.Equals(Fraction.Zero).Should().BeTrue();
     }
@@ -238,7 +226,7 @@ public class When_negating_a_fraction_with_4_as_numerator_and_0_as_denominator :
     [Test]
     public void The_fraction_should_be_0() {
         _result.IsNegativeInfinity.Should().BeTrue();
-        _result.Should().NotBe(Fraction.NegativeInfinity);
+        ((object)_result).Should().NotBe(Fraction.NegativeInfinity, StrictTestComparer.Instance);
         _result.State.Should().Be(FractionState.Unknown);
         _result.Equals(Fraction.NegativeInfinity).Should().BeTrue();
     }
@@ -268,7 +256,7 @@ public class When_negating_a_fraction_with_minus_4_as_numerator_and_0_as_denomin
     [Test]
     public void The_fraction_should_be_0() {
         _result.IsPositiveInfinity.Should().BeTrue();
-        _result.Should().NotBe(Fraction.PositiveInfinity);
+        ((object)_result).Should().NotBe(Fraction.PositiveInfinity, StrictTestComparer.Instance);
         _result.State.Should().Be(FractionState.Unknown);
         _result.Equals(Fraction.PositiveInfinity).Should().BeTrue();
     }
@@ -332,9 +320,12 @@ public class Negating_a_fraction_using_the_minus_operator : Spec {
     ];
 
     public static IEnumerable<TestCaseData> TestCases =>
-        FractionsToTest.Select(x => new TestCaseData(x).Returns(x.Negate()));
+        FractionsToTest.Select(x => new TestCaseData(x, x.Negate()));
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction Is_the_same_as_calling_the_negate_method(Fraction fraction) => -fraction;
+    public void Is_the_same_as_calling_the_negate_method(Fraction fraction, Fraction expected) {
+        var result = -fraction;
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
 }

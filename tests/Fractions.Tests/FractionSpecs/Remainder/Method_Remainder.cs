@@ -308,29 +308,22 @@ public class When_calculating_60_mod_100 : Spec {
 public class When_calculating_the_remainder_of_Zero : Spec {
     public static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData(Fraction.Zero, Fraction.Zero)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(default(Fraction), Fraction.One)
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(Fraction.Zero, new Fraction(4))
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(new Fraction(BigInteger.Zero, 10, false), Fraction.One)
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(new Fraction(BigInteger.Zero, -10, false), Fraction.Two)
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(Fraction.Zero, Fraction.NaN)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.Zero, Fraction.PositiveInfinity)
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(Fraction.Zero, Fraction.NegativeInfinity)
-                .Returns(Fraction.Zero);
+            yield return new TestCaseData(Fraction.Zero, Fraction.Zero, Fraction.NaN);
+            yield return new TestCaseData(default(Fraction), Fraction.One, Fraction.Zero);
+            yield return new TestCaseData(Fraction.Zero, new Fraction(4), Fraction.Zero);
+            yield return new TestCaseData(new Fraction(BigInteger.Zero, 10, false), Fraction.One, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(BigInteger.Zero, -10, false), Fraction.Two, Fraction.Zero);
+            yield return new TestCaseData(Fraction.Zero, Fraction.NaN, Fraction.NaN);
+            yield return new TestCaseData(Fraction.Zero, Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.Zero, Fraction.NegativeInfinity, Fraction.Zero);
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction The_result_should_be_Zero_or_NaN(Fraction fraction, Fraction divisor) {
-        return fraction.Remainder(divisor);
+    public void The_result_should_be_Zero_or_NaN(Fraction fraction, Fraction divisor, Fraction expected) {
+        var result = fraction.Remainder(divisor);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 }
 
@@ -338,20 +331,21 @@ public class When_calculating_the_remainder_of_Zero : Spec {
 public class When_calculating_the_remainder_of_NaN : Spec {
     public static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData(Fraction.NaN, Fraction.Zero).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NaN, new Fraction(4)).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NaN, new Fraction(-4)).Returns(Fraction.NaN);
-            yield return new TestCaseData(new Fraction(10, BigInteger.Zero, false), Fraction.One).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NaN, Fraction.NaN).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NaN, Fraction.PositiveInfinity).Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NaN, Fraction.NegativeInfinity).Returns(Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, Fraction.Zero, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, new Fraction(4), Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, new Fraction(-4), Fraction.NaN);
+            yield return new TestCaseData(new Fraction(10, BigInteger.Zero, false), Fraction.One, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, Fraction.NaN, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, Fraction.PositiveInfinity, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NaN, Fraction.NegativeInfinity, Fraction.NaN);
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction The_result_should_be_NaN(Fraction fraction, Fraction divisor) {
-        return fraction.Remainder(divisor);
+    public void The_result_should_be_NaN(Fraction fraction, Fraction divisor, Fraction expected) {
+        var result = fraction.Remainder(divisor);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 }
 
@@ -360,43 +354,30 @@ public class When_calculating_the_remainder_of_Infinity : Spec {
     public static IEnumerable<TestCaseData> TestCases {
         get {
             // positive infinity
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.Zero)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(4))
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-4))
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(new Fraction(10, BigInteger.Zero, false), Fraction.One)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NaN)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity)
-                .Returns(Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.Zero, Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(4), Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-4), Fraction.NaN);
+            yield return new TestCaseData(new Fraction(10, BigInteger.Zero, false), Fraction.One, Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NaN, Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity, Fraction.NaN);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NaN);
 
             // negative infinity
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.Zero)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(4))
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-4))
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(new Fraction(-10, BigInteger.Zero, false), Fraction.Two)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NaN)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity)
-                .Returns(Fraction.NaN);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity)
-                .Returns(Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.Zero, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(4), Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-4), Fraction.NaN);
+            yield return new TestCaseData(new Fraction(-10, BigInteger.Zero, false), Fraction.Two, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NaN, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity, Fraction.NaN);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity, Fraction.NaN);
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction The_result_should_be_NaN(Fraction fraction, Fraction divisor) {
-        return fraction.Remainder(divisor);
+    public void The_result_should_be_NaN(Fraction fraction, Fraction divisor, Fraction expected) {
+        var result = fraction.Remainder(divisor);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 }
 
@@ -405,30 +386,23 @@ public class When_calculating_the_remainder_of_a_finite_number_with_Infinity : S
     public static IEnumerable<TestCaseData> TestCases {
         get {
             // positive infinity
-            yield return new TestCaseData(Fraction.Zero, Fraction.PositiveInfinity)
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(new Fraction(4), Fraction.PositiveInfinity)
-                .Returns(new Fraction(4));
-            yield return new TestCaseData(new Fraction(-4), Fraction.PositiveInfinity)
-                .Returns(new Fraction(-4));
-            yield return new TestCaseData(Fraction.Two, new Fraction(10, BigInteger.Zero, false))
-                .Returns(Fraction.Two);
+            yield return new TestCaseData(Fraction.Zero, Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(4), Fraction.PositiveInfinity, new Fraction(4));
+            yield return new TestCaseData(new Fraction(-4), Fraction.PositiveInfinity, new Fraction(-4));
+            yield return new TestCaseData(Fraction.Two, new Fraction(10, BigInteger.Zero, false), Fraction.Two);
 
             // negative infinity
-            yield return new TestCaseData(Fraction.Zero, Fraction.NegativeInfinity)
-                .Returns(Fraction.Zero);
-            yield return new TestCaseData(new Fraction(4), Fraction.NegativeInfinity)
-                .Returns(new Fraction(4));
-            yield return new TestCaseData(new Fraction(-4), Fraction.NegativeInfinity)
-                .Returns(new Fraction(-4));
-            yield return new TestCaseData(Fraction.Two, new Fraction(-10, BigInteger.Zero, false))
-                .Returns(Fraction.Two);
+            yield return new TestCaseData(Fraction.Zero, Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(4), Fraction.NegativeInfinity, new Fraction(4));
+            yield return new TestCaseData(new Fraction(-4), Fraction.NegativeInfinity, new Fraction(-4));
+            yield return new TestCaseData(Fraction.Two, new Fraction(-10, BigInteger.Zero, false), Fraction.Two);
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction The_result_should_be_the_same_number(Fraction fraction, Fraction divisor) {
-        return fraction.Remainder(divisor);
+    public void The_result_should_be_the_same_number(Fraction fraction, Fraction divisor, Fraction expected) {
+        var result = fraction.Remainder(divisor);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 }

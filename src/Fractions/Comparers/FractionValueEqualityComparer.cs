@@ -7,10 +7,6 @@ public class FractionValueEqualityComparer : FractionComparer
 {
     /// <inheritdoc />
     public override bool Equals(Fraction x, Fraction y) {
-        if (x.IsNaN || y.IsNaN) {
-            return false; // special case (NaN values are not considered equal)
-        }
-
         // normalize (if needed)
         var a = x.Reduce(); 
         var b = y.Reduce();

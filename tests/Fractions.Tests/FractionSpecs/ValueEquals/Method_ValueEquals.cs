@@ -28,12 +28,12 @@ public class When_comparing_two_fractions {
             yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity).Returns(true);
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(true);
             yield return new TestCaseData(new Fraction(0, 1, normalize: false), Fraction.Zero).Returns(true);
+            // special -> not normalized fraction
+            yield return new TestCaseData(new Fraction(0, 2, normalize: false), Fraction.Zero).Returns(true);
 
             // not equal
             yield return new TestCaseData(Fraction.One, Fraction.Zero).Returns(false);
             yield return new TestCaseData(Fraction.One, Fraction.NaN).Returns(false);
-            // special -> not normalized fraction
-            yield return new TestCaseData(new Fraction(0, 2, normalize: false), Fraction.Zero).Returns(false);
         }
     }
 
@@ -207,20 +207,20 @@ public class When_comparing_PositiveInfinity_with_a_4_over_0 {
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_equality_operator_should_return_false() {
+    public void Using_the_equality_operator_should_return_true() {
         (Fraction.PositiveInfinity == NonReducedInfinity).Should()
-            .BeFalse("Because this is the result of a/b == (a*c)/(b*c)");
+            .BeTrue("Because this is the result of a/b == (a*c)/(b*c)");
         (NonReducedInfinity == Fraction.PositiveInfinity).Should()
-            .BeFalse("Because this is the result of (a*c)/(b*c) == a/b");
+            .BeTrue("Because this is the result of (a*c)/(b*c) == a/b");
     }
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_non_equality_operator_should_return_true() {
+    public void Using_the_non_equality_operator_should_return_false() {
         (Fraction.PositiveInfinity != NonReducedInfinity).Should()
-            .BeTrue("Because this is the result of a/b != (a*c)/(b*c)");
+            .BeFalse("Because this is the result of a/b != (a*c)/(b*c)");
         (NonReducedInfinity != Fraction.PositiveInfinity).Should()
-            .BeTrue("Because this is the result of (a*c)/(b*c) != a/b");
+            .BeFalse("Because this is the result of (a*c)/(b*c) != a/b");
     }
 
     [Test]
@@ -297,20 +297,20 @@ public class When_comparing_NegativeInfinity_with_a_minus_4_over_0 {
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_equality_operator_should_return_false() {
+    public void Using_the_equality_operator_should_return_true() {
         (Fraction.NegativeInfinity == NonReducedInfinity).Should()
-            .BeFalse("Because this is the result of a/b == (a*c)/(b*c)");
+            .BeTrue("Because this is the result of a/b == (a*c)/(b*c)");
         (NonReducedInfinity == Fraction.NegativeInfinity).Should()
-            .BeFalse("Because this is the result of (a*c)/(b*c) == a/b");
+            .BeTrue("Because this is the result of (a*c)/(b*c) == a/b");
     }
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_non_equality_operator_should_return_true() {
+    public void Using_the_non_equality_operator_should_return_false() {
         (Fraction.NegativeInfinity != NonReducedInfinity).Should()
-            .BeTrue("Because this is the result of a/b != (a*c)/(b*c)");
+            .BeFalse("Because this is the result of a/b != (a*c)/(b*c)");
         (NonReducedInfinity != Fraction.NegativeInfinity).Should()
-            .BeTrue("Because this is the result of (a*c)/(b*c) != a/b");
+            .BeFalse("Because this is the result of (a*c)/(b*c) != a/b");
     }
 
     [Test]
