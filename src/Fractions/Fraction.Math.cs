@@ -343,12 +343,6 @@ public readonly partial struct Fraction {
         var thisNumerator = Numerator;
         var thisDenominator = Denominator;
 
-        if (_normalizationNotApplied || divisor._normalizationNotApplied) {
-            var numerator = thisNumerator.IsZero ? thisNumerator : MultiplyTerms(thisNumerator, otherDenominator);
-            var denominator = otherNumerator.IsZero ? otherNumerator : MultiplyTerms(thisDenominator, otherNumerator);
-            return new Fraction(true, numerator, denominator);
-        }
-
         if (thisDenominator.IsZero) {
             // `this` is NaN or Infinity
             return thisNumerator.Sign switch {
@@ -358,6 +352,12 @@ public readonly partial struct Fraction {
                 // NaN divided by a number
                 _ => NaN
             };
+        }
+
+        if (_normalizationNotApplied || divisor._normalizationNotApplied) {
+            var numerator = thisNumerator.IsZero ? thisNumerator : MultiplyTerms(thisNumerator, otherDenominator);
+            var denominator = otherNumerator.IsZero ? otherNumerator : MultiplyTerms(thisDenominator, otherNumerator);
+            return new Fraction(true, numerator, denominator);
         }
 
         switch (otherNumerator.Sign) {
