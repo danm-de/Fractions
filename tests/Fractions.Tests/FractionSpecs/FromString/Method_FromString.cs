@@ -1262,7 +1262,7 @@ public class When_creating_a_fraction_from_the_string_0_over_0 : Spec {
     public void The_result_should_be_NaN(
         [Values("0/0", "-0/0", " -0/0", "-0/ 0", "0 /-0", "0 / -0")]
         string value) {
-        Fraction.FromString(value).Should().Be(Fraction.NaN);
+        Fraction.FromString(value).IsNaN.Should().BeTrue();
     }
 }
 
@@ -1298,7 +1298,7 @@ public class When_creating_a_fraction_from_the_string_0_over_10_without_normaliz
         result.IsZero.Should().BeTrue(); // this is still considered "a zero"
         result.Should().NotBe(Fraction.Zero); // however it isn't strictly equal to the Zero
         result.Should().Be(new Fraction(0, 10, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
+        result.Equals(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
     }
 }
 
@@ -1320,7 +1320,7 @@ public class When_creating_a_fraction_from_the_string_0_over_minus_10_without_no
         result.IsZero.Should().BeTrue(); // this is still considered "a zero"
         result.Should().NotBe(Fraction.Zero); // however it isn't strictly equal to the Zero
         result.Should().Be(new Fraction(0, -10, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
+        result.Equals(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
     }
 }
 
@@ -1351,7 +1351,7 @@ public class When_creating_a_fraction_from_the_string_10_over_0_without_normaliz
         result.IsPositiveInfinity.Should().BeTrue(); // this is still considered "a positive infinity"
         result.Should().NotBe(Fraction.PositiveInfinity); // however it isn't strictly equal to the PositiveInfinity
         result.Should().Be(new Fraction(10, 0, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.PositiveInfinity).Should().BeTrue(); // which can be reduced to PositiveInfinity
+        result.Equals(Fraction.PositiveInfinity).Should().BeTrue(); // which can be reduced to PositiveInfinity
     }
 }
 
@@ -1384,6 +1384,6 @@ public class When_creating_a_fraction_from_the_string_minus_10_over_0_without_no
         result.IsNegativeInfinity.Should().BeTrue(); // this is still considered "a negative infinity"
         result.Should().NotBe(Fraction.NegativeInfinity); // however it isn't strictly equal to the NegativeInfinity
         result.Should().Be(new Fraction(-10, 0, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.NegativeInfinity).Should().BeTrue(); // which can be reduced to NegativeInfinity
+        result.Equals(Fraction.NegativeInfinity).Should().BeTrue(); // which can be reduced to NegativeInfinity
     }
 }

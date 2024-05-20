@@ -91,7 +91,7 @@ public class When_negating_a_fraction_with_0_as_numerator_and_minus_1_as_denomin
         _result.IsZero.Should().BeTrue();
         _result.Should().NotBe(Fraction.Zero);
         _result.State.Should().Be(FractionState.Unknown);
-        _result.IsEquivalentTo(Fraction.Zero).Should().BeTrue();
+        _result.Equals(Fraction.Zero).Should().BeTrue();
     }
 }
 
@@ -123,7 +123,7 @@ public class When_negating_a_fraction_with_0_as_numerator_and_4_as_denominator :
         _result.IsZero.Should().BeTrue();
         _result.Should().NotBe(Fraction.Zero);
         _result.State.Should().Be(FractionState.Unknown);
-        _result.IsEquivalentTo(Fraction.Zero).Should().BeTrue();
+        _result.Equals(Fraction.Zero).Should().BeTrue();
     }
 }
 
@@ -155,7 +155,7 @@ public class When_negating_a_fraction_with_0_as_numerator_and_minus_4_as_denomin
         _result.IsZero.Should().BeTrue();
         _result.Should().NotBe(Fraction.Zero);
         _result.State.Should().Be(FractionState.Unknown);
-        _result.IsEquivalentTo(Fraction.Zero).Should().BeTrue();
+        _result.Equals(Fraction.Zero).Should().BeTrue();
     }
 }
 
@@ -240,7 +240,7 @@ public class When_negating_a_fraction_with_4_as_numerator_and_0_as_denominator :
         _result.IsNegativeInfinity.Should().BeTrue();
         _result.Should().NotBe(Fraction.NegativeInfinity);
         _result.State.Should().Be(FractionState.Unknown);
-        _result.IsEquivalentTo(Fraction.NegativeInfinity).Should().BeTrue();
+        _result.Equals(Fraction.NegativeInfinity).Should().BeTrue();
     }
 }
 
@@ -270,7 +270,7 @@ public class When_negating_a_fraction_with_minus_4_as_numerator_and_0_as_denomin
         _result.IsPositiveInfinity.Should().BeTrue();
         _result.Should().NotBe(Fraction.PositiveInfinity);
         _result.State.Should().Be(FractionState.Unknown);
-        _result.IsEquivalentTo(Fraction.PositiveInfinity).Should().BeTrue();
+        _result.Equals(Fraction.PositiveInfinity).Should().BeTrue();
     }
 }
 

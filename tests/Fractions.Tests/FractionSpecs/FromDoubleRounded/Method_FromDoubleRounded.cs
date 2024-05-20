@@ -18,7 +18,7 @@ public class When_a_fraction_is_created_based_on_a_NaN_double : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 

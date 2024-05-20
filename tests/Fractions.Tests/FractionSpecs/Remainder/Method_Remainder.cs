@@ -208,7 +208,7 @@ public class When_calculating_6_mod_0 : Spec {
 
     [Test]
     public void Should_return_NaN_as_the_result() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 

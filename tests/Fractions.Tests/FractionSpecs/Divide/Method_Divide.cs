@@ -17,7 +17,7 @@ public class When_dividing_0_by_0 : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 
@@ -355,7 +355,7 @@ public class When_dividing_1_by_NaN : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 
@@ -369,7 +369,7 @@ public class When_dividing_minus_1_by_NaN : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 
@@ -383,7 +383,7 @@ public class When_dividing_NaN_by_1 : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 
@@ -397,7 +397,7 @@ public class When_dividing_NaN_by_minus_1 : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 
@@ -411,7 +411,7 @@ public class When_dividing_NaN_by_NaN : Spec {
 
     [Test]
     public void The_result_should_be_NaN() {
-        _result.Should().Be(Fraction.NaN);
+        _result.IsNaN.Should().BeTrue();
     }
 }
 

@@ -1,4 +1,6 @@
-﻿namespace Fractions;
+﻿using System;
+
+namespace Fractions;
 
 public readonly partial struct Fraction {
     /// <summary>
@@ -8,11 +10,10 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="other">The fraction to compare with.</param>
     /// <returns><c>true</c> if both values are equivalent. (e.g. 2/4 is equivalent to 1/2. But 2/4 is not equivalent to -1/2)</returns>
+    [Obsolete("As of version 8.0.0, the equality of values is checked when Fraction.Equals(..) is called. Please use the .Equals(..) method.",
+        error: false)]
     public bool IsEquivalentTo(Fraction other) {
-        var a = Reduce();
-        var b = other.Reduce();
-
-        return a.Equals(b);
+        return Equals(other);
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ public readonly partial struct Fraction {
     ///     <see cref="NaN" />.
     /// </returns>
     public bool Equals(Fraction other) {
-        return other.Denominator.Equals(Denominator) && other.Numerator.Equals(Numerator);
+        return FractionComparer.ValueEquality.Equals(this, other);
     }
 
     /// <summary>
@@ -58,8 +59,6 @@ public readonly partial struct Fraction {
     /// </returns>
     /// <filterpriority>2</filterpriority>
     public override int GetHashCode() {
-        unchecked {
-            return (Denominator.GetHashCode() * 397) ^ Numerator.GetHashCode();
-        }
+        return FractionComparer.ValueEquality.GetHashCode(this);
     }
 }

@@ -28,12 +28,6 @@ public class ComparisonBenchmarks {
 
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
-    public bool IsEquivalentTo(Fraction a, Fraction b) {
-        return a.IsEquivalentTo(b);
-    }
-
-    [Benchmark]
-    [ArgumentsSource(nameof(Operands))]
     public bool GetHashCode(Fraction a, Fraction b) {
         return a.GetHashCode() == b.GetHashCode();
     }

@@ -30,6 +30,6 @@ public class When_the_Abs_function_is_called : Spec {
 
     [Test]
     public void The_absolute_value_of_NaN_is_NaN() {
-        Fraction.NaN.Abs().Should().Be(Fraction.NaN);
+        Fraction.NaN.Abs().IsNaN.Should().BeTrue();
     }
 }
