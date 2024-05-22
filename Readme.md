@@ -42,7 +42,7 @@ There a three types of constructors available:
 - `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator + `bool` to indicate if the resulting fraction shall be normalized (reduced).
 
 > [!IMPORTANT]
-> When creating improper fractions (by specifying the parameter `reduce: false`), please be sure to refer to the [Working with non-normalized fractions](#working-with-non-normalized-fractions) and the [Equality operators](#equality-operators) section for more information about the (side) effects.
+> When creating improper fractions (by specifying the parameter `reduce: false`), please be sure to refer to the [Working with non-normalized fractions](#working-with-non-normalized-fractions) section for more information about the (side) effects.
 
 ### Static creation methods
 
@@ -317,7 +317,11 @@ $\frac{4}{4}/\frac{2}{1}=\frac{4}{8}$
 - `IComparable`,
 - `IComparable<Fraction>`
 
-Please note that `.Equals(Fraction)` will compare the **exact** values of numerator and denominator. That said:
+Please note that the default behavior of the `.Equals(Fraction)` method has changed with version 8.0.0. `Equals` now compares the calculated value from the $numerator/denominator$ ($Equals(\frac{1}{2}, \frac{2}{4}) = true$).
+
+If, on the other hand, you want to compare the numerator and denominator exactly (i.e. $Equals(\frac{1}{2}, \frac{2}{4}) = false$) then you have to use the new `FractionComparer.StrictEquality` comparer.
+
+That said:
 
 ```csharp
 var a = new Fraction(1, 2, normalize: true);
@@ -330,12 +334,14 @@ var result1 = a == a;
 // result2 is true
 var result2 = a == b;
 
-// result3 is false!
+// result3 is true
 var result3 = a == c;
-```
 
-> [!IMPORTANT]
-> The `Equals` method does not correspond to the mathematical equality test! You have to use `.IsEquivalentTo(Fraction)` if want to test non-normalized fractions for value-equality.
+// Special case:
+// same behavior as with double, see https://learn.microsoft.com/en-us/dotnet/api/system.double.op_equality#remarks
+// result4 is false 
+var result4 = Fraction.NaN == Fraction.NaN;
+```
 
 ## Under the hood
 
