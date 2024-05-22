@@ -79,38 +79,38 @@ public class When_the_hash_codes_of_two_fractions_are_checked {
 
     private static IEnumerable<TestCaseData> TestCases {
         get {
-            yield return new TestCaseData(Fraction.Zero, Fraction.Zero).Returns(0);
-            yield return new TestCaseData(Fraction.One, Fraction.One).Returns(0);
-            yield return new TestCaseData(Fraction.Two, Fraction.Two).Returns(0);
-            yield return new TestCaseData(Fraction.MinusOne, Fraction.MinusOne).Returns(0);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity).Returns(0);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(0);
-            yield return new TestCaseData(new Fraction(1, 2), new Fraction(1, 2)).Returns(0);
+            yield return new TestCaseData(Fraction.Zero, Fraction.Zero).Returns(true);
+            yield return new TestCaseData(Fraction.One, Fraction.One).Returns(true);
+            yield return new TestCaseData(Fraction.Two, Fraction.Two).Returns(true);
+            yield return new TestCaseData(Fraction.MinusOne, Fraction.MinusOne).Returns(true);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity).Returns(true);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(true);
+            yield return new TestCaseData(new Fraction(1, 2), new Fraction(1, 2)).Returns(true);
             yield return new TestCaseData(new Fraction(2, 4, normalize: false),
-                    new Fraction(2, 4, normalize: false)).Returns(0);
+                    new Fraction(2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(2, -4, normalize: false)).Returns(0);
+                    new Fraction(2, -4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(-2, 4, normalize: false)).Returns(0);
-            yield return new TestCaseData(new Fraction(1, 2), new Fraction(2, 4, normalize: false)).Returns(0);
-            yield return new TestCaseData(new Fraction(1, 2), new Fraction(-2, -4, normalize: false)).Returns(0);
-            yield return new TestCaseData(new Fraction(-1, 2), new Fraction(-2, 4, normalize: false)).Returns(0);
-            yield return new TestCaseData(Fraction.NaN, Fraction.NaN).Returns(0);
+                    new Fraction(-2, 4, normalize: false)).Returns(true);
+            yield return new TestCaseData(new Fraction(1, 2), new Fraction(2, 4, normalize: false)).Returns(true);
+            yield return new TestCaseData(new Fraction(1, 2), new Fraction(-2, -4, normalize: false)).Returns(true);
+            yield return new TestCaseData(new Fraction(-1, 2), new Fraction(-2, 4, normalize: false)).Returns(true);
+            yield return new TestCaseData(Fraction.NaN, Fraction.NaN).Returns(true);
 
-            yield return new TestCaseData(new Fraction(5), new Fraction(6)).Returns(-1);
-            yield return new TestCaseData(new Fraction(100), new Fraction(10)).Returns(1);
-            yield return new TestCaseData(new Fraction(int.MaxValue), new Fraction(int.MinValue + 1)).Returns(1);
+            yield return new TestCaseData(new Fraction(5), new Fraction(6)).Returns(false);
+            yield return new TestCaseData(new Fraction(100), new Fraction(10)).Returns(false);
+            yield return new TestCaseData(new Fraction(int.MaxValue), new Fraction(int.MinValue + 1)).Returns(false);
             yield return new TestCaseData(new Fraction(double.MaxValue),
-                    new Fraction(double.MinValue + double.Epsilon)).Returns(1);
+                    new Fraction(double.MinValue + double.Epsilon)).Returns(false);
 
-            yield return new TestCaseData(Fraction.Zero, Fraction.One).Returns(1);
-            yield return new TestCaseData(Fraction.One, Fraction.Zero).Returns(-1);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity).Returns(1);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity).Returns(-1);
+            yield return new TestCaseData(Fraction.Zero, Fraction.One).Returns(false);
+            yield return new TestCaseData(Fraction.One, Fraction.Zero).Returns(false);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity).Returns(false);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity).Returns(false);
         }
     }
 
     [Test, TestCaseSource(nameof(TestCases))]
-    public int Should_the_number_distribution_be_as_expected(Fraction a, Fraction b) =>
-        _sut.GetHashCode(a).CompareTo(_sut.GetHashCode(b));
+    public bool Should_the_number_distribution_be_as_expected(Fraction a, Fraction b) =>
+        _sut.GetHashCode(a) == _sut.GetHashCode(b);
 }
