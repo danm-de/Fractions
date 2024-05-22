@@ -13,6 +13,9 @@ public abstract class FractionComparer :
     /// <inheritdoc cref="FractionValueEqualityComparer" path="/summary"/>>
     public static FractionComparer ValueEquality { get; } = new FractionValueEqualityComparer();
 
+    /// <inheritdoc cref="FractionStrictEqualityComparer" path="/summary"/>>
+    public static FractionComparer StrictEquality { get; } = new FractionStrictEqualityComparer();
+
     /// <inheritdoc />
     public abstract bool Equals(Fraction x, Fraction y);
 
