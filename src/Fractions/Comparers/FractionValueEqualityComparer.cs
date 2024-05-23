@@ -34,7 +34,7 @@ public sealed class FractionValueEqualityComparer : FractionComparer
         }
 
         // both values are non-zero fractions with different denominators  
-        return (numerator1 * denominator2) == (numerator2 * denominator1);
+        return Fraction.MultiplyTerms(numerator1, denominator2) == Fraction.MultiplyTerms(numerator2, denominator1);
     }
 
     /// <inheritdoc />

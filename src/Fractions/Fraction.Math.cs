@@ -315,7 +315,7 @@ public readonly partial struct Fraction {
         }
     }
 
-    private static BigInteger MultiplyTerms(BigInteger thisNumerator, BigInteger otherNumerator) {
+    internal static BigInteger MultiplyTerms(BigInteger thisNumerator, BigInteger otherNumerator) {
         if (thisNumerator.IsOne) {
             return otherNumerator;
         }
