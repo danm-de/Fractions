@@ -82,6 +82,7 @@ public readonly partial struct Fraction
         }
 
         // both values are non-zero fractions with different denominators  
-        return MultiplyTerms(numerator1, denominator2).CompareTo(MultiplyTerms(numerator2, denominator1));
+        return MultiplyTerms(ref numerator1, ref denominator2)
+            .CompareTo(MultiplyTerms(ref numerator2, ref denominator1));
     }
 }

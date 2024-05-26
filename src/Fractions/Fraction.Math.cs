@@ -139,7 +139,7 @@ public readonly partial struct Fraction {
         if (otherDenominator.IsZero) {
             return summand; // (+/-) Infinity
         }
-        
+
         //  normalizing the signs
         if (_normalizationNotApplied && thisDenominator.Sign == -1) {
             thisDenominator = -thisDenominator;
@@ -153,7 +153,6 @@ public readonly partial struct Fraction {
 
         // both values are non-zero
         if (_normalizationNotApplied || summand._normalizationNotApplied) {
-
             if (thisDenominator == otherDenominator) {
                 return new Fraction(true, thisNumerator + otherNumerator, thisDenominator);
             }
@@ -218,7 +217,7 @@ public readonly partial struct Fraction {
             if (gcd == otherDenominator) {
                 return ReduceSigned(thisNumerator + thisDenominator / gcd * otherNumerator, thisDenominator);
             }
-            
+
             var thisMultiplier = thisDenominator / gcd;
             var otherMultiplier = otherDenominator / gcd;
 
@@ -287,24 +286,24 @@ public readonly partial struct Fraction {
             reduceTerms(ref otherNumerator, ref thisDenominator);
 
             return new Fraction(true,
-                MultiplyTerms(thisNumerator, otherNumerator),
-                MultiplyTerms(thisDenominator, otherDenominator));
+                MultiplyTerms(ref thisNumerator, ref otherNumerator),
+                MultiplyTerms(ref thisDenominator, ref otherDenominator));
         }
 
         if (thisNumerator.IsZero || otherNumerator.IsZero) {
             return Zero;
         }
-            
+
         return ReduceSigned(
-            MultiplyTerms(thisNumerator, otherNumerator),
-            MultiplyTerms(thisDenominator, otherDenominator));
+            MultiplyTerms(ref thisNumerator, ref otherNumerator),
+            MultiplyTerms(ref thisDenominator, ref otherDenominator));
 
         static void reduceTerms(ref BigInteger numerator, ref BigInteger denominator) {
             if (numerator.IsOne || denominator.IsOne ||
                 numerator == BigInteger.MinusOne || denominator == BigInteger.MinusOne) {
                 return;
             }
-        
+
             var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
             if (gcd.IsOne) {
                 return;
@@ -313,16 +312,6 @@ public readonly partial struct Fraction {
             numerator /= gcd;
             denominator /= gcd;
         }
-    }
-
-    internal static BigInteger MultiplyTerms(BigInteger thisNumerator, BigInteger otherNumerator) {
-        if (thisNumerator.IsOne) {
-            return otherNumerator;
-        }
-
-        return otherNumerator.IsOne
-            ? thisNumerator
-            : thisNumerator * otherNumerator;
     }
 
     /// <summary>
@@ -355,8 +344,12 @@ public readonly partial struct Fraction {
         }
 
         if (_normalizationNotApplied || divisor._normalizationNotApplied) {
-            var numerator = thisNumerator.IsZero ? thisNumerator : MultiplyTerms(thisNumerator, otherDenominator);
-            var denominator = otherNumerator.IsZero ? otherNumerator : MultiplyTerms(thisDenominator, otherNumerator);
+            var numerator = thisNumerator.IsZero
+                ? thisNumerator
+                : MultiplyTerms(ref thisNumerator, ref otherDenominator);
+            var denominator = otherNumerator.IsZero
+                ? otherNumerator
+                : MultiplyTerms(ref thisDenominator, ref otherNumerator);
             return new Fraction(true, numerator, denominator);
         }
 
@@ -376,8 +369,8 @@ public readonly partial struct Fraction {
         }
 
         return ReduceSigned(
-            MultiplyTerms(thisNumerator, otherDenominator),
-            MultiplyTerms(thisDenominator, otherNumerator));
+            MultiplyTerms(ref thisNumerator, ref otherDenominator),
+            MultiplyTerms(ref thisDenominator, ref otherNumerator));
     }
 
     /// <summary>
@@ -443,14 +436,14 @@ public readonly partial struct Fraction {
         if (numerator.IsOne || denominator.IsOne || numerator == BigInteger.MinusOne) {
             return new Fraction(false, numerator, denominator);
         }
-        
+
         var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
 
         return gcd.IsOne
             ? new Fraction(false, numerator, denominator)
             : new Fraction(false, numerator / gcd, denominator / gcd);
     }
-    
+
     /// <summary>
     /// Returns a fraction raised to the specified power.
     /// </summary>
@@ -506,5 +499,15 @@ public readonly partial struct Fraction {
         return fraction is { _normalizationNotApplied: false, Numerator.Sign: -1 }
             ? new Fraction(false, -fraction.Denominator, -fraction.Numerator)
             : new Fraction(fraction._normalizationNotApplied, fraction.Denominator, fraction.Numerator);
+    }
+
+    internal static BigInteger MultiplyTerms(ref readonly BigInteger a, ref readonly BigInteger b) {
+        if (a.IsOne) {
+            return b;
+        }
+
+        return b.IsOne
+            ? a
+            : a * b;
     }
 }
