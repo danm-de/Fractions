@@ -78,7 +78,7 @@ public readonly partial struct Fraction
         }
 
         if (denominator2.IsZero) {
-            return numerator2.Sign; // PositiveInfinity -> -1, NegativeInfinity -> 1
+            return -numerator2.Sign; // PositiveInfinity -> -1, NegativeInfinity -> 1
         }
 
         // both values are non-zero fractions with different denominators  
