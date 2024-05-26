@@ -38,19 +38,27 @@ public readonly partial struct Fraction
     /// </returns>
     /// <remarks>Comparing with <see cref="NaN" /> as the first argument always returns -1</remarks>
     public int CompareTo(Fraction other) {
-        if (IsNaN) {
-            return other.IsNaN ? 0 : -1;
-        }
-
-        if (other.IsNaN) {
-            return 1;
-        }
-        
         var numerator1 = Numerator;
         var denominator1 = Denominator;
         var numerator2 = other.Numerator;
         var denominator2 = other.Denominator;
-        
+
+        // normalize signs
+        numerator1 = denominator1.Sign == -1 ? -numerator1 : numerator1;
+        denominator1 = denominator1.Sign == -1 ? -denominator1 : denominator1;
+        numerator2 = denominator2.Sign == -1 ? -numerator2 : numerator2;
+        denominator2 = denominator2.Sign == -1 ? -denominator2 : denominator2;
+
+        if (numerator1.IsZero && denominator1.IsZero) {
+            // this is NaN
+            return (numerator2.IsZero && denominator2.IsZero) ? 0 : -1;
+        }
+
+        if (numerator2.IsZero && denominator2.IsZero) {
+            // other is NaN
+            return 1;
+        }
+
         if (denominator1 == denominator2) { 
             return denominator1.IsZero ? 
                 numerator1.Sign.CompareTo(numerator2.Sign) :  // both fractions represent infinities
