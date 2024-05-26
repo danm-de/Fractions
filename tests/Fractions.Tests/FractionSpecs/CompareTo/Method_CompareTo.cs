@@ -17,6 +17,13 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(1, 10), new Fraction(10, 100, false)).Returns(0);
             yield return new TestCaseData(new Fraction(1, 10), new Fraction(-10, -100, false)).Returns(0);
             yield return new TestCaseData(new Fraction(-100, -1000, false), new Fraction(-10, -100, false)).Returns(0);
+            yield return new TestCaseData(new Fraction(0.2m), new Fraction(-2, -10, false)).Returns(0);
+            yield return new TestCaseData(new Fraction(-2, -10, false), new Fraction(0.2m)).Returns(0);
+
+            yield return new TestCaseData(new Fraction(0.1m), new Fraction(-2, -10, false)).Returns(-1);
+            yield return new TestCaseData(new Fraction(0.3m), new Fraction(-2, -10, false)).Returns(1);
+            yield return new TestCaseData(new Fraction(-2, -10, false), new Fraction(0.1m)).Returns(1);
+            yield return new TestCaseData(new Fraction(-2, -10, false), new Fraction(0.3m)).Returns(-1);
             // two negative numbers
             yield return new TestCaseData(new Fraction(-5), new Fraction(-4)).Returns(-1);
             yield return new TestCaseData(new Fraction(-4), new Fraction(-5)).Returns(1);
