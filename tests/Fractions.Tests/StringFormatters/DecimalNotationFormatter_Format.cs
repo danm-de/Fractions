@@ -50,6 +50,7 @@ public abstract class DecimalNotationFormatterSpecs : Spec {
         new Fraction(4, 3), new Fraction(-4, 3),
         new Fraction(5, 3), new Fraction(-5, 3),
         new Fraction(7, 3), new Fraction(-7, 3),
+        new Fraction(-10, -20, false), new Fraction(10, -20, false)
     ];
 
     /// <summary>

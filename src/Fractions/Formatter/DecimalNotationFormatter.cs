@@ -919,17 +919,25 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </param>
     /// <returns>The exponent power for the given fraction.</returns>
     private static int GetExponentPower(Fraction fraction, out BigInteger powerOfTen) {
-        if (fraction.Numerator > fraction.Denominator) {
-            var nbDigits = CountDigits(fraction.Numerator / fraction.Denominator, out powerOfTen);
-            if (fraction.Numerator * powerOfTen < Ten * fraction.Denominator) {
+        var numerator = fraction.Numerator;
+        var denominator = fraction.Denominator;
+        if (denominator.Sign == -1) {
+            // normalize the signs of the terms
+            numerator = -numerator;
+            denominator = -denominator;
+        }
+        
+        if (numerator > denominator) {
+            var nbDigits = CountDigits(numerator / denominator, out powerOfTen);
+            if (numerator * powerOfTen < Ten * denominator) {
                 return nbDigits;
             }
 
             powerOfTen /= Ten;
             return nbDigits - 1;
         } else {
-            var nbDigits = CountDigits(fraction.Denominator / fraction.Numerator, out powerOfTen);
-            if (fraction.Numerator * powerOfTen < Ten * fraction.Denominator) {
+            var nbDigits = CountDigits(denominator / numerator, out powerOfTen);
+            if (numerator * powerOfTen < Ten * denominator) {
                 return -nbDigits;
             }
 

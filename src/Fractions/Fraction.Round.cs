@@ -30,13 +30,15 @@ public readonly partial struct Fraction {
             throw new ArgumentOutOfRangeException(nameof(decimals));
         }
 #endif
-
-        if (fraction.Denominator.IsOne || fraction.Denominator.IsZero) {
+        
+        var numerator = fraction.Numerator;
+        var denominator = fraction.Denominator;
+        if (denominator.IsOne || denominator.IsZero) {
             return fraction;
         }
 
         var factor = BigInteger.Pow(TEN, decimals);
-        var roundedNumerator = RoundToBigInteger(fraction.Numerator * factor, fraction.Denominator, mode);
+        var roundedNumerator = RoundToBigInteger(numerator * factor, denominator, mode);
         return new Fraction(roundedNumerator, factor);
     }
 
@@ -92,18 +94,37 @@ public readonly partial struct Fraction {
 
         static BigInteger roundToEven(BigInteger numerator, BigInteger denominator) {
             var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
-            if (numerator.Sign == denominator.Sign) {
-                // For positive values or when both values are negative
-                var midpoint = 2 * remainder;
-                if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
-                    return quotient + 1;
+            if (remainder.IsZero) {
+                return quotient;
+            }
+
+            if (denominator.Sign == 1) {
+                if (numerator.Sign == 1) {
+                    // Both values are positive
+                    var midpoint = 2 * remainder;
+                    if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
+                        return quotient + 1;
+                    }
+                } else {
+                    // For negative values
+                    var midpoint = -2 * remainder;
+                    if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
+                        return quotient - 1;
+                    }
                 }
             } else {
-                // For negative values
-                remainder = -remainder;
-                var midpoint = 2 * remainder;
-                if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
-                    return quotient - 1;
+                if (numerator.Sign == -1) {
+                    // Both values are positive
+                    var midpoint = 2 * remainder;
+                    if (midpoint < denominator || (midpoint == denominator && !quotient.IsEven)) {
+                        return quotient + 1;
+                    }
+                } else {
+                    // For negative values
+                    var midpoint = -2 * remainder;
+                    if (midpoint < denominator || (midpoint == denominator && !quotient.IsEven)) {
+                        return quotient - 1;
+                    }
                 }
             }
 
@@ -112,12 +133,12 @@ public readonly partial struct Fraction {
 #if NET
         static BigInteger roundToPositiveInfinity(BigInteger numerator, BigInteger denominator) {
             var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
-            return remainder.Sign == 1 ? quotient + 1 : quotient;
+            return remainder.Sign == denominator.Sign ? quotient + 1 : quotient;
         }
 
         static BigInteger roundToNegativeInfinity(BigInteger numerator, BigInteger denominator) {
             var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
-            return remainder.Sign == -1 ? quotient - 1 : quotient;
+            return remainder.Sign == -denominator.Sign ? quotient - 1 : quotient;
         }
 #endif
     }
