@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
 
@@ -103,6 +106,20 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(-5, 4), Fraction.NaN).Returns(1);
             yield return new TestCaseData(new Fraction(-4, 5), Fraction.NaN).Returns(1);
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NaN).Returns(1);
+            // Any number with PositiveInfinity
+            yield return new TestCaseData(Fraction.One, Fraction.PositiveInfinity).Returns(-1);
+            yield return new TestCaseData(Fraction.MinusOne, Fraction.PositiveInfinity).Returns(-1);
+            yield return new TestCaseData(new Fraction(42, 66, false), Fraction.PositiveInfinity).Returns(-1);
+            yield return new TestCaseData(new Fraction(-42, 66, false), Fraction.PositiveInfinity).Returns(-1);
+            yield return new TestCaseData(new Fraction(42, -66, false), Fraction.PositiveInfinity).Returns(-1);
+            yield return new TestCaseData(new Fraction(-42, -66, false), Fraction.PositiveInfinity).Returns(-1);
+            // Any number with NegativeInfinity
+            yield return new TestCaseData(Fraction.One, Fraction.NegativeInfinity).Returns(1);
+            yield return new TestCaseData(Fraction.MinusOne, Fraction.NegativeInfinity).Returns(1);
+            yield return new TestCaseData(new Fraction(42, 66, false), Fraction.NegativeInfinity).Returns(1);
+            yield return new TestCaseData(new Fraction(-42, 66, false), Fraction.NegativeInfinity).Returns(1);
+            yield return new TestCaseData(new Fraction(42, -66, false), Fraction.NegativeInfinity).Returns(1);
+            yield return new TestCaseData(new Fraction(-42, -66, false), Fraction.NegativeInfinity).Returns(1);
         }
     }
 
@@ -110,5 +127,384 @@ public class When_comparing_two_fractions : Spec {
     [TestCaseSource(nameof(TestCases))]
     public int The_CompareTo_method_should_return_the_expected_result(Fraction a, Fraction b) {
         return a.CompareTo(b);
+    }
+
+    
+    private static IEnumerable<TestCaseData> DifferentSignsTestCases {
+        get {
+            
+            #region {positive/positive} and {positive/negative}
+
+            // {1/1} != {1/-10}
+            yield return new TestCaseData(new Fraction(1, 1, false), new Fraction(1, -10, false)).Returns(1);
+            // {1/10} != {1/-1}
+            yield return new TestCaseData(new Fraction(1, 10, false), new Fraction(1, -1, false)).Returns(1);
+
+            #endregion
+
+            #region {positive/positive} and {negative/positive}
+
+            // {1/1} != {-1/10}
+            yield return new TestCaseData(new Fraction(1, 1, false), new Fraction(-1, 10, false)).Returns(1);
+            // {1/10} != {-1/1}
+            yield return new TestCaseData(new Fraction(1, 10, false), new Fraction(-1, 1, false)).Returns(1);
+
+            #endregion
+
+            #region {positive/negative} and {positive/positive}
+
+            // {1/-1} != {1/10}
+            yield return new TestCaseData(new Fraction(1, -1, false), new Fraction(1, 10, false)).Returns(-1);
+            // {1/-10} != {1/1}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(1, 1, false)).Returns(-1);
+
+            #endregion
+
+            #region {negative/positive} and {positive/positive}
+
+            // {-1/1} != {1/10}
+            yield return new TestCaseData(new Fraction(-1, 1, false), new Fraction(1, 10, false)).Returns(-1);
+            // {-1/10} != {1/1}
+            yield return new TestCaseData(new Fraction(-1, 10, false), new Fraction(1, 1, false)).Returns(-1);
+
+            #endregion
+
+            #region {negative/negative} and {negative/positive}
+
+            // {-1/-1} != {-1/10}
+            yield return new TestCaseData(new Fraction(-1, -1, false), new Fraction(-1, 10, false)).Returns(1);
+            // {-1/-10} != {-1/1}
+            yield return new TestCaseData(new Fraction(-1, -10, false), new Fraction(-1, 1, false)).Returns(1);
+
+            #endregion
+
+            #region {negative/negative} and {positive/negative}
+
+            // {-1/-1} != {1/-10}
+            yield return new TestCaseData(new Fraction(-1, -1, false), new Fraction(1, -10, false)).Returns(1);
+            // {-1/-10} != {1/-1}
+            yield return new TestCaseData(new Fraction(-1, -10, false), new Fraction(1, -1, false)).Returns(1);
+
+            #endregion
+
+            #region {negative/positive} and {negative/negative}
+
+            // {-1/1} != {-1/-10}
+            yield return new TestCaseData(new Fraction(-1, 1, false), new Fraction(-1, -10, false)).Returns(-1);
+            // {-1/10} != {-1/-1}
+            yield return new TestCaseData(new Fraction(-1, 10, false), new Fraction(-1, -1, false)).Returns(-1);
+
+            #endregion
+
+            #region {positive/negative} and {negative/negative}
+
+            // {1/-1} != {-1/-10}
+            yield return new TestCaseData(new Fraction(1, -1, false), new Fraction(-1, -10, false)).Returns(-1);
+            // {1/-10} != {-1/-1}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(-1, -1, false)).Returns(-1);
+
+            #endregion
+        }
+    }
+    
+    [Test, TestCaseSource(nameof(DifferentSignsTestCases))]
+    public int Fractions_with_different_signs_should_return_non_zero(Fraction a, Fraction b) => a.CompareTo(b);
+
+    
+    private static IEnumerable<TestCaseData> EqualFractionsTestCases {
+        get {
+            #region {positive/positive} and {positive/positive}
+
+            // {10/10} == {1/1}
+            yield return new TestCaseData(new Fraction(10, 10, false), new Fraction(1, 1, false)).Returns(0);
+            // {10/100} == {1/10}
+            yield return new TestCaseData(new Fraction(10, 100, false), new Fraction(1, 10, false)).Returns(0);
+
+            #endregion
+
+            #region {negative/negative} and {negative/negative}
+
+            // {-10/-10} == {-1/-1}
+            yield return new TestCaseData(new Fraction(-10, -10, false), new Fraction(-1, -1, false)).Returns(0);
+            // {-10/-100} == {-1/-10}
+            yield return new TestCaseData(new Fraction(-10, -100, false), new Fraction(-1, -10, false)).Returns(0);
+
+            #endregion
+            
+            #region {positive/positive} and {negative/negative}
+
+            // {10/10} == {-1/-1} 
+            yield return new TestCaseData(new Fraction(10, 10, false), new Fraction(-1, -1, false)).Returns(0);
+            // {1/10} == {-10/-100}
+            yield return new TestCaseData(new Fraction(1, 10, false), new Fraction(-10, -100, false)).Returns(0);
+            // {10/100} == {-1/-10}
+            yield return new TestCaseData(new Fraction(10, 100, false), new Fraction(-1, -10, false)).Returns(0);
+
+            #endregion
+            
+            #region {negative/negative} and {positive/positive}
+
+            // {-10/-10} == {1/1} 
+            yield return new TestCaseData(new Fraction(-10, -10, false), new Fraction(1, 1, false)).Returns(0);
+            // {-1/-10} == {10/100}
+            yield return new TestCaseData(new Fraction(-1,- 10, false), new Fraction(10, 100, false)).Returns(0);
+
+            #endregion
+            
+            #region {positive/negative} and {positive/negative}
+
+            // {10/-10} == {1/-1} 
+            yield return new TestCaseData(new Fraction(10, -10, false), new Fraction(1, -1, false)).Returns(0);
+            // {1/-10} == {10/-100}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(10, -100, false)).Returns(0);
+
+            #endregion
+            
+            #region {positive/negative} and {negative/positive}
+
+            // {10/-10} == {-1/1} 
+            yield return new TestCaseData(new Fraction(10, -10, false), new Fraction(-1, 1, false)).Returns(0);
+            // {1/-10} == {-10/100}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(-10, 100, false)).Returns(0);
+
+            #endregion
+
+            #region {negative/positive} and {positive/negative}
+
+            // {-10/10} == {1/-1} 
+            yield return new TestCaseData(new Fraction(-10, 10, false), new Fraction(1, -1, false)).Returns(0);
+            // {-1/10} and {10/-100}
+            yield return new TestCaseData(new Fraction(-1, 10, false), new Fraction(10, -100, false)).Returns(0);
+            // {-10/100} == {1/-10}
+            yield return new TestCaseData(new Fraction(-10, 100, false), new Fraction(1, -10, false)).Returns(0);
+
+            #endregion
+
+            #region {negative/positive} and {negative/positive}
+
+            // {-10/10} == {-1/1} 
+            yield return new TestCaseData(new Fraction(-10, 10, false), new Fraction(-1, 1, false)).Returns(0);
+            // {-10/100} == {-1/10}
+            yield return new TestCaseData(new Fraction(-10, 100, false), new Fraction(-1, 10, false)).Returns(0);
+
+            #endregion
+        }
+    }
+    
+    [Test, TestCaseSource(nameof(EqualFractionsTestCases))]
+    public int Equal_fractions_should_return_zero(Fraction a, Fraction b) => a.CompareTo(b);
+    
+    
+    private static IEnumerable<TestCaseData> DifferentFractionsTestCases {
+        get {
+            #region {positive/positive} and {positive/positive}
+
+            // {1/2} < {2/2}
+            yield return new TestCaseData(new Fraction(1, 2, false), new Fraction(2, 2, false)).Returns(-1);
+            // {11/10} > {1/1}
+            yield return new TestCaseData(new Fraction(11, 10, false), new Fraction(1, 1, false)).Returns(1);
+            // {10/10} > {1/2}
+            yield return new TestCaseData(new Fraction(10, 10, false), new Fraction(1, 2, false)).Returns(1);
+            // {10/10} < {2/1}
+            yield return new TestCaseData(new Fraction(10, 10, false), new Fraction(2, 1, false)).Returns(-1);
+            // {1/10} < {1/1}
+            yield return new TestCaseData(new Fraction(1, 10, false), new Fraction(1, 1, false)).Returns(-1);
+            // {10/100} < {2/10}
+            yield return new TestCaseData(new Fraction(10, 100, false), new Fraction(2, 10, false)).Returns(-1);
+            // {7/4} > {3/2}
+            yield return new TestCaseData(new Fraction(7, 4, false), new Fraction(3, 2, false)).Returns(1);
+            // {6/5} < {3/2}
+            yield return new TestCaseData(new Fraction(6, 5, false), new Fraction(3, 2, false)).Returns(-1);
+
+            #endregion
+
+            #region {negative/negative} and {negative/negative}
+
+            // {-1/-2} < {-2/-2}
+            yield return new TestCaseData(new Fraction(-1, -2, false), new Fraction(-2, -2, false)).Returns(-1);
+            // {-1/-2} < {-10/-10}
+            yield return new TestCaseData(new Fraction(-1, -2, false), new Fraction(-10, -10, false)).Returns(-1);
+            // {-1/-1} < {-11/-10}
+            yield return new TestCaseData(new Fraction(-1, -1, false), new Fraction(-11, -10, false)).Returns(-1);
+            // {-10/-10} < {-2/-1}
+            yield return new TestCaseData(new Fraction(-10, -10, false), new Fraction(-2, -1, false)).Returns(-1);
+            // {-1/-10} < {-1/-1}
+            yield return new TestCaseData(new Fraction(-1, -10, false), new Fraction(-1, -1, false)).Returns(-1);
+            // {-10/-100} < {-2/-10}
+            yield return new TestCaseData(new Fraction(-10, -100, false), new Fraction(-2, -10, false)).Returns(-1);
+            // {-7/-4} > {-3/-2}
+            yield return new TestCaseData(new Fraction(-7, -4, false), new Fraction(-3, -2, false)).Returns(1);
+            // {-6/-5} < {-3/-2}
+            yield return new TestCaseData(new Fraction(-6, -5, false), new Fraction(-3, -2, false)).Returns(-1);
+
+            #endregion
+            
+            #region {positive/positive} and {negative/negative}
+
+            // {1/2} < {-2/-2}
+            yield return new TestCaseData(new Fraction(1, 2, false), new Fraction(-2, -2, false)).Returns(-1);
+            // {1/10} < {-11/-100}
+            yield return new TestCaseData(new Fraction(1, 10, false), new Fraction(-11, -100, false)).Returns(-1);
+            // {1/1} > {-2/-10}
+            yield return new TestCaseData(new Fraction(1, 1, false), new Fraction(-2, -10, false)).Returns(1);
+            // {1/1} > {-1/-2}
+            yield return new TestCaseData(new Fraction(1, 1, false), new Fraction(-1, -2, false)).Returns(1);
+            // {2/1} > {-1/-2}
+            yield return new TestCaseData(new Fraction(2, 1, false), new Fraction(-1, -2, false)).Returns(1);
+            // {10/10} < {-2/-1} 
+            yield return new TestCaseData(new Fraction(10, 10, false), new Fraction(-2, -1, false)).Returns(-1);
+            // {1/10} < {-1/-1}
+            yield return new TestCaseData(new Fraction(1, 10, false), new Fraction(-1, -1, false)).Returns(-1);
+            // {10/100} < {-2/-10}
+            yield return new TestCaseData(new Fraction(10, 100, false), new Fraction(-2, -10, false)).Returns(-1);
+            // {7/4} > {-3/-2}
+            yield return new TestCaseData(new Fraction(7, 4, false), new Fraction(-3, -2, false)).Returns(1);
+            // {6/5} < {-3/-2}
+            yield return new TestCaseData(new Fraction(6, 5, false), new Fraction(-3, -2, false)).Returns(-1);
+
+            #endregion
+            
+            #region {negative/negative} and {positive/positive}
+            
+            // {-1/-2} < {2/2}
+            yield return new TestCaseData(new Fraction(-1, -2, false), new Fraction(2, 2, false)).Returns(-1);
+            // {-10/-10} < {2/1} 
+            yield return new TestCaseData(new Fraction(-10, -10, false), new Fraction(2, 1, false)).Returns(-1);
+            // {-1/-10} < {1/1}
+            yield return new TestCaseData(new Fraction(-1, -10, false), new Fraction(1, 1, false)).Returns(-1);
+            // {-10/-100} < {2/10}
+            yield return new TestCaseData(new Fraction(-10, -100, false), new Fraction(2, 10, false)).Returns(-1);
+            // {-7/-4} > {3/2}
+            yield return new TestCaseData(new Fraction(-7, -4, false), new Fraction(3, 2, false)).Returns(1);
+            // {-6/-5} < {3/2}
+            yield return new TestCaseData(new Fraction(-6, -5, false), new Fraction(3, 2, false)).Returns(-1);
+
+            #endregion
+            
+            #region {positive/negative} and {positive/negative}
+
+            // {1/-2} > {2/-2}
+            yield return new TestCaseData(new Fraction(1, -2, false), new Fraction(2, -2, false)).Returns(1);
+            // {1/-10} > {11/-100}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(11, -100, false)).Returns(1);
+            // {10/-10} > {2/-1} 
+            yield return new TestCaseData(new Fraction(10, -10, false), new Fraction(2, -1, false)).Returns(1);
+            // {1/-10} > {1/-1}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(1, -1, false)).Returns(1);
+            // {10/-100} > {2/-10}
+            yield return new TestCaseData(new Fraction(10, -100, false), new Fraction(2, -10, false)).Returns(1);
+            // {7/-4} < {3/-2}
+            yield return new TestCaseData(new Fraction(7, -4, false), new Fraction(3, -2, false)).Returns(-1);
+            // {6/-5} > {3/-2}
+            yield return new TestCaseData(new Fraction(6, -5, false), new Fraction(3, -2, false)).Returns(1);
+
+            #endregion
+            
+            #region {positive/negative} and {negative/positive}
+
+            // {1/-2} > {-2/2}
+            yield return new TestCaseData(new Fraction(1, -2, false), new Fraction(-2, 2, false)).Returns(1);
+            // {10/-10} > {-2/1} 
+            yield return new TestCaseData(new Fraction(10, -10, false), new Fraction(-2, 1, false)).Returns(1);
+            // {1/-10} > {-1/1}
+            yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(-1, 1, false)).Returns(1);
+            // {10/-100} > {-2/10}
+            yield return new TestCaseData(new Fraction(10, -100, false), new Fraction(-2, 10, false)).Returns(1);
+            // {7/-4} > {-3/2}
+            yield return new TestCaseData(new Fraction(7, -4, false), new Fraction(-3, 2, false)).Returns(-1);
+            // {6/-5} > {-3/2}
+            yield return new TestCaseData(new Fraction(6, -5, false), new Fraction(-3, 2, false)).Returns(1);
+
+            #endregion
+
+            #region {negative/positive} and {positive/negative}
+
+            // {-1/2} > {2/-2}
+            yield return new TestCaseData(new Fraction(-1, 2, false), new Fraction(2, -2, false)).Returns(1);
+            // {-1/1} > {2/-1} 
+            yield return new TestCaseData(new Fraction(-1, 1, false), new Fraction(2, -1, false)).Returns(1);
+            // {-1/2} > {2/-1} 
+            yield return new TestCaseData(new Fraction(-1, 2, false), new Fraction(2, -1, false)).Returns(1);
+            // {-2/1} > {3/-1} 
+            yield return new TestCaseData(new Fraction(-2, 1, false), new Fraction(3, -1, false)).Returns(1);
+            // {-11/10} < {1/-1} 
+            yield return new TestCaseData(new Fraction(-11, 10, false), new Fraction(1, -1, false)).Returns(-1);
+            // {-10/10} > {2/-1} 
+            yield return new TestCaseData(new Fraction(-10, 10, false), new Fraction(2, -1, false)).Returns(1);
+            // {-1/10} > {1/-1}
+            yield return new TestCaseData(new Fraction(-1, 10, false), new Fraction(1, -1, false)).Returns(1);
+            // {-10/100} > {2/-10}
+            yield return new TestCaseData(new Fraction(-10, 100, false), new Fraction(2, -10, false)).Returns(1);
+            // {-7/4} > {3/-2}
+            yield return new TestCaseData(new Fraction(-7, 4, false), new Fraction(3, -2, false)).Returns(-1);
+            // {-6/5} > {3/-2}
+            yield return new TestCaseData(new Fraction(-6, 5, false), new Fraction(3, -2, false)).Returns(1);
+
+            #endregion
+
+            #region {negative/positive} and {negative/positive}
+
+            // {-1/2} > {-2/2}
+            yield return new TestCaseData(new Fraction(-1, 2, false), new Fraction(-2, 2, false)).Returns(1);
+            // {-11/10} < {-1/1} 
+            yield return new TestCaseData(new Fraction(-11, 10, false), new Fraction(-1, 1, false)).Returns(-1);
+            // {-10/10} < {-1/2} 
+            yield return new TestCaseData(new Fraction(-10, 10, false), new Fraction(-1, 2, false)).Returns(-1);
+            // {-10/10} > {-2/1} 
+            yield return new TestCaseData(new Fraction(-10, 10, false), new Fraction(-2, 1, false)).Returns(1);
+            // {-1/10} > {-1/1}
+            yield return new TestCaseData(new Fraction(-1, 10, false), new Fraction(-1, 1, false)).Returns(1);
+            // {-10/100} > {-2/10}
+            yield return new TestCaseData(new Fraction(-10, 100, false), new Fraction(-2, 10, false)).Returns(1);
+            // {-7/4} > {-3/2}
+            yield return new TestCaseData(new Fraction(-7, 4, false), new Fraction(-3, 2, false)).Returns(-1);
+            // {-6/5} > {-3/2}
+            yield return new TestCaseData(new Fraction(-6, 5, false), new Fraction(-3, 2, false)).Returns(1);
+
+            #endregion
+        }
+    }
+    
+    [Test, TestCaseSource(nameof(DifferentFractionsTestCases))]
+    public int Different_Fractions_with_same_signs_should_return_non_zero(Fraction a, Fraction b) => a.CompareTo(b);
+
+    public static IEnumerable<Fraction> FractionsToSort => [
+        Fraction.Zero,
+        Fraction.One,
+        10,
+        new Fraction(1, 10),
+        new Fraction(0.135m),
+        new Fraction(-0.135m),
+        new Fraction(decimal.MaxValue),
+        new Fraction(decimal.MinValue),
+        new Fraction(BigInteger.Pow(-10, 37)),
+        new Fraction(1, BigInteger.Pow(10, 12)),
+        new Fraction(42, 66, false),
+        new Fraction(36, 96, false),
+        new Fraction(42, -96, false),
+        new Fraction(-42, -96, false),
+        new Fraction(-42, 96, false),
+        Fraction.FromDouble(Math.PI),
+        Fraction.FromDouble(-Math.PI),
+        Fraction.NaN,
+        Fraction.PositiveInfinity,
+        Fraction.NegativeInfinity
+    ];
+
+
+    [Test]
+    public void Should_sort_fractions_in_expected_order() {
+        // Arrange
+        var result = FractionsToSort.OrderBy(fraction => fraction).ToArray();
+        // Assert
+        result.Should().BeInAscendingOrder((a, b) => a.ToDouble().CompareTo(b.ToDouble()));
+    }
+
+    [Test]
+    public void Should_sort_fractions_in_expected_descending_order() {
+        // Act
+        var result = FractionsToSort.OrderByDescending(fraction => fraction).ToArray();
+        // Assert
+        result.Should().BeInDescendingOrder((a, b) => a.ToDouble().CompareTo(b.ToDouble()));
     }
 }
