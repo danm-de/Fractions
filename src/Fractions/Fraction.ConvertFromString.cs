@@ -79,7 +79,8 @@ public readonly partial struct Fraction {
     /// <exception cref="FormatException">
     ///     Thrown when <paramref name="fractionString"/> is not in the correct format.
     /// </exception>
-    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider? formatProvider) {
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles,
+        IFormatProvider? formatProvider) {
         return FromString(fractionString, numberStyles, formatProvider, normalize: true);
     }
 
@@ -154,7 +155,8 @@ public readonly partial struct Fraction {
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize) {
+    public static Fraction FromString(string fractionString, NumberStyles numberStyles, IFormatProvider? formatProvider,
+        bool normalize) {
         if (fractionString == null) {
             throw new ArgumentNullException(nameof(fractionString));
         }

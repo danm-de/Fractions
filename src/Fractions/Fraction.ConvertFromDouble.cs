@@ -224,7 +224,9 @@ public readonly partial struct Fraction {
             numerator = -numerator;
         }
 
-        return reduceTerms ? ReduceSigned(numerator, new BigInteger(denominator)) : new Fraction(true, numerator, new BigInteger(denominator));
+        return reduceTerms
+            ? ReduceSigned(numerator, new BigInteger(denominator))
+            : new Fraction(true, numerator, new BigInteger(denominator));
     }
 
     /// <summary>

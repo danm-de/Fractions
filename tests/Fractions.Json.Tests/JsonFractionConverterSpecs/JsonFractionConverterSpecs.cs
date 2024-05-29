@@ -14,16 +14,12 @@ namespace Fractions.Json.Tests.JsonFractionConverterSpecs;
 
 [TestFixture]
 [Culture("de-DE")]
-public class If_an_object_containing_a_fraction_property_is_being_serialized : Spec
-{
+public class If_an_object_containing_a_fraction_property_is_being_serialized : Spec {
     [DataContract]
-    private class Test
-    {
-        [DataMember]
-        public string Name { get; set; }
+    private class Test {
+        [DataMember] public string Name { get; set; }
 
-        [DataMember]
-        public Fraction Value { get; set; }
+        [DataMember] public Fraction Value { get; set; }
     }
 
     private readonly StringBuilder _sb = new();
@@ -39,10 +35,7 @@ public class If_an_object_containing_a_fraction_property_is_being_serialized : S
         _serializer = new JsonSerializer();
         _serializer.Converters.Add(converter);
 
-        _testObject = new Test {
-            Name = "TestName",
-            Value = new Fraction(1, 3)
-        };
+        _testObject = new Test { Name = "TestName", Value = new Fraction(1, 3) };
     }
 
     [Culture("de-DE")]
@@ -65,8 +58,7 @@ public class If_an_object_containing_a_fraction_property_is_being_serialized : S
 
 [TestFixture]
 [Culture("de-DE")]
-public class If_the_user_serializes_a_Fraction_without_normalization : Spec
-{
+public class If_the_user_serializes_a_Fraction_without_normalization : Spec {
     private JsonSerializer _serializer;
 
     [Culture("de-DE")]
@@ -100,8 +92,7 @@ public class If_the_user_serializes_a_Fraction_without_normalization : Spec
 
 [TestFixture]
 [Culture("de-DE")]
-public class If_the_user_serializes_a_Fraction_with_normalization : Spec
-{
+public class If_the_user_serializes_a_Fraction_with_normalization : Spec {
     private JsonSerializer _serializer;
 
     [Culture("de-DE")]
@@ -135,8 +126,7 @@ public class If_the_user_serializes_a_Fraction_with_normalization : Spec
 
 [TestFixture]
 [Culture("de-DE")]
-public class If_the_user_deserializes_a_json_text_without_normalization : Spec
-{
+public class If_the_user_deserializes_a_json_text_without_normalization : Spec {
     private JsonSerializer _serializer;
 
     [Culture("de-DE")]
@@ -163,7 +153,7 @@ public class If_the_user_deserializes_a_json_text_without_normalization : Spec
         }
     }
 
-    [Test,TestCaseSource(nameof(TestCases))]
+    [Test, TestCaseSource(nameof(TestCases))]
     [Culture("de-DE")]
     public Fraction Shall_the_result_be_the_expected_fraction(string text) {
         var json_text = "\"" + text + "\"";
@@ -175,8 +165,7 @@ public class If_the_user_deserializes_a_json_text_without_normalization : Spec
 
 [TestFixture]
 [Culture("de-DE")]
-public class If_the_user_deserializes_a_json_text_with_normalization : Spec
-{
+public class If_the_user_deserializes_a_json_text_with_normalization : Spec {
     private JsonSerializer _serializer;
 
     [Culture("de-DE")]
@@ -214,8 +203,7 @@ public class If_the_user_deserializes_a_json_text_with_normalization : Spec
 }
 
 [TestFixture]
-public class If_the_user_checks_the_supported_types : Spec
-{
+public class If_the_user_checks_the_supported_types : Spec {
     private JsonFractionConverter _converter;
 
     public override void Arrange() {

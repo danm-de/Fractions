@@ -160,8 +160,15 @@ public readonly partial struct Fraction {
         }
 
         var extraDigits = (decimal)BigInteger.Pow(TEN, extraZeroes);
-        var shiftedResult = exactResult * (1m / extraDigits) * extraDigits; // we shift the result to the right and then back to the left
-        return exactResult != shiftedResult ? exactResult : shiftedResult; // unless the exactResult represents a non-terminating decimal, return the zero-padded result
+        // we shift the result to the right and then back to the left
+        var shiftedResult =
+            exactResult * (1m / extraDigits) *
+            extraDigits;
+
+        // unless the exactResult represents a non-terminating decimal, return the zero-padded result
+        return exactResult != shiftedResult
+            ? exactResult
+            : shiftedResult;
 
         static int getNumberOfTrailingZeros(BigInteger number) {
             if (number.IsOne) {

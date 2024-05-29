@@ -3,8 +3,7 @@ using NUnit.Framework;
 
 namespace Fractions.Json.Tests;
 
-public class Spec
-{
+public class Spec {
     [OneTimeSetUp]
     public void TestFixtureSetUp() {
         SetUp();
@@ -24,5 +23,4 @@ public class Spec
     public virtual void Arrange() { }
 
     public virtual void Act() { }
-
 }

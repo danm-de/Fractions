@@ -2,6 +2,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 
 namespace Fractions;
@@ -100,7 +101,8 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider, out Fraction fraction) {
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+        out Fraction fraction) {
         return TryParse(value, numberStyles, formatProvider, true, out fraction);
     }
 
@@ -166,7 +168,8 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize, out Fraction fraction) {
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+        bool normalize, out Fraction fraction) {
         return TryParse(value.AsSpan(), numberStyles, formatProvider, normalize, out fraction);
     }
 
@@ -220,7 +223,8 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider? formatProvider, out Fraction fraction) {
+    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+        out Fraction fraction) {
         return TryParse(value, numberStyles, formatProvider, true, out fraction);
     }
 
@@ -285,7 +289,8 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize, out Fraction fraction) {
+    public static bool TryParse(ReadOnlySpan<char> value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+        bool normalize, out Fraction fraction) {
         if (value.IsEmpty) {
             return CannotParse(out fraction);
         }
@@ -343,7 +348,8 @@ public readonly partial struct Fraction {
         }
 
         var currencyAllowed = (numberStyles & NumberStyles.AllowCurrencySymbol) != 0;
-        var currencyDetected = false; // there "special" rules regarding the white-spaces after a leading currency symbol is detected
+        // there "special" rules regarding the white-spaces after a leading currency symbol is detected
+        var currencyDetected = false;
         ReadOnlySpan<char> currencySymbol;
         if (currencyAllowed) {
             currencySymbol = numberFormatInfo.CurrencySymbol.AsSpan();
@@ -355,7 +361,8 @@ public readonly partial struct Fraction {
             currencySymbol = [];
         }
 
-        ReadOnlySpan<char> decimalSeparator; // note: decimal.TryParse relies on the CurrencySymbol (when currency is detected)
+        // note: decimal.TryParse relies on the CurrencySymbol (when currency is detected)
+        ReadOnlySpan<char> decimalSeparator;
         var decimalsAllowed = (numberStyles & NumberStyles.AllowDecimalPoint) != 0;
         if (decimalsAllowed) {
             decimalSeparator = numberFormatInfo.NumberDecimalSeparator.AsSpan();
@@ -401,15 +408,23 @@ public readonly partial struct Fraction {
 
                 if (currencyDetected) {
                     // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
-                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                      NumberStyles.AllowTrailingSign |
+                                      NumberStyles.AllowHexSpecifier);
                 } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                     // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                     currencyDetected = true;
                     startIndex += currencySymbol.Length;
-                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                      NumberStyles.AllowTrailingSign |
+                                      NumberStyles.AllowCurrencySymbol |
+                                      NumberStyles.AllowHexSpecifier);
                 } else {
                     // if next character is a white space the format should be rejected
-                    numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    numberStyles &= ~(NumberStyles.AllowLeadingWhite |
+                                      NumberStyles.AllowLeadingSign |
+                                      NumberStyles.AllowTrailingSign |
+                                      NumberStyles.AllowHexSpecifier);
                     break;
                 }
 
@@ -417,48 +432,64 @@ public readonly partial struct Fraction {
             }
 
             if ((numberStyles & NumberStyles.AllowLeadingSign) != 0) {
-                if (numberFormatInfo.NegativeSign.AsSpan() is { IsEmpty: false } negativeSign && startsWith(value, negativeSign, startIndex)) {
+                if (numberFormatInfo.NegativeSign.AsSpan() is { IsEmpty: false } negativeSign &&
+                    startsWith(value, negativeSign, startIndex)) {
                     isNegative = true;
                     startIndex += negativeSign.Length;
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowHexSpecifier);
                     } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &=
-                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
-                              NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowCurrencySymbol |
+                                          NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &=
-                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
-                              NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowLeadingWhite |
+                                          NumberStyles.AllowHexSpecifier);
                         break;
                     }
 
                     continue;
                 }
 
-                if (numberFormatInfo.PositiveSign.AsSpan() is { IsEmpty: false } positiveSign && startsWith(value, positiveSign, startIndex)) {
+                if (numberFormatInfo.PositiveSign.AsSpan() is { IsEmpty: false } positiveSign &&
+                    startsWith(value, positiveSign, startIndex)) {
                     isNegative = false;
                     startIndex += positiveSign.Length;
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowHexSpecifier);
                     } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &=
-                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
-                              NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowCurrencySymbol |
+                                          NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &=
-                            ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
-                              NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowLeadingWhite |
+                                          NumberStyles.AllowHexSpecifier);
                         break;
                     }
 
@@ -480,7 +511,8 @@ public readonly partial struct Fraction {
 
             // this is either an expected hex string or an invalid format
             return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
-                ? TryParseInteger(value[startIndex..endIndex], numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, isNegative, out fraction)
+                ? TryParseInteger(value[startIndex..endIndex], numberStyles & ~NumberStyles.AllowTrailingSign,
+                    formatProvider, isNegative, out fraction)
                 : CannotParse(out fraction); // unexpected character
         } while (startIndex < endIndex);
 
@@ -489,9 +521,12 @@ public readonly partial struct Fraction {
         }
 
         if (isNegative) {
-            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign);
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite |
+                              NumberStyles.AllowLeadingSign);
         } else {
-            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowParentheses);
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite |
+                              NumberStyles.AllowLeadingSign |
+                              NumberStyles.AllowParentheses);
         }
 
         // examine the trailing characters
@@ -521,14 +556,16 @@ public readonly partial struct Fraction {
             }
 
             if ((numberStyles & NumberStyles.AllowTrailingSign) != 0) {
-                if (numberFormatInfo.NegativeSign.AsSpan() is { IsEmpty: false } negativeSign && endsWith(value, negativeSign, endIndex)) {
+                if (numberFormatInfo.NegativeSign.AsSpan() is { IsEmpty: false } negativeSign &&
+                    endsWith(value, negativeSign, endIndex)) {
                     isNegative = true;
                     numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
                     endIndex -= negativeSign.Length;
                     continue;
                 }
 
-                if (numberFormatInfo.PositiveSign.AsSpan() is { IsEmpty: false } positiveSign && endsWith(value, positiveSign, endIndex)) {
+                if (numberFormatInfo.PositiveSign.AsSpan() is { IsEmpty: false } positiveSign &&
+                    endsWith(value, positiveSign, endIndex)) {
                     isNegative = false;
                     numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
                     endIndex -= positiveSign.Length;
@@ -550,7 +587,8 @@ public readonly partial struct Fraction {
 
             // this is either an expected hex string or an invalid format
             return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
-                ? TryParseInteger(value[startIndex..endIndex], numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, isNegative, out fraction)
+                ? TryParseInteger(value[startIndex..endIndex], numberStyles & ~NumberStyles.AllowTrailingSign,
+                    formatProvider, isNegative, out fraction)
                 : CannotParse(out fraction); // unexpected character
         } while (startIndex < endIndex);
 
@@ -562,7 +600,9 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction); // failed to find a closing parentheses
         }
 
-        numberStyles &= ~(NumberStyles.AllowTrailingWhite | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol);
+        numberStyles &= ~(NumberStyles.AllowTrailingWhite |
+                          NumberStyles.AllowTrailingSign |
+                          NumberStyles.AllowCurrencySymbol);
         // at this point value[startIndex, endIndex] should correspond to the number without the sign (or the format is invalid)
         var unsignedValue = value[startIndex..endIndex];
 
@@ -572,7 +612,8 @@ public readonly partial struct Fraction {
         }
 
         if ((numberStyles & NumberStyles.AllowExponent) != 0) {
-            return TryParseWithExponent(unsignedValue, numberStyles, numberFormatInfo, isNegative, normalize, out fraction);
+            return TryParseWithExponent(unsignedValue, numberStyles, numberFormatInfo, isNegative, normalize,
+                out fraction);
         }
 
         return decimalsAllowed
@@ -588,7 +629,8 @@ public readonly partial struct Fraction {
         }
     }
 
-    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative, bool reduceTerms,
+    private static bool TryParseWithExponent(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
+        NumberFormatInfo numberFormatInfo, bool isNegative, bool reduceTerms,
         out Fraction fraction) {
         // 1. try to find the exponent character (extracting the left and right sides)
         parseNumberStyles &= ~NumberStyles.AllowExponent;
@@ -598,13 +640,15 @@ public readonly partial struct Fraction {
         if (nbRangesFilled != 2) {
             // no exponent found
             return (parseNumberStyles & NumberStyles.AllowDecimalPoint) != 0
-                ? TryParseDecimalNumber(value, parseNumberStyles, numberFormatInfo, isNegative, reduceTerms, out fraction)
+                ? TryParseDecimalNumber(value, parseNumberStyles, numberFormatInfo, isNegative, reduceTerms,
+                    out fraction)
                 : TryParseInteger(value, parseNumberStyles, numberFormatInfo, isNegative, out fraction);
         }
 
         // 2. try to parse the exponent (w.r.t. the scientific notation format)
         var exponentSpan = value[ranges[1]];
-        if (!int.TryParse(exponentSpan, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo, out var exponent)) {
+        if (!int.TryParse(exponentSpan, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo,
+                out var exponent)) {
             return CannotParse(out fraction);
         }
 
@@ -619,7 +663,8 @@ public readonly partial struct Fraction {
                 return false;
             }
         } else {
-            if (!TryParseDecimalNumber(coefficientSpan, parseNumberStyles, numberFormatInfo, isNegative, reduceTerms, out fraction)) {
+            if (!TryParseDecimalNumber(coefficientSpan, parseNumberStyles, numberFormatInfo, isNegative, reduceTerms,
+                    out fraction)) {
                 return false;
             }
         }
@@ -629,7 +674,8 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseDecimalNumber(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo, bool isNegative, bool reduceTerms,
+    private static bool TryParseDecimalNumber(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
+        NumberFormatInfo numberFormatInfo, bool isNegative, bool reduceTerms,
         out Fraction fraction) {
         // 1. try to find the decimal separator (extracting the left and right sides)
         var ranges = new Span<Range>(new Range[2]);
@@ -655,7 +701,8 @@ public readonly partial struct Fraction {
 
         if ((parseNumberStyles & NumberStyles.AllowThousands) != 0) {
             if (fractionalSpan.Contains(numberFormatInfo.NumberGroupSeparator.AsSpan(), StringComparison.Ordinal)) {
-                return CannotParse(out fraction); // number group separator detected in the fractional part (e.g. "1.2 34")
+                return
+                    CannotParse(out fraction); // number group separator detected in the fractional part (e.g. "1.2 34")
             }
         }
 
@@ -686,7 +733,8 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseInteger(ReadOnlySpan<char> value, NumberStyles parseNumberStyles, IFormatProvider? formatProvider, bool isNegative, out Fraction fraction) {
+    private static bool TryParseInteger(ReadOnlySpan<char> value, NumberStyles parseNumberStyles,
+        IFormatProvider? formatProvider, bool isNegative, out Fraction fraction) {
         if (!BigInteger.TryParse(value, parseNumberStyles, formatProvider, out var bigInteger)) {
             return CannotParse(out fraction);
         }
@@ -750,7 +798,8 @@ public readonly partial struct Fraction {
     ///         denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider, bool normalize, out Fraction fraction) {
+    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+        bool normalize, out Fraction fraction) {
         if (string.IsNullOrWhiteSpace(value)) {
             return CannotParse(out fraction);
         }
@@ -807,14 +856,19 @@ public readonly partial struct Fraction {
         }
 
         var currencyAllowed = (numberStyles & NumberStyles.AllowCurrencySymbol) != 0;
-        var currencyDetected = false; // there "special" rules regarding the white-spaces after a leading currency symbol is detected
+
+        // there "special" rules regarding the white-spaces after a leading currency symbol is detected
+        var currencyDetected = false;
+
         var currencySymbol = numberFormatInfo.CurrencySymbol;
         if (currencyAllowed && string.IsNullOrEmpty(currencySymbol)) {
             numberStyles &= ~NumberStyles.AllowCurrencySymbol; // no currency symbol available
             currencyAllowed = false;
         }
 
-        var decimalSeparator = numberFormatInfo.NumberDecimalSeparator; // note: decimal.TryParse relies on the CurrencySymbol (when currency is detected)
+        // note: decimal.TryParse relies on the CurrencySymbol (when currency is detected)
+        var decimalSeparator = numberFormatInfo.NumberDecimalSeparator;
+
         var decimalsAllowed = (numberStyles & NumberStyles.AllowDecimalPoint) != 0;
         if (decimalsAllowed && string.IsNullOrEmpty(decimalSeparator)) {
             numberStyles &= ~NumberStyles.AllowDecimalPoint; // no decimal separator available
@@ -855,15 +909,23 @@ public readonly partial struct Fraction {
 
                 if (currencyDetected) {
                     // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
-                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                      NumberStyles.AllowTrailingSign |
+                                      NumberStyles.AllowHexSpecifier);
                 } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                     // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                     currencyDetected = true;
                     startIndex += currencySymbol.Length;
-                    numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowHexSpecifier);
+                    numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                      NumberStyles.AllowTrailingSign |
+                                      NumberStyles.AllowCurrencySymbol |
+                                      NumberStyles.AllowHexSpecifier);
                 } else {
                     // if next character is a white space the format should be rejected
-                    numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
+                    numberStyles &= ~(NumberStyles.AllowLeadingWhite |
+                                      NumberStyles.AllowLeadingSign |
+                                      NumberStyles.AllowTrailingSign |
+                                      NumberStyles.AllowHexSpecifier);
                     break;
                 }
 
@@ -871,21 +933,31 @@ public readonly partial struct Fraction {
             }
 
             if ((numberStyles & NumberStyles.AllowLeadingSign) != 0) {
-                if (numberFormatInfo.NegativeSign is { Length: > 0 } negativeSign && startsWith(value, negativeSign, startIndex)) {
+                if (numberFormatInfo.NegativeSign is { Length: > 0 } negativeSign &&
+                    startsWith(value, negativeSign, startIndex)) {
                     isNegative = true;
                     startIndex += negativeSign.Length;
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowHexSpecifier);
                     } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowCurrencySymbol |
                                           NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowLeadingWhite |
                                           NumberStyles.AllowHexSpecifier);
                         break;
                     }
@@ -893,21 +965,31 @@ public readonly partial struct Fraction {
                     continue;
                 }
 
-                if (numberFormatInfo.PositiveSign is { Length: > 0 } positiveSign && startsWith(value, positiveSign, startIndex)) {
+                if (numberFormatInfo.PositiveSign is { Length: > 0 } positiveSign &&
+                    startsWith(value, positiveSign, startIndex)) {
                     isNegative = false;
                     startIndex += positiveSign.Length;
                     if (currencyDetected) {
                         // any number of white-spaces are allowed following a leading currency symbol (but no other signs)
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowHexSpecifier);
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowHexSpecifier);
                     } else if (currencyAllowed && startsWith(value, currencySymbol, startIndex)) {
                         // there can be no more currency symbols but there could be more white-spaces (we skip and continue) 
                         currencyDetected = true;
                         startIndex += currencySymbol.Length;
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowCurrencySymbol |
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowCurrencySymbol |
                                           NumberStyles.AllowHexSpecifier);
                     } else {
                         // if next character is a white space the format should be rejected
-                        numberStyles &= ~(NumberStyles.AllowLeadingSign | NumberStyles.AllowTrailingSign | NumberStyles.AllowParentheses | NumberStyles.AllowLeadingWhite |
+                        numberStyles &= ~(NumberStyles.AllowLeadingSign |
+                                          NumberStyles.AllowTrailingSign |
+                                          NumberStyles.AllowParentheses |
+                                          NumberStyles.AllowLeadingWhite |
                                           NumberStyles.AllowHexSpecifier);
                         break;
                     }
@@ -930,7 +1012,8 @@ public readonly partial struct Fraction {
 
             // this is either an expected hex string or an invalid format
             return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
-                ? TryParseInteger(value, numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, startIndex, endIndex, isNegative, out fraction)
+                ? TryParseInteger(value, numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, startIndex,
+                    endIndex, isNegative, out fraction)
                 : CannotParse(out fraction); // unexpected character
         } while (startIndex < endIndex);
 
@@ -939,9 +1022,12 @@ public readonly partial struct Fraction {
         }
 
         if (isNegative) {
-            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign);
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite |
+                              NumberStyles.AllowLeadingSign);
         } else {
-            numberStyles &= ~(NumberStyles.AllowLeadingWhite | NumberStyles.AllowLeadingSign | NumberStyles.AllowParentheses);
+            numberStyles &= ~(NumberStyles.AllowLeadingWhite |
+                              NumberStyles.AllowLeadingSign |
+                              NumberStyles.AllowParentheses);
         }
 
         // examine the trailing characters
@@ -971,14 +1057,16 @@ public readonly partial struct Fraction {
             }
 
             if ((numberStyles & NumberStyles.AllowTrailingSign) != 0) {
-                if (numberFormatInfo.NegativeSign is { Length: > 0 } negativeSign && endsWith(value, negativeSign, endIndex)) {
+                if (numberFormatInfo.NegativeSign is { Length: > 0 } negativeSign &&
+                    endsWith(value, negativeSign, endIndex)) {
                     isNegative = true;
                     numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
                     endIndex -= negativeSign.Length;
                     continue;
                 }
 
-                if (numberFormatInfo.PositiveSign is { Length: > 0 } positiveSign && endsWith(value, positiveSign, endIndex)) {
+                if (numberFormatInfo.PositiveSign is { Length: > 0 } positiveSign &&
+                    endsWith(value, positiveSign, endIndex)) {
                     isNegative = false;
                     numberStyles &= ~(NumberStyles.AllowTrailingSign | NumberStyles.AllowHexSpecifier);
                     endIndex -= positiveSign.Length;
@@ -1000,7 +1088,8 @@ public readonly partial struct Fraction {
 
             // this is either an expected hex string or an invalid format
             return (numberStyles & NumberStyles.AllowHexSpecifier) != 0
-                ? TryParseInteger(value, numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, startIndex, endIndex, isNegative, out fraction)
+                ? TryParseInteger(value, numberStyles & ~NumberStyles.AllowTrailingSign, formatProvider, startIndex,
+                    endIndex, isNegative, out fraction)
                 : CannotParse(out fraction); // unexpected character
         } while (startIndex < endIndex);
 
@@ -1012,7 +1101,9 @@ public readonly partial struct Fraction {
             return CannotParse(out fraction); // failed to find a closing parentheses
         }
 
-        numberStyles &= ~(NumberStyles.AllowTrailingWhite | NumberStyles.AllowTrailingSign | NumberStyles.AllowCurrencySymbol);
+        numberStyles &= ~(NumberStyles.AllowTrailingWhite |
+                          NumberStyles.AllowTrailingSign |
+                          NumberStyles.AllowCurrencySymbol);
         // at this point value[startIndex, endIndex] should correspond to the number without the sign (or the format is invalid)
 
         if (startIndex == endIndex - 1) {
@@ -1021,11 +1112,13 @@ public readonly partial struct Fraction {
         }
 
         if ((numberStyles & NumberStyles.AllowExponent) != 0) {
-            return TryParseWithExponent(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, normalize, out fraction);
+            return TryParseWithExponent(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative,
+                normalize, out fraction);
         }
 
         return decimalsAllowed
-            ? TryParseDecimalNumber(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, normalize, out fraction)
+            ? TryParseDecimalNumber(value, numberStyles, numberFormatInfo, startIndex, endIndex, isNegative, normalize,
+                out fraction)
             : TryParseInteger(value, numberStyles, formatProvider, startIndex, endIndex, isNegative, out fraction);
 
         static bool startsWith(string fractionString, string testString, int startIndex) {
@@ -1033,13 +1126,7 @@ public readonly partial struct Fraction {
                 return false;
             }
 
-            for (var i = 0; i < testString.Length; i++) {
-                if (fractionString[i + startIndex] != testString[i]) {
-                    return false;
-                }
-            }
-
-            return true;
+            return !testString.Where((t, i) => fractionString[i + startIndex] != t).Any();
         }
 
         static bool endsWith(string fractionString, string testString, int endIndex) {
@@ -1047,7 +1134,8 @@ public readonly partial struct Fraction {
         }
     }
 
-    private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo,
+    private static bool TryParseWithExponent(string valueString, NumberStyles parseNumberStyles,
+        NumberFormatInfo numberFormatInfo,
         int startIndex, int endIndex, bool isNegative, bool reduceTerms, out Fraction fraction) {
         // 1. try to find the exponent character index
         parseNumberStyles &= ~NumberStyles.AllowExponent;
@@ -1055,8 +1143,10 @@ public readonly partial struct Fraction {
         if (exponentIndex == -1) {
             // no exponent found
             return (parseNumberStyles & NumberStyles.AllowDecimalPoint) != 0
-                ? TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, reduceTerms, out fraction)
-                : TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
+                ? TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex,
+                    isNegative, reduceTerms, out fraction)
+                : TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative,
+                    out fraction);
         }
 
         if (startIndex == exponentIndex) {
@@ -1065,17 +1155,20 @@ public readonly partial struct Fraction {
 
         // 2. try to parse the exponent (w.r.t. the scientific notation format)
         var exponentString = valueString.Substring(exponentIndex + 1, endIndex - exponentIndex - 1);
-        if (!int.TryParse(exponentString, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo, out var exponent)) {
+        if (!int.TryParse(exponentString, NumberStyles.AllowLeadingSign | NumberStyles.Integer, numberFormatInfo,
+                out var exponent)) {
             return CannotParse(out fraction);
         }
 
         // 3. try to parse the coefficient (w.r.t. the decimal separator allowance)
         if (startIndex == endIndex - 1 || (parseNumberStyles & NumberStyles.AllowDecimalPoint) == 0) {
-            if (!TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, out fraction)) {
+            if (!TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex,
+                    isNegative, out fraction)) {
                 return false;
             }
         } else {
-            if (!TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex, isNegative, reduceTerms, out fraction)) {
+            if (!TryParseDecimalNumber(valueString, parseNumberStyles, numberFormatInfo, startIndex, exponentIndex,
+                    isNegative, reduceTerms, out fraction)) {
                 return false;
             }
         }
@@ -1085,12 +1178,15 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles, NumberFormatInfo numberFormatInfo,
+    private static bool TryParseDecimalNumber(string valueString, NumberStyles parseNumberStyles,
+        NumberFormatInfo numberFormatInfo,
         int startIndex, int endIndex, bool isNegative, bool reduceTerms, out Fraction fraction) {
         // 1. find the position of the decimal separator (if any)
-        var decimalSeparatorIndex = valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, startIndex, endIndex - startIndex, StringComparison.Ordinal);
+        var decimalSeparatorIndex = valueString.IndexOf(numberFormatInfo.NumberDecimalSeparator, startIndex,
+            endIndex - startIndex, StringComparison.Ordinal);
         if (decimalSeparatorIndex == -1) {
-            return TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative, out fraction);
+            return TryParseInteger(valueString, parseNumberStyles, numberFormatInfo, startIndex, endIndex, isNegative,
+                out fraction);
         }
 
         // 2. validate the format of the string after the radix
@@ -1101,7 +1197,8 @@ public readonly partial struct Fraction {
         }
 
         if ((parseNumberStyles & NumberStyles.AllowThousands) != 0) {
-            if (valueString.IndexOf(numberFormatInfo.NumberGroupSeparator, decimalSeparatorIndex + decimalSeparatorLength, StringComparison.Ordinal) != -1) {
+            if (valueString.IndexOf(numberFormatInfo.NumberGroupSeparator,
+                    decimalSeparatorIndex + decimalSeparatorLength, StringComparison.Ordinal) != -1) {
                 return CannotParse(out fraction);
             }
         }
@@ -1109,7 +1206,8 @@ public readonly partial struct Fraction {
         // 3. extract the value of the string corresponding to the number without the decimal separator: " 0.123 " should return "0123"
         var integerString = string.Concat(
             valueString.Substring(startIndex, decimalSeparatorIndex - startIndex),
-            valueString.Substring(decimalSeparatorIndex + decimalSeparatorLength, endIndex - decimalSeparatorIndex - decimalSeparatorLength));
+            valueString.Substring(decimalSeparatorIndex + decimalSeparatorLength,
+                endIndex - decimalSeparatorIndex - decimalSeparatorLength));
 
         if (!BigInteger.TryParse(integerString, parseNumberStyles, numberFormatInfo, out var numerator)) {
             return CannotParse(out fraction);
@@ -1136,9 +1234,11 @@ public readonly partial struct Fraction {
         return true;
     }
 
-    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles, IFormatProvider? formatProvider,
+    private static bool TryParseInteger(string valueString, NumberStyles parseNumberStyles,
+        IFormatProvider? formatProvider,
         int startIndex, int endIndex, bool isNegative, out Fraction fraction) {
-        if (!BigInteger.TryParse(valueString.Substring(startIndex, endIndex - startIndex), parseNumberStyles, formatProvider, out var bigInteger)) {
+        if (!BigInteger.TryParse(valueString.Substring(startIndex, endIndex - startIndex), parseNumberStyles,
+                formatProvider, out var bigInteger)) {
             return CannotParse(out fraction);
         }
 

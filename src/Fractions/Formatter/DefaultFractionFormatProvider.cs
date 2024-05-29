@@ -12,8 +12,8 @@ public class DefaultFractionFormatProvider : IFormatProvider {
     public static readonly IFormatProvider Instance = new DefaultFractionFormatProvider();
 
     object IFormatProvider.GetFormat(Type formatType) {
-            return formatType == typeof (Fraction) 
-                ? DefaultFractionFormatter.Instance
-                : null;
-        }
+        return formatType == typeof(Fraction)
+            ? DefaultFractionFormatter.Instance
+            : null;
+    }
 }

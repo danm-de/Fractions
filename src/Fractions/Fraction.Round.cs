@@ -30,7 +30,7 @@ public readonly partial struct Fraction {
             throw new ArgumentOutOfRangeException(nameof(decimals));
         }
 #endif
-        
+
         var numerator = fraction.Numerator;
         var denominator = fraction.Denominator;
         if (denominator.IsOne || denominator.IsZero) {
@@ -70,7 +70,7 @@ public readonly partial struct Fraction {
         if (denominator.IsZero) {
             throw new DivideByZeroException();
         }
-        
+
         if (numerator.IsZero || denominator.IsOne) {
             return numerator;
         }

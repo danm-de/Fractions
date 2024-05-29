@@ -14,7 +14,7 @@ public readonly partial struct Fraction {
     public static Fraction operator +(Fraction a, Fraction b) => a.Add(b);
 
     public static Fraction operator -(Fraction a, Fraction b) => a.Subtract(b);
-    
+
     public static Fraction operator -(Fraction a) => a.Negate();
 
     public static Fraction operator *(Fraction a, Fraction b) => a.Multiply(b);

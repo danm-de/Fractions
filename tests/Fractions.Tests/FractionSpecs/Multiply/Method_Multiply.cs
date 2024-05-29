@@ -247,8 +247,10 @@ public class When_multiplying_with_infinity {
     private static IEnumerable<TestCaseData> TestCases {
         get {
             // positive infinity with positive infinity
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity, Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 0, false), Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity,
+                Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 0, false),
+                Fraction.PositiveInfinity);
 
             // positive infinity with any other number
             yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(5, 4), Fraction.PositiveInfinity);
@@ -258,12 +260,16 @@ public class When_multiplying_with_infinity {
             yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.MinusOne, Fraction.NegativeInfinity);
             yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 4), Fraction.NegativeInfinity);
             yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-4, 5), Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 0, false), Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity,
+                Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 0, false),
+                Fraction.NegativeInfinity);
 
             // negative infinity with negative infinity
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity, Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 0, false), Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity,
+                Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 0, false),
+                Fraction.PositiveInfinity);
 
             // negative infinity with any other number
             yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 4), Fraction.NegativeInfinity);
@@ -273,8 +279,10 @@ public class When_multiplying_with_infinity {
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.MinusOne, Fraction.PositiveInfinity);
             yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 4), Fraction.PositiveInfinity);
             yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-4, 5), Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity, Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 0, false), Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity,
+                Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 0, false),
+                Fraction.NegativeInfinity);
         }
     }
 
@@ -339,7 +347,7 @@ public class When_multiplying_without_normalization {
                 .Returns(new Fraction(10, 1000, false));
 
             #endregion
-            
+
             #region 0.1m * 0.5XX
 
             // {1/10} * {5/10} == {1/20}        // the denominator should be reduced incrementally (x * 0.5 * 0.2 should be the same as x * 0.1)
@@ -477,7 +485,7 @@ public class When_multiplying_without_normalization {
                 .Returns(new Fraction(10, 1000, false));
 
             #endregion
-            
+
             #region 0.10m * 0.5XX
 
             // {10/100} * {5/10} == {1/20}       // the denominator should be reduced incrementally (x * 0.5 * 0.2 should be the same as x * 0.1)
@@ -619,7 +627,7 @@ public class When_multiplying_without_normalization {
             #endregion
         }
     }
-    
+
     [Test]
     [TestCaseSource(nameof(TestCases))]
     public Fraction The_result_should_preserve_the_number_precision(Fraction a, Fraction b) {

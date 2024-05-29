@@ -3,8 +3,7 @@
 /// <summary>
 /// The fraction's state.
 /// </summary>
-public enum FractionState
-{
+public enum FractionState {
     /// <summary>
     /// Unknown state.
     /// </summary>

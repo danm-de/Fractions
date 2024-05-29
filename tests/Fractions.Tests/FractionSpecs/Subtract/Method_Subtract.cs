@@ -155,8 +155,10 @@ public class When_subtracting_with_infinity {
             yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.MinusOne, Fraction.PositiveInfinity);
             yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 4), Fraction.PositiveInfinity);
             yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-4, 5), Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.PositiveInfinity);
-            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 0, false), Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity,
+                Fraction.PositiveInfinity);
+            yield return new TestCaseData(Fraction.PositiveInfinity, new Fraction(-5, 0, false),
+                Fraction.PositiveInfinity);
 
             // negative infinity with negative infinity
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity, Fraction.NaN);
@@ -170,8 +172,10 @@ public class When_subtracting_with_infinity {
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.MinusOne, Fraction.NegativeInfinity);
             yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-5, 4), Fraction.NegativeInfinity);
             yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(-4, 5), Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity, Fraction.NegativeInfinity);
-            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 0, false), Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity,
+                Fraction.NegativeInfinity);
+            yield return new TestCaseData(Fraction.NegativeInfinity, new Fraction(5, 0, false),
+                Fraction.NegativeInfinity);
         }
     }
 

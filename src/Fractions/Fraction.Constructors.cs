@@ -3,8 +3,7 @@ using System.Numerics;
 
 namespace Fractions;
 
-public readonly partial struct Fraction
-{
+public readonly partial struct Fraction {
     /// <summary>
     ///     Initializes a new instance of the Fraction struct with the specified numerator and denominator.
     /// </summary>
@@ -23,7 +22,7 @@ public readonly partial struct Fraction
     /// <param name="numerator">Numerator</param>
     /// <param name="denominator">Denominator</param>
     public Fraction(BigInteger numerator, BigInteger denominator) {
-        this = GetReducedFraction(numerator, denominator); 
+        this = GetReducedFraction(numerator, denominator);
     }
 
     /// <summary>

@@ -18,17 +18,17 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(true);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(1, 2)).Returns(true);
             yield return new TestCaseData(new Fraction(2, 4, normalize: false),
-                    new Fraction(2, 4, normalize: false)).Returns(true);
+                new Fraction(2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(2, -4, normalize: false)).Returns(true);
+                new Fraction(2, -4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(-2, 4, normalize: false)).Returns(true);
+                new Fraction(-2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(-2, -4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(-1, 2), new Fraction(-2, 4, normalize: false)).Returns(true);
-            
+
             // double.NaN.Equals(double.NaN) == true
-            yield return new TestCaseData(Fraction.NaN, Fraction.NaN).Returns(true); 
+            yield return new TestCaseData(Fraction.NaN, Fraction.NaN).Returns(true);
 
             // negative
             yield return new TestCaseData(Fraction.Zero, Fraction.One).Returns(false);
@@ -37,7 +37,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity).Returns(false);
             yield return new TestCaseData(Fraction.Zero, Fraction.NaN).Returns(false);
             yield return new TestCaseData(Fraction.NaN, Fraction.Zero).Returns(false);
-            
+
             // Any number with NaN
             yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NaN).Returns(false);
             yield return new TestCaseData(new Fraction(5, 4), Fraction.NaN).Returns(false);
@@ -71,7 +71,6 @@ public class When_two_fractions_are_checked_for_equality_of_value {
 
     private static IEnumerable<TestCaseData> DifferentSignsTestCases {
         get {
-            
             #region {positive/positive} and {positive/negative}
 
             // {1/1} != {1/-10}
@@ -149,7 +148,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
     [Test, TestCaseSource(nameof(DifferentSignsTestCases))]
     public bool Fractions_with_different_signs_should_not_be_equal(Fraction a, Fraction b) =>
         _sut.Equals(a, b);
-    
+
     private static IEnumerable<TestCaseData> DifferentFractionsTestCases {
         get {
             #region {positive/positive} and {positive/positive}
@@ -174,7 +173,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             #endregion
 
             #region {negative/negative} and {negative/negative}
-            
+
             // {-1/-2} < {-2/-2}
             yield return new TestCaseData(new Fraction(-1, -2, false), new Fraction(-2, -2, false)).Returns(false);
             // {-1/-2} < {-10/-10}
@@ -193,9 +192,9 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(-6, -5, false), new Fraction(-3, -2, false)).Returns(false);
 
             #endregion
-            
+
             #region {positive/positive} and {negative/negative}
-            
+
             // {1/2} < {-2/-2}
             yield return new TestCaseData(new Fraction(1, 2, false), new Fraction(-2, -2, false)).Returns(false);
             // {1/10} < {-11/-100}
@@ -218,9 +217,9 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(6, 5, false), new Fraction(-3, -2, false)).Returns(false);
 
             #endregion
-            
+
             #region {negative/negative} and {positive/positive}
-            
+
             // {-1/-2} < {2/2}
             yield return new TestCaseData(new Fraction(-1, -2, false), new Fraction(2, 2, false)).Returns(false);
             // {-10/-10} < {2/1} 
@@ -235,9 +234,9 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(-6, -5, false), new Fraction(3, 2, false)).Returns(false);
 
             #endregion
-            
+
             #region {positive/negative} and {positive/negative}
-            
+
             // {1/-2} > {2/-2}
             yield return new TestCaseData(new Fraction(1, -2, false), new Fraction(2, -2, false)).Returns(false);
             // {1/-10} > {11/-100}
@@ -254,9 +253,9 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(6, -5, false), new Fraction(3, -2, false)).Returns(false);
 
             #endregion
-            
+
             #region {positive/negative} and {negative/positive}
-            
+
             // {1/-2} > {-2/2}
             yield return new TestCaseData(new Fraction(1, -2, false), new Fraction(-2, 2, false)).Returns(false);
             // {10/-10} > {-2/1} 
@@ -273,7 +272,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             #endregion
 
             #region {negative/positive} and {positive/negative}
-            
+
             // {-1/2} > {2/-2}
             yield return new TestCaseData(new Fraction(-1, 2, false), new Fraction(2, -2, false)).Returns(false);
             // {-1/1} > {2/-1} 
@@ -298,7 +297,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             #endregion
 
             #region {negative/positive} and {negative/positive}
-            
+
             // {-1/2} > {-2/2}
             yield return new TestCaseData(new Fraction(-1, 2, false), new Fraction(-2, 2, false)).Returns(false);
             // {-11/10} < {-1/1} 
@@ -319,12 +318,12 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             #endregion
         }
     }
-    
+
     [Test, TestCaseSource(nameof(DifferentFractionsTestCases))]
     public bool Different_Fractions_with_same_signs_should_not_be_equal(Fraction a, Fraction b) => _sut.Equals(a, b);
+
     private static IEnumerable<TestCaseData> EquivalentFractionsTestCases {
         get {
-            
             #region {positive/positive} and {positive/positive}
 
             // {10/10} == {1/1}
@@ -342,7 +341,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(-10, -100, false), new Fraction(-1, -10, false)).Returns(true);
 
             #endregion
-            
+
             #region {positive/positive} and {negative/negative}
 
             // {10/10} == {-1/-1} 
@@ -353,16 +352,16 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(10, 100, false), new Fraction(-1, -10, false)).Returns(true);
 
             #endregion
-            
+
             #region {negative/negative} and {positive/positive}
 
             // {-10/-10} == {1/1} 
             yield return new TestCaseData(new Fraction(-10, -10, false), new Fraction(1, 1, false)).Returns(true);
             // {-1/-10} == {10/100}
-            yield return new TestCaseData(new Fraction(-1,- 10, false), new Fraction(10, 100, false)).Returns(true);
+            yield return new TestCaseData(new Fraction(-1, -10, false), new Fraction(10, 100, false)).Returns(true);
 
             #endregion
-            
+
             #region {positive/negative} and {positive/negative}
 
             // {10/-10} == {1/-1} 
@@ -371,7 +370,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(10, -100, false)).Returns(true);
 
             #endregion
-            
+
             #region {positive/negative} and {negative/positive}
 
             // {10/-10} == {-1/1} 
@@ -402,7 +401,7 @@ public class When_two_fractions_are_checked_for_equality_of_value {
             #endregion
         }
     }
-    
+
     [Test, TestCaseSource(nameof(EquivalentFractionsTestCases))]
     public bool Equivalent_Fractions_should_be_equal(Fraction a, Fraction b) => _sut.Equals(a, b);
 
@@ -449,11 +448,11 @@ public class When_the_hash_codes_of_two_fractions_are_checked {
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(true);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(1, 2)).Returns(true);
             yield return new TestCaseData(new Fraction(2, 4, normalize: false),
-                    new Fraction(2, 4, normalize: false)).Returns(true);
+                new Fraction(2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(2, -4, normalize: false)).Returns(true);
+                new Fraction(2, -4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(-2, 4, normalize: false)).Returns(true);
+                new Fraction(-2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(2, 4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(-2, -4, normalize: false)).Returns(true);
             yield return new TestCaseData(new Fraction(-1, 2), new Fraction(-2, 4, normalize: false)).Returns(true);
@@ -463,7 +462,7 @@ public class When_the_hash_codes_of_two_fractions_are_checked {
             yield return new TestCaseData(new Fraction(100), new Fraction(10)).Returns(false);
             yield return new TestCaseData(new Fraction(int.MaxValue), new Fraction(int.MinValue + 1)).Returns(false);
             yield return new TestCaseData(new Fraction(double.MaxValue),
-                    new Fraction(double.MinValue + double.Epsilon)).Returns(false);
+                new Fraction(double.MinValue + double.Epsilon)).Returns(false);
 
             yield return new TestCaseData(Fraction.Zero, Fraction.One).Returns(false);
             yield return new TestCaseData(Fraction.One, Fraction.Zero).Returns(false);

@@ -87,7 +87,8 @@ public class When_rounding_a_decimal_fraction : Spec {
             }
 
             // one third: (1/3) rounded to 2 decimals should always be 0.34 (34/100) when rounding up
-            yield return new TestCaseData(new Fraction(1, 3), 2, MidpointRounding.ToPositiveInfinity, new Fraction(34, 100)); // 0.34
+            yield return new TestCaseData(new Fraction(1, 3), 2, MidpointRounding.ToPositiveInfinity,
+                new Fraction(34, 100)); // 0.34
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToPositiveInfinity }) {
                 // minus one third: (-1/3) rounded to 2 decimals should always be -0.33 (-33/100)
@@ -95,7 +96,8 @@ public class When_rounding_a_decimal_fraction : Spec {
             }
 
             // minus one third: (-1/3) rounded to 2 decimals should always be -0.34 (-34/100) when rounding down
-            yield return new TestCaseData(new Fraction(-1, 3), 2, MidpointRounding.ToNegativeInfinity, new Fraction(-34, 100)); // -0.34
+            yield return new TestCaseData(new Fraction(-1, 3), 2, MidpointRounding.ToNegativeInfinity,
+                new Fraction(-34, 100)); // -0.34
 #endif
             foreach (var roundingMode in new[] { MidpointRounding.ToEven, MidpointRounding.AwayFromZero }) {
                 // two thirds: (2/3) rounded to 2 decimals should always be 0.67 (67/100)
@@ -105,7 +107,8 @@ public class When_rounding_a_decimal_fraction : Spec {
             }
 #if NET
             // two thirds: (2/3) rounded to 2 decimals should always be 0.67 (67/100)
-            yield return new TestCaseData(new Fraction(2, 3), 2, MidpointRounding.ToPositiveInfinity, new Fraction(67, 100)); // 0.67
+            yield return new TestCaseData(new Fraction(2, 3), 2, MidpointRounding.ToPositiveInfinity,
+                new Fraction(67, 100)); // 0.67
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToNegativeInfinity }) {
                 // two thirds: (2/3) rounded to 2 decimals should always be 0.66 (66/100) when rounded down
@@ -118,7 +121,8 @@ public class When_rounding_a_decimal_fraction : Spec {
             }
 
             // minus two thirds: (-2/3) rounded to 2 decimals should always be -0.67 (-67/100) when rounded down
-            yield return new TestCaseData(new Fraction(-2, 3), 2, MidpointRounding.ToNegativeInfinity, new Fraction(-67, 100)); // 0.67
+            yield return new TestCaseData(new Fraction(-2, 3), 2, MidpointRounding.ToNegativeInfinity,
+                new Fraction(-67, 100)); // 0.67
 #endif
 
             foreach (var roundingMode in new[] { MidpointRounding.ToEven, MidpointRounding.AwayFromZero }) {
@@ -135,7 +139,8 @@ public class When_rounding_a_decimal_fraction : Spec {
             }
 
             // four thirds: (4/3) rounded to 2 decimals should always be 1.34 (134/100) when rounding up
-            yield return new TestCaseData(new Fraction(4, 3), 2, MidpointRounding.ToPositiveInfinity, new Fraction(134, 100)); // 1.34
+            yield return new TestCaseData(new Fraction(4, 3), 2, MidpointRounding.ToPositiveInfinity,
+                new Fraction(134, 100)); // 1.34
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToPositiveInfinity }) {
                 // minus four thirds: (-4/3) rounded to 2 decimals should always be -1.33 (-133/100)
@@ -143,7 +148,8 @@ public class When_rounding_a_decimal_fraction : Spec {
             }
 
             // minus four thirds: (-4/3) rounded to 2 decimals should always be -1.34 (-134/100) when rounding down
-            yield return new TestCaseData(new Fraction(-4, 3), 2, MidpointRounding.ToNegativeInfinity, new Fraction(-134, 100)); // -1.34
+            yield return new TestCaseData(new Fraction(-4, 3), 2, MidpointRounding.ToNegativeInfinity,
+                new Fraction(-134, 100)); // -1.34
 #endif
         }
     }

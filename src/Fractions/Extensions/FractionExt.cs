@@ -9,7 +9,6 @@ namespace Fractions;
 /// Extension methods for the <see cref="Fraction"/> data type
 /// </summary>
 public static class FractionExt {
-
     /// <summary>
     /// Returns the square root of <paramref name="x"/>.
     /// Use <paramref name="accuracy"/> to set the accuracy by specifying the number of digits after the decimal point of accuracy.

@@ -3,8 +3,7 @@ using Fractions.Properties;
 
 namespace Fractions;
 
-public readonly partial struct Fraction
-{
+public readonly partial struct Fraction {
     /// <summary>
     /// Compares the calculated value with the supplied <paramref name="other"/>.
     /// </summary>
@@ -59,9 +58,10 @@ public readonly partial struct Fraction
             return 1;
         }
 
-        if (denominator1 == denominator2) { 
-            return denominator1.IsZero ? 
-                numerator1.Sign.CompareTo(numerator2.Sign) :  // both fractions represent infinities
+        if (denominator1 == denominator2) {
+            return denominator1.IsZero
+                ? numerator1.Sign.CompareTo(numerator2.Sign)
+                : // both fractions represent infinities
                 numerator1.CompareTo(numerator2); // any other two numbers (includes all integers)
         }
 

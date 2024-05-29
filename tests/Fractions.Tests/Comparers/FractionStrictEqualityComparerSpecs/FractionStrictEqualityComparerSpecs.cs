@@ -97,7 +97,7 @@ public class When_the_hash_codes_of_two_fractions_are_checked {
 
             // negative
             yield return new TestCaseData(new Fraction(2, -4, normalize: false),
-                    new Fraction(-2, 4, normalize: false)).Returns(false);
+                new Fraction(-2, 4, normalize: false)).Returns(false);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(2, 4, normalize: false)).Returns(false);
             yield return new TestCaseData(new Fraction(1, 2), new Fraction(-2, -4, normalize: false)).Returns(false);
             yield return new TestCaseData(new Fraction(-1, 2), new Fraction(-2, 4, normalize: false)).Returns(false);

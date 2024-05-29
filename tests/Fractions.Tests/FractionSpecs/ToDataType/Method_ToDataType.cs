@@ -275,7 +275,8 @@ public class When_converting_to_decimal_with_trailing_zeros : Spec {
 
     [Test]
     public void Positive_fraction_outside_the_decimal_range_converts_with_exact_precision() {
-        var fraction = new Fraction(new BigInteger(decimal.MaxValue) * 10, new BigInteger(decimal.MaxValue) * 20, false);
+        var fraction = new Fraction(new BigInteger(decimal.MaxValue) * 10, new BigInteger(decimal.MaxValue) * 20,
+            false);
         var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
         decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("0.50");
     }
@@ -310,7 +311,8 @@ public class When_converting_to_decimal_with_trailing_zeros : Spec {
 
     [Test]
     public void Negative_fraction_outside_the_decimal_range_converts_with_exact_precision() {
-        var fraction = new Fraction(new BigInteger(decimal.MaxValue) * -10, new BigInteger(decimal.MaxValue) * 20, false);
+        var fraction = new Fraction(new BigInteger(decimal.MaxValue) * -10, new BigInteger(decimal.MaxValue) * 20,
+            false);
         var decimalWithTrailingZeros = fraction.ToDecimalWithTrailingZeros();
         decimalWithTrailingZeros.ToString(CultureInfo.InvariantCulture).Should().Be("-0.50");
     }

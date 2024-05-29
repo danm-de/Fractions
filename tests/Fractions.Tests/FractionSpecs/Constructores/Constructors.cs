@@ -253,7 +253,9 @@ public static class Constructing_Zero {
 
         [Test]
         public void The_resulting_State_should_be_Normalized() {
-            ResultingFraction.State.Should().Be(FractionState.IsNormalized, "_normalizationNotApplied: defaults to false");
+            ResultingFraction.State
+                .Should()
+                .Be(FractionState.IsNormalized, "_normalizationNotApplied: defaults to false");
         }
     }
 

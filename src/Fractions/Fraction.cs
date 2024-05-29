@@ -19,7 +19,7 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
     private static readonly BigInteger TEN = new(10);
 #pragma warning restore IDE1006
 
-    private readonly BigInteger? _denominator; 
+    private readonly BigInteger? _denominator;
 
     /// <summary>
     /// No normalization was performed when creating the fraction.

@@ -129,10 +129,9 @@ public class When_comparing_two_fractions : Spec {
         return a.CompareTo(b);
     }
 
-    
+
     private static IEnumerable<TestCaseData> DifferentSignsTestCases {
         get {
-            
             #region {positive/positive} and {positive/negative}
 
             // {1/1} != {1/-10}
@@ -206,11 +205,11 @@ public class When_comparing_two_fractions : Spec {
             #endregion
         }
     }
-    
+
     [Test, TestCaseSource(nameof(DifferentSignsTestCases))]
     public int Fractions_with_different_signs_should_return_non_zero(Fraction a, Fraction b) => a.CompareTo(b);
 
-    
+
     private static IEnumerable<TestCaseData> EqualFractionsTestCases {
         get {
             #region {positive/positive} and {positive/positive}
@@ -230,7 +229,7 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(-10, -100, false), new Fraction(-1, -10, false)).Returns(0);
 
             #endregion
-            
+
             #region {positive/positive} and {negative/negative}
 
             // {10/10} == {-1/-1} 
@@ -241,16 +240,16 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(10, 100, false), new Fraction(-1, -10, false)).Returns(0);
 
             #endregion
-            
+
             #region {negative/negative} and {positive/positive}
 
             // {-10/-10} == {1/1} 
             yield return new TestCaseData(new Fraction(-10, -10, false), new Fraction(1, 1, false)).Returns(0);
             // {-1/-10} == {10/100}
-            yield return new TestCaseData(new Fraction(-1,- 10, false), new Fraction(10, 100, false)).Returns(0);
+            yield return new TestCaseData(new Fraction(-1, -10, false), new Fraction(10, 100, false)).Returns(0);
 
             #endregion
-            
+
             #region {positive/negative} and {positive/negative}
 
             // {10/-10} == {1/-1} 
@@ -259,7 +258,7 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(1, -10, false), new Fraction(10, -100, false)).Returns(0);
 
             #endregion
-            
+
             #region {positive/negative} and {negative/positive}
 
             // {10/-10} == {-1/1} 
@@ -290,11 +289,11 @@ public class When_comparing_two_fractions : Spec {
             #endregion
         }
     }
-    
+
     [Test, TestCaseSource(nameof(EqualFractionsTestCases))]
     public int Equal_fractions_should_return_zero(Fraction a, Fraction b) => a.CompareTo(b);
-    
-    
+
+
     private static IEnumerable<TestCaseData> DifferentFractionsTestCases {
         get {
             #region {positive/positive} and {positive/positive}
@@ -338,7 +337,7 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(-6, -5, false), new Fraction(-3, -2, false)).Returns(-1);
 
             #endregion
-            
+
             #region {positive/positive} and {negative/negative}
 
             // {1/2} < {-2/-2}
@@ -363,9 +362,9 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(6, 5, false), new Fraction(-3, -2, false)).Returns(-1);
 
             #endregion
-            
+
             #region {negative/negative} and {positive/positive}
-            
+
             // {-1/-2} < {2/2}
             yield return new TestCaseData(new Fraction(-1, -2, false), new Fraction(2, 2, false)).Returns(-1);
             // {-10/-10} < {2/1} 
@@ -380,7 +379,7 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(-6, -5, false), new Fraction(3, 2, false)).Returns(-1);
 
             #endregion
-            
+
             #region {positive/negative} and {positive/negative}
 
             // {1/-2} > {2/-2}
@@ -399,7 +398,7 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(6, -5, false), new Fraction(3, -2, false)).Returns(1);
 
             #endregion
-            
+
             #region {positive/negative} and {negative/positive}
 
             // {1/-2} > {-2/2}
@@ -464,7 +463,7 @@ public class When_comparing_two_fractions : Spec {
             #endregion
         }
     }
-    
+
     [Test, TestCaseSource(nameof(DifferentFractionsTestCases))]
     public int Different_Fractions_with_same_signs_should_return_non_zero(Fraction a, Fraction b) => a.CompareTo(b);
 

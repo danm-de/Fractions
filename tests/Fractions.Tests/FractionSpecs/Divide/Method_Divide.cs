@@ -189,7 +189,7 @@ public class When_dividing_0_eighths_by_4 : Spec {
     public void The_result_should_be_a_Zero() {
         _result.IsZero.Should().BeTrue();
     }
-    
+
     [Test]
     public void The_result_should_be_0_over_32_exactly() {
         _result.Should().Be(new Fraction(0, 32, false));
@@ -424,7 +424,7 @@ public class When_dividing_without_normalization {
                     new Fraction(0, -10, false),
                     new Fraction(1, 10, false))
                 .Returns(new Fraction(0, -10, false));
-            
+
             #endregion
 
             #region 0.1m / 0.1XX
@@ -728,7 +728,7 @@ public class When_dividing_without_normalization {
             #endregion
         }
     }
-    
+
     [Test]
     [TestCaseSource(nameof(TestCases))]
     public Fraction The_result_should_preserve_the_number_precision(Fraction a, Fraction b) {
@@ -736,6 +736,7 @@ public class When_dividing_without_normalization {
         result.Multiply(b).Should().Be(a); // a / b = c => c * b = a
         return result;
     }
+
     public static IEnumerable<TestCaseData> OperationTestCases => TestCases.Select(x =>
         new TestCaseData((x.Arguments[0]), x.Arguments[1]));
 

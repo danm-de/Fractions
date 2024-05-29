@@ -3,8 +3,7 @@
 /// <summary>
 /// A comparator that checks two fractions for equality of value. It doesn't matter whether the numerator and denominator were reduced to the lowest common denominator.
 /// </summary>
-public sealed class FractionValueEqualityComparer : FractionComparer
-{
+public sealed class FractionValueEqualityComparer : FractionComparer {
     /// <inheritdoc />
     public override bool Equals(Fraction x, Fraction y) {
         var numerator1 = x.Numerator;
@@ -12,7 +11,7 @@ public sealed class FractionValueEqualityComparer : FractionComparer
         var numerator2 = y.Numerator;
         var denominator2 = y.Denominator;
 
-        if (denominator1 == denominator2) { 
+        if (denominator1 == denominator2) {
             return denominator1.IsZero
                 ? numerator1.Sign == numerator2.Sign // both fractions represent infinities
                 : numerator1 == numerator2;

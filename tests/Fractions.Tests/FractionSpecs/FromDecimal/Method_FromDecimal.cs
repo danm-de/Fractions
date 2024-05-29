@@ -184,12 +184,11 @@ public class When_a_fraction_is_created_with_decimal_test_numbers : Spec {
     [Test]
     [TestCaseSource(nameof(TestCaseSource))]
     public void The_unreduced_fraction_preserves_the_decimal_precision(decimal value) {
-        var fraction = Fraction.FromDecimal(value, reduceTerms:false);
+        var fraction = Fraction.FromDecimal(value, reduceTerms: false);
         fraction.ToDecimalWithTrailingZeros().ToString(CultureInfo.InvariantCulture)
             .Should().Be(value.ToString(CultureInfo.InvariantCulture));
     }
 }
-
 
 [TestFixture]
 public class When_a_fraction_is_created_with_decimal_without_reduction : Spec {
@@ -213,14 +212,14 @@ public class When_a_fraction_is_created_with_decimal_without_reduction : Spec {
             yield return new TestCaseData(-1.00m)
                 .Returns(new Fraction(-100, 100, false));
             yield return new TestCaseData(-10.0m)
-                .Returns(new Fraction(- 100,10, false));
+                .Returns(new Fraction(-100, 10, false));
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCaseSource))]
     public Fraction The_fraction_should_maintain_the_initial_precision(decimal value) {
-        var fraction = Fraction.FromDecimal(value, reduceTerms:false);
+        var fraction = Fraction.FromDecimal(value, reduceTerms: false);
         fraction.ToDecimal().Should().Be(value);
         return fraction;
     }

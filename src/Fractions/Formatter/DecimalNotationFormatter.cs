@@ -926,7 +926,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             numerator = -numerator;
             denominator = -denominator;
         }
-        
+
         if (numerator > denominator) {
             var nbDigits = CountDigits(numerator / denominator, out powerOfTen);
             if (numerator * powerOfTen < Ten * denominator) {

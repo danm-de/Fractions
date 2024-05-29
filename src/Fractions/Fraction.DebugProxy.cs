@@ -15,8 +15,12 @@ public readonly partial struct Fraction {
 
         [DebuggerDisplay("{ShortFormat}")]
         internal readonly struct StringFormatsView(Fraction fraction) {
-            public string GeneralFormat => DecimalNotationFormatter.Instance.Format("g", fraction, CultureInfo.CurrentCulture);
-            public string ShortFormat => DecimalNotationFormatter.Instance.Format("s", fraction, CultureInfo.CurrentCulture);
+            public string GeneralFormat => DecimalNotationFormatter.Instance
+                .Format("g", fraction, CultureInfo.CurrentCulture);
+
+            public string ShortFormat => DecimalNotationFormatter.Instance
+                .Format("s", fraction, CultureInfo.CurrentCulture);
+
             public string SimplifiedFraction => fraction.ToString("m");
         }
 
