@@ -23,7 +23,11 @@ public class When_rounding_a_decimal_fraction : Spec {
         new Fraction(1, 3), new Fraction(-1, 3),
         new Fraction(2, 3), new Fraction(-2, 3),
         new Fraction(1999999999999999991, 3), new Fraction(-1999999999999999991, 3),
-        new Fraction(2000000000000000001, 3), new Fraction(-2000000000000000001, 3)
+        new Fraction(2000000000000000001, 3), new Fraction(-2000000000000000001, 3),
+        new Fraction(10, 20, false), new Fraction(-10, -20, false),
+        new Fraction(-10, 20, false), new Fraction(10, -20, false),
+        new Fraction(9, 20, false), new Fraction(-9, -20, false),
+        new Fraction(-9, 20, false), new Fraction(9, -20, false)
     ];
 
     private static readonly int[] DecimalPlaces = Enumerable.Range(0, 6).ToArray();
