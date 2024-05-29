@@ -20,6 +20,15 @@ public readonly partial struct Fraction : IEquatable<Fraction>, IComparable, ICo
 #pragma warning restore IDE1006
 
     private readonly BigInteger? _denominator; 
+
+    /// <summary>
+    /// No normalization was performed when creating the fraction.
+    /// </summary>
+    /// <remarks>
+    /// If the value is <c>true</c>, we don't know whether it is a real or improper fraction.
+    /// The numerator and denominator do not necessarily have to be reduced to the lowest common divisor.
+    /// The signs may not be normalized. NaN and/or Infinity may not be normalized.
+    /// </remarks>
     private readonly bool _normalizationNotApplied;
 
     /// <summary>

@@ -1262,7 +1262,7 @@ public class When_creating_a_fraction_from_the_string_0_over_0 : Spec {
     public void The_result_should_be_NaN(
         [Values("0/0", "-0/0", " -0/0", "-0/ 0", "0 /-0", "0 / -0")]
         string value) {
-        Fraction.FromString(value).Should().Be(Fraction.NaN);
+        Fraction.FromString(value).IsNaN.Should().BeTrue();
     }
 }
 
@@ -1296,9 +1296,9 @@ public class When_creating_a_fraction_from_the_string_0_over_10_without_normaliz
         Fraction.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, false, out var result).Should()
             .BeTrue();
         result.IsZero.Should().BeTrue(); // this is still considered "a zero"
-        result.Should().NotBe(Fraction.Zero); // however it isn't strictly equal to the Zero
-        result.Should().Be(new Fraction(0, 10, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
+        ((object)result).Should().NotBe(Fraction.Zero, StrictTestComparer.Instance); // however it isn't strictly equal to the Zero
+        ((object)result).Should().Be(new Fraction(0, 10, false), StrictTestComparer.Instance); // rather it's a non-normalized version
+        result.Equals(Fraction.Zero).Should().BeTrue(); // Should be equal to Zero
     }
 }
 
@@ -1318,9 +1318,9 @@ public class When_creating_a_fraction_from_the_string_0_over_minus_10_without_no
         [Values("0 /-10", "0 / -10")] string value) {
         var result = Fraction.FromString(value, NumberStyles.Any, CultureInfo.InvariantCulture, false);
         result.IsZero.Should().BeTrue(); // this is still considered "a zero"
-        result.Should().NotBe(Fraction.Zero); // however it isn't strictly equal to the Zero
-        result.Should().Be(new Fraction(0, -10, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
+        ((object)result).Should().NotBe(Fraction.Zero, StrictTestComparer.Instance); // however it isn't strictly equal to the Zero
+        ((object)result).Should().Be(new Fraction(0, -10, false), StrictTestComparer.Instance); // rather it's a non-normalized version
+        result.Equals(Fraction.Zero).Should().BeTrue(); // which can be reduced to Zero
     }
 }
 
@@ -1349,9 +1349,9 @@ public class When_creating_a_fraction_from_the_string_10_over_0_without_normaliz
         [Values("10/0", "10 /-0", "10 / -0")] string value) {
         var result = Fraction.FromString(value, NumberStyles.Any, CultureInfo.InvariantCulture, false);
         result.IsPositiveInfinity.Should().BeTrue(); // this is still considered "a positive infinity"
-        result.Should().NotBe(Fraction.PositiveInfinity); // however it isn't strictly equal to the PositiveInfinity
-        result.Should().Be(new Fraction(10, 0, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.PositiveInfinity).Should().BeTrue(); // which can be reduced to PositiveInfinity
+        ((object)result).Should().NotBe(Fraction.PositiveInfinity, StrictTestComparer.Instance); // however it isn't strictly equal to the PositiveInfinity
+        ((object)result).Should().Be(new Fraction(10, 0, false), StrictTestComparer.Instance); // rather it's a non-normalized version
+        result.Equals(Fraction.PositiveInfinity).Should().BeTrue(); // should be equal to PositiveInfinity
     }
 }
 
@@ -1382,8 +1382,8 @@ public class When_creating_a_fraction_from_the_string_minus_10_over_0_without_no
         string value) {
         var result = Fraction.FromString(value, NumberStyles.Any, CultureInfo.InvariantCulture, false);
         result.IsNegativeInfinity.Should().BeTrue(); // this is still considered "a negative infinity"
-        result.Should().NotBe(Fraction.NegativeInfinity); // however it isn't strictly equal to the NegativeInfinity
-        result.Should().Be(new Fraction(-10, 0, false)); // rather it's a non-normalized version
-        result.IsEquivalentTo(Fraction.NegativeInfinity).Should().BeTrue(); // which can be reduced to NegativeInfinity
+        ((object)result).Should().NotBe(Fraction.NegativeInfinity, StrictTestComparer.Instance); // however it isn't strictly equal to the NegativeInfinity
+        ((object)result).Should().Be(new Fraction(-10, 0, false), StrictTestComparer.Instance); // rather it's a non-normalized version
+        result.Equals(Fraction.NegativeInfinity).Should().BeTrue(); // which can be reduced to NegativeInfinity
     }
 }

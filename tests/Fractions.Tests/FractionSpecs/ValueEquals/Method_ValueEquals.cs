@@ -28,12 +28,12 @@ public class When_comparing_two_fractions {
             yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity).Returns(true);
             yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity).Returns(true);
             yield return new TestCaseData(new Fraction(0, 1, normalize: false), Fraction.Zero).Returns(true);
+            // special -> not normalized fraction
+            yield return new TestCaseData(new Fraction(0, 2, normalize: false), Fraction.Zero).Returns(true);
 
             // not equal
             yield return new TestCaseData(Fraction.One, Fraction.Zero).Returns(false);
             yield return new TestCaseData(Fraction.One, Fraction.NaN).Returns(false);
-            // special -> not normalized fraction
-            yield return new TestCaseData(new Fraction(0, 2, normalize: false), Fraction.Zero).Returns(false);
         }
     }
 
@@ -47,7 +47,6 @@ public class When_comparing_two_fractions {
 }
 
 [TestFixture]
-// German: Wenn zwei Brüche mit identischen Zähler und Nenner verglichen werden
 public class When_comparing_two_fractions_with_identical_numerator_and_denominator : Spec {
     private Fraction _fractionA;
     private Fraction _fractionB;
@@ -59,15 +58,13 @@ public class When_comparing_two_fractions_with_identical_numerator_and_denominat
     }
 
     [Test]
-    // German: Diese sollten als wertgleich erkannt werden
-    public void These_should_be_recognized_as_equivalent() {
-        _fractionA.IsEquivalentTo(_fractionB)
+    public void These_should_be_recognized_as_equal() {
+        _fractionA.Equals(_fractionB)
             .Should().BeTrue();
     }
 }
 
 [TestFixture]
-// German: Wenn zwei Brüche mit unterschiedlichen Zähler aber identischen Nenner verglichen werden
 public class When_comparing_two_fractions_with_different_numerator_but_identical_denominator : Spec {
     private Fraction _fractionA;
     private Fraction _fractionB;
@@ -79,15 +76,13 @@ public class When_comparing_two_fractions_with_different_numerator_but_identical
     }
 
     [Test]
-    // German: Diese sollten als nicht wertgleich erkannt werden
-    public void These_should_be_recognized_as_not_equivalent() {
-        _fractionA.IsEquivalentTo(_fractionB)
+    public void These_should_be_recognized_as_equal() {
+        _fractionA.Equals(_fractionB)
             .Should().BeFalse();
     }
 }
 
 [TestFixture]
-// German: Wenn zwei Brüche mit identischen Zähler aber unterschiedlichen Nenner verglichen werden
 public class When_comparing_two_fractions_with_identical_numerator_but_different_denominator : Spec {
     private Fraction _fractionA;
     private Fraction _fractionB;
@@ -99,15 +94,13 @@ public class When_comparing_two_fractions_with_identical_numerator_but_different
     }
 
     [Test]
-    // German: Diese sollten als nicht wertgleich erkannt werden
     public void These_should_be_recognized_as_not_equivalent() {
-        _fractionA.IsEquivalentTo(_fractionB)
+        _fractionA.Equals(_fractionB)
             .Should().BeFalse();
     }
 }
 
 [TestFixture]
-// German: Wenn der Bruch 2/4 mit dem Bruch 1/2 verglichen wird
 public class When_comparing_the_fraction_2_over_4_with_the_fraction_1_over_2 : Spec {
     private Fraction _fractionA;
     private Fraction _fractionB;
@@ -119,16 +112,8 @@ public class When_comparing_the_fraction_2_over_4_with_the_fraction_1_over_2 : S
     }
 
     [Test]
-    // German: Die Brüche sollten als nicht strukturell gleich erkannt werden
-    public void The_fractions_should_be_recognized_as_not_equal() {
+    public void The_fractions_should_be_recognized_as_equal() {
         _fractionA.Equals(_fractionB)
-            .Should().BeFalse();
-    }
-
-    [Test]
-    // German: Die Brüche sollten als wertgleich erkannt werden
-    public void The_fractions_should_be_recognized_as_equivalent() {
-        _fractionA.IsEquivalentTo(_fractionB)
             .Should().BeTrue();
     }
 }
@@ -162,11 +147,6 @@ public class When_comparing_NaN_with_NaN {
     public void Using_Equals_should_return_true() {
         Fraction.NaN.Equals(Fraction.NaN).Should().BeTrue("Because double.NaN.Equals(double.NaN) is true");
     }
-
-    [Test]
-    public void Using_IsEquivalent_should_return_true() {
-        Fraction.NaN.IsEquivalentTo(Fraction.NaN).Should().BeTrue("Because Fraction.NaN.Equals(Fraction.NaN) is true");
-    }
 }
 
 [TestFixture]
@@ -196,12 +176,6 @@ public class When_comparing_NaN_with_another_Fraction() {
     public void Using_Equals_should_return_false(Fraction fraction) {
         Fraction.NaN.Equals(fraction).Should().BeFalse();
     }
-
-    [Test]
-    [TestCaseSource(nameof(TestCases))]
-    public void Using_IsEquivalent_should_return_false(Fraction fraction) {
-        Fraction.NaN.IsEquivalentTo(fraction).Should().BeFalse();
-    }
 }
 
 [TestFixture]
@@ -225,12 +199,6 @@ public class When_comparing_PositiveInfinity_with_PositiveInfinity {
         Fraction.PositiveInfinity.Equals(Fraction.PositiveInfinity).Should()
             .BeTrue("Because double.PositiveInfinity.Equals(double.PositiveInfinity) is true");
     }
-
-    [Test]
-    public void Using_IsEquivalent_should_return_true() {
-        Fraction.PositiveInfinity.IsEquivalentTo(Fraction.PositiveInfinity).Should()
-            .BeTrue("Because Fraction.PositiveInfinity.Equals(Fraction.PositiveInfinity) is true");
-    }
 }
 
 [TestFixture]
@@ -239,34 +207,26 @@ public class When_comparing_PositiveInfinity_with_a_4_over_0 {
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_equality_operator_should_return_false() {
+    public void Using_the_equality_operator_should_return_true() {
         (Fraction.PositiveInfinity == NonReducedInfinity).Should()
-            .BeFalse("Because this is the result of a/b == (a*c)/(b*c)");
+            .BeTrue("Because this is the result of a/b == (a*c)/(b*c)");
         (NonReducedInfinity == Fraction.PositiveInfinity).Should()
-            .BeFalse("Because this is the result of (a*c)/(b*c) == a/b");
+            .BeTrue("Because this is the result of (a*c)/(b*c) == a/b");
     }
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_non_equality_operator_should_return_true() {
+    public void Using_the_non_equality_operator_should_return_false() {
         (Fraction.PositiveInfinity != NonReducedInfinity).Should()
-            .BeTrue("Because this is the result of a/b != (a*c)/(b*c)");
+            .BeFalse("Because this is the result of a/b != (a*c)/(b*c)");
         (NonReducedInfinity != Fraction.PositiveInfinity).Should()
-            .BeTrue("Because this is the result of (a*c)/(b*c) != a/b");
+            .BeFalse("Because this is the result of (a*c)/(b*c) != a/b");
     }
 
     [Test]
-    public void Using_Equals_should_return_false() {
-        Fraction.PositiveInfinity.Equals(NonReducedInfinity).Should()
-            .BeFalse("Because this is the result of (a/b).Equals((a*c, b*c))");
-        NonReducedInfinity.Equals(Fraction.PositiveInfinity).Should()
-            .BeFalse("Because this is the result of ((a*c, b*c)).Equals(a/b)");
-    }
-
-    [Test]
-    public void Using_IsEquivalent_should_return_true() {
-        Fraction.PositiveInfinity.IsEquivalentTo(NonReducedInfinity).Should().BeTrue("Because 3/0 reduces to 1/0");
-        NonReducedInfinity.IsEquivalentTo(Fraction.PositiveInfinity).Should().BeTrue("Because 3/0 reduces to 1/0");
+    public void Using_Equals_should_return_true() {
+        Fraction.PositiveInfinity.Equals(NonReducedInfinity).Should().BeTrue("Because 3/0 reduces to 1/0");
+        NonReducedInfinity.Equals(Fraction.PositiveInfinity).Should().BeTrue("Because 3/0 reduces to 1/0");
     }
 }
 
@@ -306,13 +266,6 @@ public class When_comparing_PositiveInfinity_with_another_Fraction() {
         Fraction.PositiveInfinity.Equals(fraction).Should().BeFalse();
         fraction.Equals(Fraction.PositiveInfinity).Should().BeFalse();
     }
-
-    [Test]
-    [TestCaseSource(nameof(UnequalFractionCases))]
-    public void Comparing_NaN_with_NaN_using_IsEquivalent_should_return_false(Fraction fraction) {
-        Fraction.PositiveInfinity.IsEquivalentTo(fraction).Should().BeFalse();
-        fraction.IsEquivalentTo(Fraction.PositiveInfinity).Should().BeFalse();
-    }
 }
 
 [TestFixture]
@@ -336,12 +289,6 @@ public class When_comparing_NegativeInfinity_with_NegativeInfinity {
         Fraction.NegativeInfinity.Equals(Fraction.NegativeInfinity).Should()
             .BeTrue("Because double.NegativeInfinity.Equals(double.NegativeInfinity) is true");
     }
-
-    [Test]
-    public void Using_IsEquivalent_should_return_true() {
-        Fraction.NegativeInfinity.IsEquivalentTo(Fraction.NegativeInfinity).Should()
-            .BeTrue("Because Fraction.NegativeInfinity.Equals(Fraction.NegativeInfinity) is true");
-    }
 }
 
 [TestFixture]
@@ -350,34 +297,26 @@ public class When_comparing_NegativeInfinity_with_a_minus_4_over_0 {
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_equality_operator_should_return_false() {
+    public void Using_the_equality_operator_should_return_true() {
         (Fraction.NegativeInfinity == NonReducedInfinity).Should()
-            .BeFalse("Because this is the result of a/b == (a*c)/(b*c)");
+            .BeTrue("Because this is the result of a/b == (a*c)/(b*c)");
         (NonReducedInfinity == Fraction.NegativeInfinity).Should()
-            .BeFalse("Because this is the result of (a*c)/(b*c) == a/b");
+            .BeTrue("Because this is the result of (a*c)/(b*c) == a/b");
     }
 
     [Test]
     [SuppressMessage("ReSharper", "EqualExpressionComparison")]
-    public void Using_the_non_equality_operator_should_return_true() {
+    public void Using_the_non_equality_operator_should_return_false() {
         (Fraction.NegativeInfinity != NonReducedInfinity).Should()
-            .BeTrue("Because this is the result of a/b != (a*c)/(b*c)");
+            .BeFalse("Because this is the result of a/b != (a*c)/(b*c)");
         (NonReducedInfinity != Fraction.NegativeInfinity).Should()
-            .BeTrue("Because this is the result of (a*c)/(b*c) != a/b");
+            .BeFalse("Because this is the result of (a*c)/(b*c) != a/b");
     }
 
     [Test]
-    public void Using_Equals_should_return_false() {
-        Fraction.NegativeInfinity.Equals(NonReducedInfinity).Should()
-            .BeFalse("Because this is the result of (a/b).Equals((a*c, b*c))");
-        NonReducedInfinity.Equals(Fraction.NegativeInfinity).Should()
-            .BeFalse("Because this is the result of ((a*c, b*c)).Equals(a/b)");
-    }
-
-    [Test]
-    public void Using_IsEquivalent_should_return_true() {
-        Fraction.NegativeInfinity.IsEquivalentTo(NonReducedInfinity).Should().BeTrue("Because -3/0 reduces to -1/0");
-        NonReducedInfinity.IsEquivalentTo(Fraction.NegativeInfinity).Should().BeTrue("Because -3/0 reduces to -1/0");
+    public void Using_Equals_should_return_true() {
+        Fraction.NegativeInfinity.Equals(NonReducedInfinity).Should().BeTrue("Because -3/0 reduces to -1/0");
+        NonReducedInfinity.Equals(Fraction.NegativeInfinity).Should().BeTrue("Because -3/0 reduces to -1/0");
     }
 }
 
@@ -420,8 +359,8 @@ public class When_comparing_NegativeInfinity_with_another_Fraction() {
 
     [Test]
     [TestCaseSource(nameof(UnequalFractionCases))]
-    public void Comparing_NaN_with_NaN_using_IsEquivalent_should_return_false(Fraction fraction) {
-        Fraction.NegativeInfinity.IsEquivalentTo(fraction).Should().BeFalse();
-        fraction.IsEquivalentTo(Fraction.NegativeInfinity).Should().BeFalse();
+    public void Comparing_NaN_with_NaN_using_Equals_should_return_false(Fraction fraction) {
+        Fraction.NegativeInfinity.Equals(fraction).Should().BeFalse();
+        fraction.Equals(Fraction.NegativeInfinity).Should().BeFalse();
     }
 }

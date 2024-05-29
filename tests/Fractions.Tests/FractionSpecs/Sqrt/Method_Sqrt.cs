@@ -16,7 +16,11 @@ public class If_the_Sqrt_function_is_called : Spec {
 
     [Test]
     public void The_square_root_of_minus_one_should_return_NaN() {
-        Fraction.MinusOne.Sqrt().Should().Be(Fraction.NaN, "Cannot calculate square root from a negative number");
+        var result = Fraction.MinusOne.Sqrt();
+        ((object)result).Should().Be(
+            expected: Fraction.NaN,
+            comparer: StrictTestComparer.Instance,
+            because: "Cannot calculate square root from a negative number");
     }
 
     private static IEnumerable<TestCaseData> TestCases {

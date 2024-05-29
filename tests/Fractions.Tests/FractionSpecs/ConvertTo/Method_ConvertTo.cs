@@ -62,23 +62,8 @@ public class When_comparing_1_quarter_with_2_eighths : Spec {
     }
 
     [Test]
-    // German: Das Ergebnis sollte gleich 0 sein
     public void The_result_should_be_0() {
         _a.CompareTo(_b)
             .Should().Be(0);
-    }
-
-    [Test]
-    // German: Diese sollten nicht als vollständig identisch erachtet werden
-    public void These_should_not_be_considered_identical() {
-        _a.Equals(_b)
-            .Should().BeFalse();
-    }
-
-    [Test]
-    // German: Diese sollten als Wertgleich bzw. äquivalent erachtet werden
-    public void These_should_be_considered_equivalent() {
-        _a.IsEquivalentTo(_b)
-            .Should().BeTrue();
     }
 }

@@ -60,107 +60,90 @@ public class When_rounding_a_decimal_fraction : Spec {
         from decimalFraction in DecimalFractions
         from decimalPlaces in DecimalPlaces
         from midpointRounding in RoundingModes
-        select new TestCaseData(decimalFraction, decimalPlaces, midpointRounding)
-            .Returns(new Fraction(decimal.Round((decimal)decimalFraction, decimalPlaces, midpointRounding)));
+        select new TestCaseData(decimalFraction, decimalPlaces, midpointRounding,
+            new Fraction(decimal.Round((decimal)decimalFraction, decimalPlaces, midpointRounding)));
 
     [Test]
     [TestCaseSource(nameof(RoundToFractionTestCases))]
-    public Fraction The_fractional_result_should_be_correct_for_all_decimal_values(Fraction fraction, int decimalPlaces,
-        MidpointRounding roundingMode) {
-        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    public void The_fractional_result_should_be_correct_for_all_decimal_values(Fraction fraction, int decimalPlaces,
+        MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 
     private static IEnumerable RoundRepeatingFractionTestCases {
         get {
             foreach (var roundingMode in new[] { MidpointRounding.ToEven, MidpointRounding.AwayFromZero }) {
                 // one third: (1/3) rounded to 2 decimals should always be 0.33 (33/100)
-                yield return new TestCaseData(new Fraction(1, 3), 2, roundingMode)
-                    .Returns(new Fraction(33, 100)); // 0.33
+                yield return new TestCaseData(new Fraction(1, 3), 2, roundingMode, new Fraction(33, 100)); // 0.33
                 // minus one third: (-1/3) rounded to 2 decimals should always be -0.33 (-33/100)
-                yield return new TestCaseData(new Fraction(-1, 3), 2, roundingMode)
-                    .Returns(new Fraction(-33, 100)); // -0.33
+                yield return new TestCaseData(new Fraction(-1, 3), 2, roundingMode, new Fraction(-33, 100)); // -0.33
             }
 
 #if NET
             foreach (var roundingMode in new[] { MidpointRounding.ToNegativeInfinity, MidpointRounding.ToZero }) {
                 // one third: (1/3) rounded to 2 decimals should always be 0.33 (33/100)
-                yield return new TestCaseData(new Fraction(1, 3), 2, roundingMode)
-                    .Returns(new Fraction(33, 100)); // 0.33
+                yield return new TestCaseData(new Fraction(1, 3), 2, roundingMode, new Fraction(33, 100)); // 0.33
             }
 
             // one third: (1/3) rounded to 2 decimals should always be 0.34 (34/100) when rounding up
-            yield return new TestCaseData(new Fraction(1, 3), 2, MidpointRounding.ToPositiveInfinity)
-                .Returns(new Fraction(34, 100)); // 0.34
+            yield return new TestCaseData(new Fraction(1, 3), 2, MidpointRounding.ToPositiveInfinity, new Fraction(34, 100)); // 0.34
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToPositiveInfinity }) {
                 // minus one third: (-1/3) rounded to 2 decimals should always be -0.33 (-33/100)
-                yield return new TestCaseData(new Fraction(-1, 3), 2, roundingMode)
-                    .Returns(new Fraction(-33, 100)); // -0.33
+                yield return new TestCaseData(new Fraction(-1, 3), 2, roundingMode, new Fraction(-33, 100)); // -0.33
             }
 
             // minus one third: (-1/3) rounded to 2 decimals should always be -0.34 (-34/100) when rounding down
-            yield return new TestCaseData(new Fraction(-1, 3), 2, MidpointRounding.ToNegativeInfinity)
-                .Returns(new Fraction(-34, 100)); // -0.34
+            yield return new TestCaseData(new Fraction(-1, 3), 2, MidpointRounding.ToNegativeInfinity, new Fraction(-34, 100)); // -0.34
 #endif
             foreach (var roundingMode in new[] { MidpointRounding.ToEven, MidpointRounding.AwayFromZero }) {
                 // two thirds: (2/3) rounded to 2 decimals should always be 0.67 (67/100)
-                yield return new TestCaseData(new Fraction(2, 3), 2, roundingMode)
-                    .Returns(new Fraction(67, 100)); // 0.67
+                yield return new TestCaseData(new Fraction(2, 3), 2, roundingMode, new Fraction(67, 100)); // 0.67
                 // minus one third: (-2/3) rounded to 2 decimals should always be -0.67 (-67/100)
-                yield return new TestCaseData(new Fraction(-2, 3), 2, roundingMode)
-                    .Returns(new Fraction(-67, 100)); // -0.67
+                yield return new TestCaseData(new Fraction(-2, 3), 2, roundingMode, new Fraction(-67, 100)); // -0.67
             }
 #if NET
             // two thirds: (2/3) rounded to 2 decimals should always be 0.67 (67/100)
-            yield return new TestCaseData(new Fraction(2, 3), 2, MidpointRounding.ToPositiveInfinity)
-                .Returns(new Fraction(67, 100)); // 0.67
+            yield return new TestCaseData(new Fraction(2, 3), 2, MidpointRounding.ToPositiveInfinity, new Fraction(67, 100)); // 0.67
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToNegativeInfinity }) {
                 // two thirds: (2/3) rounded to 2 decimals should always be 0.66 (66/100) when rounded down
-                yield return new TestCaseData(new Fraction(2, 3), 2, roundingMode)
-                    .Returns(new Fraction(66, 100)); // 0.66
+                yield return new TestCaseData(new Fraction(2, 3), 2, roundingMode, new Fraction(66, 100)); // 0.66
             }
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToPositiveInfinity }) {
                 // minus two thirds: (-2/3) rounded to 2 decimals should always be -0.66 (-66/100)
-                yield return new TestCaseData(new Fraction(-2, 3), 2, roundingMode)
-                    .Returns(new Fraction(-66, 100)); // 0.66
+                yield return new TestCaseData(new Fraction(-2, 3), 2, roundingMode, new Fraction(-66, 100)); // 0.66
             }
 
             // minus two thirds: (-2/3) rounded to 2 decimals should always be -0.67 (-67/100) when rounded down
-            yield return new TestCaseData(new Fraction(-2, 3), 2, MidpointRounding.ToNegativeInfinity)
-                .Returns(new Fraction(-67, 100)); // 0.67
+            yield return new TestCaseData(new Fraction(-2, 3), 2, MidpointRounding.ToNegativeInfinity, new Fraction(-67, 100)); // 0.67
 #endif
 
             foreach (var roundingMode in new[] { MidpointRounding.ToEven, MidpointRounding.AwayFromZero }) {
                 // four thirds: (4/3) rounded to 2 decimals should always be 1.33 (133/100)
-                yield return new TestCaseData(new Fraction(4, 3), 2, roundingMode)
-                    .Returns(new Fraction(133, 100)); // 1.33
+                yield return new TestCaseData(new Fraction(4, 3), 2, roundingMode, new Fraction(133, 100)); // 1.33
                 // minus four thirds (-4/3) rounded to 2 decimals should always be -1.33 (-133/100)
-                yield return new TestCaseData(new Fraction(-4, 3), 2, roundingMode)
-                    .Returns(new Fraction(-133, 100)); // -1.33
+                yield return new TestCaseData(new Fraction(-4, 3), 2, roundingMode, new Fraction(-133, 100)); // -1.33
             }
 
 #if NET
             foreach (var roundingMode in new[] { MidpointRounding.ToNegativeInfinity, MidpointRounding.ToZero }) {
                 // four thirds: (4/3) rounded to 2 decimals should always be 1.33 (133/100)
-                yield return new TestCaseData(new Fraction(4, 3), 2, roundingMode)
-                    .Returns(new Fraction(133, 100)); // 1.33
+                yield return new TestCaseData(new Fraction(4, 3), 2, roundingMode, new Fraction(133, 100)); // 1.33
             }
 
             // four thirds: (4/3) rounded to 2 decimals should always be 1.34 (134/100) when rounding up
-            yield return new TestCaseData(new Fraction(4, 3), 2, MidpointRounding.ToPositiveInfinity)
-                .Returns(new Fraction(134, 100)); // 1.34
+            yield return new TestCaseData(new Fraction(4, 3), 2, MidpointRounding.ToPositiveInfinity, new Fraction(134, 100)); // 1.34
 
             foreach (var roundingMode in new[] { MidpointRounding.ToZero, MidpointRounding.ToPositiveInfinity }) {
                 // minus four thirds: (-4/3) rounded to 2 decimals should always be -1.33 (-133/100)
-                yield return new TestCaseData(new Fraction(-4, 3), 2, roundingMode)
-                    .Returns(new Fraction(-133, 100)); // -1.33
+                yield return new TestCaseData(new Fraction(-4, 3), 2, roundingMode, new Fraction(-133, 100)); // -1.33
             }
 
             // minus four thirds: (-4/3) rounded to 2 decimals should always be -1.34 (-134/100) when rounding down
-            yield return new TestCaseData(new Fraction(-4, 3), 2, MidpointRounding.ToNegativeInfinity)
-                .Returns(new Fraction(-134, 100)); // -1.34
+            yield return new TestCaseData(new Fraction(-4, 3), 2, MidpointRounding.ToNegativeInfinity, new Fraction(-134, 100)); // -1.34
 #endif
         }
     }
@@ -168,9 +151,10 @@ public class When_rounding_a_decimal_fraction : Spec {
 
     [Test]
     [TestCaseSource(nameof(RoundRepeatingFractionTestCases))]
-    public Fraction The_fractional_result_should_be_correct_for_all_repeating_fractions(Fraction fraction,
-        int decimalPlaces, MidpointRounding roundingMode) {
-        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    public void The_fractional_result_should_be_correct_for_all_repeating_fractions(Fraction fraction,
+        int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 
     [Test]
@@ -222,39 +206,39 @@ public class When_rounding_a_decimal_fraction : Spec {
     private static IEnumerable RoundNaNTestCases =>
         from decimalPlaces in DecimalPlaces
         from midpointRounding in RoundingModes
-        select new TestCaseData(Fraction.NaN, decimalPlaces, midpointRounding)
-            .Returns(Fraction.NaN);
+        select new TestCaseData(Fraction.NaN, decimalPlaces, midpointRounding, Fraction.NaN);
 
     [Test]
     [TestCaseSource(nameof(RoundNaNTestCases))]
-    public Fraction The_result_of_rounding_NaN_should_be_NaN(Fraction fraction, int decimalPlaces,
-        MidpointRounding roundingMode) {
-        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    public void The_result_of_rounding_NaN_should_be_NaN(Fraction fraction, int decimalPlaces,
+        MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 
     private static IEnumerable RoundPositiveInfinityTestCases =>
         from decimalPlaces in DecimalPlaces
         from midpointRounding in RoundingModes
-        select new TestCaseData(Fraction.PositiveInfinity, decimalPlaces, midpointRounding)
-            .Returns(Fraction.PositiveInfinity);
+        select new TestCaseData(Fraction.PositiveInfinity, decimalPlaces, midpointRounding, Fraction.PositiveInfinity);
 
     [Test]
     [TestCaseSource(nameof(RoundPositiveInfinityTestCases))]
-    public Fraction The_result_of_rounding_PositiveInfinity_should_be_PositiveInfinity(Fraction fraction,
-        int decimalPlaces, MidpointRounding roundingMode) {
-        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    public void The_result_of_rounding_PositiveInfinity_should_be_PositiveInfinity(Fraction fraction,
+        int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 
     private static IEnumerable RoundNegativeInfinityTestCases =>
         from decimalPlaces in DecimalPlaces
         from midpointRounding in RoundingModes
-        select new TestCaseData(Fraction.NegativeInfinity, decimalPlaces, midpointRounding)
-            .Returns(Fraction.NegativeInfinity);
+        select new TestCaseData(Fraction.NegativeInfinity, decimalPlaces, midpointRounding, Fraction.NegativeInfinity);
 
     [Test]
     [TestCaseSource(nameof(RoundNegativeInfinityTestCases))]
-    public Fraction The_result_of_rounding_NegativeInfinity_should_be_NegativeInfinity(Fraction fraction,
-        int decimalPlaces, MidpointRounding roundingMode) {
-        return Fraction.Round(fraction, decimalPlaces, roundingMode);
+    public void The_result_of_rounding_NegativeInfinity_should_be_NegativeInfinity(Fraction fraction,
+        int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 }

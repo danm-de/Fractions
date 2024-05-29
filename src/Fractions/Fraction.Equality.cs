@@ -1,4 +1,7 @@
-﻿namespace Fractions;
+﻿using System;
+using System.Numerics;
+
+namespace Fractions;
 
 public readonly partial struct Fraction {
     /// <summary>
@@ -8,58 +11,29 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="other">The fraction to compare with.</param>
     /// <returns><c>true</c> if both values are equivalent. (e.g. 2/4 is equivalent to 1/2. But 2/4 is not equivalent to -1/2)</returns>
+    [Obsolete("As of version 8.0.0, the equality of values is checked when Fraction.Equals(..) is called. Please use the .Equals(..) method.",
+        error: false)]
     public bool IsEquivalentTo(Fraction other) {
-        var a = Reduce();
-        var b = other.Reduce();
-
-        return a.Equals(b);
+        return Equals(other);
     }
 
     /// <summary>
-    ///     <para>Performs an exact comparison with <paramref name="other" /> using numerator and denominator.</para>
-    ///     <para>Warning: 1/2 is NOT equal to 2/4! -1/2 is NOT equal to 1/-2!</para>
-    ///     <para>
-    ///         If you want to test the calculated values for equality use <see cref="CompareTo(Fraction)" /> or
-    ///         <see cref="IsEquivalentTo" />
-    ///     </para>
+    /// Compares whether the value of two fractions is the same
     /// </summary>
     /// <param name="other">The fraction to compare with.</param>
-    /// <returns>
-    ///     <c>true</c> if numerator and denominator of both fractions are equal, and neither of them is
-    ///     <see cref="NaN" />.
-    /// </returns>
+    /// <returns>Is <c>true</c> if both fractions have the same value. Otherwise <c>false</c>.</returns>
     public bool Equals(Fraction other) {
-        return other.Denominator.Equals(Denominator) && other.Numerator.Equals(Numerator);
+        return FractionComparer.ValueEquality.Equals(this, other);
     }
 
-    /// <summary>
-    ///     <para>Performs an exact comparison with <paramref name="other" /> using numerator and denominator.</para>
-    ///     <para>Warning: 1/2 is NOT equal to 2/4! -1/2 is NOT equal to 1/-2!</para>
-    ///     <para>
-    ///         If you want to test the calculated values for equality use <see cref="CompareTo(Fraction)" /> or
-    ///         <see cref="IsEquivalentTo" />
-    ///     </para>
-    /// </summary>
-    /// <param name="other">The fraction to compare with.</param>
-    /// <returns>
-    ///     <c>true</c> if <paramref name="other" /> is type of <see cref="Fraction" /> and numerator and denominator of
-    ///     both are equal, and neither of them is <see cref="NaN" />.
-    /// </returns>
+    /// <inheritdoc cref="Equals(Fraction)"/>
     public override bool Equals(object other) {
         return other is Fraction fraction && Equals(fraction);
     }
 
-    /// <summary>
-    ///     Returns the hash code.
-    /// </summary>
-    /// <returns>
-    ///     A 32bit integer with sign. It has been constructed using the <see cref="Numerator" /> and the
-    ///     <see cref="Denominator" />.
-    /// </returns>
-    /// <filterpriority>2</filterpriority>
+    /// <summary>Returns the hash code.</summary>
+    /// <returns><inheritdoc cref="BigInteger.GetHashCode()"/></returns>
     public override int GetHashCode() {
-        unchecked {
-            return (Denominator.GetHashCode() * 397) ^ Numerator.GetHashCode();
-        }
+        return FractionComparer.ValueEquality.GetHashCode(this);
     }
 }
