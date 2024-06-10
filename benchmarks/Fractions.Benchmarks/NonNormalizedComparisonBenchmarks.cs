@@ -68,6 +68,10 @@ public class NonNormalizedComparisonBenchmarks {
         yield return [
             Fraction.FromDoubleRounded(Math.PI, false),
             Fraction.NegativeInfinity];
+        // very close fractions: 
+        yield return [
+            new Fraction(12.3456789987654321m),
+            new Fraction(12.3456789987654322m)];
     }
     
     [Benchmark]

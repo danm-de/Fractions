@@ -54,6 +54,10 @@ public class ComparisonBenchmarks {
         yield return [
             Fraction.FromDoubleRounded(Math.PI),
             Fraction.NegativeInfinity];
+        // very close fractions: 
+        yield return [
+            new Fraction(12.3456789987654321m),
+            new Fraction(12.3456789987654322m)];
     }
 
     [Benchmark]
@@ -61,19 +65,19 @@ public class ComparisonBenchmarks {
     public bool Equals(Fraction a, Fraction b) {
         return a.Equals(b);
     }
-
+    
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
     public bool StrictEqualityEquals(Fraction a, Fraction b) {
         return FractionComparer.StrictEquality.Equals(a, b);
     }
-
+    
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
     public bool GetHashCode(Fraction a, Fraction b) {
         return a.GetHashCode() == b.GetHashCode();
     }
-
+    
     [Benchmark]
     [ArgumentsSource(nameof(Operands))]
     public bool StrictEqualityGetHashCode(Fraction a, Fraction b) {

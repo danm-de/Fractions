@@ -1,9 +1,12 @@
 ﻿using System.Numerics;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
+[ShortRunJob(RuntimeMoniker.Net48)]
+[ShortRunJob(RuntimeMoniker.Net80)]
 public class ConvertToFractionBenchmarks {
     public static IEnumerable<Fraction> FractionsToConvert => [
         Fraction.Zero,

@@ -16,10 +16,10 @@ This will run the `Fractions.Benchmarks` project and give you a more accurate un
 
 ## Constructor Benchmarks
 These benchmarks evaluate the performance of various constructor operations within the `Fraction` class. The operations being benchmarked are:
-- `Construct_With_Int32(int value)`: Constructs a `Fraction` object from an integer value.
-- `Construct_With_Decimal(decimal value)`: Constructs a `Fraction` object from a decimal value.
-- `Construct_With_Double(double value)`: Constructs a `Fraction` object from a double value.
-- `Construct_With_BigIntegers(BigInteger numerator, BigInteger denominator)`: Constructs a `Fraction` object from two `BigInteger` values representing the numerator and denominator.
+- `Construct_With_Int32(int value)`: Constructs a `Fraction` from an integer value.
+- `Construct_With_Decimal(decimal value)`: Constructs a `Fraction` from a decimal value.
+- `Construct_With_Double(double value)`: Constructs a `Fraction` from a double value.
+- `Construct_With_BigIntegers(BigInteger numerator, BigInteger denominator)`: Constructs a normalized `Fraction` from two `BigInteger` values representing the numerator and denominator.
 
 For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.ConstructorBenchmarks-report-github.md).
 
@@ -36,13 +36,21 @@ For a detailed report on the performance of these operations, [view the results 
 This section can include benchmarks related to various numeric operations. It can be further divided into sub-sections:
 
 ### Comparison Operations
-These benchmarks focus on the performance of comparison operations within the `Fraction` class. The operations being benchmarked are:
-- `Equals(Fraction a, Fraction b)`: This method checks if two fractions are exactly equal, meaning both their numerators and denominators are the same.
-- `IsEquivalentTo(Fraction a, Fraction b)`: This method checks if two fractions are equivalent, meaning they represent the same value, even if their numerators and denominators are different.
-- `GetHashCode(Fraction a, Fraction b)`: This method generates a hash code for a pair of fractions. It's used in data structures like hash tables.
+The operations being benchmarked are:
+- `Equals(Fraction a, Fraction b)`: This method checks if two fractions are equivalent, meaning they represent the same value, even if their numerators and denominators are different.
+- `StrictEqualityEquals(Fraction a, Fraction b)`: This method checks if two fractions are exactly equal, meaning both their numerators and denominators are the same.
+- `GetHashCode(Fraction a, Fraction b)`: This method generates a hash code for a pair of fractions, either normalized or non-normalized. It's used in data structures like hash tables.
+- `StrictEqualityGetHashCode(Fraction a, Fraction b)`: This method generates a hash code for a pair of fractions which are assumed to be normalized. It's used in data structures like hash tables.
 - `CompareTo(Fraction a, Fraction b)`: This method compares two fractions and determines which one is greater, or if they are equal.
 
-For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.ComparisonBenchmarks-report-github.md).
+When using comparing using the `==` operator and especially when when using the `Fraction` as part of a key for data structures like hash tables (e.g. `Dictionary`) 
+there is performance benefit to using to `normalized` fractions when compared to their `non-normalized` counterparts _(which are faster in all other scenarios)_. 
+
+#### Normalized fractions
+For a detailed report on the performance of these operations using only `normalized` fractions, [view the results here](./results/Fractions.Benchmarks.ComparisonBenchmarks-report-github.md).
+
+#### Non-normalized fractions
+For a detailed report on the performance of these operations using only `non-normalized` fractions, [view the results here](./results/Fractions.Benchmarks.NonNormalizedComparisonBenchmarks-report-github.md).
 
 ### Math Operations
 These benchmarks evaluate the performance of fundamental mathematical operations within the `Fraction` class. The operations being benchmarked are:
@@ -50,9 +58,19 @@ These benchmarks evaluate the performance of fundamental mathematical operations
 - `Subtract(Fraction a, Fraction b)`: Subtracts one fraction from another.
 - `Multiply(Fraction a, Fraction b)`: Multiplies two fractions.
 - `Divide(Fraction a, Fraction b)`: Divides one fraction by another.
+- `Remainder(Fraction a, Fraction b)`: Computes the remainder of a division operation between two fractions.
 
-For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.BasicMathBenchmarks-report-github.md).
+Math operations with normalized fractions are typically much slower than the alternative.
 
+#### Normalized fractions
+For a detailed report on the performance of these operations using only `normalized` fraction, [view the results here](./results/Fractions.Benchmarks.BasicMathBenchmarks-report-github.md).
+
+#### Non-normalized fractions
+For a detailed report on the performance of these operations using only `non-normalized` fraction, [view the results here](./results/Fractions.Benchmarks.NonNormalizedMathBenchmarks-report-github.md).
+
+#### Consecutive Math Operations
+For a detailed report on the performance of a sequence of these operations, using the `normalized` vs the `non-normalized` operations,
+[view the results here](./results/Fractions.Benchmarks.ConsecutiveMathOperationBenchmarks-report-github.md) 
 
 ### Power Math Operations
 These benchmarks evaluate the performance of power operations within the `Fraction` class. The operations being benchmarked are:
@@ -76,7 +94,6 @@ These benchmarks evaluate the performance of converting `Fraction` objects to st
 - `ToString_Fraction(Fraction fraction)`: Converts a `Fraction` object to its string representation. This operation is used when displaying fractions to the user or when storing fractions in a text-based format.
 
 For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.ToStringBenchmarks-report-github.md).
-
 
 ### From String
 These benchmarks evaluate the performance of constructing `Fraction` objects from string representations. The operations being benchmarked are:
