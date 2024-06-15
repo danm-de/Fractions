@@ -1,164 +1,164 @@
 ```
 
-BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.4291/22H2/2022Update)
+BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.4529/22H2/2022Update)
 AMD Ryzen 9 7900X, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 8.0.204
-  [Host]                      : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-  ShortRun-.NET 8.0           : .NET 8.0.4 (8.0.424.16909), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-  ShortRun-.NET Framework 4.8 : .NET Framework 4.8.1 (4.8.9232.0), X64 RyuJIT VectorSize=256
+.NET SDK 8.0.300
+  [Host]                      : .NET 8.0.5 (8.0.524.21615), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  ShortRun-.NET 8.0           : .NET 8.0.5 (8.0.524.21615), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  ShortRun-.NET Framework 4.8 : .NET Framework 4.8.1 (4.8.9241.0), X64 RyuJIT VectorSize=256
 
 IterationCount=3  LaunchCount=1  WarmupCount=3  
 
 ```
 | Method   | Job                         | Runtime            | a                    | b                    | Mean       | Error      | StdDev    | Gen0   | Allocated |
 |--------- |---------------------------- |------------------- |--------------------- |--------------------- |-----------:|-----------:|----------:|-------:|----------:|
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **42/-96**               | **36/-96**               |  **30.311 ns** |  **2.9319 ns** | **0.1607 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  27.672 ns |  0.8111 ns | 0.0445 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  52.512 ns |  0.6226 ns | 0.0341 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  17.230 ns |  0.7769 ns | 0.0426 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  14.804 ns |  2.3641 ns | 0.1296 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  55.379 ns |  1.9373 ns | 0.1062 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  74.641 ns |  1.4981 ns | 0.0821 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               | 229.605 ns | 26.3239 ns | 1.4429 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  61.845 ns |  1.3714 ns | 0.0752 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  48.179 ns |  1.8134 ns | 0.0994 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **-1000(...)00000 [39]** | **1/1000000000000**      |  **51.338 ns** |  **5.9637 ns** | **0.3269 ns** | **0.0057** |      **96 B** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)00000 [39] | 1/1000000000000      |  52.105 ns |  3.2519 ns | 0.1782 ns | 0.0057 |      96 B |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)00000 [39] | 1/1000000000000      |  84.061 ns |  4.1052 ns | 0.2250 ns | 0.0043 |      72 B |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)00000 [39] | 1/1000000000000      |  26.494 ns |  4.0237 ns | 0.2206 ns | 0.0029 |      48 B |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)00000 [39] | 1/1000000000000      |  65.903 ns |  2.5121 ns | 0.1377 ns | 0.0048 |      80 B |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)00000 [39] | 1/1000000000000      | 120.451 ns |  6.8862 ns | 0.3775 ns | 0.0153 |      96 B |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)00000 [39] | 1/1000000000000      | 134.649 ns |  4.7246 ns | 0.2590 ns | 0.0153 |      96 B |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)00000 [39] | 1/1000000000000      | 203.646 ns |  4.7909 ns | 0.2626 ns | 0.0293 |     185 B |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)00000 [39] | 1/1000000000000      |  76.231 ns |  7.8455 ns | 0.4300 ns | 0.0076 |      48 B |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)00000 [39] | 1/1000000000000      | 161.390 ns | 13.5001 ns | 0.7400 ns | 0.0076 |      48 B |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **-1024**                | **-1/1024**              |  **31.314 ns** |  **0.5199 ns** | **0.0285 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | -1024                | -1/1024              |  33.092 ns |  1.6800 ns | 0.0921 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | -1024                | -1/1024              |  25.689 ns |  1.3817 ns | 0.0757 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | -1024                | -1/1024              |  11.733 ns |  0.7461 ns | 0.0409 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | -1024                | -1/1024              |  33.280 ns |  0.6408 ns | 0.0351 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024                | -1/1024              |  72.508 ns |  2.0062 ns | 0.1100 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024                | -1/1024              |  89.588 ns |  1.8943 ns | 0.1038 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024                | -1/1024              | 128.137 ns | 46.0569 ns | 2.5245 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024                | -1/1024              |  42.970 ns |  0.8924 ns | 0.0489 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024                | -1/1024              | 129.018 ns | 90.3443 ns | 4.9521 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **-45**                  | **1/6**                  |  **31.939 ns** |  **1.4859 ns** | **0.0814 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | -45                  | 1/6                  |  33.391 ns |  1.3061 ns | 0.0716 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | -45                  | 1/6                  |  22.939 ns |  0.6706 ns | 0.0368 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | -45                  | 1/6                  |  11.733 ns |  0.2789 ns | 0.0153 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | -45                  | 1/6                  |  33.581 ns |  1.9035 ns | 0.1043 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45                  | 1/6                  |  71.684 ns |  3.2918 ns | 0.1804 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45                  | 1/6                  |  89.690 ns |  1.0438 ns | 0.0572 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45                  | 1/6                  | 104.185 ns |  3.3202 ns | 0.1820 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45                  | 1/6                  |  42.965 ns |  1.7650 ns | 0.0967 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45                  | 1/6                  | 119.090 ns |  2.6248 ns | 0.1439 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **0**                    | **1**                    |  **14.913 ns** |  **1.3050 ns** | **0.0715 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 0                    | 1                    |  15.703 ns |  2.4890 ns | 0.1364 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 0                    | 1                    |   7.690 ns |  5.0875 ns | 0.2789 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 0                    | 1                    |   9.021 ns |  8.4059 ns | 0.4608 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 0                    | 1                    |  11.852 ns |  1.2243 ns | 0.0671 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0                    | 1                    |  27.719 ns |  4.3646 ns | 0.2392 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0                    | 1                    |  42.089 ns |  0.6009 ns | 0.0329 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0                    | 1                    |  28.019 ns |  2.4773 ns | 0.1358 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0                    | 1                    |  28.569 ns |  2.2366 ns | 0.1226 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0                    | 1                    |  30.235 ns |  0.2907 ns | 0.0159 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **77/3600**              | **37/3600**              |  **25.595 ns** |  **0.7334 ns** | **0.0402 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  27.160 ns |  0.7701 ns | 0.0422 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  36.082 ns |  9.4734 ns | 0.5193 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  17.382 ns |  1.2254 ns | 0.0672 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  14.890 ns |  2.4928 ns | 0.1366 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  54.208 ns |  0.9254 ns | 0.0507 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  75.070 ns | 10.9718 ns | 0.6014 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              | 158.422 ns | 15.5389 ns | 0.8517 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  62.056 ns |  0.6236 ns | 0.0342 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  47.796 ns |  1.5739 ns | 0.0863 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **135/1000**             | **76/1000**              |  **25.641 ns** |  **0.8381 ns** | **0.0459 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  27.309 ns |  0.9964 ns | 0.0546 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  54.644 ns |  3.7657 ns | 0.2064 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  17.350 ns |  0.4171 ns | 0.0229 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  14.893 ns |  0.6525 ns | 0.0358 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  55.741 ns |  0.4818 ns | 0.0264 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  73.910 ns |  2.2588 ns | 0.1238 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              | 230.681 ns |  8.0627 ns | 0.4419 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  61.378 ns |  3.2834 ns | 0.1800 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  48.388 ns |  0.8802 ns | 0.0482 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **27/200**               | **19/250**               |  **54.116 ns** |  **1.2080 ns** | **0.0662 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  54.966 ns |  2.2733 ns | 0.1246 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  34.795 ns |  2.6445 ns | 0.1450 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  17.232 ns |  0.7353 ns | 0.0403 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  45.152 ns |  2.3142 ns | 0.1268 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 177.682 ns | 10.5554 ns | 0.5786 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 205.497 ns |  6.2312 ns | 0.3416 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 143.847 ns |  5.0502 ns | 0.2768 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               |  61.336 ns |  0.7300 ns | 0.0400 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 194.349 ns | 10.5988 ns | 0.5810 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **42/66**                | **36/96**                |  **54.756 ns** |  **1.4582 ns** | **0.0799 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  55.304 ns |  2.0360 ns | 0.1116 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  53.600 ns |  1.4413 ns | 0.0790 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  17.386 ns |  0.5587 ns | 0.0306 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  47.646 ns |  2.3430 ns | 0.1284 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 176.445 ns | 13.9808 ns | 0.7663 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 200.826 ns |  7.8605 ns | 0.4309 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 225.661 ns | 17.8349 ns | 0.9776 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                |  62.151 ns |  4.8632 ns | 0.2666 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 194.915 ns |  5.6977 ns | 0.3123 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **70742(...)85248 [33]** | **70742(...)70496 [33]** |  **75.273 ns** | **16.4924 ns** | **0.9040 ns** | **0.0057** |      **96 B** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 70742(...)85248 [33] | 70742(...)70496 [33] |  76.068 ns | 11.2630 ns | 0.6174 ns | 0.0057 |      96 B |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 70742(...)85248 [33] | 70742(...)70496 [33] | 210.921 ns | 45.2185 ns | 2.4786 ns | 0.0124 |     208 B |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 70742(...)85248 [33] | 70742(...)70496 [33] |  43.488 ns |  2.2607 ns | 0.1239 ns | 0.0048 |      80 B |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 70742(...)85248 [33] | 70742(...)70496 [33] |  74.847 ns |  2.6629 ns | 0.1460 ns | 0.0038 |      64 B |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 70742(...)85248 [33] | 70742(...)70496 [33] | 200.521 ns | 32.3043 ns | 1.7707 ns | 0.0229 |     144 B |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 70742(...)85248 [33] | 70742(...)70496 [33] | 246.205 ns | 39.9293 ns | 2.1887 ns | 0.0215 |     136 B |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 70742(...)85248 [33] | 70742(...)70496 [33] | 358.747 ns | 12.7323 ns | 0.6979 ns | 0.0429 |     273 B |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 70742(...)85248 [33] | 70742(...)70496 [33] | 114.672 ns |  4.4129 ns | 0.2419 ns | 0.0126 |      80 B |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 70742(...)85248 [33] | 70742(...)70496 [33] | 230.117 ns |  4.5085 ns | 0.2471 ns | 0.0215 |     136 B |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **245850922/78256779**   | **NaN**                  |  **15.043 ns** |  **0.5319 ns** | **0.0292 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |  15.961 ns |  0.3771 ns | 0.0207 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |   8.429 ns |  0.3374 ns | 0.0185 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |   6.013 ns |  0.8106 ns | 0.0444 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |  11.115 ns |  0.2592 ns | 0.0142 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  27.827 ns |  0.1912 ns | 0.0105 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  42.639 ns |  0.4524 ns | 0.0248 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  33.645 ns |  0.5989 ns | 0.0328 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  24.126 ns |  0.7642 ns | 0.0419 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  42.395 ns |  2.2587 ns | 0.1238 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **245850922/78256779**   | **-∞**                   |  **15.202 ns** |  **1.5368 ns** | **0.0842 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |  16.716 ns |  1.4153 ns | 0.0776 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |   8.607 ns |  6.1207 ns | 0.3355 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |   5.969 ns |  0.1369 ns | 0.0075 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |  10.997 ns |  0.6773 ns | 0.0371 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  30.342 ns |  0.4078 ns | 0.0224 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  45.503 ns |  0.2728 ns | 0.0150 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  31.043 ns |  1.4931 ns | 0.0818 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  25.072 ns |  1.3825 ns | 0.0758 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  29.604 ns |  0.4382 ns | 0.0240 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **245850922/78256779**   | **0**                    |  **15.198 ns** |  **2.9814 ns** | **0.1634 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |  16.098 ns |  0.4821 ns | 0.0264 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |   7.293 ns |  0.8694 ns | 0.0477 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |   9.012 ns |  0.7699 ns | 0.0422 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |  11.065 ns |  0.1825 ns | 0.0100 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  27.561 ns |  1.3363 ns | 0.0732 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  59.648 ns |  1.8549 ns | 0.1017 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  27.893 ns |  1.0127 ns | 0.0555 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  28.158 ns |  0.7687 ns | 0.0421 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  30.106 ns |  1.0001 ns | 0.0548 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **97**                   | **89**                   |  **25.554 ns** |  **0.3769 ns** | **0.0207 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 97                   | 89                   |  27.396 ns |  2.2058 ns | 0.1209 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 97                   | 89                   |  12.027 ns |  0.1045 ns | 0.0057 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 97                   | 89                   |   9.107 ns |  4.1168 ns | 0.2257 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 97                   | 89                   |  14.805 ns |  1.0148 ns | 0.0556 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97                   | 89                   |  54.098 ns |  1.6463 ns | 0.0902 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97                   | 89                   |  79.588 ns |  2.5675 ns | 0.1407 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97                   | 89                   |  58.087 ns |  2.0044 ns | 0.1099 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97                   | 89                   |  28.892 ns |  0.6877 ns | 0.0377 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97                   | 89                   |  48.398 ns |  2.5528 ns | 0.1399 ns |      - |         - |
-| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **1000**                 | **100**                  |  **25.457 ns** |  **0.3874 ns** | **0.0212 ns** |      **-** |         **-** |
-| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 1000                 | 100                  |  27.166 ns |  0.7806 ns | 0.0428 ns |      - |         - |
-| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 1000                 | 100                  |  12.034 ns |  0.5862 ns | 0.0321 ns |      - |         - |
-| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 1000                 | 100                  |   9.049 ns |  0.1990 ns | 0.0109 ns |      - |         - |
-| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 1000                 | 100                  |  14.903 ns |  0.1600 ns | 0.0088 ns |      - |         - |
-| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000                 | 100                  |  54.277 ns |  5.3222 ns | 0.2917 ns |      - |         - |
-| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000                 | 100                  |  77.488 ns |  0.2769 ns | 0.0152 ns |      - |         - |
-| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000                 | 100                  |  51.645 ns |  5.9433 ns | 0.3258 ns |      - |         - |
-| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000                 | 100                  |  28.147 ns |  0.6637 ns | 0.0364 ns |      - |         - |
-| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000                 | 100                  |  47.528 ns |  1.4210 ns | 0.0779 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **-1000(...)000/1 [41]** | **1/1000000000000**      |  **50.347 ns** |  **2.0741 ns** | **0.1137 ns** | **0.0057** |      **96 B** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)000/1 [41] | 1/1000000000000      |  52.650 ns |  3.1067 ns | 0.1703 ns | 0.0057 |      96 B |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)000/1 [41] | 1/1000000000000      |   9.680 ns |  0.5845 ns | 0.0320 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)000/1 [41] | 1/1000000000000      |  37.935 ns |  0.3255 ns | 0.0178 ns | 0.0029 |      48 B |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | -1000(...)000/1 [41] | 1/1000000000000      |  66.600 ns |  2.6955 ns | 0.1478 ns | 0.0048 |      80 B |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)000/1 [41] | 1/1000000000000      | 121.931 ns | 13.3578 ns | 0.7322 ns | 0.0153 |      96 B |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)000/1 [41] | 1/1000000000000      | 133.795 ns |  7.6294 ns | 0.4182 ns | 0.0153 |      96 B |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)000/1 [41] | 1/1000000000000      |  37.964 ns |  1.7277 ns | 0.0947 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)000/1 [41] | 1/1000000000000      |  89.065 ns | 12.7607 ns | 0.6995 ns | 0.0076 |      48 B |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1000(...)000/1 [41] | 1/1000000000000      | 157.781 ns | 17.2612 ns | 0.9461 ns | 0.0076 |      48 B |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **-1024/1**              | **-1/1024**              |  **32.089 ns** |  **4.4466 ns** | **0.2437 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | -1024/1              | -1/1024              |  33.793 ns |  2.1104 ns | 0.1157 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | -1024/1              | -1/1024              |  12.492 ns |  1.1892 ns | 0.0652 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | -1024/1              | -1/1024              |  20.990 ns |  1.9645 ns | 0.1077 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | -1024/1              | -1/1024              |  34.212 ns |  1.1612 ns | 0.0637 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024/1              | -1/1024              |  71.895 ns |  1.6376 ns | 0.0898 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024/1              | -1/1024              |  95.808 ns |  5.8011 ns | 0.3180 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024/1              | -1/1024              |  48.786 ns |  0.6996 ns | 0.0383 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024/1              | -1/1024              |  54.684 ns |  0.2886 ns | 0.0158 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -1024/1              | -1/1024              | 126.193 ns | 22.5796 ns | 1.2377 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **-45/1**                | **1/6**                  |  **32.083 ns** |  **2.1647 ns** | **0.1187 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | -45/1                | 1/6                  |  33.805 ns |  1.1418 ns | 0.0626 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | -45/1                | 1/6                  |   9.630 ns |  1.0285 ns | 0.0564 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | -45/1                | 1/6                  |  20.822 ns |  0.5276 ns | 0.0289 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | -45/1                | 1/6                  |  33.994 ns |  1.3212 ns | 0.0724 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45/1                | 1/6                  |  71.764 ns |  1.4730 ns | 0.0807 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45/1                | 1/6                  |  92.883 ns |  6.0379 ns | 0.3310 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45/1                | 1/6                  |  38.074 ns |  4.6685 ns | 0.2559 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45/1                | 1/6                  |  54.636 ns |  2.9933 ns | 0.1641 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | -45/1                | 1/6                  | 119.981 ns |  0.7305 ns | 0.0400 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **42/-96**               | **36/-96**               |  **26.979 ns** |  **0.7378 ns** | **0.0404 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  28.052 ns |  4.4860 ns | 0.2459 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  17.626 ns |  0.5124 ns | 0.0281 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  13.735 ns |  0.5024 ns | 0.0275 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 42/-96               | 36/-96               |  14.926 ns |  0.1968 ns | 0.0108 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  61.668 ns |  1.8571 ns | 0.1018 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  74.849 ns |  0.7405 ns | 0.0406 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  66.822 ns |  2.2991 ns | 0.1260 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  35.381 ns |  0.7190 ns | 0.0394 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/-96               | 36/-96               |  47.932 ns |  0.5718 ns | 0.0313 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **0/1**                  | **1/1**                  |  **15.002 ns** |  **1.3619 ns** | **0.0746 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 0/1                  | 1/1                  |  15.897 ns |  2.2354 ns | 0.1225 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 0/1                  | 1/1                  |   7.375 ns |  0.4905 ns | 0.0269 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 0/1                  | 1/1                  |  12.389 ns |  1.0993 ns | 0.0603 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 0/1                  | 1/1                  |  11.185 ns |  1.6234 ns | 0.0890 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0/1                  | 1/1                  |  27.537 ns |  0.9245 ns | 0.0507 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0/1                  | 1/1                  |  42.723 ns |  1.3468 ns | 0.0738 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0/1                  | 1/1                  |  27.742 ns |  2.3404 ns | 0.1283 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0/1                  | 1/1                  |  31.845 ns |  0.3297 ns | 0.0181 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 0/1                  | 1/1                  |  30.619 ns |  3.3093 ns | 0.1814 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **77/3600**              | **37/3600**              |  **24.908 ns** |  **3.2663 ns** | **0.1790 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  27.670 ns |  0.6485 ns | 0.0355 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  17.857 ns |  0.1716 ns | 0.0094 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  12.468 ns |  1.8301 ns | 0.1003 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 77/3600              | 37/3600              |  14.986 ns |  0.6629 ns | 0.0363 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  55.118 ns |  2.4406 ns | 0.1338 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  75.586 ns |  4.7449 ns | 0.2601 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  75.501 ns |  1.8787 ns | 0.1030 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  34.312 ns |  0.7731 ns | 0.0424 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 77/3600              | 37/3600              |  47.772 ns |  3.2670 ns | 0.1791 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **135/1000**             | **76/1000**              |  **25.795 ns** |  **3.5538 ns** | **0.1948 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  31.726 ns | 65.9781 ns | 3.6165 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  17.981 ns |  0.5177 ns | 0.0284 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  12.692 ns |  1.1424 ns | 0.0626 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 135/1000             | 76/1000              |  14.935 ns |  0.7991 ns | 0.0438 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  54.662 ns |  1.6295 ns | 0.0893 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  75.297 ns | 11.8887 ns | 0.6517 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  67.331 ns |  7.2095 ns | 0.3952 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  34.094 ns |  3.9447 ns | 0.2162 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 135/1000             | 76/1000              |  48.490 ns |  1.4282 ns | 0.0783 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **27/200**               | **19/250**               |  **54.731 ns** |  **2.1091 ns** | **0.1156 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  55.426 ns |  2.8887 ns | 0.1583 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  17.856 ns |  0.6602 ns | 0.0362 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  38.633 ns |  1.2962 ns | 0.0710 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 27/200               | 19/250               |  45.669 ns |  1.9968 ns | 0.1095 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 175.978 ns |  4.0116 ns | 0.2199 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 213.535 ns |  9.8113 ns | 0.5378 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               |  67.443 ns | 13.7972 ns | 0.7563 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 151.607 ns | 60.3995 ns | 3.3107 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 27/200               | 19/250               | 196.233 ns | 26.3958 ns | 1.4468 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **42/66**                | **36/96**                |  **55.112 ns** |  **6.5914 ns** | **0.3613 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  57.071 ns |  1.5215 ns | 0.0834 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  17.411 ns |  2.4363 ns | 0.1335 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  43.531 ns |  4.1463 ns | 0.2273 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 42/66                | 36/96                |  47.185 ns |  2.4957 ns | 0.1368 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 175.138 ns |  2.9643 ns | 0.1625 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 207.414 ns |  3.8447 ns | 0.2107 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                |  67.190 ns |  3.3425 ns | 0.1832 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 157.439 ns |  6.7523 ns | 0.3701 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 42/66                | 36/96                | 199.641 ns | 10.6266 ns | 0.5825 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **14148(...)70496 [34]** | **70742(...)70496 [33]** |  **31.855 ns** |  **3.4570 ns** | **0.1895 ns** | **0.0019** |      **32 B** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 14148(...)70496 [34] | 70742(...)70496 [33] |  33.722 ns |  1.0533 ns | 0.0577 ns | 0.0019 |      32 B |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 14148(...)70496 [34] | 70742(...)70496 [33] |  45.822 ns |  1.7046 ns | 0.0934 ns | 0.0048 |      80 B |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 14148(...)70496 [34] | 70742(...)70496 [33] |  13.240 ns |  0.9896 ns | 0.0542 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 14148(...)70496 [34] | 70742(...)70496 [33] |  26.735 ns |  2.5742 ns | 0.1411 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 14148(...)70496 [34] | 70742(...)70496 [33] |  74.185 ns |  0.8376 ns | 0.0459 ns | 0.0063 |      40 B |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 14148(...)70496 [34] | 70742(...)70496 [33] |  94.187 ns |  3.5504 ns | 0.1946 ns | 0.0050 |      32 B |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 14148(...)70496 [34] | 70742(...)70496 [33] | 124.568 ns | 19.4815 ns | 1.0678 ns | 0.0126 |      80 B |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 14148(...)70496 [34] | 70742(...)70496 [33] |  37.194 ns |  0.3782 ns | 0.0207 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 14148(...)70496 [34] | 70742(...)70496 [33] |  74.549 ns |  2.8339 ns | 0.1553 ns | 0.0050 |      32 B |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **245850922/78256779**   | **NaN**                  |  **15.181 ns** |  **0.4933 ns** | **0.0270 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |  16.115 ns |  2.6481 ns | 0.1452 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |   8.352 ns |  0.4861 ns | 0.0266 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |  11.838 ns |  1.0401 ns | 0.0570 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | NaN                  |  11.452 ns |  3.2280 ns | 0.1769 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  27.927 ns |  0.1794 ns | 0.0098 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  42.824 ns |  3.2121 ns | 0.1761 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  30.830 ns |  1.3964 ns | 0.0765 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  28.495 ns |  3.7135 ns | 0.2036 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | NaN                  |  29.584 ns |  2.2453 ns | 0.1231 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **245850922/78256779**   | **-∞**                   |  **15.190 ns** |  **1.3652 ns** | **0.0748 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |  16.866 ns |  1.2260 ns | 0.0672 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |   8.679 ns |  8.5308 ns | 0.4676 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |  11.859 ns |  0.4502 ns | 0.0247 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | -∞                   |  11.097 ns |  0.2171 ns | 0.0119 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  31.573 ns |  9.3029 ns | 0.5099 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  45.411 ns |  3.4338 ns | 0.1882 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  30.790 ns |  1.0208 ns | 0.0560 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  28.316 ns |  0.7063 ns | 0.0387 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | -∞                   |  29.750 ns |  1.2787 ns | 0.0701 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **245850922/78256779**   | **0**                    |  **15.318 ns** |  **1.9767 ns** | **0.1083 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |  16.223 ns |  0.9187 ns | 0.0504 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |   7.496 ns |  2.3397 ns | 0.1282 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |  12.127 ns |  2.5321 ns | 0.1388 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 245850922/78256779   | 0                    |  11.329 ns |  0.5410 ns | 0.0297 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  27.571 ns |  0.0674 ns | 0.0037 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  42.671 ns |  0.8410 ns | 0.0461 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  28.120 ns |  2.9131 ns | 0.1597 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  36.834 ns |  0.4666 ns | 0.0256 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 245850922/78256779   | 0                    |  30.291 ns |  0.7893 ns | 0.0433 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **97/1**                 | **89/1**                 |  **25.635 ns** |  **1.9253 ns** | **0.1055 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 97/1                 | 89/1                 |  27.308 ns |  1.5837 ns | 0.0868 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 97/1                 | 89/1                 |  12.839 ns |  8.5396 ns | 0.4681 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 97/1                 | 89/1                 |  12.464 ns |  2.5117 ns | 0.1377 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 97/1                 | 89/1                 |  14.984 ns |  0.9491 ns | 0.0520 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97/1                 | 89/1                 |  55.315 ns |  2.8513 ns | 0.1563 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97/1                 | 89/1                 |  74.886 ns |  2.4670 ns | 0.1352 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97/1                 | 89/1                 |  50.724 ns |  1.9329 ns | 0.1059 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97/1                 | 89/1                 |  35.055 ns |  1.9150 ns | 0.1050 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 97/1                 | 89/1                 |  54.804 ns |  1.3315 ns | 0.0730 ns |      - |         - |
+| **Add**      | **ShortRun-.NET 8.0**           | **.NET 8.0**           | **1000/1**               | **100/1**                |  **25.788 ns** |  **0.5409 ns** | **0.0296 ns** |      **-** |         **-** |
+| Subtract | ShortRun-.NET 8.0           | .NET 8.0           | 1000/1               | 100/1                |  27.357 ns |  0.2622 ns | 0.0144 ns |      - |         - |
+| Multiply | ShortRun-.NET 8.0           | .NET 8.0           | 1000/1               | 100/1                |  12.436 ns |  1.7510 ns | 0.0960 ns |      - |         - |
+| Divide   | ShortRun-.NET 8.0           | .NET 8.0           | 1000/1               | 100/1                |  12.449 ns |  2.8950 ns | 0.1587 ns |      - |         - |
+| Mod      | ShortRun-.NET 8.0           | .NET 8.0           | 1000/1               | 100/1                |  14.943 ns |  1.3779 ns | 0.0755 ns |      - |         - |
+| Add      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000/1               | 100/1                |  54.846 ns |  4.4864 ns | 0.2459 ns |      - |         - |
+| Subtract | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000/1               | 100/1                |  75.362 ns |  8.2670 ns | 0.4531 ns |      - |         - |
+| Multiply | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000/1               | 100/1                |  50.908 ns |  1.5318 ns | 0.0840 ns |      - |         - |
+| Divide   | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000/1               | 100/1                |  34.867 ns |  0.6515 ns | 0.0357 ns |      - |         - |
+| Mod      | ShortRun-.NET Framework 4.8 | .NET Framework 4.8 | 1000/1               | 100/1                |  48.709 ns |  1.6529 ns | 0.0906 ns |      - |         - |
