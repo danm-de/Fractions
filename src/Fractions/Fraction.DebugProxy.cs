@@ -28,7 +28,7 @@ public readonly partial struct Fraction {
         internal readonly struct NumericFormatsView(Fraction fraction) {
             public int Integer => fraction.ToInt32();
             public long Long => fraction.ToInt64();
-            public decimal Decimal => fraction.ToDecimalWithTrailingZeros();
+            public decimal Decimal => fraction.ToDecimal();
             public double Double => fraction.ToDouble();
         }
     }

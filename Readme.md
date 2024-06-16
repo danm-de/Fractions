@@ -42,7 +42,7 @@ There a three types of constructors available:
 - `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator + `bool` to indicate if the resulting fraction shall be normalized (reduced).
 
 > [!IMPORTANT]
-> When creating improper fractions (by specifying the parameter `reduce: false`), please be sure to refer to the [Working with non-normalized fractions](#working-with-non-normalized-fractions) section for more information about the (side) effects.
+> Please refer to the [Working with non-normalized fractions](#working-with-non-normalized-fractions) section for more information about the possible side effects when working with non-reduced fractions.
 
 ### Static creation methods
 
@@ -274,12 +274,15 @@ Example:
 
 ### Working with non-normalized fractions
 
-For performance reasons, as of version 8.0.0, mathematical operations no longer automatically generate normalized fractions if one of the operands is an improper (i.e. non-normalized) fraction. This has an impact on your calculations, especially if you have used the `JsonFractionConverter` with default settings. In such cases, deserialized fractions create improper fractions, which can lead to changed behavior when calling `Equals` and `ToString`.
+> [!IMPORTANT]
+> For performance reasons, as of version 8.0.0, mathematical operations such as addition and multiplication no longer reduce the result to it's lowest terms, unless both operands are already simplified. 
+> This change in behavior may introduce unexpected results when, for example, calling `ToString` on a `Fraction` that is the result of an expression, having one or more of the values de-serialized using the default `JsonFractionConverter` settings (i.e. without explicit reduction).
+
 
 | Symbol | Description                                                                                          |
 | ------ | ---------------------------------------------------------------------------------------------------- |
-| $NF$   | Non-normalized (possibly improper) fraction, created with `normalize: false`                         |
-| $F$    | Fraction created with `normalize: true`                                                              |
+| $NF$   | Non-normalized (possibly reducible) fraction, created with `normalize: false`                         |
+| $F$    | Fraction created with `normalize: true` (irreducible)                                                              |
 | $⊙$   | Mathematical operation having two operands ($+$, $-$, $*$, $/$, $mod$).                              |
 
 The following rules apply:
@@ -317,16 +320,17 @@ $\frac{4}{4}/\frac{2}{1}=\frac{4}{8}$
 - `IComparable`,
 - `IComparable<Fraction>`
 
-Please note that the default behavior of the `.Equals(Fraction)` method has changed with version 8.0.0. `Equals` now compares the calculated value from the $numerator/denominator$ ($Equals(\frac{1}{2}, \frac{2}{4}) = true$).
+> [!IMPORTANT]
+> Please note that the default behavior of the `.Equals(Fraction)` method has changed with version 8.0.0. `Equals` now compares the calculated value from the $numerator/denominator$ ($Equals(\frac{1}{2}, \frac{2}{4}) = true$).
 
-If, on the other hand, you want to compare the numerator and denominator exactly (i.e. $Equals(\frac{1}{2}, \frac{2}{4}) = false$) then you have to use the new `FractionComparer.StrictEquality` comparer.
+In case you want to compare the numerator and denominator exactly (i.e. $Equals(\frac{1}{2}, \frac{2}{4}) = false$) then you can use the new `FractionComparer.StrictEquality` comparer.
 
 That said:
 
 ```csharp
 var a = new Fraction(1, 2, normalize: true);
 var b = new Fraction(1, 2, normalize: false);
-var c = new Fraction(2, 4, normalize: false); // improper fraction
+var c = new Fraction(2, 4, normalize: false); // the fraction is not reduced
 
 // result1 is true
 var result1 = a == a;
