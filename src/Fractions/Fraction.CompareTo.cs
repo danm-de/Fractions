@@ -44,6 +44,7 @@ public readonly partial struct Fraction {
         var numerator2 = other.Numerator;
         var denominator2 = other.Denominator;
         
+        // normalize signs
         if (denominator1.Sign == -1) {
             numerator1 = -numerator1;
             denominator1 = -denominator1;
@@ -105,25 +106,47 @@ public readonly partial struct Fraction {
             : compareNegativeTerms(numerator1, denominator1, numerator2, denominator2);
 
         static int comparePositiveTerms(BigInteger numerator1, BigInteger denominator1, BigInteger numerator2, BigInteger denominator2) {
-            // [denominator1 > denominator2 > 0]
+            // From here [denominator1 > denominator2 > 0] applies
+
             // example: {10/10} and {1/1} or {10/100} and {1/10}
             if (numerator1 <= numerator2) {
                 return -1; // expecting: 0 < numerator2 < numerator1
             }
 
             if (numerator2.IsOne) {
-                return denominator2.IsOne ? numerator1.CompareTo(denominator1) : (numerator1 * denominator2).CompareTo(denominator1);
+                if (denominator2.IsOne) {
+                    // {n1/d1}.CompareTo({1/1})
+                    return numerator1.CompareTo(denominator1);
+                }
+
+                // {n1/d1}.CompareTo({1/d2}) => {(n1*d2)/d1}.CompareTo(1) => (n1*d2).CompareTo(d1)
+                return (numerator1 * denominator2).CompareTo(denominator1);
             }
 
             if (denominator2.IsOne) {
+                // {n1/d1}.CompareTo({n2/1}) => (n1).CompareTo((n2*d1))
                 return numerator1.CompareTo(numerator2 * denominator1);
             }
 
-            // comparing the positive term ratios:
-            // {9/7} / {4/3} = {(2 + 1/4) / (2 + 1/3)} = {(9/4)/(7/3)} = {27/28} => (2).CompareTo(2) == 0 and (1/4).CompareTo(1/3) == -1
+            /* Comparing the positive term ratios:
+             * {9/7} / {4/3} = {(1 + 2/7) / (1 + 1/3)} = {27/28}
+             *               => ((1).CompareTo(1)) == 0 and ((2/7).CompareTo(1/3)) == -1
+             * Given that:
+             * {a/b} / {c/d} = {a/b} * {d/c} = {(a*d)/(c*b)} = {a/c} * {d/b} = {a/c} / {b/d}
+             * we can also write:
+             * {9/4} / {7/3} = {(2 + 1/4) / (2 + 1/3)} = {27/28}
+             *               => ((2).CompareTo(2)) == 0 and ((1/4).CompareTo(1/3)) == -1
+             */
+
             var denominatorQuotient = BigInteger.DivRem(denominator1, denominator2, out var remainderDenominators);
             if (remainderDenominators.IsZero) {
-                // {7/4} / {3/2} = {(2 + 1/3) / 2} = {(7/3)/2} = {7/6}
+                /* Example:
+                 * {7/4} / {3/2}         =
+                 * {7/3} / {4/2}         =
+                 * {(2 + 1/3) / (2 + 0)} =
+                 * {7/3} / 2             = {7/6}
+                 *                       => (7).CompareTo(3*2) == 1
+                 */
                 return numerator1.CompareTo(numerator2 * denominatorQuotient);
             }
 
@@ -136,7 +159,12 @@ public readonly partial struct Fraction {
 
             // if the fractions are equal: {remainderNumerators / numerator2} should be equal to {remainderDenominators / denominator2}
             if (remainderNumerators.IsZero) {
-                // {6/5} / {3/2} = {2 / (2 + 1/2)} = {2/(3/2)} = {4/3}
+                /* Example:
+                 * {6/5} / {3/2}   =
+                 * {6/3} / {5/2}   =
+                 * {2 / (2 + 1/2)} =
+                 * {2 / (3/2)}     = {4/3}
+                 */
                 return -1; // when both values are 0 the fractions are equal
             }
 
@@ -144,7 +172,8 @@ public readonly partial struct Fraction {
         }
 
         static int compareNegativeTerms(BigInteger numerator1, BigInteger denominator1, BigInteger numerator2, BigInteger denominator2) {
-            // [denominator1 > denominator2 > 0]
+            // From here [denominator1 > denominator2 > 0] applies
+
             // example: {-10/10} and {-1/1} or {-10/100} and {-1/10}
             if (numerator1 >= numerator2) {
                 return 1; // expecting: numerator1 < numerator2 < 0
@@ -158,8 +187,15 @@ public readonly partial struct Fraction {
                 return numerator1.CompareTo(numerator2 * denominator1);
             }
 
-            // comparing the negative term ratios:
-            // {-9/7} / {-4/3} = {(2 + 1/4) / (2 + 1/3)} = {27/28} => -((2).CompareTo(2)) == 0 and -((1/4).CompareTo(1/3)) == 1
+            /* Comparing the negative term ratios, example:
+             * {-9/7} / {-4/3} = {(-1 + -2/7) / (-1 + -1/3)} = {27/28}
+             *                 => ((-1).CompareTo(-1)) == 0 and ((-2/7).CompareTo(-1/3)) == 1
+             * Given that:
+             * {a/b} / {c/d} = {a/b} * {d/c} = {(a*d)/(c*b)} = {a/c} * {d/b} = {a/c} / {b/d}
+             * we can also write:
+             * {-9/4} / {-7/3} = {(-2 + -1/4) / (-2 - 1/3)} = {27/28}
+             *                 => ((-2).CompareTo(-2)) == 0 and ((-1/4).CompareTo(-1/3)) == 1
+             */
             var denominatorQuotient = BigInteger.DivRem(denominator1, denominator2, out var remainderDenominators);
             if (remainderDenominators.IsZero) {
                 // {-7/4} / {-3/2} = {(2 + 1/3) / 2} = {(7/3)/2} = {7/6}
