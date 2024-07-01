@@ -11,7 +11,7 @@
 
 ### Breaking changes
 
-- Mathematical operations no longer automatically generate normalized fractions if one of the operands is an improper (i.e. non-normalized) fraction. This has an impact on your calculations, especially if you have used the `JsonFractionConverter` with default settings. In such cases, deserialized fractions create improper fractions, which can lead to changed behavior when calling `ToString`. Please refer the README section [Working with non-normalized fractions](Readme.md#working-with-non-normalized-fractions)
+- Mathematical operations no longer automatically generate normalized fractions if one of the operands is an non-normalized fraction. This has an impact on your calculations, especially if you have used the `JsonFractionConverter` with default settings. In such cases, deserialized fractions create non-normalized fractions, which can lead to changed behavior when calling `ToString`. Please refer the README section [Working with non-normalized fractions](Readme.md#working-with-non-normalized-fractions)
 - The default behavior of the `.Equals(Fraction)` method has changed: `Equals` now compares the calculated value from the numerator/denominator (1/2 = 2/4).
 - The standard function `ToString()` now depends on the active culture (`CultureInfo.CurrentCulture`). The reason is that NaN and Infinity should be displayed in the system language or the corresponding symbol should be used.
 - Argument name for `Fraction.TryParse(..)` changed from `fractionString` to `value`.
