@@ -169,7 +169,7 @@ public class ExampleScenarioBenchmarks {
         public Fraction MassConcentrationMgMl { get; set; }
 
         public override string ToString() {
-            return $"{Description} ({MassConcentrationMgMl.ToDecimalWithTrailingZeros()} mg/ml)";
+            return $"{Description} ({MassConcentrationMgMl.ToDecimal()} mg/ml)";
         }
     }
 
@@ -191,9 +191,9 @@ public class ExampleScenarioBenchmarks {
         public Fraction InfusionRateMgKgH { get; set; }
 
         public override string ToString() {
-            return $"{nameof(MinWeight)}: {MinWeight.ToDecimalWithTrailingZeros()}, " +
-                   $"{nameof(MaxWeight)}: {MaxWeight.ToDecimalWithTrailingZeros()}, " +
-                   $"{nameof(InfusionRateMgKgH)}: {InfusionRateMgKgH.ToDecimalWithTrailingZeros()}";
+            return $"{nameof(MinWeight)}: {MinWeight.ToDecimal()}, " +
+                   $"{nameof(MaxWeight)}: {MaxWeight.ToDecimal()}, " +
+                   $"{nameof(InfusionRateMgKgH)}: {InfusionRateMgKgH.ToDecimal()}";
         }
     }
 
@@ -216,7 +216,7 @@ public class ExampleScenarioBenchmarks {
 
         public override string ToString() {
             return $"{nameof(PatientName)}: {PatientName}, " +
-                   $"{nameof(PatientWeightKg)}: {PatientWeightKg.ToDecimalWithTrailingZeros()}";
+                   $"{nameof(PatientWeightKg)}: {PatientWeightKg.ToDecimal()}";
         }
     }
 
@@ -233,9 +233,9 @@ public class ExampleScenarioBenchmarks {
                 $"{nameof(PatientName)}: {PatientName}, " +
                 $"{nameof(Medicine)}: {Medicine}, " +
                 $"{nameof(InfusionRateMgKgH)}: {InfusionRateMgKgH}, " +
-                $"{nameof(MassInfusionRateMgH)}: {MassInfusionRateMgH.ToDecimalWithTrailingZeros()}, " +
-                $"{nameof(VolumeInfusionRateMlH)}: {VolumeInfusionRateMlH.ToDecimalWithTrailingZeros()}, " +
-                $"{nameof(DurationHours)}: {DurationHours.ToDecimalWithTrailingZeros()}";
+                $"{nameof(MassInfusionRateMgH)}: {MassInfusionRateMgH.ToDecimal()}, " +
+                $"{nameof(VolumeInfusionRateMlH)}: {VolumeInfusionRateMlH.ToDecimal()}, " +
+                $"{nameof(DurationHours)}: {DurationHours.ToDecimal()}";
         }
     }
 
@@ -246,8 +246,8 @@ public class ExampleScenarioBenchmarks {
 
         public override string ToString() {
             return $"{nameof(Tasks)}: {Tasks.Count}, " +
-                   $"{nameof(MinTaskDurationHours)}: {MinTaskDurationHours.ToDecimalWithTrailingZeros()}, " +
-                   $"{nameof(MaxTaskDurationHours)}: {MaxTaskDurationHours.ToDecimalWithTrailingZeros()}";
+                   $"{nameof(MinTaskDurationHours)}: {MinTaskDurationHours.ToDecimal()}, " +
+                   $"{nameof(MaxTaskDurationHours)}: {MaxTaskDurationHours.ToDecimal()}";
         }
     }
 }
