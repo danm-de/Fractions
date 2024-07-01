@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
@@ -143,7 +142,7 @@ public class When_dividing_2_by_2_quarters_without_normalization : Spec {
 
     [Test]
     public void The_result_should_be_8_over_2() {
-        _result.Should().Be(new Fraction(8, 2, false));
+        Assert.That(_result, Is.EqualTo(new Fraction(8, 2, false)).Using(StrictTestComparer.Instance));
     }
 }
 
@@ -396,370 +395,394 @@ public class When_dividing_NaN_by_NaN : Spec {
 }
 
 [TestFixture]
-public class When_dividing_without_normalization {
+public class When_dividing_zero {
     private static IEnumerable<TestCaseData> TestCases {
         get {
-            #region zero cases
-
-            // {0/1} / {1/10} = {0/1}
+            
+            // {0/1} / {1/10} = Zero
             yield return new TestCaseData(
-                    Fraction.Zero,
-                    new Fraction(1, 10, false))
-                .Returns(new Fraction(0, 1, false));
+                Fraction.Zero,
+                new Fraction(1, 10, false));
 
-            // {0/-1} / {1/10} = {0/-1}
+            // {0/-1} / {1/10} = Zero
             yield return new TestCaseData(
-                    new Fraction(0, -1, false),
-                    new Fraction(1, 10, false))
-                .Returns(new Fraction(0, -1, false));
+                new Fraction(0, -1, false),
+                new Fraction(1, 10, false));
 
-            // {0/10} / {1/10} = {0/10}
+            // {0/10} / {1/10} = Zero
             yield return new TestCaseData(
-                    new Fraction(0, 10, false),
-                    new Fraction(1, 10, false))
-                .Returns(new Fraction(0, 10, false));
+                new Fraction(0, 10, false),
+                new Fraction(1, 10, false));
 
-            // {0/-10} / {1/10} = {0/-10}
+            // {0/-10} / {1/10} = Zero
             yield return new TestCaseData(
-                    new Fraction(0, -10, false),
-                    new Fraction(1, 10, false))
-                .Returns(new Fraction(0, -10, false));
+                new Fraction(0, -10, false),
+                new Fraction(1, 10, false));
 
-            #endregion
-
-            #region 0.1m / 0.1XX
-
-            // {1/10} / {1/10} == {10/10} 
+            // {0/-10} / {-1/10} = Zero
             yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(1, 10, false))
-                .Returns(new Fraction(10, 10, false));
-
-            // {1/10} / {10/100} == {100/100}       // the denominator be increased (1.00m)
+                new Fraction(0, -10, false),
+                new Fraction(-1, 10, false));
+            
+            // {0/-10} / {-1/-10} = Zero
             yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(10, 100, false))
-                .Returns(new Fraction(100, 100, false));
-
-            // {1/10} / {100/1000} == {1000/1000}   // the denominator should be increased (0.1m / 0.100m = 1.000m)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(100, 1000, false))
-                .Returns(new Fraction(1000, 1000, false));
-
-            #endregion
-
-            #region 0.1m / 0.5XX
-
-            // {1/10} / {5/10} == {10/50}        // the denominator should be increased incrementally (x / 0.5 / 0.2 should be the same as x / 0.1)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(5, 10, false))
-                .Returns(new Fraction(10, 50, false));
-
-            // {1/10} / {50/100} == {100/500}     // the denominator should be increased incrementally (x / 0.50 / 0.20 should be the same as x / 0.10)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(50, 100, false))
-                .Returns(new Fraction(100, 500, false));
-
-            // {1/10} / {500/1000} == {1000/5000}   // the denominator should be increased incrementally (x / 0.500 / 0.200 should be the same as x / 0.100)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(500, 1000, false))
-                .Returns(new Fraction(1000, 5000, false));
-
-            #endregion
-
-            #region 0.1m / 1.XX
-
-            // {1/10} / {1/1} == {1/10}
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(1, 1, false))
-                .Returns(new Fraction(1, 10, false));
-
-            // {1/10} / {10/10} == {10/100}       // the denominator should be increased (0.10m)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(10, 10, false))
-                .Returns(new Fraction(10, 100, false));
-
-            // {1/10} / {100/100} == {100/1000}   // the denominator should be increased (0.1m / 1.0m = 0.100m)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(100, 100, false))
-                .Returns(new Fraction(100, 1000, false));
-
-            #endregion
-
-            #region 0.1m / 5.XX
-
-            // {1/10} / {5/1} == {1/50}         // the denominator should be increased incrementally (x / 5 / 2 should be the same as x / 10)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(5, 1, false))
-                .Returns(new Fraction(1, 50, false));
-
-            // {1/10} * {50/10} == {10/500}       // the denominator should be increased incrementally (x / 50.0 / 2.0 should be the same as x / 100.0)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(50, 10, false))
-                .Returns(new Fraction(10, 500, false));
-
-            // {1/10} * {500/100} == {100/5000}   // the denominator should be increased incrementally (x / 50.00 / 2.0 should be the same as x / 100.00)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(500, 100, false))
-                .Returns(new Fraction(100, 5000, false));
-
-            #endregion
-
-            #region 0.1m / 10.XX
-
-            // {1/10} / {10/1} == {1/100}        
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(10, 1, false))
-                .Returns(new Fraction(1, 100, false));
-
-            // {1/10} / {100/10} == {10/1000}     
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(100, 10, false))
-                .Returns(new Fraction(10, 1000, false));
-
-            // {1/10} / {1000/100} == {100/10000}     // the denominator should be increased (0.1m / 10.00m = 0.010m)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(1000, 100, false))
-                .Returns(new Fraction(100, 10000, false));
-
-            #endregion
-
-            #region 0.1m / 50.XX
-
-            // {1/10} / {50/1} == {1/500}       // the denominator should be increased incrementally (x / 50 / 2 should be the same as x / 100)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(50, 1, false))
-                .Returns(new Fraction(1, 500, false));
-
-            // {1/10} / {500/10} == {10/5000}     // the denominator should be increased incrementally (x / 50.0 / 2.0 should be the same as x / 100.0)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(500, 10, false))
-                .Returns(new Fraction(10, 5000, false));
-
-            // {1/10} / {5000/100} == {100/50000}  // the denominator should be increased incrementally (x / 50.00 / 2.00 should be the same as x / 100.00)
-            yield return new TestCaseData(
-                    new Fraction(1, 10, false),
-                    new Fraction(5000, 100, false))
-                .Returns(new Fraction(100, 50000, false));
-
-            #endregion
-
-            #region 0.10m / 0.1XX
-
-            // {10/100} / {1/10} == {100/100}     // the denominator should not change (0.10m / 0.1m = 1.00m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(1, 10, false))
-                .Returns(new Fraction(100, 100, false));
-
-            // {10/100} / {10/100} == {1000/1000}    // the denominator should be increased (0.10m / 0.10m = 1.000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(10, 100, false))
-                .Returns(new Fraction(1000, 1000, false));
-
-            // {10/100} / {100/1000} == {10000/10000}   // the denominator should not change (0.10m / 0.100m = 1.0000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(100, 1000, false))
-                .Returns(new Fraction(10000, 10000, false));
-
-            // {10/100} / {1000/10000} == {100000/100000} // the denominator should be increased (0.10m / 0.100m = 1.000000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(1000, 10000, false))
-                .Returns(new Fraction(100000, 100000, false));
-
-            #endregion
-
-            #region 0.10m / 0.5XX
-
-            // {10/100} / {5/10} == {100/500}       // the denominator should be increased incrementally (x / 0.5 / 0.2 should be the same as x / 0.1)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(5, 10, false))
-                .Returns(new Fraction(100, 500, false));
-
-            // {10/100} / {50/100} == {1000/5000}   // the denominator should be increased incrementally (x / 0.50 / 0.20 should be the same as x / 0.10)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(50, 100, false))
-                .Returns(new Fraction(1000, 5000, false));
-
-            // {10/100} / {500/1000} == {10000/50000}   // the denominator should be increased incrementally (x / 0.500 / 0.200 should be the same as x / 0.100)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(500, 1000, false))
-                .Returns(new Fraction(10000, 50000, false));
-
-            // {10/100} / {5000/10000} == {100000/500000} // the denominator should be increased incrementally (x / 0.5000 / 0.2000 should be the same as x / 0.1000)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(5000, 10000, false))
-                .Returns(new Fraction(100000, 500000, false));
-
-            #endregion
-
-            #region 0.10m / 1.XX
-
-            // {10/100} / {1/1} == {10/100}
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(1, 1, false))
-                .Returns(new Fraction(10, 100, false));
-
-            // {10/100} / {10/10} == {100/1000}       // the denominator be increased (0.10m / 1.0m = 0.100m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(10, 10, false))
-                .Returns(new Fraction(100, 1000, false));
-
-            // {10/100} / {100/100} == {1000/10000}     // the denominator should not change (0.10m / 1.00m = 0.1000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(100, 100, false))
-                .Returns(new Fraction(1000, 10000, false));
-
-            // {10/100} / {1000/1000} == {10000/100000}   // the denominator should be increased (0.10m / 1.000m = 0.10000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(1000, 1000, false))
-                .Returns(new Fraction(10000, 100000, false));
-
-            #endregion
-
-            #region 0.10m / 5.XX
-
-            // {10/100} / {5/1} == {10/500}          // the denominator should be increased incrementally (x / 5 / 2 should be the same as x / 10)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(5, 1, false))
-                .Returns(new Fraction(10, 500, false));
-
-            // {10/100} / {50/10} == {100/5000}       // the denominator should be increased incrementally (x / 5.0 / 2.0 should be the same as x / 10.0)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(50, 10, false))
-                .Returns(new Fraction(100, 5000, false));
-
-            // {10/100} / {500/100} == {1000/50000}     // the denominator should be increased incrementally (x / 5.00 / 2.00 should be the same as x / 10.00)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(500, 100, false))
-                .Returns(new Fraction(1000, 50000, false));
-
-            // {10/100} / {5000/1000} == {10000/500000}   // the denominator should be increased incrementally (x / 5.000 / 2.000 should be the same as x / 10.000)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(5000, 1000, false))
-                .Returns(new Fraction(10000, 500000, false));
-
-            #endregion
-
-            #region 0.10m / 10.XX
-
-            // {10/100} / {10/1} == {10/1000}       // the denominator should be increased (0.10m / 10m = 0.010m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(10, 1, false))
-                .Returns(new Fraction(10, 1000, false));
-
-            // {10/100} / {100/10} == {100/10000}     // the denominator should be increased (0.10m / 10.0m = 0.0100m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(100, 10, false))
-                .Returns(new Fraction(100, 10000, false));
-
-            // {10/100} / {1000/100} == {1000/100000}   // the denominator should be increased (0.10m / 10.00m = 0.01000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(1000, 100, false))
-                .Returns(new Fraction(1000, 100000, false));
-
-            // {10/100} / {10000/1000} == {10000/1000000} // the denominator should be increased (0.10m / 10.000m = 0.010000m)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(10000, 1000, false))
-                .Returns(new Fraction(10000, 1000000, false));
-
-            #endregion
-
-            #region 0.10m / 50.XX
-
-            // {10/100} / {50/1} == {10/5000}       // the denominator should be increased incrementally (x / 50 / 2 should be the same as x / 100)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(50, 1, false))
-                .Returns(new Fraction(10, 5000, false));
-
-            // {10/100} / {500/10} == {100/50000}     // the denominator should be increased incrementally (x / 50.0 / 2.0 should be the same as x / 100.0)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(500, 10, false))
-                .Returns(new Fraction(100, 50000, false));
-
-            // {10/100} / {5000/100} == {1000/500000}   // the denominator should be increased incrementally (x / 50.00 / 2.00 should be the same as x / 100.00)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(5000, 100, false))
-                .Returns(new Fraction(1000, 500000, false));
-
-            // {10/100} / {50000/1000} == {10000/5000000} // the denominator should be increased incrementally (x / 50.000 / 2.000 should be the same as x / 100.000)
-            yield return new TestCaseData(
-                    new Fraction(10, 100, false),
-                    new Fraction(50000, 1000, false))
-                .Returns(new Fraction(10000, 5000000, false));
-
-            #endregion
+                new Fraction(0, -10, false),
+                new Fraction(-1, -10, false));
         }
     }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public Fraction The_result_should_preserve_the_number_precision(Fraction a, Fraction b) {
+    public void The_result_is_Zero_or_NaN(Fraction a, Fraction b) {
         var result = a.Divide(b);
-        result.Multiply(b).Should().Be(a); // a / b = c => c * b = a
-        return result;
+        Assert.That(result, Is.EqualTo(Fraction.Zero).Using(StrictTestComparer.Instance));
     }
+}
 
-    public static IEnumerable<TestCaseData> OperationTestCases => TestCases.Select(x =>
-        new TestCaseData((x.Arguments[0]), x.Arguments[1]));
+[TestFixture]
+public class When_dividing_without_normalization {
+    private static IEnumerable<TestCaseData> PositiveResultCases {
+        get {
+            #region 0.1m / 0.1XX
+
+            // {1/10} / {1/10} == {1/1} 
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(1, 10, false),
+                new Fraction(1, 1, false));
+
+            // {1/10} / {10/100} == {10/10}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(10, 100, false),
+                new Fraction(10, 10, false));
+
+            // {1/10} / {100/1000} == {100/100}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(100, 1000, false),
+                new Fraction(100, 100, false));
+
+            #endregion
+
+            #region 0.1m / 0.5XX
+            
+            // {1/10} / {5/10} == {1/5}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(5, 10, false),
+                new Fraction(1, 5, false));
+            // {1/10} / {50/100} == {10/50}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(50, 100, false),
+                new Fraction(10, 50, false));
+            // {1/10} / {500/1000} == {100/500}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(500, 1000, false),
+                new Fraction(100, 500, false));
+            
+            #endregion
+            
+            #region 0.1m / 1.XX
+            
+            // {1/10} / {1/1} == {1/10}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(1, 1, false),
+                new Fraction(1, 10, false));
+            // {1/10} / {10/10} == {1/10}      
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(10, 10, false),
+                new Fraction(1, 10, false));
+            // {1/10} / {100/100} == {10/100}   
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(100, 100, false),
+                new Fraction(10, 100, false));
+            
+            #endregion
+            
+            #region 0.1m / 5.XX
+            
+            // {1/10} / {5/1} == {1/50}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(5, 1, false),
+                new Fraction(1, 50, false));
+            // {1/10} * {50/10} == {1/50}       
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(50, 10, false),
+                new Fraction(1, 50, false));
+            // {1/10} * {500/100} == {10/500}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(500, 100, false),
+                new Fraction(10, 500, false));
+            
+            #endregion
+            
+            #region 0.1m / 10.XX
+            
+            // {1/10} / {10/1} == {1/100}        
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(10, 1, false),
+                new Fraction(1, 100, false));
+            // {1/10} / {100/10} == {1/100}     
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(100, 10, false),
+                new Fraction(1, 100, false));
+            // {1/10} / {1000/100} == {10/1000}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(1000, 100, false),
+                new Fraction(10, 1000, false));
+            
+            #endregion
+            
+            #region 0.1m / 50.XX
+            
+            // {1/10} / {50/1} == {1/500}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(50, 1, false),
+                new Fraction(1, 500, false));
+            // {1/10} / {500/10} == {1/500}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(500, 10, false),
+                new Fraction(1, 500, false));
+            // {1/10} / {5000/100} == {10/5000}
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(5000, 100, false),
+                new Fraction(10, 5000, false));
+            
+            #endregion
+            
+            #region 0.10m / 0.1XX
+            
+            // {10/100} / {1/10} == {10/10}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(1, 10, false),
+                new Fraction(10, 10, false));
+            // {10/100} / {10/100} == {10/10}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(10, 100, false),
+                new Fraction(10, 10, false));
+            // {10/100} / {100/1000} == {100/100}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(100, 1000, false),
+                new Fraction(100, 100, false));
+            // {10/100} / {1000/10000} == {1000/1000}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(1000, 10000, false),
+                new Fraction(1000, 1000, false));
+            
+            #endregion
+            
+            #region 0.10m / 0.5XX
+            
+            // {10/100} / {5/10} == {10/50}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(5, 10, false),
+                new Fraction(10, 50, false));
+            // {10/100} / {50/100} == {10/50}  
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(50, 100, false),
+                new Fraction(10, 50, false));
+            // {10/100} / {500/1000} == {100/500}  
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(500, 1000, false),
+                new Fraction(100, 500, false));
+            // {10/100} / {5000/10000} == {1000/5000} 
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(5000, 10000, false),
+                new Fraction(1000, 5000, false));
+            
+            #endregion
+            
+            #region 0.10m / 1.XX
+            
+            // {10/100} / {1/1} == {10/100}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(1, 1, false),
+                new Fraction(10, 100, false));
+            // {10/100} / {10/10} == {10/100}       
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(10, 10, false),
+                new Fraction(10, 100, false));
+            // {10/100} / {100/100} == {10/100}  
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(100, 100, false),
+                new Fraction(10, 100, false));
+            // {10/100} / {1000/1000} == {100/1000}  
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(1000, 1000, false),
+                new Fraction(100, 1000, false));
+            
+            #endregion
+            
+            #region 0.10m / 5.XX
+            
+            // {10/100} / {5/1} == {10/500}         
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(5, 1, false),
+                new Fraction(10, 500, false));
+            // {10/100} / {50/10} == {10/500}       
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(50, 10, false),
+                new Fraction(10, 500, false));
+            // {10/100} / {500/100} == {10/500}    
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(500, 100, false),
+                new Fraction(10, 500, false));
+            // {10/100} / {5000/1000} == {100/5000}  
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(5000, 1000, false),
+                new Fraction(100, 5000, false));
+            
+            #endregion
+            
+            #region 0.10m / 10.XX
+            
+            // {10/100} / {10/1} == {10/1000}      
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(10, 1, false),
+                new Fraction(10, 1000, false));
+            // {10/100} / {100/10} == {10/1000}    
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(100, 10, false),
+                new Fraction(10, 1000, false));
+            // {10/100} / {1000/100} == {10/1000}   
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(1000, 100, false),
+                new Fraction(10, 1000, false));
+            // {10/100} / {10000/1000} == {100/10000}
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(10000, 1000, false),
+                new Fraction(100, 10000, false));
+            
+            #endregion
+            
+            #region 0.10m / 50.XX
+            
+            // {10/100} / {50/1} == {10/5000}      
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(50, 1, false),
+                new Fraction(10, 5000, false));
+            // {10/100} / {500/10} == {10/5000}     
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(500, 10, false),
+                new Fraction(10, 5000, false));
+            // {10/100} / {5000/100} == {10/5000}   
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(5000, 100, false),
+                new Fraction(10, 5000, false));
+            // {10/100} / {50000/1000} == {100/50000} 
+            yield return new TestCaseData(
+                new Fraction(10, 100, false),
+                new Fraction(50000, 1000, false),
+                new Fraction(100, 50000, false));
+            
+            #endregion
+            
+            #region other values
+            
+            // {1/10} / {3/10} == {1/3} 
+            yield return new TestCaseData(
+                new Fraction(1, 10, false),
+                new Fraction(3, 10, false),
+                new Fraction(1, 3, false));
+            
+            // 1/3 / 10/1 == {1/30}
+            yield return new TestCaseData(
+                new Fraction(1, 3, false),
+                new Fraction(10, 1, false),
+                new Fraction(1, 30, false));
+            
+            // {20/10} / {25/10} = {(0 + 20/25) / (1 + 0/10)} = {(20/25)/(1)} = {20/25}
+            yield return new TestCaseData(
+                new Fraction(20, 10, false),
+                new Fraction(25, 10, false),
+                new Fraction(20, 25, false));
+            
+            // {9/7} / {4/3} = {(2 + 1/4) / (2 + 1/3)} = {(9/4)/(7/3)} = {27/28}
+            yield return new TestCaseData(
+                new Fraction(9, 7, false),
+                new Fraction(4, 3, false),
+                new Fraction(27, 28, false));
+            
+            #endregion
+        }
+    }
 
     [Test]
-    [TestCaseSource(nameof(OperationTestCases))]
-    public void The_result_should_be_round_tripping(Fraction a, Fraction b) {
-        var result = a.Divide(b);
-        result.Multiply(b).Should().Be(a); // a / b = c => c * b = a
-    }
+    [TestCaseSource(nameof(PositiveResultCases))]
+    public void The_terms_expansion_is_constrained(Fraction a, Fraction b, Fraction expectedValue) {
+        // positive results
+        a.Divide(b).Should().Be(expectedValue, "Both a / b and the expectedValue should reduce to the same fraction");
+        Assert.That(a.Divide(b), Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance)); // a / b = c
+        Assert.That(a.Negate().Divide(b.Negate()), Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance)); // -a / -b = c
+        Assert.That(a.Reciprocal().Divide(b.Reciprocal()), Is.EqualTo(expectedValue.Reciprocal())); // 1/a / 1/b = 1/c (equivalent)
+        Assert.That(a.Reciprocal().Negate().Divide(b.Reciprocal().Negate()), Is.EqualTo(expectedValue.Reciprocal())); // -1/a / -1/b = 1/c (equivalent)
+        Assert.That(a.Reciprocal().Negate().Divide(b.Negate().Reciprocal()), Is.EqualTo(expectedValue.Reciprocal())); // -1/a / 1/-b = 1/c (equivalent)
+        Assert.That(a.Negate().Reciprocal().Divide(b.Reciprocal().Negate()), Is.EqualTo(expectedValue.Reciprocal())); // 1/-a / -1/b = 1/c (equivalent)
+        Assert.That(a.Negate().Reciprocal().Divide(b.Negate().Reciprocal()), Is.EqualTo(expectedValue.Reciprocal())); // 1/-a / 1/-b = 1/c (equivalent)
+        Assert.That(a.Negate().Reciprocal().Negate().Divide(b.Negate().Reciprocal().Negate()), Is.EqualTo(expectedValue.Reciprocal())); // -1/-a / -1/-b = 1/c (equivalent)
 
+        // negative results
+        Assert.That(a.Negate().Divide(b), Is.EqualTo(expectedValue.Negate()).Using(StrictTestComparer.Instance)); // -a / b = -c
+        Assert.That(a.Divide(b.Negate()), Is.EqualTo(expectedValue.Negate()).Using(StrictTestComparer.Instance)); // a / -b = -c
+        Assert.That(a.Reciprocal().Negate().Divide(b.Reciprocal()), Is.EqualTo(expectedValue.Reciprocal().Negate())); // -1/a / 1/b = -1/c (equivalent)
+        Assert.That(a.Reciprocal().Divide(b.Reciprocal().Negate()), Is.EqualTo(expectedValue.Reciprocal().Negate())); // 1/a / -1/b = -1/c (equivalent)
+        Assert.That(a.Reciprocal().Divide(b.Negate().Reciprocal()), Is.EqualTo(expectedValue.Reciprocal().Negate())); // 1/a / 1/-b = -1/c (equivalent)
+        Assert.That(a.Negate().Reciprocal().Divide(b.Reciprocal()), Is.EqualTo(expectedValue.Reciprocal().Negate())); // 1/-a / 1/b = -1/c (equivalent)
+        Assert.That(a.Negate().Reciprocal().Negate().Divide(b.Negate().Reciprocal()), Is.EqualTo(expectedValue.Reciprocal().Negate())); // -1/-a / 1/-b = -1/c (equivalent)
+        Assert.That(a.Negate().Reciprocal().Divide(b.Negate().Reciprocal().Negate()), Is.EqualTo(expectedValue.Reciprocal().Negate())); // 1/-a / -1/-b = -1/c (equivalent)
+    }
+    
     [Test]
     public void The_resulting_denominator_is_increased_incrementally_when_dividing_by_small_integers() {
         // Arrange
         var initialValue = new Fraction(10, 100, false);
-        var expectedValue = new Fraction(10, 1000, false);
+        var expectedValue = new Fraction(10, 1_000, false);
         // Act
         var dividedByTen = initialValue / 10;
         var dividedByTwoAndFive = initialValue / 2 / 5;
         var dividedByFiveAndTwo = initialValue / 5 / 2;
         // Assert
-        dividedByTen.Should().Be(expectedValue);
-        dividedByTwoAndFive.Should().Be(expectedValue);
-        dividedByFiveAndTwo.Should().Be(expectedValue);
+        Assert.That(dividedByTen, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByTwoAndFive, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByFiveAndTwo, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
     }
 
     [Test]
@@ -768,13 +791,13 @@ public class When_dividing_without_normalization {
         var initialValue = new Fraction(10, 100, false);
         var expectedValue = new Fraction(10, 1_000_000, false);
         // Act
-        var multipliedByTen = initialValue / 10_000;
-        var multipliedByTwoAndFive = initialValue / 2_000 / 5;
-        var multipliedByFiveAndTwo = initialValue / 5_000 / 2;
+        var dividedByTen = initialValue / 10_000;
+        var dividedByTwoAndFive = initialValue / 2_000 / 5;
+        var dividedByFiveAndTwo = initialValue / 5_000 / 2;
         // Assert
-        multipliedByTen.Should().Be(expectedValue);
-        multipliedByTwoAndFive.Should().Be(expectedValue);
-        multipliedByFiveAndTwo.Should().Be(expectedValue);
+        Assert.That(dividedByTen, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByTwoAndFive, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByFiveAndTwo, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
     }
 
     [Test]
@@ -787,9 +810,9 @@ public class When_dividing_without_normalization {
         var dividedByTwoAndFive = initialValue / 5 / 2_000;
         var dividedByFiveAndTwo = initialValue / 2 / 5_000;
         // Assert
-        dividedByTen.Should().Be(expectedValue);
-        dividedByTwoAndFive.Should().Be(expectedValue);
-        dividedByFiveAndTwo.Should().Be(expectedValue);
+        Assert.That(dividedByTen, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByTwoAndFive, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByFiveAndTwo, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
     }
 
     [Test]
@@ -802,38 +825,38 @@ public class When_dividing_without_normalization {
         var dividedByTwoAndFive = initialValue / 5_000 / 2_000;
         var dividedByFiveAndTwo = initialValue / 2_000 / 5_000;
         // Assert
-        dividedByTen.Should().Be(expectedValue);
-        dividedByTwoAndFive.Should().Be(expectedValue);
-        dividedByFiveAndTwo.Should().Be(expectedValue);
+        Assert.That(dividedByTen, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByTwoAndFive, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByFiveAndTwo, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
     }
 
     [Test]
     public void The_resulting_numerator_is_increased_incrementally_when_dividing_by_one_over_small_integer() {
         // Arrange: {10/100} / {1/10} = {100/100}
         var initialValue = new Fraction(10, 100, false);
-        var expectedValue = new Fraction(100, 100, false);
+        var expectedValue = new Fraction(10, 10, false);
         // Act
         var dividedByTen = initialValue / 0.1m;
         var dividedByTwoAndFive = initialValue / 0.2m / 0.5m;
         var dividedByFiveAndTwo = initialValue / 0.5m / 0.2m;
         // Assert
-        dividedByTen.Should().Be(expectedValue);
-        dividedByTwoAndFive.Should().Be(expectedValue);
-        dividedByFiveAndTwo.Should().Be(expectedValue);
+        Assert.That(dividedByTen, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByTwoAndFive, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByFiveAndTwo, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
     }
 
     [Test]
     public void The_resulting_numerator_is_increased_incrementally_when_dividing_by_one_over_large_integer() {
         // Arrange: {10/100} / {1/10_000} = {1/100_000}
         var initialValue = new Fraction(10, 100, false);
-        var expectedValue = new Fraction(100_000, 100, false);
+        var expectedValue = new Fraction(1_000, 1, false);
         // Act
         var dividedByTen = initialValue / 0.0001m;
         var dividedByTwoAndFive = initialValue / 0.0002m / 0.5m;
         var dividedByFiveAndTwo = initialValue / 0.0005m / 0.2m;
         // Assert
-        dividedByTen.Should().Be(expectedValue);
-        dividedByTwoAndFive.Should().Be(expectedValue);
-        dividedByFiveAndTwo.Should().Be(expectedValue);
+        Assert.That(dividedByTen, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByTwoAndFive, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
+        Assert.That(dividedByFiveAndTwo, Is.EqualTo(expectedValue).Using(StrictTestComparer.Instance));
     }
 }

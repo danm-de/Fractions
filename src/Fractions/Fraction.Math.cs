@@ -273,45 +273,19 @@ public readonly partial struct Fraction {
                 denominator: BigInteger.Zero);
         }
 
+        if (thisNumerator.IsZero || otherNumerator.IsZero) {
+            return Zero;
+        }
+        
         if (_normalizationNotApplied || factor._normalizationNotApplied) {
-            if (thisNumerator.IsZero) {
-                return this;
-            }
-
-            if (otherNumerator.IsZero) {
-                return factor;
-            }
-
-            reduceTerms(ref thisNumerator, ref otherDenominator); // TODO benchmark for both cases
-            reduceTerms(ref otherNumerator, ref thisDenominator);
-
             return new Fraction(true,
                 MultiplyTerms(ref thisNumerator, ref otherNumerator),
                 MultiplyTerms(ref thisDenominator, ref otherDenominator));
         }
 
-        if (thisNumerator.IsZero || otherNumerator.IsZero) {
-            return Zero;
-        }
-
         return ReduceSigned(
             MultiplyTerms(ref thisNumerator, ref otherNumerator),
             MultiplyTerms(ref thisDenominator, ref otherDenominator));
-
-        static void reduceTerms(ref BigInteger numerator, ref BigInteger denominator) {
-            if (numerator.IsOne || denominator.IsOne ||
-                numerator == BigInteger.MinusOne || denominator == BigInteger.MinusOne) {
-                return;
-            }
-
-            var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
-            if (gcd.IsOne) {
-                return;
-            }
-
-            numerator /= gcd;
-            denominator /= gcd;
-        }
     }
 
     /// <summary>
@@ -344,13 +318,89 @@ public readonly partial struct Fraction {
         }
 
         if (_normalizationNotApplied || divisor._normalizationNotApplied) {
-            var numerator = thisNumerator.IsZero
-                ? thisNumerator
-                : MultiplyTerms(ref thisNumerator, ref otherDenominator);
-            var denominator = otherNumerator.IsZero
-                ? otherNumerator
-                : MultiplyTerms(ref thisDenominator, ref otherNumerator);
-            return new Fraction(true, numerator, denominator);
+            if (thisNumerator.IsZero) {
+                return otherNumerator.IsZero ?
+                    NaN :
+                    Zero;
+            }
+
+            if (otherNumerator.IsZero) {
+                return new Fraction(false, thisNumerator.Sign * otherDenominator.Sign, BigInteger.Zero);
+            }
+
+            // all terms are non-negative: normalize the signs
+            if (thisDenominator.Sign == -1) {
+                thisNumerator = -thisNumerator;
+                thisDenominator = -thisDenominator;
+            }
+
+            if (otherDenominator.Sign == -1) {
+                otherNumerator = -otherNumerator;
+                otherDenominator = -otherDenominator;
+            }
+
+            // adjust the signs of the numerator (optional)
+            if (otherNumerator.Sign == -1) {
+                thisNumerator = -thisNumerator;
+                otherNumerator = -otherNumerator;
+            }
+
+            // attempt to reduce the denominators
+            switch (thisDenominator.CompareTo(otherDenominator)) {
+                case 1: {
+                    if (otherDenominator.IsOne) {
+                        // {123/10} / {456/1}
+                        return new Fraction(true,
+                            thisNumerator,
+                            otherNumerator.IsOne ? thisDenominator : thisDenominator * otherNumerator);
+                    }
+            
+                    var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
+                    if (gcd == otherDenominator) {
+                        thisDenominator /= otherDenominator;
+                        return new Fraction(true,
+                            thisNumerator,
+                            otherNumerator.IsOne ? thisDenominator : otherNumerator == BigInteger.MinusOne ? -thisDenominator: thisDenominator * otherNumerator);
+                    }
+            
+                    if (!gcd.IsOne) {
+                        thisDenominator /= gcd;
+                        otherDenominator /= gcd;
+                    }
+                    
+                    var numerator = thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne ? -otherDenominator: thisNumerator * otherDenominator;
+                    var denominator = otherNumerator.IsOne ? thisDenominator : thisDenominator * otherNumerator;
+                    return new Fraction(true, numerator, denominator);
+                }
+                case -1: {
+                    if (thisDenominator.IsOne) {
+                        // {123/1} / {456/10}
+                        return new Fraction(true,
+                            thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne? -otherDenominator: thisNumerator * otherDenominator,
+                            otherNumerator);
+                    }
+                    
+                    var gcd = BigInteger.GreatestCommonDivisor(otherDenominator, thisDenominator);
+                    if (gcd == thisDenominator) {
+                        otherDenominator /= thisDenominator;
+                        return new Fraction(true,
+                            thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne ? -otherDenominator: thisNumerator * otherDenominator,
+                            otherNumerator);
+                    }
+                    
+                    if (!gcd.IsOne) {
+                        thisDenominator /= gcd;
+                        otherDenominator /= gcd;
+                    }
+                    
+                    var numerator = thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne ? -otherDenominator: thisNumerator * otherDenominator;
+                    var denominator = otherNumerator.IsOne ? thisDenominator : thisDenominator * otherNumerator;
+                    return new Fraction(true, numerator, denominator);
+                }
+                default: {
+                    return new Fraction(true, thisNumerator, otherNumerator);
+                }
+            }
         }
 
         switch (otherNumerator.Sign) {
