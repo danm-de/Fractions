@@ -352,7 +352,9 @@ public readonly partial struct Fraction {
                         // {123/10} / {456/1}
                         return new Fraction(true,
                             thisNumerator,
-                            otherNumerator.IsOne ? thisDenominator : thisDenominator * otherNumerator);
+                            otherNumerator.IsOne
+                                ? thisDenominator
+                                : thisDenominator * otherNumerator);
                     }
             
                     var gcd = BigInteger.GreatestCommonDivisor(thisDenominator, otherDenominator);
@@ -360,7 +362,11 @@ public readonly partial struct Fraction {
                         thisDenominator /= otherDenominator;
                         return new Fraction(true,
                             thisNumerator,
-                            otherNumerator.IsOne ? thisDenominator : otherNumerator == BigInteger.MinusOne ? -thisDenominator: thisDenominator * otherNumerator);
+                            otherNumerator.IsOne
+                                ? thisDenominator
+                                : otherNumerator == BigInteger.MinusOne
+                                    ? -thisDenominator
+                                    : thisDenominator * otherNumerator);
                     }
             
                     if (!gcd.IsOne) {
@@ -368,15 +374,27 @@ public readonly partial struct Fraction {
                         otherDenominator /= gcd;
                     }
                     
-                    var numerator = thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne ? -otherDenominator: thisNumerator * otherDenominator;
-                    var denominator = otherNumerator.IsOne ? thisDenominator : thisDenominator * otherNumerator;
+                    var numerator = thisNumerator.IsOne
+                        ? otherDenominator
+                        : thisNumerator == BigInteger.MinusOne
+                            ? -otherDenominator
+                            : thisNumerator * otherDenominator;
+
+                    var denominator = otherNumerator.IsOne
+                        ? thisDenominator
+                        : thisDenominator * otherNumerator;
+
                     return new Fraction(true, numerator, denominator);
                 }
                 case -1: {
                     if (thisDenominator.IsOne) {
                         // {123/1} / {456/10}
                         return new Fraction(true,
-                            thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne? -otherDenominator: thisNumerator * otherDenominator,
+                            thisNumerator.IsOne
+                                ? otherDenominator
+                                : thisNumerator == BigInteger.MinusOne
+                                    ? -otherDenominator
+                                    : thisNumerator * otherDenominator,
                             otherNumerator);
                     }
                     
@@ -384,7 +402,11 @@ public readonly partial struct Fraction {
                     if (gcd == thisDenominator) {
                         otherDenominator /= thisDenominator;
                         return new Fraction(true,
-                            thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne ? -otherDenominator: thisNumerator * otherDenominator,
+                            thisNumerator.IsOne
+                                ? otherDenominator
+                                : thisNumerator == BigInteger.MinusOne
+                                    ? -otherDenominator
+                                    : thisNumerator * otherDenominator,
                             otherNumerator);
                     }
                     
@@ -393,8 +415,16 @@ public readonly partial struct Fraction {
                         otherDenominator /= gcd;
                     }
                     
-                    var numerator = thisNumerator.IsOne ? otherDenominator : thisNumerator == BigInteger.MinusOne ? -otherDenominator: thisNumerator * otherDenominator;
-                    var denominator = otherNumerator.IsOne ? thisDenominator : thisDenominator * otherNumerator;
+                    var numerator = thisNumerator.IsOne
+                        ? otherDenominator
+                        : thisNumerator == BigInteger.MinusOne
+                            ? -otherDenominator
+                            : thisNumerator * otherDenominator;
+
+                    var denominator = otherNumerator.IsOne
+                        ? thisDenominator
+                        : thisDenominator * otherNumerator;
+
                     return new Fraction(true, numerator, denominator);
                 }
                 default: {
