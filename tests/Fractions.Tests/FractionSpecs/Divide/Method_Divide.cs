@@ -281,7 +281,7 @@ public class When_dividing_with_NaN {
 }
 
 [TestFixture]
-public class When_dividing_with_infinity {
+public class When_dividing_infinity {
     private static IEnumerable<TestCaseData> TestCases {
         get {
             // positive infinity with positive infinity
@@ -319,6 +319,50 @@ public class When_dividing_with_infinity {
     [Test]
     [TestCaseSource(nameof(TestCases))]
     public void The_result_is_always_NaN_or_Infinity(Fraction a, Fraction b, Fraction expected) {
+        var result = a.Divide(b);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
+}
+
+[TestFixture]
+public class When_dividing_with_infinity {
+    private static IEnumerable<TestCaseData> TestCases {
+        get {
+            // positive infinity divided by positive infinity
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.PositiveInfinity, Fraction.NaN);
+            yield return new TestCaseData(new Fraction(5, 0, false), Fraction.PositiveInfinity, Fraction.NaN);
+
+            // any other number divided by positive infinity
+            yield return new TestCaseData(new Fraction(5, 4), Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.One, Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(4, 5), Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.Zero, Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.MinusOne, Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(-5, 4), Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(-4, 5), Fraction.PositiveInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.PositiveInfinity, Fraction.NaN);
+            yield return new TestCaseData(new Fraction(-5, 0, false), Fraction.PositiveInfinity, Fraction.NaN);
+
+            // negative infinity divided by negative infinity
+            yield return new TestCaseData(Fraction.NegativeInfinity, Fraction.NegativeInfinity, Fraction.NaN);
+            yield return new TestCaseData(new Fraction(-5, 0, false), Fraction.NegativeInfinity, Fraction.NaN);
+
+            // any other number divided by negative infinity 
+            yield return new TestCaseData(new Fraction(5, 4), Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.One, Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(4, 5), Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.Zero, Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.MinusOne, Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(-5, 4), Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(new Fraction(-4, 5), Fraction.NegativeInfinity, Fraction.Zero);
+            yield return new TestCaseData(Fraction.PositiveInfinity, Fraction.NegativeInfinity, Fraction.NaN);
+            yield return new TestCaseData(new Fraction(-5, 0, false), Fraction.NegativeInfinity, Fraction.NaN);
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public void The_result_is_always_Zero_or_NaN(Fraction a, Fraction b, Fraction expected) {
         var result = a.Divide(b);
         Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }

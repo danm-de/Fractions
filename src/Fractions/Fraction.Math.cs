@@ -297,15 +297,15 @@ public readonly partial struct Fraction {
         // we want to skip the multiplications if we know the result is going to be 0/b or a/0
         var otherNumerator = divisor.Numerator;
         var otherDenominator = divisor.Denominator;
-
+        
         if (otherDenominator.IsZero) {
-            // dividing by NaN or Infinity produces NaN
-            return NaN;
+            // dividing by NaN or Infinity produces NaN or Zero
+            return otherNumerator.IsZero || Denominator.IsZero ? NaN : Zero;
         }
-
+        
         var thisNumerator = Numerator;
         var thisDenominator = Denominator;
-
+        
         if (thisDenominator.IsZero) {
             // `this` is NaN or Infinity
             return thisNumerator.Sign switch {
