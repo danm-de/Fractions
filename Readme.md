@@ -2,16 +2,14 @@
 
 ## Introduction
 
-This package contains a data type to calculate with rational numbers. It supports basic mathematic operators such as:
+This package provides the `Fraction` type, used for representing rational numbers. It offers a comprehensive set of features for:
 
-- addition
-- subtraction
-- multiplication
-- division
-- remainder
-- ..
+- Creating fractions from various data types (integers, decimals, strings, etc.)
+- Performing common mathematical operations like addition, subtraction, multiplication, division, remainder, absolute value, and more.
+- Rounding fractions to a specified precision.
+- Converting fractions to different data types (decimals, strings, etc.).
+- Formatting fractions for output using various notations (general, mixed number, decimal notation, etc.).
 
-- The fraction data type implements operator overloads and implicit type conversion for convenience.
 
 ## Creation
 
@@ -24,6 +22,11 @@ Fraction c = 3.3m; // decimal
 Fraction d = new BigInteger(3);
 // ..
 ```
+
+> [!Note]
+> For compatibility reasons, the `Fraction` that is produced by these operators is automatically [reduced to its lowest terms](#working-with-non-normalized-fractions), 
+which may have a significant performance impact.
+> If the performance is a concern, you should consider using one of the constructors that supports specifying the whether the terms should be reduced or not.
 
 You can explicitly cast `double` to `Fraction`, however doing so directly has [some important caveats](#creation-from-double-without-rounding) that you should be aware of:
 
@@ -39,23 +42,27 @@ There a three types of constructors available:
 
 - `new Fraction (<value>)` for `int`, `uint`, `long`, `ulong`, `BigInteger`, `decimal` and _`double` [(without rounding)](#creation-from-double-without-rounding)_.
 - `new Fraction (<numerator>, <denominator>)` using `BigInteger` for numerator and denominator.
-- `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator + `bool` to indicate if the resulting fraction shall be normalized (reduced).
+- `new Fraction (<numerator>, <denominator>, <reduce>)` using `BigInteger` for numerator and denominator, as well as a `bool` specifying whether the resulting fraction should be normalized (reduced).
 
 > [!IMPORTANT]
 > Please refer to the [Working with non-normalized fractions](#working-with-non-normalized-fractions) section for more information about the possible side effects when working with non-reduced fractions.
 
 ### Static creation methods
+> [!Note]
+> All methods that were present in version 7.*, continue to return a `Fraction` that is automatically [reduced to its lowest terms](#working-with-non-normalized-fractions).
+> Starting from version 8.0.0 these methods are now supplemented by an overload that adds an additional `boolean` parameter, specifying whether the terms should be reduced.
 
-- `Fraction.FromDecimal(decimal)`
-- `Fraction.FromDouble(double)`
-- `Fraction.FromDoubleRounded(double)`
-- `Fraction.FromDoubleRounded(double, int)` (using a maximum number of significant digits)
-- `Fraction.FromString(string)` (using current culture)
-- `Fraction.FromString(string, IFormatProvider)`
-- `Fraction.FromString(string, NumberStyles, IFormatProvider)`
-- `Fraction.TryParse(string, out Fraction)` (using current culture)
-- `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)`
-- `Fraction.TryParse(ReadOnlySpan<char>, NumberStyles, IFormatProvider, bool, out Fraction)`
+- `Fraction.FromDecimal(decimal)` : same as the [implicit constructor](#creation).
+- `Fraction.FromDecimal(decimal, bool)` : the `boolean` parameter specifies whether the returned `Fraction` should be [reduced](#working-with-non-normalized-fractions).
+- `Fraction.FromDouble(double)` : same as the [explicit constructor](#creation), the `Fraction` is constructed [*without rounding*](#creation-from-double-without-rounding).
+- `Fraction.FromDoubleRounded(double)` : the resulting `Fraction` would represent a [_close approximation_](#creation-from-double-with-rounding-to-a-close-approximation) of the input.
+- `Fraction.FromDoubleRounded(double, int)` : the value is rounded to the specified [number of significant digits](#creation-from-double-with-maximum-number-of-significant-digits).
+- `Fraction.FromDoubleRounded(double, int, bool)` : the value is rounded to the specified [number of significant digits](#creation-from-double-with-maximum-number-of-significant-digits), with the `boolean` parameter specifying whether the returned `Fraction` should be [reduced](#working-with-non-normalized-fractions).
+
+> [!IMPORTANT]
+> Starting from version 8.0.0, the `FromDouble(..)` overloads no longer throw an `ArgumentException` when passed `double.NaN`, `double.PositiveInfinity` or `double.NegativeInfinity`.
+> These values are instead represented as `0/0`, `+1/0` or `-1/0`.  
+> For more information see the section about [working with `NaN` and `Infinity`](#working-with-nan-and-infinity).
 
 ### Creation from `double` without rounding
 
@@ -129,9 +136,10 @@ Console.WriteLine(roundedValue.ToDouble() == doubleValue); // Outputs "true" as 
 
 The following string patterns can be parsed:
 
-- `[+/-]n` where _n_ is an integer. Examples: _+5_, _-6_, _1234_, _0_
-- `[+/-]n.m` where _n_ and _m_ are integers. The decimal point symbol depends on the system's culture settings. Examples: _-4.3_, _0.45_
-- `[+/-]n/[+/-]m` where _n_ and _m_ are integers. Examples: _1/2_, _-4/5_, _+4/-3_, _32/100_
+- `[+/-]n` where _n_ is an integer. Examples: _`+5`_, _`-6`_, _`1234`_, _`0`_
+- `[+/-]n.m` where _n_ and _m_ are integers. The decimal point symbol depends on the system's culture settings. Examples: _`-4.3`_, _`0.45`_
+- `[+/-]n/[+/-]m` where _n_ and _m_ are integers. Examples: _`1/2`_, _`-4/5`_, _`+4/-3`_, _`32/100`_
+
 Example:
 
 ```csharp
@@ -139,8 +147,21 @@ var value = Fraction.FromString("1,5", CultureInfo.GetCultureInfo("de-DE"))
 // Returns 3/2 which is 1.5
 Console.WriteLine(value);
 ```
+> [!TIP]
+> You should consider the `TryParse` methods when reading numbers as text from user input. **Furthermore it is best practice to always supply a culture information (e.g. `CultureInfo.InvariantCulture`).** Otherwise you will sooner or later parse wrong numbers because of different decimal point symbols or included Thousands character.
 
-You should consider the `TryParse` methods when reading numbers as text from user input. **Furthermore it is best practice to always supply a culture information (e.g. `CultureInfo.InvariantCulture`).** Otherwise you will sooner or later parse wrong numbers because of different decimal point symbols or included Thousands character.
+Here is a table presenting the different overloads, and the default parameters that are assumed for each of them:
+
+| Method | `NumberStyles` | `IFormatProvider` | Normalize |
+| --- | --- | --- | --- |
+| `Fraction.FromString(string)` | `Number` | `null` | `✔️` |
+| `Fraction.FromString(string, boolean)` | `Number` | `null` | `❓` |
+| `Fraction.FromString(string, IFormatProvider)` | `Number` | `❓` | `✔️` |
+| `Fraction.FromString(string, NumberStyles, IFormatProvider)` | `❓` | `❓` | `✔️` |
+| `Fraction.FromString(string, NumberStyles, IFormatProvider, bool)` | `❓` | `❓` | `❓` |
+| `Fraction.TryParse(string, out Fraction)` | `Number` | `null` | `✔️` |
+| `Fraction.TryParse(string, NumberStyles, IFormatProvider, out Fraction)` | `❓` | `❓` | `✔️` |
+| `Fraction.TryParse(ReadOnlySpan<char>, NumberStyles, IFormatProvider, bool, out Fraction)` | `❓` | `❓` | `❓` |
 
 ## Conversion
 
@@ -311,6 +332,23 @@ var result = a / b;         // result is 4/8
 ```
 
 $\frac{4}{4}/\frac{2}{1}=\frac{4}{8}$
+
+### Working with `NaN` and `Infinity`
+
+Starting from version 8.0.0, it is now possible for a `Fraction` to be constructed with `0` in the denominator. 
+This is typically the result of a division by zero which, depending on the sign of the dividend, now returns `Fraction.PositiveInfinity`, `Fraction.NegativeInfinity` or `Fraction.NaN`.
+
+Subsequent mathematical operations with these values follow the same rules, as implemented by the `double` type.
+For example, any number multiplied by infinity results in infinity (or negative infinity, depending on the sign), and any number divided by infinity is zero. 
+
+You can check if a `Fraction` represents one of the special values using the properties:
+
+- `Fraction.IsPositiveInfinity`
+- `Fraction.IsNegativeInfinity`
+- `Fraction.IsNaN`
+
+> [!TIP]
+> You could also check if a `Fraction` represents either `NaN` or `Infinity` by testing whether it's `Denomintor.IsZero`.
 
 ## Equality operators
 
