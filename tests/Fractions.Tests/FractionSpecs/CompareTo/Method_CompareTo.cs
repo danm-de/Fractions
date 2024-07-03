@@ -44,8 +44,8 @@ public class When_comparing_two_fractions : Spec {
             yield return new TestCaseData(new Fraction(-10, 100, false), new Fraction(1, 10)).Returns(-1);
             // zero with zero
             yield return new TestCaseData(Fraction.Zero, Fraction.Zero).Returns(0);
-            yield return new TestCaseData(Fraction.Zero, new Fraction(BigInteger.Zero, 4)).Returns(0);
-            yield return new TestCaseData(Fraction.Zero, new Fraction(BigInteger.Zero, -4)).Returns(0);
+            yield return new TestCaseData(Fraction.Zero, new Fraction(BigInteger.Zero, 4, false)).Returns(0);
+            yield return new TestCaseData(Fraction.Zero, new Fraction(BigInteger.Zero, -4, false)).Returns(0);
             // zero with positive numbers
             yield return new TestCaseData(Fraction.Zero, Fraction.One).Returns(-1);
             yield return new TestCaseData(Fraction.Zero, new Fraction(5, 4)).Returns(-1);
