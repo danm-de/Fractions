@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
+#if !NET
+using System.Linq;
+#endif
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Numerics;
 
 namespace Fractions;
@@ -43,7 +45,7 @@ public readonly partial struct Fraction {
     ///         a denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static bool TryParse(string value, out Fraction fraction) =>
+    public static bool TryParse(string? value, out Fraction fraction) =>
         TryParse(
             value: value,
             numberStyles: NumberStyles.Number,
@@ -101,7 +103,7 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+    public static bool TryParse(string? value, NumberStyles numberStyles, IFormatProvider? formatProvider,
         out Fraction fraction) {
         return TryParse(value, numberStyles, formatProvider, true, out fraction);
     }
@@ -168,7 +170,7 @@ public readonly partial struct Fraction {
     ///         </example>
     ///     </para>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+    public static bool TryParse(string? value, NumberStyles numberStyles, IFormatProvider? formatProvider,
         bool normalize, out Fraction fraction) {
         return TryParse(value.AsSpan(), numberStyles, formatProvider, normalize, out fraction);
     }
@@ -798,13 +800,13 @@ public readonly partial struct Fraction {
     ///         denominator of 10000.
     ///     </example>
     /// </remarks>
-    public static bool TryParse(string value, NumberStyles numberStyles, IFormatProvider? formatProvider,
+    public static bool TryParse(string? value, NumberStyles numberStyles, IFormatProvider? formatProvider,
         bool normalize, out Fraction fraction) {
         if (string.IsNullOrWhiteSpace(value)) {
             return CannotParse(out fraction);
         }
 
-        if (value.Length == 1) {
+        if (value!.Length == 1) {
             if (!BigInteger.TryParse(value, numberStyles, formatProvider, out var singleDigit)) {
                 return CannotParse(out fraction);
             }

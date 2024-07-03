@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 8.0.1
+
+- Fixed nullable issue in Fraction.TryParse(..) reported in https://github.com/danm-de/Fractions/issues/76
+  Error (active) CS8604 Possible null reference argument for parameter 'value' in 'bool Fraction.TryParse(..)
+
 ## 8.0.0
 
 - Added support for NaN and Infinity by https://github.com/lipchev

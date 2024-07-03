@@ -60,6 +60,23 @@ public class When_trying_to_parse_a_fraction {
         success.Should().BeTrue();
         Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
-
     // TODO see about testing the non-normalized parsing variant (see tests in Method_FromString)
+}
+
+[TestFixture]
+public class When_trying_to_parse_an_invalid_fraction {
+
+    private static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData("FOOBAR");
+            yield return new TestCaseData(string.Empty);
+            yield return new TestCaseData(" ");
+            yield return new TestCaseData(default(string));
+            yield return new TestCaseData("abc123");
+        }
+    }
+
+    [Test, TestCaseSource(nameof(TestCases))]
+    public void The_result_should_be_FALSE(string value) =>
+        Fraction.TryParse(value, out _).Should().BeFalse();
 }
