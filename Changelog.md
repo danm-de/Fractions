@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 8.0.2
+
+- Bugfix in `Fraction.CompareTo` https://github.com/danm-de/Fractions/issues/78 by https://github.com/lipchev
+- Performance optimization in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/pull/80 by https://github.com/lipchev
+  Changed behavior: `ArgumentOutOfRangeException` is thrown when argument `significantDigits` is &lt; 1 or &gt; 17.
+
 ## 8.0.1
 
 - Fixed nullable issue in Fraction.TryParse(..) reported in https://github.com/danm-de/Fractions/issues/76
