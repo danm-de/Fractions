@@ -88,38 +88,11 @@ namespace Fractions.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} shall be divided by zero..
+        ///   Looks up a localized string similar to The number of significant digits must be between 1 and 17 (inclusive)..
         /// </summary>
-        internal static string DivideByZero {
+        internal static string SignificantDigitsOutOfRange {
             get {
-                return ResourceManager.GetString("DivideByZero", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NaN values are not supported..
-        /// </summary>
-        internal static string NaNNotSupported {
-            get {
-                return ResourceManager.GetString("NaNNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Negative infinity (-Infinity) is not supported..
-        /// </summary>
-        internal static string NegativeInfinityNotSupported {
-            get {
-                return ResourceManager.GetString("NegativeInfinityNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Positive infinity (+Infinity) is not supported..
-        /// </summary>
-        internal static string PositiveInfinityNotSupported {
-            get {
-                return ResourceManager.GetString("PositiveInfinityNotSupported", resourceCulture);
+                return ResourceManager.GetString("SignificantDigitsOutOfRange", resourceCulture);
             }
         }
         

@@ -123,20 +123,11 @@
   <data name="CompareToArgumentException" xml:space="preserve">
     <value>The comparing instance must be of type {0}. The supplied argument is of type {1}</value>
   </data>
-  <data name="DivideByZero" xml:space="preserve">
-    <value>{0} shall be divided by zero.</value>
+  <data name="SignificantDigitsOutOfRange" xml:space="preserve">
+    <value>The number of significant digits must be between 1 and 17 (inclusive).</value>
   </data>
   <data name="TypeXnotSupported" xml:space="preserve">
     <value>The type {0} is not supported.</value>
-  </data>
-  <data name="NaNNotSupported" xml:space="preserve">
-    <value>NaN values are not supported.</value>
-  </data>
-  <data name="NegativeInfinityNotSupported" xml:space="preserve">
-    <value>Negative infinity (-Infinity) is not supported.</value>
-  </data>
-  <data name="PositiveInfinityNotSupported" xml:space="preserve">
-    <value>Positive infinity (+Infinity) is not supported.</value>
   </data>
   <data name="AccuracyIsLessThanOrEqualToZero" xml:space="preserve">
     <value>Accuracy of {0} is not allowed! Have to be above 0.</value>

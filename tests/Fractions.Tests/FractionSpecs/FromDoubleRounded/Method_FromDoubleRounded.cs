@@ -264,8 +264,8 @@ public class When_a_fractions_is_created_by_rounding_a_double_with_reasonable_nu
         new TestCaseData(-10.0, ReasonableNumberOfSignificantDigits).Returns(new Fraction(-10m)),
         new TestCaseData(0.1, ReasonableNumberOfSignificantDigits).Returns(new Fraction(0.1m)),
         new TestCaseData(-0.1, ReasonableNumberOfSignificantDigits).Returns(new Fraction(-0.1m)),
-        new TestCaseData(1055.05585262, 18).Returns(new Fraction(1055.05585262m)),
-        new TestCaseData(-1055.05585262, 18).Returns(new Fraction(-1055.05585262m))
+        new TestCaseData(1055.05585262, 17).Returns(new Fraction(1055.05585262m)),
+        new TestCaseData(-1055.05585262, 17).Returns(new Fraction(-1055.05585262m))
     ];
 
 
@@ -277,22 +277,28 @@ public class When_a_fractions_is_created_by_rounding_a_double_with_reasonable_nu
 }
 
 [TestFixture]
-public class When_a_fractions_is_created_by_rounding_a_double_with_exceeding_number_of_significant_digits : Spec {
+public class When_creating_a_fraction_by_rounding_a_double_with_more_than_17_significant_digits : Spec {
     private const double DoubleValue = 1055.05585262;
-    private const decimal LiteralValue = 1055.05585262m; // the "true/literal" decimal representation
 
     [Test]
-    public void The_fraction_preserves_the_rounding_error() {
-        Fraction.FromDoubleRounded(DoubleValue, 19).ToDecimal()
-            .Should().BeApproximately(LiteralValue, 0.0001m).And.NotBe(LiteralValue);
+    public void ArgumentOutOfRangeException_should_be_thrown() {
+        Invoking(() => Fraction.FromDoubleRounded(DoubleValue, 18)).Should().Throw<ArgumentOutOfRangeException>();
+    }
+}
+
+[TestFixture]
+public class When_creating_a_fraction_by_rounding_a_double_with_less_than_1_significant_digits : Spec {
+    private const double DoubleValue = 1055.05585262;
+
+    [Test]
+    public void ArgumentOutOfRangeException_should_be_thrown() {
+        Invoking(() => Fraction.FromDoubleRounded(DoubleValue, 0)).Should().Throw<ArgumentOutOfRangeException>();
     }
 }
 
 [TestFixture]
 public class When_a_fractions_is_created_by_rounding_a_double_with_less_than_the_actual_significant_digits : Spec {
     private static IEnumerable<TestCaseData> TestCases { get; } = [
-        new TestCaseData(1055.05585262, 0).Returns(new Fraction(1000m)),
-        new TestCaseData(-1055.05585262, 0).Returns(new Fraction(-1000m)),
         new TestCaseData(1055.05585262, 1).Returns(new Fraction(1000m)),
         new TestCaseData(-1055.05585262, 1).Returns(new Fraction(-1000m)),
         new TestCaseData(1055.05585262, 2).Returns(new Fraction(1050m)),

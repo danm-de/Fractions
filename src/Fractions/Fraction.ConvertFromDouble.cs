@@ -255,6 +255,9 @@ public readonly partial struct Fraction {
     ///     Indicates whether the terms of the fraction should be reduced by their greatest common
     ///     denominator.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the number of significant digits is less than 1 or greater than 17.
+    /// </exception>
     /// <returns>A Fraction representing the rounded floating point value.</returns>
     /// <remarks>
     ///     The double data type stores its values as 64-bit floating point numbers in accordance with the
@@ -288,6 +291,10 @@ public readonly partial struct Fraction {
     ///     </see>
     /// </remarks>
     public static Fraction FromDoubleRounded(double value, int significantDigits, bool reduceTerms) {
+        if (significantDigits is < 1 or > 17) {
+            throw new ArgumentOutOfRangeException(nameof(significantDigits), significantDigits, Properties.Resources.SignificantDigitsOutOfRange);
+        }
+        
         switch (value) {
             case 0d:
                 return Zero;
@@ -313,14 +320,20 @@ public readonly partial struct Fraction {
         var decimalPlaces = Math.Min(-(int)magnitude + significantDigits - 1, 308);
         var scaleFactor = Math.Pow(10, decimalPlaces);
         // Get the fractional part
-        var fractionalPartDouble = Math.Round((value - truncatedValue) * scaleFactor);
-        if (fractionalPartDouble == 0) // rounded to integer
+        var fractionalPart = (long)Math.Round((value - truncatedValue) * scaleFactor);
+        if (fractionalPart == 0) // rounded to integer
         {
             return new Fraction(integerPart);
         }
+        
+        // reduce the insignificant trailing zeros from the fractional part before converting it to BigInteger
+        while (fractionalPart % 10 == 0) {
+            fractionalPart /= 10;
+            decimalPlaces--;
+        }
 
         var denominator = BigInteger.Pow(TEN, decimalPlaces);
-        var numerator = integerPart * denominator + new BigInteger(fractionalPartDouble);
+        var numerator = integerPart.IsZero? fractionalPart : integerPart * denominator + fractionalPart;
         return reduceTerms ? ReduceSigned(numerator, denominator) : new Fraction(true, numerator, denominator);
     }
 }
