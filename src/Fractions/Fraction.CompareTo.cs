@@ -93,6 +93,10 @@ public readonly partial struct Fraction {
             return firstNumeratorSign.CompareTo(secondNumeratorSign);
         }
 
+        if (firstNumeratorSign == 0) {
+            return 0; // both fractions are zeros
+        }
+
         // both values are non-zero fractions with different denominators
         if (denominator1 < denominator2) {
             // reverse the comparison from x.CompareTo(y) to y.CompareTo(x)
