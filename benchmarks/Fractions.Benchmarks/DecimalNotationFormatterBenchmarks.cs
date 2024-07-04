@@ -35,11 +35,11 @@ public class DecimalNotationFormatterBenchmarks {
         new Fraction(-2, 3),
     ];
     
-    [Benchmark(Baseline = true)]
-    [ArgumentsSource(nameof(TestValues))]
-    public string ToDouble_ToString(Fraction fraction) {
-        return fraction.ToDouble().ToString(StringFormat, CultureInfo.InvariantCulture);
-    }
+    // [Benchmark(Baseline = true)]
+    // [ArgumentsSource(nameof(TestValues))]
+    // public string ToDouble_ToString(Fraction fraction) {
+    //     return fraction.ToDouble().ToString(StringFormat, CultureInfo.InvariantCulture);
+    // }
     
     [Benchmark]
     [ArgumentsSource(nameof(TestValues))]
