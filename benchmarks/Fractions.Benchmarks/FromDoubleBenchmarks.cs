@@ -5,6 +5,7 @@ using BenchmarkDotNet.Attributes;
 namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
+[ShortRunJob]
 public class FromDoubleBenchmarks {
     public FromDoubleBenchmarks() {
         // initialize static
@@ -28,27 +29,30 @@ public class FromDoubleBenchmarks {
         Math.PI
     ];
 
+    [Params(true, false)]
+    public bool ReduceTerms { get; set; }
+
     [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDouble(double value) {
-        return Fraction.FromDouble(value);
+        return Fraction.FromDouble(value, ReduceTerms);
     }
 
     [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDoubleRounded(double value) {
-        return Fraction.FromDoubleRounded(value);
+        return Fraction.FromDoubleRounded(value, ReduceTerms);
+    }
+
+    [Benchmark]
+    [ArgumentsSource(nameof(DoubleValues))]
+    public Fraction Construct_FromDoubleRoundedToEightDigits(double value) {
+        return Fraction.FromDoubleRounded(value, 8, ReduceTerms);
     }
 
     [Benchmark]
     [ArgumentsSource(nameof(DoubleValues))]
     public Fraction Construct_FromDoubleRoundedToFifteenDigits(double value) {
-        return Fraction.FromDoubleRounded(value, 15);
-    }
-
-    [Benchmark]
-    [ArgumentsSource(nameof(DoubleValues))]
-    public Fraction Construct_FromDoubleRoundedToEighteenDigits(double value) {
-        return Fraction.FromDoubleRounded(value, 18);
+        return Fraction.FromDoubleRounded(value, 15, ReduceTerms);
     }
 }
