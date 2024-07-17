@@ -287,6 +287,11 @@ public class When_converting_PositiveInfinity : Spec {
     }
 
     [Test]
+    public void ToBigInteger_with_truncation_should_throw_OverflowException() {
+        Invoking(() => BigInteger.CreateTruncating(Fraction.PositiveInfinity)).Should().Throw<OverflowException>();
+    }
+
+    [Test]
     public void CreateTruncating_should_return_MaxValue_or_PositiveInfinity() {
         double.CreateTruncating(Fraction.PositiveInfinity).Should().Be(double.PositiveInfinity);
         Complex.CreateTruncating(Fraction.PositiveInfinity).Should().Be(new Complex(double.PositiveInfinity, 0));
@@ -646,6 +651,7 @@ public class When_a_finite_positive_fraction_is_converted_to_a_number : Spec {
         decimal.CreateChecked(fraction).Should().Be(1.5m);
         float.CreateChecked(fraction).Should().Be(1.5f);
         Half.CreateChecked(fraction).Should().Be((Half)1.5);
+        BigInteger.CreateChecked(fraction).Should().Be(1);
         Int128.CreateChecked(fraction).Should().Be(1);
         UInt128.CreateChecked(fraction).Should().Be(1);
         long.CreateChecked(fraction).Should().Be(1);
@@ -669,6 +675,7 @@ public class When_a_finite_positive_fraction_is_converted_to_a_number : Spec {
         decimal.CreateSaturating(fraction).Should().Be(1.5m);
         float.CreateSaturating(fraction).Should().Be(1.5f);
         Half.CreateSaturating(fraction).Should().Be((Half)1.5);
+        BigInteger.CreateSaturating(fraction).Should().Be(1);
         Int128.CreateSaturating(fraction).Should().Be(1);
         UInt128.CreateSaturating(fraction).Should().Be(1);
         long.CreateSaturating(fraction).Should().Be(1);
@@ -692,6 +699,7 @@ public class When_a_finite_positive_fraction_is_converted_to_a_number : Spec {
         decimal.CreateTruncating(fraction).Should().Be(1.5m);
         float.CreateTruncating(fraction).Should().Be(1.5f);
         Half.CreateTruncating(fraction).Should().Be((Half)1.5);
+        BigInteger.CreateTruncating(fraction).Should().Be(1);
         Int128.CreateTruncating(fraction).Should().Be(1);
         UInt128.CreateTruncating(fraction).Should().Be(1);
         long.CreateTruncating(fraction).Should().Be(1);
@@ -718,6 +726,7 @@ public class When_a_finite_negative_fraction_is_converted_to_a_number : Spec {
         decimal.CreateChecked(fraction).Should().Be(-1.5m);
         float.CreateChecked(fraction).Should().Be(-1.5f);
         Half.CreateChecked(fraction).Should().Be((Half)(-1.5));
+        BigInteger.CreateChecked(fraction).Should().Be(-1);
         Int128.CreateChecked(fraction).Should().Be(-1);
         Invoking(() => UInt128.CreateChecked(fraction)).Should().Throw<OverflowException>();
         long.CreateChecked(fraction).Should().Be(-1);
@@ -741,6 +750,7 @@ public class When_a_finite_negative_fraction_is_converted_to_a_number : Spec {
         decimal.CreateSaturating(fraction).Should().Be(-1.5m);
         float.CreateSaturating(fraction).Should().Be(-1.5f);
         Half.CreateSaturating(fraction).Should().Be((Half)(-1.5));
+        BigInteger.CreateSaturating(fraction).Should().Be(-1);
         Int128.CreateSaturating(fraction).Should().Be(-1);
         UInt128.CreateSaturating(fraction).Should().Be(0);
         long.CreateSaturating(fraction).Should().Be(-1);
@@ -764,6 +774,7 @@ public class When_a_finite_negative_fraction_is_converted_to_a_number : Spec {
         decimal.CreateTruncating(fraction).Should().Be(-1.5m);
         float.CreateTruncating(fraction).Should().Be(-1.5f);
         Half.CreateTruncating(fraction).Should().Be((Half)(-1.5));
+        BigInteger.CreateTruncating(fraction).Should().Be(-1);
         Int128.CreateTruncating(fraction).Should().Be(-1);
         UInt128.CreateTruncating(fraction).Should().Be(new UInt128(18446744073709551615, 18446744073709551615));
         long.CreateTruncating(fraction).Should().Be(-1);
