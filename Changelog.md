@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## 8.0.3
+
+- Bugfix in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/issues/83
+
 ## 8.0.2
 
 - Bugfix in `Fraction.CompareTo` https://github.com/danm-de/Fractions/issues/78 by https://github.com/lipchev

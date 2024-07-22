@@ -233,6 +233,35 @@ public class When_a_fractions_is_created_by_rounding_a_double_without_precision 
 }
 
 [TestFixture]
+public class When_a_fraction_is_created_using_very_small_double_values : Spec {
+    private static IEnumerable<TestCaseData> TestCases {
+        get {
+            yield return new TestCaseData(double.Epsilon, true)
+                .SetName("double.Epsilon")
+                .Returns(Fraction.Zero);
+
+            yield return new TestCaseData(double.Epsilon * 2, true)
+                .SetName("double.Epsilon*2")
+                .Returns(Fraction.Zero);
+
+            // https://github.com/danm-de/Fractions/issues/83
+            yield return new TestCaseData(1.0 / (double.MaxValue - 100), true)
+                .SetName("1.0 / (double.MaxValue - 100)")
+                .Returns(Fraction.Zero);
+
+            // (1.b51 b50 ... b0)bin * 2^(exp - 1023)
+            yield return new TestCaseData(double.Epsilon * Math.Pow(2,51), true)
+                .SetName("double.Epsilon*2^51")
+                .Returns(new Fraction(1, BigInteger.Pow(2, 1023)));
+        }
+    }
+
+    [Test, TestCaseSource(nameof(TestCases))]
+    public Fraction Should_it_return_the_expected_rounded_fraction(double value, bool reduceTerms) =>
+        Fraction.FromDoubleRounded(value, reduceTerms);
+}
+
+[TestFixture]
 public class When_a_fractions_is_created_by_rounding_a_double_with_maximum_precision : Spec {
     private const double DoubleValue = 1055.05585262;
     private const decimal LiteralValue = 1055.05585262m; // the "true/literal" decimal representation
