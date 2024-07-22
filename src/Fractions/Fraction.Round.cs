@@ -22,7 +22,21 @@ public readonly partial struct Fraction {
     /// <param name="mode">Specifies the strategy that mathematical rounding methods should use to round a number.</param>
     /// <returns>The number that <paramref name="fraction" /> is rounded to using the <paramref name="mode" /> rounding strategy and with a precision of <paramref name="decimals" />. If the precision of <paramref name="fraction" /> is less than <paramref name="decimals" />, <paramref name="fraction" /> is returned unchanged.</returns>
     /// <exception cref="ArgumentOutOfRangeException">If <paramref name="decimals"/> is less than 0</exception>
+    /// <remarks>The resulting Fraction would be automatically reduced to it's lowest terms.</remarks>
     public static Fraction Round(Fraction fraction, int decimals, MidpointRounding mode) {
+        return Round(fraction, decimals, mode, true);
+    }
+
+    /// <summary>
+    /// Rounds the given Fraction to the specified precision using the specified rounding strategy.
+    /// </summary>
+    /// <param name="fraction">The Fraction to be rounded.</param>
+    /// <param name="decimals">The number of significant decimal places (precision) in the return value.</param>
+    /// <param name="mode">Specifies the strategy that mathematical rounding methods should use to round a number.</param>
+    /// <param name="normalize">A boolean flag indicating whether to reduce the resulting Fraction after rounding. If set to true, the Fraction is reduced if possible; otherwise, the Fraction is left as is.</param>
+    /// <returns>The number that <paramref name="fraction" /> is rounded to using the <paramref name="mode" /> rounding strategy and with a precision of <paramref name="decimals" />. If the precision of <paramref name="fraction" /> is less than <paramref name="decimals" />, <paramref name="fraction" /> is returned unchanged.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">If <paramref name="decimals"/> is less than 0</exception>
+    public static Fraction Round(Fraction fraction, int decimals, MidpointRounding mode, bool normalize) {
 #if NET
         ArgumentOutOfRangeException.ThrowIfNegative(decimals);
 #else
@@ -30,16 +44,35 @@ public readonly partial struct Fraction {
             throw new ArgumentOutOfRangeException(nameof(decimals));
         }
 #endif
+        if (normalize) {
+            var numerator = fraction.Numerator;
+            if (numerator.IsZero) {
+                return fraction.Reduce();
+            }
 
-        var numerator = fraction.Numerator;
-        var denominator = fraction.Denominator;
-        if (denominator.IsOne || denominator.IsZero) {
-            return fraction;
+            var denominator = fraction.Denominator;
+            if (denominator.IsOne || denominator.IsZero) {
+                return fraction.Reduce();
+            }
+
+            var factor = BigInteger.Pow(TEN, decimals);
+            var roundedNumerator = RoundToBigInteger(numerator * factor, denominator, mode);
+            return ReduceSigned(roundedNumerator, factor);
+        } else {
+            var numerator = fraction.Numerator;
+            if (numerator.IsZero) {
+                return fraction;
+            }
+
+            var denominator = fraction.Denominator;
+            if (denominator.IsOne || denominator.IsZero) {
+                return fraction;
+            }
+
+            var factor = BigInteger.Pow(TEN, decimals);
+            var roundedNumerator = RoundToBigInteger(numerator * factor, denominator, mode);
+            return new Fraction(true, roundedNumerator, factor);
         }
-
-        var factor = BigInteger.Pow(TEN, decimals);
-        var roundedNumerator = RoundToBigInteger(numerator * factor, denominator, mode);
-        return new Fraction(roundedNumerator, factor);
     }
 
     /// <summary>

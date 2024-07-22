@@ -888,7 +888,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </returns>
     private static Fraction Round(Fraction x, int nbDigits,
         MidpointRounding midpointRounding = DefaultMidpointRoundingMode) {
-        return Fraction.Round(x, nbDigits, midpointRounding);
+        return Fraction.Round(x, nbDigits, midpointRounding, false);
     }
 
     /// <summary>
