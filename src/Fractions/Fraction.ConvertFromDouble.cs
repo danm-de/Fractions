@@ -207,6 +207,11 @@ public readonly partial struct Fraction {
                && Math.Abs(absoluteValue - (double)numerator / denominator) > double.Epsilon) {
             remainingDigits = 1.0 / (remainingDigits - Math.Floor(remainingDigits));
 
+            if (double.IsInfinity(remainingDigits)) {
+                // remaining value is near "0"
+                break;
+            }
+
             var tmp = denominator;
 
             denominator = Math.Floor(remainingDigits) * denominator + previousDenominator;
