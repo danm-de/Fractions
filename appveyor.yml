@@ -1,12 +1,12 @@
 image: Visual Studio 2022
 build_script:
-  - cmd: dotnet build --configuration Release
+  - cmd: dotnet build --configuration Release -p:ContinuousIntegrationBuild=true
 test:
   assemblies:
     only:
       - '**\*.Tests.dll'
 test_script:
-  - dotnet test --configuration Release --no-build
+  - dotnet test --configuration Release --no-build --no-restore
 pull_requests:
   do_not_increment_build_number: true
 nuget:
