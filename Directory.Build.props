@@ -1,5 +1,29 @@
 ﻿<Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+
+    <Authors>Daniel Mueller</Authors>
+    <Copyright>Copyright 2013-2024 Daniel Mueller</Copyright>
+    <Version>8.0.3</Version>
+
+    <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../Fractions.snk</AssemblyOriginatorKeyFile>
+
+    <PackageIcon>Fraction.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/src/Fractions/Fraction.ico</PackageIconUrl>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
+    <PackageTags>fraction math</PackageTags>
+
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
   </PropertyGroup>
 </Project>
