@@ -4,7 +4,7 @@
 
     <Authors>Daniel Mueller</Authors>
     <Copyright>Copyright 2013-2024 Daniel Mueller</Copyright>
-    <Version>8.0.3</Version>
+    <Version>8.0.4</Version>
 
     <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -19,6 +19,7 @@
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
     <PackageTags>fraction math</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
 
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>

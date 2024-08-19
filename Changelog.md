@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+## 8.0.4
+
+- Code / Build cleanups by [Marko Lahma](https://github.com/lahma):
+  - PackageLicenseExpression will show up correctly on nuget.org and tools can analyze it
+  - moving common properties to shared Directory.Build.props for easier maintenance
+  - Add ContinuousIntegrationBuild to build setup
+- Fixes https://github.com/danm-de/Fractions/pull/85 (by [Marko Lahma](https://github.com/lahma))
+
 ## 8.0.3
 
 - Bugfix in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/issues/83
