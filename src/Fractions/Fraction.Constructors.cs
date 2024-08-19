@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Numerics;
+#if NET
+using System.Runtime.CompilerServices;
+#endif
 
 namespace Fractions;
 
@@ -30,9 +33,7 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="numerator">Numerator</param>
     /// <param name="denominator">Denominator</param>
-    /// <param name="normalize">If <c>true</c> the fraction will be created as reduced/simplified fraction. 
-    /// This is recommended, especially if your applications requires that the results of the equality methods <see cref="object.Equals(object)"/> 
-    /// and <see cref="IComparable.CompareTo"/> are always the same. (1/2 != 2/4)</param>
+    /// <param name="normalize">If <c>true</c> the fraction will be created as reduced/simplified fraction.</param>
     public Fraction(BigInteger numerator, BigInteger denominator, bool normalize) {
         if (normalize) {
             this = GetReducedFraction(numerator, denominator);
@@ -133,4 +134,160 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="value">Floating point value.</param>
     public Fraction(decimal value) => this = FromDecimal(value);
+
+    
+    #if NET7_0_OR_GREATER
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static bool INumberBase<Fraction>.TryConvertFromChecked<TOther>(TOther value, out Fraction result)
+    {
+        return TryConvertFrom(value, out result);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static bool INumberBase<Fraction>.TryConvertFromSaturating<TOther>(TOther value, out Fraction result)
+    {
+        return TryConvertFrom(value, out result);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static bool INumberBase<Fraction>.TryConvertFromTruncating<TOther>(TOther value, out Fraction result)
+    {
+        return TryConvertFrom(value, out result);
+    }
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool TryConvertFrom<TOther>(TOther value, out Fraction result) where TOther : INumberBase<TOther>
+    {
+        if (typeof(TOther) == typeof(decimal))
+        {
+            var num = (decimal)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(double))
+        {
+            var num = (double)(object)value;
+            result = FromDouble(num);
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(float))
+        {
+            var actualValue = (float)(object)value;
+            result = FromDouble(actualValue);
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(Half))
+        {
+            var actualValue = (Half)(object)value;
+            result = FromDouble((double)actualValue);
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(BigInteger))
+        {
+            var num = (BigInteger)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(Int128))
+        {
+            var num = (Int128)(object)value;
+            result = (BigInteger)num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(UInt128))
+        {
+            var num = (UInt128)(object)value;
+            result = (BigInteger)num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(long))
+        {
+            var num = (long)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(ulong))
+        {
+            var num = (ulong)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(int))
+        {
+            long num = (int)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(uint))
+        {
+            var num = (uint)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(nint))
+        {
+            var num = (nint)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(UIntPtr))
+        {
+            var num = (UIntPtr)(object)value;
+            result = num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(short))
+        {
+            var num = (short)(object)value;
+            result = (BigInteger)num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(ushort))
+        {
+            var num = (ushort)(object)value;
+            result = (BigInteger)num;
+            return true;
+        }
+
+        if (typeof(TOther) == typeof(char))
+        {
+            var ch = (char)(object)value;
+            result = (BigInteger)ch;
+            return true;
+        }
+        
+        if (typeof(TOther) == typeof(byte))
+        {
+            var num = (byte)(object)value;
+            result = (BigInteger)num;
+            return true;
+        }
+        
+        if (typeof(TOther) == typeof(sbyte))
+        {
+            var num = (sbyte)(object)value;
+            result = (BigInteger)num;
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
+    
+    #endif
 }
