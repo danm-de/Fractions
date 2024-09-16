@@ -299,6 +299,22 @@ public readonly partial struct Fraction {
 
         if (value.Length == 1) {
             if (!BigInteger.TryParse(value, numberStyles, formatProvider, out var singleDigit)) {
+                var numberFormat = NumberFormatInfo.GetInstance(formatProvider);
+                if (value.SequenceEqual(numberFormat.PositiveInfinitySymbol)) {
+                    fraction = PositiveInfinity;
+                    return true;
+                }
+
+                if (value.SequenceEqual(numberFormat.NegativeInfinitySymbol)) {
+                    fraction = NegativeInfinity;
+                    return true;
+                }
+
+                if (value.SequenceEqual(numberFormat.NaNSymbol)) {
+                    fraction = NaN;
+                    return true;
+                }
+
                 return CannotParse(out fraction);
             }
 
@@ -808,6 +824,22 @@ public readonly partial struct Fraction {
 
         if (value!.Length == 1) {
             if (!BigInteger.TryParse(value, numberStyles, formatProvider, out var singleDigit)) {
+                var numberFormat = NumberFormatInfo.GetInstance(formatProvider);
+                if (value.SequenceEqual(numberFormat.PositiveInfinitySymbol)) {
+                    fraction = PositiveInfinity;
+                    return true;
+                }
+
+                if (value.SequenceEqual(numberFormat.NegativeInfinitySymbol)) {
+                    fraction = NegativeInfinity;
+                    return true;
+                }
+
+                if (value.SequenceEqual(numberFormat.NaNSymbol)) {
+                    fraction = NaN;
+                    return true;
+                }
+
                 return CannotParse(out fraction);
             }
 
