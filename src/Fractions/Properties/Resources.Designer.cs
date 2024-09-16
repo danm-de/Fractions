@@ -88,6 +88,33 @@ namespace Fractions.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid denominator value: {0}..
+        /// </summary>
+        internal static string InvalidDenominatorValue {
+            get {
+                return ResourceManager.GetString("InvalidDenominatorValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid numerator value: {0}..
+        /// </summary>
+        internal static string InvalidNumeratorValue {
+            get {
+                return ResourceManager.GetString("InvalidNumeratorValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid token type {0} (expected {1})..
+        /// </summary>
+        internal static string InvalidTokenType {
+            get {
+                return ResourceManager.GetString("InvalidTokenType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of significant digits must be between 1 and 17 (inclusive)..
         /// </summary>
         internal static string SignificantDigitsOutOfRange {

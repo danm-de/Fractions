@@ -10,7 +10,19 @@ public readonly partial struct Fraction {
     /// <param name="normalizationNotApplied">Indicates whether the fraction is not normalized.</param>
     /// <param name="numerator">The numerator of the fraction.</param>
     /// <param name="denominator">The denominator of the fraction.</param>
-    private Fraction(bool normalizationNotApplied, BigInteger numerator, BigInteger denominator) {
+    internal Fraction(bool normalizationNotApplied, BigInteger numerator, BigInteger denominator) {
+        Numerator = numerator;
+        _denominator = denominator;
+        _normalizationNotApplied = normalizationNotApplied;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the Fraction struct with the specified numerator and denominator.
+    /// </summary>
+    /// <param name="normalizationNotApplied">Indicates whether the fraction is not normalized.</param>
+    /// <param name="numerator">The numerator of the fraction.</param>
+    /// <param name="denominator">The denominator of the fraction.</param>
+    internal Fraction(ref bool normalizationNotApplied, ref BigInteger numerator, ref BigInteger denominator) {
         Numerator = numerator;
         _denominator = denominator;
         _normalizationNotApplied = normalizationNotApplied;
