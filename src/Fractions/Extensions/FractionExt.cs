@@ -29,12 +29,12 @@ public static class FractionExt {
         if (x.IsNaN || x.IsNegative) {
             return Fraction.NaN;
         }
-
-        if (x.IsInfinity) {
+        
+        if (x.Numerator.IsZero || x.Denominator.IsZero) // (x.IsZero || x.IsInfinity)
+        {
             return x;
         }
 
-        var newGuess = Fraction.Zero;
         var tolerance = new Fraction(BigInteger.One, BigInteger.Pow(new BigInteger(10), accuracy));
 
         //Using Math.Sqrt to get a good starting guess
@@ -43,11 +43,12 @@ public static class FractionExt {
             ? x / Fraction.Two
             : (Fraction)guessDouble;
 
-        while ((oldGuess - newGuess).Abs() > tolerance) {
+        Fraction newGuess;
+        do {
             //Babylonian Method
             newGuess = (oldGuess + (x / oldGuess)) / Fraction.Two;
             oldGuess = newGuess;
-        }
+        } while ((oldGuess - newGuess).Abs() > tolerance);
 
         return newGuess;
     }
