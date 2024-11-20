@@ -76,11 +76,27 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
     private static readonly BigInteger Ten = new(10);
 
-    /// <summary>
-    ///     Formats the value of the specified Fraction object as a string using the specified format.
-    /// </summary>
+    /// <inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)"/>
     /// <param name="format">A standard or custom numeric format string.</param>
     /// <param name="value">The Fraction object to be formatted.</param>
+    /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+    public string Format(string? format, object? value, IFormatProvider? formatProvider) {
+        if (value is null) {
+            return string.Empty;
+        }
+
+        if (value is not Fraction fraction) {
+            throw new FormatException(string.Format(Resources.TypeXnotSupported, value.GetType()));
+        }
+
+        return Format(format, fraction, formatProvider);
+    }
+    
+    /// <summary>
+    ///     Formats the value of the specified Fraction as a string using the specified format.
+    /// </summary>
+    /// <param name="format">A standard or custom numeric format string.</param>
+    /// <param name="fraction">The Fraction object to be formatted.</param>
     /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
     /// <returns>
     ///     The string representation of the value of the Fraction object as specified by the format and formatProvider
@@ -180,15 +196,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     </see>
     ///     in the GitHub README.
     /// </remarks>
-    public string Format(string? format, object? value, IFormatProvider? formatProvider) {
-        if (value is null) {
-            return string.Empty;
-        }
-
-        if (value is not Fraction fraction) {
-            throw new FormatException(string.Format(Resources.TypeXnotSupported, value.GetType()));
-        }
-
+    public static string Format(string? format, Fraction fraction, IFormatProvider? formatProvider) {
         formatProvider ??= CultureInfo.CurrentCulture;
         var numberFormatInfo = (NumberFormatInfo)formatProvider.GetFormat(typeof(NumberFormatInfo))!;
 
