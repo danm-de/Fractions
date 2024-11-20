@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using FluentAssertions;
 using NUnit.Framework;
 using Tests.Fractions;
@@ -25,6 +26,7 @@ public class If_the_Sqrt_function_is_called : Spec {
 
     private static IEnumerable<TestCaseData> TestCases {
         get {
+            yield return new TestCaseData(0);
             yield return new TestCaseData(0.001);
             yield return new TestCaseData(5);
             yield return new TestCaseData(4.54854751);
@@ -48,5 +50,29 @@ public class If_the_Sqrt_function_is_called : Spec {
         var actual = fraction.Sqrt();
         //Assert
         actual.ToDouble().Should().Be(expected);
+    }
+
+    [Test]
+    [Ignore("The issue is with the casting to double (fix in #81)")]
+    public void The_square_root_of_a_fraction_with_large_terms_is_calculated_correctly() {
+        // Arrange (4/1)
+        var largeNumber = BigInteger.Pow(10, 309);
+        var fraction = new Fraction(4 * largeNumber, largeNumber, false); 
+        // Act
+        var actual = fraction.Sqrt();
+        //Assert
+        actual.Should().Be(2);
+    }
+
+    [Test]
+    [Ignore("The issue is with the casting to double (fix in #81)")]
+    public void The_square_root_of_a_fraction_with_large_terms_is_calculated_correctly_when_smaller_than_1() {
+        // Arrange (1/4)
+        var largeNumber = BigInteger.Pow(10, 309);
+        var fraction = new Fraction(largeNumber, 4 * largeNumber, false); // 1/4
+        // Act
+        var actual = fraction.Sqrt();
+        //Assert
+        actual.Should().Be(0.5m);
     }
 }
