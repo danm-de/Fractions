@@ -2,6 +2,8 @@
 
 ## 8.1.0
 
+- Improving the performance of the Sqrt extension method https://github.com/danm-de/Fractions/pull/88 by https://github.com/lipchev
+- DecimalNotationFormatter: extracted a non-boxing Format overload https://github.com/danm-de/Fractions/pull/89 by https://github.com/lipchev
 - Added two JSON serializes: StringFractionJsonConverter and StructuralFractionJsonConverter
 - Fixes when TryParse was called with a CultureInfo that has a single symbol for infinity/NaN.
 

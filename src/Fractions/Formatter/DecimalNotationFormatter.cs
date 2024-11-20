@@ -76,10 +76,15 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
     private static readonly BigInteger Ten = new(10);
 
-    /// <inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)"/>
-    /// <param name="format">A standard or custom numeric format string.</param>
-    /// <param name="value">The Fraction object to be formatted.</param>
-    /// <param name="formatProvider">An object that supplies culture-specific formatting information.</param>
+    /// <summary>
+    /// <inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/summary"/>
+    /// </summary>
+    /// <param name="format"><inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/param[@name='format']"/></param>
+    /// <param name="value"><inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/param[@name='fraction']"/></param>
+    /// <param name="formatProvider"><inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/param[@name='formatProvider']"/></param>
+    /// <returns><inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/returns"/></returns>
+    /// <exception cref="FormatException">If <paramref name="value"/> is not of type <see cref="Fraction"/>.</exception>
+    /// <remarks><inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/remarks"/></remarks>
     public string Format(string? format, object? value, IFormatProvider? formatProvider) {
         if (value is null) {
             return string.Empty;
@@ -236,9 +241,15 @@ public class DecimalNotationFormatter : ICustomFormatter {
     }
 
     private static int GetPrecisionDigits(string format) {
+ #if NET
+        if (!int.TryParse(format.AsSpan(1), out var nbDecimals) || nbDecimals < 0) {
+            throw new FormatException($"The {format} format string is not supported.");
+        }
+#else
         if (!int.TryParse(format.Substring(1), out var nbDecimals) || nbDecimals < 0) {
             throw new FormatException($"The {format} format string is not supported.");
         }
+#endif
 
         return nbDecimals;
     }
