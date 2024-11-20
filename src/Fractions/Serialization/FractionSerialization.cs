@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace Fractions.Serialization;
 
@@ -11,6 +12,7 @@ public static class FractionSerialization {
     /// </summary>
     /// <param name="value">The fraction of interest.</param>
     /// <returns>A tuple containing components</returns>
+    [CLSCompliant(false)]
     public static (bool NormalizationNotApplied, BigInteger Numerator, BigInteger Denominator) GetComponents(
         ref Fraction value) =>
         (value.State == FractionState.Unknown, value.Numerator, value.Denominator);
@@ -31,6 +33,7 @@ public static class FractionSerialization {
     /// <param name="numerator">The numerator of the fraction.</param>
     /// <param name="denominator">The denominator of the fraction.</param>
     /// <returns>A fraction instance</returns>
+    [CLSCompliant(false)]
     public static Fraction CreateFromComponents(
         ref bool normalizationNotApplied,
         ref BigInteger numerator,

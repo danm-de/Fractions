@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 8.1.0
+
+- Added two JSON serializes: StringFractionJsonConverter and StructuralFractionJsonConverter
+- Fixes when TryParse was called with a CultureInfo that has a single symbol for infinity/NaN.
+
 ## 8.0.4
 
 - Code / Build cleanups by [Marko Lahma](https://github.com/lahma):
