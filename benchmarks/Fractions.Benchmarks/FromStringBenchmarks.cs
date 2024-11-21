@@ -6,7 +6,7 @@ namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
 [SimpleJob(RuntimeMoniker.Net48)]
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net90)]
 public class FromStringBenchmarks {
     [Params(true, false)]
     public bool Normalize { get; set; }

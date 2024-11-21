@@ -6,7 +6,7 @@ namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
 [ShortRunJob(RuntimeMoniker.Net48)]
-[ShortRunJob(RuntimeMoniker.Net80)]
+[ShortRunJob(RuntimeMoniker.Net90)]
 public class ConvertToFractionBenchmarks {
     public static IEnumerable<Fraction> FractionsToConvert => [
         Fraction.Zero,

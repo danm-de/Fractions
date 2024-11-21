@@ -44,6 +44,6 @@ public class DecimalNotationFormatterBenchmarks {
     [Benchmark]
     [ArgumentsSource(nameof(TestValues))]
     public string DecimalNotationFormatter_Format(Fraction fraction) {
-        return DecimalNotationFormatter.Instance.Format(StringFormat, fraction, CultureInfo.InvariantCulture);
+        return DecimalNotationFormatter.Format(StringFormat, fraction, CultureInfo.InvariantCulture);
     }
 }

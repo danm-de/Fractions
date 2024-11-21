@@ -7,7 +7,7 @@ namespace Fractions.Benchmarks;
 [MemoryDiagnoser]
 // [ShortRunJob]
 [ShortRunJob(RuntimeMoniker.Net48)]
-[ShortRunJob(RuntimeMoniker.Net80)]
+[ShortRunJob(RuntimeMoniker.Net90)]
 public class BasicMathBenchmarks {
     public static IEnumerable<object[]> Operands() {
         // zero
