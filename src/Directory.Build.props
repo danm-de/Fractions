@@ -1,0 +1,67 @@
+﻿<Project>
+  <!--
+     To make MSBuild correctly merge the "inner" files with the "outer" file, we must take into account that once MSBuild
+    finds a Directory.Build.props file, it stops further scanning. The following import is required to let msbuild
+    continue scanning and merge into the outer file.
+
+    https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-by-directory?view=vs-2022
+  -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- Conditionally exclude signing properties for BenchmarkDotNet auto-generated projects -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../Fractions.snk</AssemblyOriginatorKeyFile>
+
+    <RepositoryUrl>https://github.com/danm-de/Fractions.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <PackageIcon>Fraction.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/src/Fractions/Fraction.ico</PackageIconUrl>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
+    <PackageTags>fraction math</PackageTags>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- https://learn.microsoft.com/en-us/dotnet/framework/migration-guide/reference-assemblies -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!-- -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\Readme.md" Pack="true" PackagePath="\" Link="Readme.md" />
+    <None Include="..\..\Fraction.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+</Project>
