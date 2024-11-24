@@ -1,65 +1,65 @@
 ```
 
-BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.4412/22H2/2022Update)
+BenchmarkDotNet v0.14.0, Windows 10 (10.0.19045.5131/22H2/2022Update)
 AMD Ryzen 9 7900X, 1 CPU, 24 logical and 12 physical cores
-.NET SDK 8.0.205
-  [Host]             : .NET 8.0.5 (8.0.524.21615), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-  .NET 8.0           : .NET 8.0.5 (8.0.524.21615), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-  .NET Framework 4.8 : .NET Framework 4.8.1 (4.8.9241.0), X64 RyuJIT VectorSize=256
+.NET SDK 9.0.100
+  [Host]             : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  .NET 9.0           : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  .NET Framework 4.8 : .NET Framework 4.8.1 (4.8.9282.0), X64 RyuJIT VectorSize=256
 
 
 ```
 | Method                | Job                | Runtime            | Normalize | invalidString        | validString          | Mean         | Error     | StdDev    | Gen0   | Allocated |
 |---------------------- |------------------- |------------------- |---------- |--------------------- |--------------------- |-------------:|----------:|----------:|-------:|----------:|
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **False**     | ****                     | **?**                    |     **3.366 ns** | **0.0099 ns** | **0.0088 ns** |      **-** |         **-** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     |                      | ?                    |    14.238 ns | 0.0231 ns | 0.0216 ns |      - |         - |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **-1**                   |    **56.341 ns** | **0.2216 ns** | **0.2073 ns** | **0.0086** |     **144 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | -1                   |   123.717 ns | 0.2685 ns | 0.2511 ns | 0.0370 |     233 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **-1/5**                 |    **89.896 ns** | **0.2687 ns** | **0.2382 ns** | **0.0148** |     **248 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | -1/5                 |   200.481 ns | 0.5822 ns | 0.5161 ns | 0.0610 |     385 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **False**     | **-10242048/**           | **?**                    |    **82.693 ns** | **0.3413 ns** | **0.3192 ns** | **0.0148** |     **248 B** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     | -10242048/           | ?                    |   431.249 ns | 0.6337 ns | 0.5617 ns | 0.0625 |     393 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **-3.5**                 |    **88.353 ns** | **0.1957 ns** | **0.1634 ns** | **0.0129** |     **216 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | -3.5                 |   237.426 ns | 0.5677 ns | 0.5033 ns | 0.0482 |     305 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **0**                    |    **40.395 ns** | **0.1113 ns** | **0.1041 ns** | **0.0062** |     **104 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 0                    |    70.230 ns | 0.2331 ns | 0.2180 ns | 0.0166 |     104 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **1**                    |    **43.237 ns** | **0.1932 ns** | **0.1807 ns** | **0.0062** |     **104 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 1                    |    98.939 ns | 0.3922 ns | 0.3477 ns | 0.0166 |     104 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **1.234(...)67890 [21]** |   **225.724 ns** | **0.6140 ns** | **0.5443 ns** | **0.0248** |     **416 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 1.234(...)67890 [21] | 1,379.537 ns | 2.5657 ns | 2.3999 ns | 0.2136 |    1356 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **False**     | **1.234(...)7890f [22]** | **?**                    |    **27.447 ns** | **0.0578 ns** | **0.0512 ns** | **0.0024** |      **40 B** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     | 1.234(...)7890f [22] | ?                    |    46.274 ns | 0.0559 ns | 0.0467 ns | 0.0280 |     177 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **1/5**                  |    **89.742 ns** | **0.2876 ns** | **0.2690 ns** | **0.0148** |     **248 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 1/5                  |   198.696 ns | 0.2434 ns | 0.2158 ns | 0.0610 |     385 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **10242048**             |    **89.055 ns** | **0.3112 ns** | **0.2911 ns** | **0.0110** |     **184 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 10242048             |   432.297 ns | 0.4791 ns | 0.4481 ns | 0.0353 |     225 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **False**     | **?**                    | **3.5**                  |    **87.885 ns** | **0.3173 ns** | **0.2968 ns** | **0.0129** |     **216 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 3.5                  |   239.433 ns | 0.6943 ns | 0.6494 ns | 0.0482 |     305 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **False**     | **invalid**              | **?**                    |    **22.234 ns** | **0.1296 ns** | **0.1213 ns** | **0.0024** |      **40 B** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     | invalid              | ?                    |    38.270 ns | 0.1134 ns | 0.1005 ns | 0.0191 |     120 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **True**      | ****                     | **?**                    |     **3.355 ns** | **0.0191 ns** | **0.0178 ns** |      **-** |         **-** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      |                      | ?                    |    12.638 ns | 0.0718 ns | 0.0672 ns |      - |         - |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **-1**                   |    **58.504 ns** | **0.3191 ns** | **0.2984 ns** | **0.0086** |     **144 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | -1                   |   124.443 ns | 0.7336 ns | 0.6503 ns | 0.0370 |     233 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **-1/5**                 |    **91.005 ns** | **0.4019 ns** | **0.3356 ns** | **0.0148** |     **248 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | -1/5                 |   219.321 ns | 1.2736 ns | 1.1913 ns | 0.0610 |     385 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **True**      | **-10242048/**           | **?**                    |    **82.245 ns** | **0.3754 ns** | **0.3328 ns** | **0.0148** |     **248 B** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      | -10242048/           | ?                    |   431.795 ns | 2.6071 ns | 2.4387 ns | 0.0625 |     393 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **-3.5**                 |    **99.776 ns** | **0.6468 ns** | **0.6050 ns** | **0.0129** |     **216 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | -3.5                 |   320.805 ns | 2.2800 ns | 2.1327 ns | 0.0482 |     305 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **0**                    |    **40.234 ns** | **0.1854 ns** | **0.1734 ns** | **0.0062** |     **104 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 0                    |    69.007 ns | 0.1566 ns | 0.1223 ns | 0.0166 |     104 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **1**                    |    **44.106 ns** | **0.2155 ns** | **0.1911 ns** | **0.0062** |     **104 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 1                    |    98.683 ns | 0.5621 ns | 0.5258 ns | 0.0166 |     104 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **1.234(...)67890 [21]** |   **310.431 ns** | **2.9036 ns** | **2.7161 ns** | **0.0286** |     **480 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 1.234(...)67890 [21] | 1,642.757 ns | 6.8213 ns | 6.3806 ns | 0.2251 |    1420 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **True**      | **1.234(...)7890f [22]** | **?**                    |    **28.860 ns** | **0.1448 ns** | **0.1354 ns** | **0.0024** |      **40 B** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      | 1.234(...)7890f [22] | ?                    |    46.027 ns | 0.0908 ns | 0.0805 ns | 0.0280 |     177 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **1/5**                  |    **97.199 ns** | **0.3042 ns** | **0.2845 ns** | **0.0148** |     **248 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 1/5                  |   216.430 ns | 0.7757 ns | 0.6056 ns | 0.0610 |     385 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **10242048**             |    **91.523 ns** | **0.3893 ns** | **0.3251 ns** | **0.0110** |     **184 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 10242048             |   432.377 ns | 2.1183 ns | 1.9814 ns | 0.0353 |     225 B |
-| **TryParseValidString**   | **.NET 8.0**           | **.NET 8.0**           | **True**      | **?**                    | **3.5**                  |    **98.283 ns** | **0.2496 ns** | **0.2084 ns** | **0.0129** |     **216 B** |
-| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 3.5                  |   327.317 ns | 0.3326 ns | 0.2777 ns | 0.0482 |     305 B |
-| **TryParseInvalidString** | **.NET 8.0**           | **.NET 8.0**           | **True**      | **invalid**              | **?**                    |    **21.980 ns** | **0.0694 ns** | **0.0650 ns** | **0.0024** |      **40 B** |
-| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      | invalid              | ?                    |    37.918 ns | 0.0705 ns | 0.0625 ns | 0.0191 |     120 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **False**     | ****                     | **?**                    |     **3.590 ns** | **0.0046 ns** | **0.0038 ns** |      **-** |         **-** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     |                      | ?                    |    13.635 ns | 0.0020 ns | 0.0015 ns |      - |         - |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **-1**                   |    **57.864 ns** | **0.1400 ns** | **0.1241 ns** | **0.0024** |      **40 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | -1                   |   157.853 ns | 0.6413 ns | 0.5355 ns | 0.0687 |     433 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **-1/5**                 |    **96.540 ns** | **0.2271 ns** | **0.2013 ns** | **0.0024** |      **40 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | -1/5                 |   201.601 ns | 0.2850 ns | 0.2527 ns | 0.0610 |     385 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **False**     | **-10242048/**           | **?**                    |    **68.953 ns** | **0.1958 ns** | **0.1635 ns** | **0.0024** |      **40 B** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     | -10242048/           | ?                    |   433.409 ns | 0.1322 ns | 0.1104 ns | 0.0625 |     393 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **-3.5**                 |    **95.540 ns** | **0.1679 ns** | **0.1402 ns** | **0.0067** |     **112 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | -3.5                 |   277.422 ns | 1.3142 ns | 1.2293 ns | 0.0801 |     505 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **0**                    |    **44.818 ns** | **0.1289 ns** | **0.1076 ns** |      **-** |         **-** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 0                    |    71.429 ns | 0.1109 ns | 0.1038 ns | 0.0166 |     104 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **1**                    |    **48.173 ns** | **0.0757 ns** | **0.0708 ns** |      **-** |         **-** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 1                    |    99.374 ns | 0.0164 ns | 0.0128 ns | 0.0166 |     104 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **1.234(...)67890 [21]** |   **209.656 ns** | **0.2479 ns** | **0.2197 ns** | **0.0124** |     **208 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 1.234(...)67890 [21] | 1,388.789 ns | 3.3058 ns | 3.0922 ns | 0.2136 |    1356 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **False**     | **1.234(...)7890f [22]** | **?**                    |    **26.441 ns** | **0.0221 ns** | **0.0196 ns** | **0.0024** |      **40 B** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     | 1.234(...)7890f [22] | ?                    |   149.340 ns | 1.5950 ns | 1.4919 ns | 0.1235 |     778 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **1/5**                  |    **96.436 ns** | **0.0824 ns** | **0.0771 ns** | **0.0024** |      **40 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 1/5                  |   201.887 ns | 0.1495 ns | 0.1399 ns | 0.0610 |     385 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **10242048**             |    **82.044 ns** | **0.0747 ns** | **0.0583 ns** | **0.0048** |      **80 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 10242048             |   437.075 ns | 0.1616 ns | 0.1512 ns | 0.0353 |     225 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **False**     | **?**                    | **3.5**                  |    **93.900 ns** | **0.2320 ns** | **0.2057 ns** | **0.0067** |     **112 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | False     | ?                    | 3.5                  |   236.441 ns | 0.0807 ns | 0.0630 ns | 0.0484 |     305 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **False**     | **invalid**              | **?**                    |    **20.698 ns** | **0.0177 ns** | **0.0157 ns** | **0.0024** |      **40 B** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | False     | invalid              | ?                    |   140.700 ns | 1.2390 ns | 1.1590 ns | 0.1147 |     722 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **True**      | ****                     | **?**                    |     **3.211 ns** | **0.0017 ns** | **0.0015 ns** |      **-** |         **-** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      |                      | ?                    |    13.747 ns | 0.0023 ns | 0.0020 ns |      - |         - |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **-1**                   |    **57.636 ns** | **0.0586 ns** | **0.0548 ns** | **0.0024** |      **40 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | -1                   |   156.689 ns | 0.7242 ns | 0.6774 ns | 0.0687 |     433 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **-1/5**                 |   **102.974 ns** | **2.0692 ns** | **4.0358 ns** | **0.0024** |      **40 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | -1/5                 |   226.338 ns | 2.4677 ns | 2.3083 ns | 0.0610 |     385 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **True**      | **-10242048/**           | **?**                    |    **70.141 ns** | **0.8099 ns** | **0.7576 ns** | **0.0024** |      **40 B** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      | -10242048/           | ?                    |   442.488 ns | 2.9647 ns | 2.6281 ns | 0.0625 |     393 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **-3.5**                 |   **114.831 ns** | **1.1059 ns** | **1.0345 ns** | **0.0067** |     **112 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | -3.5                 |   405.614 ns | 1.7063 ns | 1.5126 ns | 0.0801 |     505 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **0**                    |    **44.154 ns** | **0.4676 ns** | **0.4374 ns** |      **-** |         **-** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 0                    |    72.333 ns | 0.9527 ns | 0.8446 ns | 0.0166 |     104 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **1**                    |    **49.912 ns** | **0.3645 ns** | **0.3410 ns** |      **-** |         **-** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 1                    |   100.044 ns | 0.4192 ns | 0.3716 ns | 0.0166 |     104 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **1.234(...)67890 [21]** |   **312.137 ns** | **2.9989 ns** | **2.6584 ns** | **0.0162** |     **272 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 1.234(...)67890 [21] | 1,695.839 ns | 6.4138 ns | 5.3558 ns | 0.2251 |    1420 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **True**      | **1.234(...)7890f [22]** | **?**                    |    **27.149 ns** | **0.3642 ns** | **0.3407 ns** | **0.0024** |      **40 B** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      | 1.234(...)7890f [22] | ?                    |   149.333 ns | 1.2769 ns | 1.1944 ns | 0.1235 |     778 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **1/5**                  |    **99.490 ns** | **0.5728 ns** | **0.5358 ns** | **0.0024** |      **40 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 1/5                  |   222.819 ns | 2.9958 ns | 2.8023 ns | 0.0610 |     385 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **10242048**             |    **82.071 ns** | **0.6226 ns** | **0.5520 ns** | **0.0048** |      **80 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 10242048             |   441.628 ns | 1.2333 ns | 0.9629 ns | 0.0353 |     225 B |
+| **TryParseValidString**   | **.NET 9.0**           | **.NET 9.0**           | **True**      | **?**                    | **3.5**                  |   **112.154 ns** | **0.8391 ns** | **0.7849 ns** | **0.0067** |     **112 B** |
+| TryParseValidString   | .NET Framework 4.8 | .NET Framework 4.8 | True      | ?                    | 3.5                  |   355.632 ns | 0.9512 ns | 0.8432 ns | 0.0482 |     305 B |
+| **TryParseInvalidString** | **.NET 9.0**           | **.NET 9.0**           | **True**      | **invalid**              | **?**                    |    **21.331 ns** | **0.1804 ns** | **0.1599 ns** | **0.0024** |      **40 B** |
+| TryParseInvalidString | .NET Framework 4.8 | .NET Framework 4.8 | True      | invalid              | ?                    |   138.459 ns | 0.7771 ns | 0.6489 ns | 0.1147 |     722 B |

@@ -7,7 +7,7 @@ namespace Fractions.Benchmarks;
 
 [MemoryDiagnoser]
 [ShortRunJob(RuntimeMoniker.Net48)]
-[ShortRunJob(RuntimeMoniker.Net80)]
+[ShortRunJob(RuntimeMoniker.Net90)]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
 public class ConsecutiveMathOperationBenchmarks {
     [Params(100, 10_000, 1_000_000)]

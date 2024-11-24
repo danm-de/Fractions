@@ -8,7 +8,7 @@ namespace Fractions.Benchmarks;
 [MemoryDiagnoser]
 // [ShortRunJob]
 [MediumRunJob(RuntimeMoniker.Net48)]
-[MediumRunJob(RuntimeMoniker.Net80)]
+[MediumRunJob(RuntimeMoniker.Net90)]
 public class ExampleScenarioBenchmarks {
     private Dictionary<MedicineRecord, List<InfusionRateRangeRecord>> MedicineRecords { get; set; }
     private List<PatientAppointmentRecord> PatientAppointmentRecords { get; set; }
