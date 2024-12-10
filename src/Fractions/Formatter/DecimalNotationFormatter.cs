@@ -235,25 +235,23 @@ public class DecimalNotationFormatter : ICustomFormatter {
         };
     }
 
-
-    private static int GetPrecisionDigitsOrDefault(string format, int defaultValue) {
-        return format.Length > 1 ? GetPrecisionDigits(format) : defaultValue;
-    }
-
-    private static int GetPrecisionDigits(string format) {
- #if NET
-        if (!int.TryParse(format.AsSpan(1), out var nbDecimals) || nbDecimals < 0) {
-            throw new FormatException($"The {format} format string is not supported.");
-        }
+    private static bool TryGetPrecisionDigits(string format, int defaultPrecision, out int maxNbDecimals) {
+        if (format.Length != 1) {
+#if NET
+            if (!int.TryParse(format.AsSpan(1), out maxNbDecimals)) {
+                return false;
+            }
 #else
-        if (!int.TryParse(format.Substring(1), out var nbDecimals) || nbDecimals < 0) {
-            throw new FormatException($"The {format} format string is not supported.");
-        }
+            if (!int.TryParse(format.Substring(1), out maxNbDecimals)) {
+                return false;
+            }
 #endif
+        }
 
-        return nbDecimals;
+        maxNbDecimals = defaultPrecision;
+        return true;
     }
-
+    
     /// <summary>
     ///     The fixed-point ("F") format specifier converts a number to a string of the form "-ddd.ddd…" where each "d"
     ///     indicates a digit (0-9). The string starts with a minus sign if the number is negative.
@@ -272,7 +270,10 @@ public class DecimalNotationFormatter : ICustomFormatter {
             return fraction.Numerator.ToString(format, formatProvider)!;
         }
 
-        var maxNbDecimalsAfterRadix = GetPrecisionDigitsOrDefault(format, formatProvider.NumberDecimalDigits);
+        if (!TryGetPrecisionDigits(format, formatProvider.NumberDecimalDigits, out var maxNbDecimalsAfterRadix)) {
+            // not a valid "F" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
 
         var sb = new StringBuilder(12 + maxNbDecimalsAfterRadix);
 
@@ -323,8 +324,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     The precision specifier indicates the desired number of decimal places. If the precision specifier is omitted, the
     ///     current <see cref="NumberFormatInfo.NumberDecimalDigits" /> property supplies the numeric precision.
     /// </remarks>
-    private static string FormatWithStandardNumericFormat(Fraction fraction, string format,
-        NumberFormatInfo formatProvider) {
+    private static string FormatWithStandardNumericFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
         if (fraction.Numerator == BigInteger.Zero) {
             return 0d.ToString(format, formatProvider);
         }
@@ -332,9 +332,12 @@ public class DecimalNotationFormatter : ICustomFormatter {
         if (fraction.Denominator.IsOne) {
             return fraction.Numerator.ToString(format, formatProvider)!;
         }
-
-        var maxNbDecimals = GetPrecisionDigitsOrDefault(format, formatProvider.NumberDecimalDigits);
-
+        
+        if (!TryGetPrecisionDigits(format, formatProvider.NumberDecimalDigits, out var maxNbDecimals)) {
+            // not a valid "N" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
+        
         var sb = new StringBuilder(3 + maxNbDecimals);
 
         var isPositive = fraction.IsPositive;
@@ -402,8 +405,11 @@ public class DecimalNotationFormatter : ICustomFormatter {
         if (fraction.Denominator.IsOne) {
             return fraction.Numerator.ToString(format, formatProvider)!;
         }
-
-        var maxNbDecimals = GetPrecisionDigitsOrDefault(format, formatProvider.PercentDecimalDigits);
+        
+        if (!TryGetPrecisionDigits(format, formatProvider.PercentDecimalDigits, out var maxNbDecimals)) {
+            // not a valid "P" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
 
         var sb = new StringBuilder(4 + maxNbDecimals);
 
@@ -523,8 +529,11 @@ public class DecimalNotationFormatter : ICustomFormatter {
         if (fraction.Denominator.IsOne) {
             return fraction.Numerator.ToString(format, formatProvider)!;
         }
-
-        var maxNbDecimals = GetPrecisionDigitsOrDefault(format, formatProvider.CurrencyDecimalDigits);
+        
+        if (!TryGetPrecisionDigits(format, formatProvider.CurrencyDecimalDigits, out var maxNbDecimals)) {
+            // not a valid "C" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
 
         var sb = new StringBuilder(4 + maxNbDecimals);
 
@@ -647,8 +656,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     always consists of a plus or minus sign and a minimum of three digits. The exponent is padded with zeros to meet
     ///     this minimum, if required.
     /// </remarks>
-    private static string FormatWithScientificFormat(Fraction fraction, string format,
-        NumberFormatInfo formatProvider) {
+    private static string FormatWithScientificFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
         if (fraction.Numerator == BigInteger.Zero) {
             return 0d.ToString(format, formatProvider);
         }
@@ -656,8 +664,12 @@ public class DecimalNotationFormatter : ICustomFormatter {
         if (fraction.Denominator.IsOne) {
             return fraction.Numerator.ToString(format, formatProvider)!;
         }
-
-        var maxNbDecimals = GetPrecisionDigitsOrDefault(format, DefaultScientificFormatPrecision);
+        
+        if (!TryGetPrecisionDigits(format, DefaultScientificFormatPrecision, out var maxNbDecimals)) {
+            // not a valid "E" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
+        
         var sb = new StringBuilder(DefaultScientificFormatPrecision + maxNbDecimals);
 
         if (fraction.IsNegative) {
@@ -703,8 +715,12 @@ public class DecimalNotationFormatter : ICustomFormatter {
             return 0d.ToString(format, formatProvider);
         }
 
-        int maxNbDecimals;
-        if (format.Length == 1 || (maxNbDecimals = GetPrecisionDigits(format)) == 0) {
+        if (!TryGetPrecisionDigits(format, DefaultGeneralFormatPrecision, out var maxNbDecimals)) {
+            // not a valid "G" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
+
+        if (maxNbDecimals == 0) {
             maxNbDecimals = DefaultGeneralFormatPrecision;
         }
 
@@ -784,8 +800,12 @@ public class DecimalNotationFormatter : ICustomFormatter {
         }
 
         const string quotientFormat = "N0";
-        var maxDigitsAfterRadix = GetPrecisionDigitsOrDefault(format, 2);
-
+        
+        if (!TryGetPrecisionDigits(format, 2, out var maxDigitsAfterRadix)) {
+            // not a valid "S" format: assuming a custom format
+            return fraction.ToDouble().ToString(format, formatProvider);
+        }
+        
         var sb = new StringBuilder(3 + maxDigitsAfterRadix);
 
         if (fraction.IsNegative) {
