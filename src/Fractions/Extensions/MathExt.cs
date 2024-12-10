@@ -11,6 +11,8 @@ public static class MathExt {
     /// </summary>
     /// <param name="number"></param>
     /// <returns><c>true</c> if the number is even.</returns>
+    /// <remarks>Starting with version 9.0.0, this method will be annotated with: <code>[Obsolete(error: true)]</code></remarks>
+    [Obsolete(message: "To test for an even long value, use the following method: `(value & 1) == 0`", error: false)]
     public static bool IsEven(this long number) {
         return (number & 1) == 0;
     }
@@ -20,6 +22,8 @@ public static class MathExt {
     /// </summary>
     /// <param name="number"></param>
     /// <returns><c>true</c> if the number is odd.</returns>
+    /// <remarks>Starting with version 9.0.0, this method will be annotated with: <code>[Obsolete(error: true)]</code></remarks>
+    [Obsolete(message: "To test for an odd long value, use the following method: `(value & 1) != 0`", error: false)]
     public static bool IsOdd(this long number) {
         return (number & 1) != 0;
     }
@@ -30,16 +34,16 @@ public static class MathExt {
     /// <param name="a">First number.</param>
     /// <param name="b">Second number.</param>
     /// <returns>The largest positive integer that divides <paramref name="a"/> and <paramref name="b"/> without a remainder.</returns>
+    /// <remarks>Starting with version 9.0.0, this method will be annotated with: <code>[Obsolete(error: true)]</code></remarks>
+    [Obsolete(message: "Please use `BigInteger.GreatestCommonDivisor(a, b)` to find the greatest common divisor of two numbers a & b.", error: false)]
     public static long GreatestCommonDivisor(long a, long b) {
         a = Math.Abs(a);
         b = Math.Abs(b);
-
         if (a == 0) {
             // ggT(0, b) = b
-            // Denn alles teilt durch 0.
             return b;
         }
-
+        
         if (b == 0) {
             // ggT(a, 0) = a
             return a;
@@ -51,10 +55,11 @@ public static class MathExt {
         }
 
         return a == b
-            ? a // Beide Zahlen sind identisch, wir haben bereits den ggT gefunden.
+            ? a
             : BinaryGreatestCommonDivisorAlgorithm(a, b);
     }
 
+    [Obsolete(message: "Please use `BigInteger.GreatestCommonDivisor(a, b)` to find the greatest common divisor of two numbers a & b.", error: false)]
     private static long BinaryGreatestCommonDivisorAlgorithm(long a, long b) {
         // Solange 'a' und 'b' beide gerade Zahlen sind, teile die Zahlen durch 2
         // und merke wie oft dies möglich war in 'k'.
@@ -97,6 +102,15 @@ public static class MathExt {
     /// <param name="b">The second number.</param>
     /// <returns>The smallest positive integer that is divisible by both <paramref name="a"/> and <paramref name="b"/> or 0 if either <paramref name="a"/> or <paramref name="b"/> is 0</returns>
     /// <exception cref="ArgumentException">If <paramref name="a"/> and <paramref name="b"/> are 0</exception>
+    /// <remarks>
+    /// <para>
+    ///     Starting with version 9.0.0, this method will be annotated with: <code>[Obsolete(error: true)]</code>
+    /// </para>
+    /// <para>
+    ///     Algorithm: LeastCommonMultiple(a,b) = (|a*b|) / GreatestCommonDivisor(a, b)
+    /// </para>
+    /// </remarks>
+    [Obsolete(message: "This method is obsolete.", error: false)]
     public static long LeastCommonMultiple(long a, long b) {
         if (a == 0 && b == 0) {
             throw new ArgumentException("The least common multiple is not defined if both numbers are zero.");
@@ -109,7 +123,7 @@ public static class MathExt {
             return a;
         }
 
-        // Es gilt LCM(a,b) = (|a*b|) / GCD(a,b)
+        // LCM(a,b) = (|a*b|) / GCD(a,b)
 
         var gcd = GreatestCommonDivisor(a, b);
         return a / gcd * b;

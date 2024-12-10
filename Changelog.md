@@ -2,7 +2,8 @@
 
 ## 8.1.1
 
-- TODO
+- Fixes [#93](https://github.com/danm-de/Fractions/issues/93): DecimalNotationFormatter throws FormatException for some custom formats (via [Pull-Request](https://github.com/danm-de/Fractions/pulls)) by [lipchev](https://github.com/lipchev)
+- Fixes [#92](https://github.com/danm-de/Fractions/issues/92): Mark the MathExt exensions as obsolete (reported by [lipchev](https://github.com/lipchev))
 
 ## 8.1.0
 

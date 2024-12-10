@@ -6,7 +6,7 @@ namespace Fractions;
 /// Exception that will be thrown if an argument contains not a number (NaN) or is infinite.
 /// </summary>
 [Obsolete(message: "The data type now supports NaN and Infinity, so this exception type is no longer needed.",
-    error: false)]
+    error: true)]
 public class InvalidNumberException : ArithmeticException {
 #pragma warning disable 1591
     public InvalidNumberException() { }

@@ -13,7 +13,7 @@ public readonly partial struct Fraction {
     /// <returns><c>true</c> if both values are equivalent. (e.g. 2/4 is equivalent to 1/2. But 2/4 is not equivalent to -1/2)</returns>
     [Obsolete(
         "As of version 8.0.0, the equality of values is checked when Fraction.Equals(..) is called. Please use the .Equals(..) method.",
-        error: false)]
+        error: true)]
     public bool IsEquivalentTo(Fraction other) {
         return Equals(other);
     }
