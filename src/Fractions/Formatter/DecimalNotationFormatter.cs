@@ -236,22 +236,27 @@ public class DecimalNotationFormatter : ICustomFormatter {
     }
 
     private static bool TryGetPrecisionDigits(string format, int defaultPrecision, out int maxNbDecimals) {
-        if (format.Length != 1) {
-#if NET
-            if (!int.TryParse(format.AsSpan(1), out maxNbDecimals)) {
-                return false;
-            }
-#else
-            if (!int.TryParse(format.Substring(1), out maxNbDecimals)) {
-                return false;
-            }
-#endif
+        if (format.Length == 1) {
+            // The number of digits is not specified, use default precision.
+            maxNbDecimals = defaultPrecision;
+            return true;
         }
 
+#if NET
+        if (int.TryParse(format.AsSpan(1), out maxNbDecimals)) {
+            return true;
+        }
+#else
+        if (int.TryParse(format.Substring(1), out maxNbDecimals)) {
+            return true;
+        }
+#endif
+
+        // Seems to be some kind of custom format we do not understand, fallback to default precision.
         maxNbDecimals = defaultPrecision;
-        return true;
+        return false;
     }
-    
+
     /// <summary>
     ///     The fixed-point ("F") format specifier converts a number to a string of the form "-ddd.ddd…" where each "d"
     ///     indicates a digit (0-9). The string starts with a minus sign if the number is negative.
