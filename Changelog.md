@@ -7,8 +7,8 @@
 
 ## 8.1.0
 
-- Improving the performance of the Sqrt extension method https://github.com/danm-de/Fractions/pull/88 by https://github.com/lipchev
-- DecimalNotationFormatter: extracted a non-boxing Format overload https://github.com/danm-de/Fractions/pull/89 by https://github.com/lipchev
+- Improving the performance of the Sqrt extension method https://github.com/danm-de/Fractions/pull/88 by [lipchev](https://github.com/lipchev)
+- DecimalNotationFormatter: extracted a non-boxing Format overload https://github.com/danm-de/Fractions/pull/89 by [lipchev](https://github.com/lipchev)
 - Added two JSON serializes: StringFractionJsonConverter and StructuralFractionJsonConverter
 - Fixes when TryParse was called with a CultureInfo that has a single symbol for infinity/NaN.
 
@@ -26,8 +26,8 @@
 
 ## 8.0.2
 
-- Bugfix in `Fraction.CompareTo` https://github.com/danm-de/Fractions/issues/78 by https://github.com/lipchev
-- Performance optimization in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/pull/80 by https://github.com/lipchev
+- Bugfix in `Fraction.CompareTo` https://github.com/danm-de/Fractions/issues/78 by [lipchev](https://github.com/lipchev)
+- Performance optimization in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/pull/80 by [lipchev](https://github.com/lipchev)
   Changed behavior: `ArgumentOutOfRangeException` is thrown when argument `significantDigits` is &lt; 1 or &gt; 17.
 
 ## 8.0.1
@@ -37,12 +37,12 @@
 
 ## 8.0.0
 
-- Added support for NaN and Infinity by https://github.com/lipchev
-- New properties IsNaN, IsInfinity, IsPositiveInfinity, IsNegativeInfinity by https://github.com/lipchev
-- Adding a debugger display proxy by https://github.com/lipchev
-- Various methods were optimized by https://github.com/lipchev
-- Use the potential of Span&lt;T&gt; where sensible and possible (TryParse, FromDecimal) by https://github.com/lipchev
-- No longer reduce non-normalized fractions when used in mathematical operations - by https://github.com/lipchev
+- Added support for NaN and Infinity by [lipchev](https://github.com/lipchev)
+- New properties IsNaN, IsInfinity, IsPositiveInfinity, IsNegativeInfinity by [lipchev](https://github.com/lipchev)
+- Adding a debugger display proxy by [lipchev](https://github.com/lipchev)
+- Various methods were optimized by [lipchev](https://github.com/lipchev)
+- Use the potential of Span&lt;T&gt; where sensible and possible (TryParse, FromDecimal) by [lipchev](https://github.com/lipchev)
+- No longer reduce non-normalized fractions when used in mathematical operations - by [lipchev](https://github.com/lipchev)
 
 ### Breaking changes
 
@@ -58,27 +58,27 @@
 
 ## 7.7.0
 
-- Added DecimalNotationFormatter + documentation by https://github.com/lipchev
-- Added Benchmark results summary (with Readme) by https://github.com/lipchev
-- Introduced the negation (-) operator by https://github.com/lipchev
-- Added extended xml comments to the FromDouble* methods by https://github.com/lipchev
+- Added DecimalNotationFormatter + documentation by [lipchev](https://github.com/lipchev)
+- Added Benchmark results summary (with Readme) by [lipchev](https://github.com/lipchev)
+- Introduced the negation (-) operator by [lipchev](https://github.com/lipchev)
+- Added extended xml comments to the FromDouble* methods by [lipchev](https://github.com/lipchev)
 - Replace .Invert() with .Negate() method
 
 ## 7.6.1
 
-- Incorrect result when rounding 1/3 with MidpointRounding.ToEven (fixes #39) by https://github.com/lipchev
+- Incorrect result when rounding 1/3 with MidpointRounding.ToEven (fixes #39) by [lipchev](https://github.com/lipchev)
 
 ## 7.6.0
 
-- Added method overload for FromDouble with significant digits by https://github.com/lipchev
-- Performance optimization of the FromDouble method by https://github.com/lipchev
+- Added method overload for FromDouble with significant digits by [lipchev](https://github.com/lipchev)
+- Performance optimization of the FromDouble method by [lipchev](https://github.com/lipchev)
 
 ## 7.5.0
 
-- Added benchmarks for the most common operations by https://github.com/lipchev
-- Added Fraction.Round/RoundToBigInteger functions by https://github.com/lipchev
-- Make the operator from decimal implicit by https://github.com/lipchev
-- Support for parsing long/very precise numbers by https://github.com/lipchev
+- Added benchmarks for the most common operations by [lipchev](https://github.com/lipchev)
+- Added Fraction.Round/RoundToBigInteger functions by [lipchev](https://github.com/lipchev)
+- Make the operator from decimal implicit by [lipchev](https://github.com/lipchev)
+- Support for parsing long/very precise numbers by [lipchev](https://github.com/lipchev)
 - Added support for `ReadOnlySpan<char>` when using TryParse(..)
 - Added target framework .NET8.0
 - Updated documentation
@@ -87,12 +87,12 @@
 ## 7.4.1
 
 - Code cleanup (use new language features)
-- fix https://github.com/danm-de/Fractions/issues/27 reported by https://github.com/lipchev
+- fix https://github.com/danm-de/Fractions/issues/27 reported by [lipchev](https://github.com/lipchev)
 
 ## 7.4.0
 
-- The CLSCompliant(true) attribute was added by https://github.com/lipchev
-- fix invalid characters in test names by https://github.com/lipchev
+- The CLSCompliant(true) attribute was added by [lipchev](https://github.com/lipchev)
+- fix invalid characters in test names by [lipchev](https://github.com/lipchev)
 - Updated nuget packages
 
 ## 7.3.0
