@@ -76,3 +76,28 @@ public class If_the_Sqrt_function_is_called : Spec {
         actual.Should().Be(0.5m);
     }
 }
+
+[TestFixture]
+public class When_the_root_is_calculated_from_a_fraction_with_a_very_large_numerator_and_denominator : Spec
+{
+    private Fraction _sut;
+    private Fraction _result;
+    private Fraction _expected;
+
+    public override void Arrange() {
+        var largeNumber = BigInteger.Pow(10, 309);
+        var numerator = 4 * largeNumber;
+        var denominator = largeNumber;
+
+        _expected = new Fraction(4).Sqrt();
+
+        _sut = new Fraction(numerator, denominator, normalize: false);
+    }
+
+    public override void Act() =>
+        _result = _sut.Sqrt();
+
+    [Test]
+    public void Should_it_return_the_expected_result() =>
+        _result.Should().Be(_expected);
+}

@@ -47,7 +47,7 @@ public static class FractionExt {
 
         //Using Math.Sqrt to get a good starting guess
         var guessDouble = Math.Sqrt((double)x);
-        var oldGuess = double.IsInfinity(guessDouble)
+        var oldGuess = double.IsInfinity(guessDouble) || double.IsNaN(guessDouble)
             ? x / Fraction.Two
             : (Fraction)guessDouble;
 
