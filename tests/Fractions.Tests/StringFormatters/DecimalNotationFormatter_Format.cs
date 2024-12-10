@@ -876,6 +876,12 @@ public class When_formatting_a_fraction_using_a_custom_format : DecimalNotationF
             yield return new TestCaseData(@"\###00\#", oneHalf, culture).Returns("#01#");
             yield return new TestCaseData("#0.0#;(#0.0#);-\0-", oneHalf.Negate(), culture).Returns("(0.5)");
             yield return new TestCaseData("#0.0#;(#0.0#)", Fraction.Zero, culture).Returns("0.0");
+            yield return new TestCaseData("Test: 0.00", new Fraction(12.345), culture).Returns("Test: 12.35");
+            yield return new TestCaseData("Pest: 0.00", new Fraction(12.345), culture).Returns("Pest: 12.35");
+            yield return new TestCaseData("Guess: 0.00", Fraction.PositiveInfinity, culture).Returns(culture.NumberFormat.PositiveInfinitySymbol);
+            yield return new TestCaseData("Guess: 0.00", Fraction.NegativeInfinity, culture).Returns(culture.NumberFormat.NegativeInfinitySymbol);
+            yield return new TestCaseData("Guess: 0.00", Fraction.NaN, culture).Returns(culture.NumberFormat.NaNSymbol);
+            yield return new TestCaseData("0.## items", oneHalf, culture).Returns("0.5 items");
         }
     }
 
