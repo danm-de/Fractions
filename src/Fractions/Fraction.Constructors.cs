@@ -42,9 +42,7 @@ public readonly partial struct Fraction {
     /// </summary>
     /// <param name="numerator">Numerator</param>
     /// <param name="denominator">Denominator</param>
-    /// <param name="normalize">If <c>true</c> the fraction will be created as reduced/simplified fraction. 
-    /// This is recommended, especially if your applications requires that the results of the equality methods <see cref="object.Equals(object)"/> 
-    /// and <see cref="IComparable.CompareTo"/> are always the same. (1/2 != 2/4)</param>
+    /// <param name="normalize">If <c>true</c> the fraction will be created as reduced/simplified fraction.</param>
     public Fraction(BigInteger numerator, BigInteger denominator, bool normalize) {
         if (normalize) {
             this = GetReducedFraction(numerator, denominator);
