@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Results", "Results", "{FCF0
 		benchmarks\results\Fractions.Benchmarks.NonNormalizedComparisonBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.NonNormalizedComparisonBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.NonNormalizedMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.NonNormalizedMathBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.PowerMathBenchmarks-report-github.md
+		benchmarks\results\Fractions.Benchmarks.SqrtBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.SqrtBenchmarks-report-github.md
 		benchmarks\results\Fractions.Benchmarks.ToStringBenchmarks-report-github.md = benchmarks\results\Fractions.Benchmarks.ToStringBenchmarks-report-github.md
 	EndProjectSection
 EndProject
