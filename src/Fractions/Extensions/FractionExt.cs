@@ -10,23 +10,25 @@ namespace Fractions;
 /// </summary>
 public static class FractionExt {
     /// <summary>
-    ///     Returns the square root of <paramref name="x" />.
-    ///     Use <paramref name="accuracy" /> to set the accuracy by specifying the number of digits after the decimal point of
-    ///     accuracy.
-    ///     Higher value of <paramref name="accuracy" /> means better accuracy but longer calculations time.
+    ///     Calculates the square root of a given Fraction.
     /// </summary>
-    /// <param name="x">Source value</param>
-    /// <param name="accuracy">Number of digits after the decimal point of accuracy</param>
-    /// <returns>The square root of the given fraction</returns>
+    /// <param name="x">The Fraction for which to calculate the square root.</param>
+    /// <param name="accuracy">The number of significant digits of accuracy for the square root calculation. Default is 30.</param>
+    /// <returns>A new Fraction that is the square root of the input Fraction.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the accuracy is less than or equal to zero.</exception>
     /// <remarks>
-    ///     The resulting fraction will have at least, but likely a lot more, digits than the specified accuracy.
-    ///     If the result is used in further arithmetic operations, it is strongly recommended that the fraction is first
-    ///     rounded to the specified accuracy.
+    ///     The implementation is based on the work by
+    ///     <see href="https://github.com/SunsetQuest/NewtonPlus-Fast-BigInteger-and-BigFloat-Square-Root">SunsetQuest</see>.
+    ///     <para>
+    ///         It uses the Babylonian method of computing square roots, making sure that the relative difference with the true
+    ///         value is smaller than 1/10^accuracy.
+    ///     </para>
+    ///     <para>
+    ///         Note: the resulting value is not rounded and may contain additional digits (up to 20%), which have a relatively
+    ///         high likelihood of being correct, however no strong guarantees can be made.
+    ///     </para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="accuracy" /> is less than or equal to zero</exception>
     public static Fraction Sqrt(this Fraction x, int accuracy = 30) {
-        //Babylonian Method of computing square roots
-
         if (accuracy <= 0) {
             throw new ArgumentOutOfRangeException(
                 paramName: nameof(accuracy),
@@ -37,27 +39,139 @@ public static class FractionExt {
         if (x.IsNaN || x.IsNegative) {
             return Fraction.NaN;
         }
-        
+
         if (x.Numerator.IsZero || x.Denominator.IsZero) // (x.IsZero || x.IsInfinity)
         {
             return x;
         }
 
-        var tolerance = new Fraction(BigInteger.One, BigInteger.Pow(new BigInteger(10), accuracy));
+        if (x.Numerator == x.Denominator) {
+            return Fraction.One;
+        }
 
-        //Using Math.Sqrt to get a good starting guess
-        var guessDouble = Math.Sqrt((double)x);
-        var oldGuess = double.IsInfinity(guessDouble) || double.IsNaN(guessDouble)
-            ? x / Fraction.Two
-            : (Fraction)guessDouble;
+        // BigInteger square root implementation based on https://github.com/SunsetQuest/NewtonPlus-Fast-BigInteger-and-BigFloat-Square-Root
+        return sqrtWithPrecision(x.Reduce(), accuracy * 4, x.State == FractionState.IsNormalized);
 
-        Fraction newGuess;
-        do {
-            //Babylonian Method
-            newGuess = (oldGuess + (x / oldGuess)) / Fraction.Two;
-            oldGuess = newGuess;
-        } while ((oldGuess - newGuess).Abs() > tolerance);
+        static Fraction sqrtWithPrecision(Fraction fraction, int precisionBits, bool reduceTerms) {
+            // BigFloatingPoint square root implementation based on https://github.com/SunsetQuest/NewtonPlus-Fast-BigInteger-and-BigFloat-Square-Root/blob/master/BigFloatingPointSquareRoot.cs
+            var (numerator, numeratorShift) = sqrtWithShift(fraction.Numerator, precisionBits);
+            var (denominator, denominatorShift) = sqrtWithShift(fraction.Denominator, precisionBits);
+            var shift = numeratorShift - denominatorShift;
+            switch (shift) {
+                case < 0:
+                    denominator >>= shift;
+                    break;
+                case > 0:
+                    numerator >>= -shift;
+                    break;
+            }
 
-        return newGuess;
+            return new Fraction(numerator, denominator, reduceTerms);
+        }
+
+        static (BigInteger val, int shift) sqrtWithShift(BigInteger x, int precisionBits) {
+            if (x.IsOne) {
+                return (x, 0);
+            }
+            
+            if (x < 144838757784765629) // 1.448e17 = ~1<<57
+            {
+                var longX = (ulong)x;
+                var vInt = (uint)Math.Sqrt(longX);
+                if (vInt * vInt == longX) {
+                    return (vInt, 0);
+                }
+            }
+#if NET
+            var totalLen = (int)x.GetBitLength();
+#else
+            var totalLen = (int)BigInteger.Log(x, 2);
+#endif
+            
+            var needToShiftInputBy = 2 * precisionBits - totalLen - (totalLen & 1);
+            var val = sqrtBigInt(x << needToShiftInputBy);
+            var retShift = (totalLen + (totalLen > 0 ? 1 : 0)) / 2 - precisionBits;
+            return (val, retShift);
+        }
+
+        static BigInteger sqrtBigInt(BigInteger x) {
+            // BigInteger square root implementation based on https://github.com/SunsetQuest/NewtonPlus-Fast-BigInteger-and-BigFloat-Square-Root/blob/master/BigIntegerSquareRoot.cs
+            if (x < 144838757784765629) // 1.448e17 = ~1<<57
+            {
+                var vInt = (uint)Math.Sqrt((ulong)x);
+                return vInt;
+            }
+
+            var xAsDub = (double)x;
+            if (xAsDub < 8.5e37) //   8.5e37 is V<sup>2</sup>long.max * long.max
+            {
+                var vInt = (ulong)Math.Sqrt(xAsDub);
+                BigInteger v = (vInt + (ulong)(x / vInt)) >> 1;
+                return v;
+            }
+
+            if (xAsDub < 4.3322e127) {
+                var v = (BigInteger)Math.Sqrt(xAsDub);
+                v = (v + x / v) >> 1;
+                if (xAsDub > 2e63) {
+                    v = (v + x / v) >> 1;
+                }
+
+                return v;
+            }
+
+#if NET
+            var xLen = (int)x.GetBitLength();
+#else
+            var xLen = (int)BigInteger.Log(x, 2) + 1;
+#endif
+            var wantedPrecision = (xLen + 1) / 2;
+            var xLenMod = xLen + (xLen & 1) + 1;
+
+            //////// Do the first Sqrt on hardware ////////
+            var tempX = (long)(x >> (xLenMod - 63));
+            var tempSqrt1 = Math.Sqrt(tempX);
+            var valLong = (ulong)BitConverter.DoubleToInt64Bits(tempSqrt1) & 0x1fffffffffffffL;
+            if (valLong == 0) {
+                valLong = 1UL << 53;
+            }
+
+            ////////  Classic Newton Iterations ////////
+            var val = ((BigInteger)valLong << (53 - 1)) + (x >> (xLenMod - 3 * 53)) / valLong;
+            var size = 106;
+            for (; size < 256; size <<= 1) {
+                val = (val << (size - 1)) + (x >> (xLenMod - 3 * size)) / val;
+            }
+
+            if (xAsDub > 4e254) // 1 << 845
+            {
+#if NET
+                var numOfNewtonSteps = BitOperations.Log2((uint)(wantedPrecision / size)) + 2;
+#else
+                var numOfNewtonSteps = (int)Math.Log((uint)(wantedPrecision / size), 2) + 2;
+#endif
+
+                //////  Apply Starting Size  ////////
+                var wantedSize = (wantedPrecision >> numOfNewtonSteps) + 2;
+                var needToShiftBy = size - wantedSize;
+                val >>= needToShiftBy;
+                size = wantedSize;
+                do {
+                    ////////  Newton Plus Iterations  ////////
+                    var shiftX = xLenMod - 3 * size;
+                    var valSquared = (val * val) << (size - 1);
+                    var valSDiff = (x >> shiftX) - valSquared;
+                    val = (val << size) + valSDiff / val;
+                    size *= 2;
+                } while (size < wantedPrecision);
+            }
+
+            if (size != wantedPrecision) {
+                ////////  Shrink result to wanted Precision  ////////
+                val >>= size - wantedPrecision;
+            }
+
+            return val;
+        }
     }
 }

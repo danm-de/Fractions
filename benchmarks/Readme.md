@@ -77,7 +77,7 @@ These benchmarks evaluate the performance of power operations within the `Fracti
 - `Pow(Fraction a, int b)`: Raises a `Fraction` object to an integer power. This operation is used in various mathematical computations involving fractions.
 - `Root(Fraction a, int b)`: Computes the b-th root of a `Fraction` object. This operation is used in various mathematical computations involving fractions.
 
-For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.PowerMathBenchmarks-report-github.md).
+For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.PowerMathBenchmarks-report-github.md) and [here](./results/Fractions.Benchmarks.SqrtBenchmarks-report-github.md).
 
 ### Conversions
 These benchmarks evaluate the performance of converting `Fraction` objects to number types. The operations being benchmarked are:
