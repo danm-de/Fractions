@@ -27,7 +27,8 @@ public class When_rounding_a_decimal_fraction : Spec {
         new Fraction(10, 20, false), new Fraction(-10, -20, false),
         new Fraction(-10, 20, false), new Fraction(10, -20, false),
         new Fraction(9, 20, false), new Fraction(-9, -20, false),
-        new Fraction(-9, 20, false), new Fraction(9, -20, false)
+        new Fraction(-9, 20, false), new Fraction(9, -20, false),
+        new Fraction(-45, -30, false), new Fraction(45, -30, false)
     ];
 
     private static readonly int[] DecimalPlaces = Enumerable.Range(0, 6).ToArray();
@@ -56,6 +57,13 @@ public class When_rounding_a_decimal_fraction : Spec {
         return Fraction.RoundToBigInteger(fraction, roundingMode);
     }
 
+    [Test]
+    [TestCaseSource(nameof(DecimalFractions))]
+    public void The_integer_result_should_be_rounded_ToEven_by_default(Fraction fraction) {
+        var expected = Fraction.RoundToBigInteger(fraction, MidpointRounding.ToEven);
+        Assert.That(Fraction.RoundToBigInteger(fraction), Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
+
     private static IEnumerable RoundToFractionTestCases =>
         from decimalFraction in DecimalFractions
         from decimalPlaces in DecimalPlaces
@@ -69,6 +77,18 @@ public class When_rounding_a_decimal_fraction : Spec {
         MidpointRounding roundingMode, Fraction expected) {
         var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
         Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
+    
+    [Test]
+    [TestCaseSource(nameof(RoundToFractionTestCases))]
+    public void The_fractional_result_should_be_correct_for_all_decimal_values_without_normalization(Fraction fraction, int decimalPlaces,
+        MidpointRounding roundingMode, Fraction expected) {
+        Fraction.Round(fraction, decimalPlaces, roundingMode, false).Should().Be(expected);
+    }
+
+    [Test]
+    public void The_result_of_rounding_with_negative_accuracy_should_be_an_ArgumentOutOfRangeException() {
+        Invoking(() => Fraction.Round(Fraction.One, -1)).Should().Throw<ArgumentOutOfRangeException>();
     }
 
     private static IEnumerable RoundRepeatingFractionTestCases {
@@ -164,6 +184,13 @@ public class When_rounding_a_decimal_fraction : Spec {
     }
 
     [Test]
+    [TestCaseSource(nameof(RoundRepeatingFractionTestCases))]
+    public void The_fractional_result_should_be_correct_for_all_repeating_fractions_without_normalization(Fraction fraction,
+        int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
+        Fraction.Round(fraction, decimalPlaces, roundingMode).Should().Be(expected);
+    }
+
+    [Test]
     public void The_fractional_result_should_be_correct_for_very_large_values() {
         var a = new BigInteger(123456789987654321);
         var b = new BigInteger(123456789987654321) * BigInteger.Pow(10, 18);
@@ -172,6 +199,19 @@ public class When_rounding_a_decimal_fraction : Spec {
         var valueToTest = middle / BigInteger.Pow(10, 17);
 
         var roundedValue = Fraction.Round(valueToTest, 36);
+
+        roundedValue.Should().Be(valueToTest);
+    }
+
+    [Test]
+    public void The_fractional_result_should_be_correct_for_very_large_values_without_normalization() {
+        var a = new BigInteger(123456789987654321);
+        var b = new BigInteger(123456789987654321) * BigInteger.Pow(10, 18);
+        var largeValue = a + b; // should represent the value 123456789987654321123456789987654321
+        var middle = new Fraction(largeValue, BigInteger.Pow(10, 18)); // place the decimal point in the middle
+        var valueToTest = middle / BigInteger.Pow(10, 17);
+
+        var roundedValue = Fraction.Round(valueToTest, 36, MidpointRounding.ToEven, false);
 
         roundedValue.Should().Be(valueToTest);
     }
@@ -209,6 +249,11 @@ public class When_rounding_a_decimal_fraction : Spec {
         Invoking(() => Fraction.RoundToBigInteger(fraction, roundingMode)).Should().Throw<DivideByZeroException>();
     }
 
+    [Test]
+    public void The_result_of_rounding_with_invalid_MidpointRounding_should_be_an_ArgumentOutOfRangeException() {
+        Invoking(() => Fraction.RoundToBigInteger(new Fraction(1, 2), (MidpointRounding)(-1))).Should().Throw<ArgumentOutOfRangeException>();
+    }
+
     private static IEnumerable RoundNaNTestCases =>
         from decimalPlaces in DecimalPlaces
         from midpointRounding in RoundingModes
@@ -219,6 +264,14 @@ public class When_rounding_a_decimal_fraction : Spec {
     public void The_result_of_rounding_NaN_should_be_NaN(Fraction fraction, int decimalPlaces,
         MidpointRounding roundingMode, Fraction expected) {
         var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
+    
+    [Test]
+    [TestCaseSource(nameof(RoundNaNTestCases))]
+    public void The_result_of_rounding_NaN_should_be_NaN_without_normalization(Fraction fraction, int decimalPlaces,
+        MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode, false);
         Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 
@@ -234,6 +287,14 @@ public class When_rounding_a_decimal_fraction : Spec {
         var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
         Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
+    
+    [Test]
+    [TestCaseSource(nameof(RoundPositiveInfinityTestCases))]
+    public void The_result_of_rounding_PositiveInfinity_should_be_PositiveInfinity_without_normalization(Fraction fraction,
+        int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode, false);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
 
     private static IEnumerable RoundNegativeInfinityTestCases =>
         from decimalPlaces in DecimalPlaces
@@ -245,6 +306,14 @@ public class When_rounding_a_decimal_fraction : Spec {
     public void The_result_of_rounding_NegativeInfinity_should_be_NegativeInfinity(Fraction fraction,
         int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
         var result = Fraction.Round(fraction, decimalPlaces, roundingMode);
+        Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
+    }
+    
+    [Test]
+    [TestCaseSource(nameof(RoundNegativeInfinityTestCases))]
+    public void The_result_of_rounding_NegativeInfinity_should_be_NegativeInfinity_without_normalization(Fraction fraction,
+        int decimalPlaces, MidpointRounding roundingMode, Fraction expected) {
+        var result = Fraction.Round(fraction, decimalPlaces, roundingMode, false);
         Assert.That(result, Is.EqualTo(expected).Using(StrictTestComparer.Instance));
     }
 }
