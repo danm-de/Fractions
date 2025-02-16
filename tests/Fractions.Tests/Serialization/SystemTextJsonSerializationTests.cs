@@ -164,7 +164,7 @@ public class If_the_user_serializes_a_fraction_using_the_SystemTextJson_serializ
 public class
     If_the_user_serializes_a_fraction_using_the_SystemTextJson_serializer_with_StringFractionJsonConverter_and_US_English_culture {
     private static readonly JsonSerializerOptions _serializerOptions = new() {
-        Converters = { new StringFractionJsonConverter(CultureInfo.GetCultureInfo("en_US")) }
+        Converters = { new StringFractionJsonConverter(CultureInfo.GetCultureInfo("en-US")) }
     };
 
     private static IEnumerable<TestCaseData> SerializeTestCases {

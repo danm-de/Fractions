@@ -48,7 +48,7 @@ public class When_trying_to_parse_a_fraction {
         }
     }
 
-    private static CultureInfo _usEnglish = CultureInfo.GetCultureInfo("en_US");
+    private static CultureInfo _usEnglish = CultureInfo.GetCultureInfo("en-US");
 
     [Test, TestCaseSource(nameof(InvariantTestCases))]
     public void The_result_should_be_as_expected_when_using_Invariant_culture(string value, Fraction expected) {
