@@ -46,17 +46,24 @@ public static class FractionExt {
         var tolerance = new Fraction(BigInteger.One, BigInteger.Pow(new BigInteger(10), accuracy));
 
         //Using Math.Sqrt to get a good starting guess
-        var guessDouble = Math.Sqrt((double)x);
-        var oldGuess = double.IsInfinity(guessDouble) || double.IsNaN(guessDouble)
+        var guessDouble = Math.Sqrt(x.ToDouble());
+        var guess = double.IsInfinity(guessDouble) || double.IsNaN(guessDouble)
             ? x / Fraction.Two
-            : (Fraction)guessDouble;
+            : Fraction.FromDouble(guessDouble, true);
 
         Fraction newGuess;
+
+        // Iteratively improve the guess
         do {
-            //Babylonian Method
-            newGuess = (oldGuess + (x / oldGuess)) / Fraction.Two;
-            oldGuess = newGuess;
-        } while ((oldGuess - newGuess).Abs() > tolerance);
+            newGuess = (guess + x / guess) / Fraction.Two;
+
+            // Check for convergence before updating the guess
+            if ((guess - newGuess).Abs() <= tolerance) {
+                break;
+            }
+
+            guess = newGuess;
+        } while (true);
 
         return newGuess;
     }
