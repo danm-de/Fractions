@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## 8.1.2
+
+- Fixed [#100](https://github.com/danm-de/Fractions/issues/100): Fractions 8.1.1 depends on Newtonsoft.Json (>= 13.0.3). Reported by [lipchev](https://github.com/lipchev)
+
 ## 8.1.1
 
 - Fixes [#93](https://github.com/danm-de/Fractions/issues/93): DecimalNotationFormatter throws FormatException for some custom formats (via [Pull-Request](https://github.com/danm-de/Fractions/pulls)) by [lipchev](https://github.com/lipchev)
