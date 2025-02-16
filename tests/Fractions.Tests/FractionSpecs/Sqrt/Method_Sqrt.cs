@@ -53,7 +53,6 @@ public class If_the_Sqrt_function_is_called : Spec {
     }
 
     [Test]
-    [Ignore("The issue is with the casting to double (fix in #81)")]
     public void The_square_root_of_a_fraction_with_large_terms_is_calculated_correctly() {
         // Arrange (4/1)
         var largeNumber = BigInteger.Pow(10, 309);
@@ -65,7 +64,6 @@ public class If_the_Sqrt_function_is_called : Spec {
     }
 
     [Test]
-    [Ignore("The issue is with the casting to double (fix in #81)")]
     public void The_square_root_of_a_fraction_with_large_terms_is_calculated_correctly_when_smaller_than_1() {
         // Arrange (1/4)
         var largeNumber = BigInteger.Pow(10, 309);
