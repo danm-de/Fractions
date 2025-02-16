@@ -23,7 +23,7 @@
 
     <PackageIcon>Fraction.png</PackageIcon>
     <PackageIconUrl>https://raw.githubusercontent.com/danm-de/Fractions/master/src/Fractions/Fraction.ico</PackageIconUrl>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/danm-de/Fractions</PackageProjectUrl>
     <PackageTags>fraction math</PackageTags>
     <PackageReadmeFile>Readme.md</PackageReadmeFile>
