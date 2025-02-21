@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 8.2.0
+
+- Fixed [#100](https://github.com/danm-de/Fractions/issues/100): Fractions 8.1.1 depends on Newtonsoft.Json (>= 13.0.3). Reported by [lipchev](https://github.com/lipchev)
+- Pinned FluentAssertion to version 7.x after the [commercial rug pull](https://youtu.be/ZFc6jcaM6Ms)
+- Adding a Fraction.Round overload with the "normalize" parameter [#95](https://github.com/danm-de/Fractions/pull/95) by [lipchev](https://github.com/lipchev)
+
 ## 8.1.1
 
 - Fixes [#93](https://github.com/danm-de/Fractions/issues/93): DecimalNotationFormatter throws FormatException for some custom formats (via [Pull-Request](https://github.com/danm-de/Fractions/pulls)) by [lipchev](https://github.com/lipchev)
