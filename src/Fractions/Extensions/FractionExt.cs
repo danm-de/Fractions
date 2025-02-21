@@ -137,12 +137,12 @@ public static class FractionExt {
             }
 
             ////////  Classic Newton Iterations ////////
-            var val = ((BigInteger)valLong << (53 - 1)) + (x >> (xLenMod - 3 * 53)) / valLong;
-            var size = 106;
-            for (; size < 256; size <<= 1) {
-                val = (val << (size - 1)) + (x >> (xLenMod - 3 * size)) / val;
-            }
+            var val = ((BigInteger)valLong << 52) + (x >> (xLenMod - 3 * 53)) / valLong;
 
+            val = (val << (106 - 1)) + (x >> (xLenMod - 3 * 106)) / val;
+            val = (val << (212 - 1)) + (x >> (xLenMod - 3 * 212)) / val;
+            var size = 424;
+            
             if (xAsDub > 4e254) // 1 << 845
             {
 #if NET
@@ -152,25 +152,23 @@ public static class FractionExt {
 #endif
 
                 //////  Apply Starting Size  ////////
-                var wantedSize = (wantedPrecision >> numOfNewtonSteps) + 2;
-                var needToShiftBy = size - wantedSize;
+                var startingSize = (wantedPrecision >> numOfNewtonSteps) + 2;
+                var needToShiftBy = size - startingSize;
                 val >>= needToShiftBy;
-                size = wantedSize;
+                size = startingSize;
                 do {
                     ////////  Newton Plus Iterations  ////////
                     var shiftX = xLenMod - 3 * size;
-                    var valSquared = (val * val) << (size - 1);
-                    var valSDiff = (x >> shiftX) - valSquared;
-                    val = (val << size) + valSDiff / val;
-                    size *= 2;
+                    var valSqrd = (val * val) << (size - 1);
+                    var valSU = (x >> shiftX) - valSqrd;
+                    val = (val << size) + valSU / val;
+                    size <<= 1;
                 } while (size < wantedPrecision);
             }
-
-            if (size != wantedPrecision) {
-                ////////  Shrink result to wanted Precision  ////////
-                val >>= size - wantedPrecision;
-            }
-
+            
+            ////////  Shrink result to wanted Precision  ////////
+            val >>= size - wantedPrecision;
+            
             return val;
         }
     }
