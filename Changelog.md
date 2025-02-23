@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## 8.3.0
+
+- Re-implement the Sqrt function (fixes [#97](https://github.com/danm-de/Fractions/issues/97)) by [lipchev](https://github.com/lipchev)
+
 ## 8.2.0
 
 - Fixed [#100](https://github.com/danm-de/Fractions/issues/100): Fractions 8.1.1 depends on Newtonsoft.Json (>= 13.0.3). Reported by [lipchev](https://github.com/lipchev)
@@ -14,8 +18,8 @@
 
 ## 8.1.0
 
-- Improving the performance of the Sqrt extension method https://github.com/danm-de/Fractions/pull/88 by [lipchev](https://github.com/lipchev)
-- DecimalNotationFormatter: extracted a non-boxing Format overload https://github.com/danm-de/Fractions/pull/89 by [lipchev](https://github.com/lipchev)
+- Improving the performance of the Sqrt extension method [#88](https://github.com/danm-de/Fractions/pull/88) by [lipchev](https://github.com/lipchev)
+- DecimalNotationFormatter: extracted a non-boxing Format overload [89](https://github.com/danm-de/Fractions/pull/89) by [lipchev](https://github.com/lipchev)
 - Added two JSON serializes: StringFractionJsonConverter and StructuralFractionJsonConverter
 - Fixes when TryParse was called with a CultureInfo that has a single symbol for infinity/NaN.
 
@@ -25,21 +29,21 @@
   - PackageLicenseExpression will show up correctly on nuget.org and tools can analyze it
   - moving common properties to shared Directory.Build.props for easier maintenance
   - Add ContinuousIntegrationBuild to build setup
-- Fixes https://github.com/danm-de/Fractions/pull/85 (by [Marko Lahma](https://github.com/lahma))
+- Fixes [#85](https://github.com/danm-de/Fractions/pull/85) (by [Marko Lahma](https://github.com/lahma))
 
 ## 8.0.3
 
-- Bugfix in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/issues/83
+- Bugfix in `Fraction.FromDoubleRounded` [#83](https://github.com/danm-de/Fractions/issues/83)
 
 ## 8.0.2
 
-- Bugfix in `Fraction.CompareTo` https://github.com/danm-de/Fractions/issues/78 by [lipchev](https://github.com/lipchev)
-- Performance optimization in `Fraction.FromDoubleRounded` https://github.com/danm-de/Fractions/pull/80 by [lipchev](https://github.com/lipchev)
+- Bugfix in `Fraction.CompareTo` [#78](https://github.com/danm-de/Fractions/issues/78) by [lipchev](https://github.com/lipchev)
+- Performance optimization in `Fraction.FromDoubleRounded` [#80](https://github.com/danm-de/Fractions/pull/80) by [lipchev](https://github.com/lipchev)
   Changed behavior: `ArgumentOutOfRangeException` is thrown when argument `significantDigits` is &lt; 1 or &gt; 17.
 
 ## 8.0.1
 
-- Fixed nullable issue in Fraction.TryParse(..) reported in https://github.com/danm-de/Fractions/issues/76
+- Fixed nullable issue in Fraction.TryParse(..) reported in [#76](https://github.com/danm-de/Fractions/issues/76)
   Error (active) CS8604 Possible null reference argument for parameter 'value' in 'bool Fraction.TryParse(..)
 
 ## 8.0.0
