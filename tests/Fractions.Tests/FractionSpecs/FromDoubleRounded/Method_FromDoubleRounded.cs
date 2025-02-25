@@ -239,6 +239,14 @@ public class When_a_fraction_is_created_using_very_small_double_values : Spec {
             yield return new TestCaseData(double.Epsilon, true)
                 .SetName("double.Epsilon")
                 .Returns(Fraction.Zero);
+            
+            yield return new TestCaseData(double.Epsilon, false)
+                .SetName("double.Epsilon")
+                .Returns(Fraction.Zero);
+            
+            yield return new TestCaseData(-double.Epsilon, false)
+                .SetName("double.Epsilon")
+                .Returns(Fraction.Zero);
 
             yield return new TestCaseData(double.Epsilon * 2, true)
                 .SetName("double.Epsilon*2")
