@@ -885,20 +885,53 @@ public class DecimalNotationFormatter : ICustomFormatter {
             return sb;
         }
 
+        if (residualValueIsTooSmall(remainder, mantissa.Denominator, maxNbDecimals)) {
+            return sb;
+        }
+
+        // There are still decimal places that need to be displayed.
         sb.Append(formatProvider.NumberDecimalSeparator);
 
         var nbDecimals = 0;
         while (nbDecimals++ < maxNbDecimals - 1) {
             quotient = BigInteger.DivRem(remainder * Ten, mantissa.Denominator, out remainder);
-            sb.Append(quotient.ToString(formatProvider));
+            
             if (remainder == BigInteger.Zero) {
+                if (quotient != BigInteger.Zero) {
+                    sb.Append(quotient.ToString(formatProvider));
+                }
+
                 return sb;
             }
+
+            if (quotient == BigInteger.Zero &&
+                residualValueIsTooSmall(remainder, mantissa.Denominator, maxNbDecimals - nbDecimals)) {
+                return sb;
+            }
+
+            sb.Append(quotient.ToString(formatProvider));
         }
 
         quotient = Round(remainder * Ten, mantissa.Denominator);
-        sb.Append(quotient.ToString(formatProvider));
+        if (quotient > BigInteger.Zero) {
+            sb.Append(quotient.ToString(formatProvider));
+        }
+
         return sb;
+
+        static bool residualValueIsTooSmall(BigInteger numerator, BigInteger denominator, int decimalPlaces) {
+            // check whether the residual value is large enough to be displayed as decimal places.
+            var residualValue = new Fraction(numerator, denominator, normalize: false);
+            var smallestPrintable =
+#if NETCOREAPP2_1_OR_GREATER
+                // MidpointRounding.ToEven
+                new Fraction(5, BigInteger.Pow(10, (decimalPlaces + 1)), normalize: false);
+#else
+            // MidpointRounding.AwayFromZero
+            new Fraction(1, BigInteger.Pow(10, (decimalPlaces)), normalize: false);
+#endif
+            return residualValue < smallestPrintable;
+        }
     }
 
     private static StringBuilder AppendExponentWithSignificantDigits(StringBuilder sb, int exponent,
