@@ -27,6 +27,7 @@ public abstract class DecimalNotationFormatterSpecs : Spec {
     protected static readonly Fraction[] TerminatingFractions = [
         0, 1, -1, 10, -10, 100, -100, 1000, -1000, 10000, -10000, 100000, -100000,
         0.1m, -0.1m, 0.2m, -0.2m, 0.5m, -0.5m, 1.2m, -1.2m, 1.5m, -1.5m, 1.95m, -1.95m, 2.5m, -2.5m,
+        2.001234m, 2.1001234m,
         0.000015545665434654m, -0.000015545665434654m,
         0.00015545665434654m, -0.00015545665434654m,
         0.0015545665434654m, -0.0015545665434654m,
