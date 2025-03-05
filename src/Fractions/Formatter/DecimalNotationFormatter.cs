@@ -68,8 +68,6 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </remarks>
     public static DecimalNotationFormatter Instance { get; } = new();
 
-    private static readonly BigInteger Ten = new(10);
-
     /// <summary>
     /// <inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/summary"/>
     /// </summary>
@@ -289,10 +287,6 @@ public class DecimalNotationFormatter : ICustomFormatter {
             return sb.Append(0.ToString(format, formatProvider)).ToString();
         }
 
-        if (roundedFraction.Denominator.IsOne) {
-            return sb.Append(roundedFraction.Numerator.ToString(format, formatProvider)).ToString();
-        }
-
         return AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimalsAfterRadix).ToString();
     }
 
@@ -492,7 +486,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     greater, the last digit in the result string is rounded away from zero.
     /// </remarks>
     private static string FormatWithCurrencyFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
+        if (fraction.Numerator.IsZero) {
             return 0.ToString(format, formatProvider);
         }
 
@@ -813,12 +807,39 @@ public class DecimalNotationFormatter : ICustomFormatter {
         }
     }
 
+    private static BigInteger PreviousPowerOfTen(BigInteger powerOfTen, int exponent) {
+        return exponent <= Fraction.PowersOfTen.Length ? Fraction.PowersOfTen[exponent - 1] : powerOfTen / Fraction.TEN;
+    }
 
-    private static StringBuilder AppendDecimals(StringBuilder sb, Fraction fraction, NumberFormatInfo formatProvider,
-        int nbDecimals, string quotientFormat = "F0",
-        MidpointRounding roundingMode = DefaultMidpointRoundingMode) {
-        var numerator = fraction.Numerator;
-        var denominator = fraction.Denominator;
+    private static BigInteger NextPowerOfTen(BigInteger powerOfTen, int exponent) {
+        return exponent + 1 < Fraction.PowersOfTen.Length ? Fraction.PowersOfTen[exponent + 1] : powerOfTen * Fraction.TEN;
+    }
+
+    /// <summary>
+    ///     Appends the decimal representation of a fraction to the specified <see cref="StringBuilder" />.
+    /// </summary>
+    /// <param name="sb">The <see cref="StringBuilder" /> to which the decimal representation will be appended.</param>
+    /// <param name="decimalFraction">The <see cref="Fraction" /> to be represented in decimal form.</param>
+    /// <param name="formatProvider">The <see cref="NumberFormatInfo" /> that provides culture-specific formatting information.</param>
+    /// <param name="nbDecimals">The maximum number of decimal places to include in the representation.</param>
+    /// <param name="quotientFormat">
+    ///     An optional format string for formatting the quotient part of the fraction.
+    ///     Defaults to <c>"F0"</c>.
+    /// </param>
+    /// <returns>The <see cref="StringBuilder" /> with the appended decimal representation.</returns>
+    /// <remarks>
+    ///     This method calculates the decimal representation of the given fraction by dividing the numerator
+    ///     by the denominator and appending the result to the <paramref name="sb" />, padding with "0" to ensure the specified
+    ///     number of decimal places is respected.
+    ///     <para>
+    ///         The <paramref name="decimalFraction" /> must represent a value with a denominator that is a power of 10,
+    ///         equal to the specified <paramref name="nbDecimals" />.
+    ///     </para>
+    /// </remarks>
+    private static StringBuilder AppendDecimals(StringBuilder sb, Fraction decimalFraction, NumberFormatInfo formatProvider,
+        int nbDecimals, string quotientFormat = "F0") {
+        var numerator = decimalFraction.Numerator;
+        var denominator = decimalFraction.Denominator;
         var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
 
         sb.Append(quotient.ToString(quotientFormat, formatProvider)).Append(formatProvider.NumberDecimalSeparator);
@@ -827,25 +848,48 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         var decimalsAdded = 0;
         while (!remainder.IsZero && decimalsAdded++ < nbDecimals - 1) {
-            quotient = BigInteger.DivRem(remainder * Ten, denominator, out remainder);
-            sb.Append(quotient.ToString(formatProvider));
+            denominator = PreviousPowerOfTen(denominator, nbDecimals - decimalsAdded + 1);
+            var digit = (int)BigInteger.DivRem(remainder, denominator, out remainder);
+            sb.Append(digit.ToString(formatProvider));
         }
 
         if (remainder.IsZero) {
             sb.Append('0', nbDecimals - decimalsAdded);
         } else {
-            quotient = Round(remainder * Ten, denominator, roundingMode);
-            sb.Append(quotient.ToString(formatProvider));
+            sb.Append(remainder.ToString(formatProvider));
         }
 
         return sb;
     }
 
-    private static StringBuilder AppendSignificantDecimals(StringBuilder sb, Fraction mantissa,
-        NumberFormatInfo formatProvider, int maxNbDecimals,
-        string quotientFormat = "F0") {
-        var numerator = mantissa.Numerator;
-        var denominator = mantissa.Denominator;
+    /// <summary>
+    ///     Appends the significant decimal digits of a fractional number to the specified <see cref="StringBuilder" />.
+    /// </summary>
+    /// <param name="sb">The <see cref="StringBuilder" /> to which the significant decimal digits will be appended.</param>
+    /// <param name="decimalFraction">
+    ///     The fractional number whose significant decimal digits are to be appended.
+    ///     The denominator of this fraction must be a power of 10, corresponding to the <paramref name="maxNbDecimals" />.
+    /// </param>
+    /// <param name="formatProvider">The <see cref="NumberFormatInfo" /> that provides culture-specific formatting information.</param>
+    /// <param name="maxNbDecimals">The maximum number of decimal digits to append.</param>
+    /// <param name="quotientFormat">
+    ///     An optional format string that specifies the format of the quotient. Defaults to "F0".
+    /// </param>
+    /// <returns>
+    ///     The <see cref="StringBuilder" /> instance with the appended significant decimal digits.
+    /// </returns>
+    /// <remarks>
+    ///     This method calculates and appends the significant decimal digits of the given fractional number.
+    ///     It ensures that the number of appended decimal digits does not exceed the specified maximum.
+    ///     <para>
+    ///         The <paramref name="decimalFraction" /> must represent a value with a denominator that is a power of 10,
+    ///         equal to the specified <paramref name="maxNbDecimals" />.
+    ///     </para>
+    /// </remarks>
+    private static StringBuilder AppendSignificantDecimals(StringBuilder sb, Fraction decimalFraction, NumberFormatInfo formatProvider,
+        int maxNbDecimals, string quotientFormat = "F0") {
+        var numerator = decimalFraction.Numerator;
+        var denominator = decimalFraction.Denominator;
         var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
 
         sb.Append(quotient.ToString(quotientFormat, formatProvider));
@@ -856,17 +900,14 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         sb.Append(formatProvider.NumberDecimalSeparator);
 
-        var nbDecimals = 0;
-        while (nbDecimals++ < maxNbDecimals - 1) {
-            quotient = BigInteger.DivRem(remainder * Ten, denominator, out remainder);
-            sb.Append(quotient.ToString(formatProvider));
-            if (remainder == BigInteger.Zero) {
-                return sb;
-            }
-        }
+        var decimalsRemaining = maxNbDecimals;
+        do {
+            denominator = PreviousPowerOfTen(denominator, decimalsRemaining);
+            var digit = (int)BigInteger.DivRem(remainder, denominator, out remainder);
+            sb.Append(digit.ToString(formatProvider));
+            decimalsRemaining--;
+        } while (!remainder.IsZero && decimalsRemaining > 0);
 
-        quotient = Round(remainder * Ten, denominator);
-        sb.Append(quotient.ToString(formatProvider));
         return sb;
     }
 
@@ -901,7 +942,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </returns>
     private static Fraction Round(Fraction x, int nbDigits,
         MidpointRounding midpointRounding = DefaultMidpointRoundingMode) {
-        return Fraction.Round(x, nbDigits, midpointRounding, true);
+        return Fraction.Round(x, nbDigits, midpointRounding, false);
     }
 
     /// <summary>
@@ -959,7 +1000,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             }
 
             // When numerator < denominator, ratio < 1, and normalization requires multiplying by 10 once.
-            powerOfTen = Ten; // 10^1, leading to an exponent of -1.
+            powerOfTen = Fraction.TEN; // 10^1, leading to an exponent of -1.
             return -1;
         }
 
@@ -968,7 +1009,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             // The adjusted candidate uses (diffBits - 1) because an L-bit number is at least 2^(L-1).
             var diffBits = numLen - denLen;
             var exponent = (int)Math.Floor((diffBits - 1) * Log10Of2) + 1;
-            powerOfTen = BigInteger.Pow(Ten, exponent);
+            powerOfTen = Fraction.PowerOfTen(exponent);
 
             // Adjustment: if our candidate powerOfTen is too high,
             // then the quotient doesn't reach that many digits.
@@ -976,29 +1017,30 @@ public class DecimalNotationFormatter : ICustomFormatter {
                 return exponent;
             }
 
-            powerOfTen /= Ten;
+            powerOfTen = PreviousPowerOfTen(powerOfTen, exponent);
             return exponent - 1;
         } else {
             // Case: number < 1, so the scientific exponent is negative.
             // We need the smallest k such that numerator * 10^k >= denominator.
             var diffBits = denLen - numLen;
-            var k = (int)Math.Ceiling(diffBits * Log10Of2);
-            powerOfTen = BigInteger.Pow(Ten, k);
+            var exponent = (int)Math.Ceiling(diffBits * Log10Of2) - 1;
+            powerOfTen = Fraction.PowerOfTen(exponent);
 
-            // First, check if one fewer factor of Ten would have sufficed.
-            var oneLessPowerOfTen = powerOfTen / Ten;
-            if (numerator * oneLessPowerOfTen >= denominator) {
-                k--;
-                powerOfTen = oneLessPowerOfTen;
+            // First, check if one fewer factor of Ten would suffice.
+            if (numerator * powerOfTen >= denominator) {
+                return -exponent;
             }
+
+            // Select the next guess as 10^exponent
+            powerOfTen = NextPowerOfTen(powerOfTen, exponent++);
+            
             // Then, check if our candidate is too low.
-            else if (numerator * powerOfTen < denominator) {
-                k++;
-                powerOfTen *= Ten;
+            if (numerator * powerOfTen < denominator) {
+                powerOfTen = NextPowerOfTen(powerOfTen, exponent++);
             }
 
             // For numbers < 1, the scientific exponent is -k.
-            return -k;
+            return -exponent;
         }
 
 #if NETSTANDARD
