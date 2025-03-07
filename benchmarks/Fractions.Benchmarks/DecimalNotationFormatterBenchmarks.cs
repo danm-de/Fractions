@@ -17,7 +17,8 @@ public class DecimalNotationFormatterBenchmarks {
         // extreme integers
         123456789, -123456789,             
         // normal decimals
-        new Fraction(-2.5m), new Fraction(1.345m),
+        new Fraction(2.5m), new Fraction(-2.5m),
+        new Fraction(1.345m),
         new Fraction(1234567, 1000),
         new Fraction(-1234567, 1000),
         // extreme decimals
@@ -28,18 +29,10 @@ public class DecimalNotationFormatterBenchmarks {
         new Fraction(-Math.PI),
         // non-terminating fractions
         new Fraction(8, 3),
-        new Fraction(-8, 3),
         new Fraction(400, 3),
-        new Fraction(-400, 3),
         new Fraction(2, 3),
         new Fraction(-2, 3),
     ];
-    
-    [Benchmark(Baseline = true)]
-    [ArgumentsSource(nameof(TestValues))]
-    public string ToDouble_ToString(Fraction fraction) {
-        return fraction.ToDouble().ToString(StringFormat, CultureInfo.InvariantCulture);
-    }
     
     [Benchmark]
     [ArgumentsSource(nameof(TestValues))]

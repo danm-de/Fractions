@@ -79,6 +79,13 @@ These benchmarks evaluate the performance of power operations within the `Fracti
 
 For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.PowerMathBenchmarks-report-github.md) and [here](./results/Fractions.Benchmarks.SqrtBenchmarks-report-github.md).
 
+### Rounding
+These benchmarks evaluate the performance of rounding a `Fraction` to a given number of decimal places. The operations being benchmarked are:
+- `Round(Fraction fraction, int decimals, MidpointRounding mode)`: Rounds a `Fraction` to the given number of decimal places, returning a normalized Fraction.
+- `Round(Fraction fraction, int decimals, MidpointRounding mode, bool normalize)`: Rounding a `Fraction` to the given number of decimal places, without reducing its terms.
+
+For a detailed report on the performance of these operations, [view the results here](./results/Fractions.Benchmarks.RoundingBenchmarks-report-github.md) and [here](./results/Fractions.Benchmarks.RoundingWithoutReductionBenchmarks-report-github.md).
+
 ### Conversions
 These benchmarks evaluate the performance of converting `Fraction` objects to number types. The operations being benchmarked are:
 - `ConvertToDouble(Fraction fraction)`: Converts a `Fraction` object to a double value.
