@@ -10,141 +10,141 @@ Job=ShortRun  IterationCount=3  LaunchCount=1
 WarmupCount=3  
 
 ```
-| Method                          | StringFormat | fraction             | Mean        | Error      | StdDev    | Gen0   | Allocated |
-|-------------------------------- |------------- |--------------------- |------------:|-----------:|----------:|-------:|----------:|
-| **DecimalNotationFormatter_Format** | **?**            | **-123456789**           |   **131.01 ns** |   **5.684 ns** |  **0.312 ns** | **0.0119** |     **200 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **-1234567/1000**        |   **366.10 ns** |   **4.932 ns** |  **0.270 ns** | **0.0186** |     **312 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **-42**                  |   **122.60 ns** |   **5.848 ns** |  **0.321 ns** | **0.0105** |     **176 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **-8842(...)10656 [32]** | **1,057.26 ns** | **115.175 ns** |  **6.313 ns** | **0.0839** |    **1432 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **-5/2**                 |   **305.47 ns** | **125.550 ns** |  **6.882 ns** | **0.0196** |     **328 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **-2/3**                 |   **980.54 ns** |  **80.837 ns** |  **4.431 ns** | **0.0839** |    **1416 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **-1/123456789**         | **1,079.90 ns** |  **65.257 ns** |  **3.577 ns** | **0.0877** |    **1488 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **1/123456789**          | **1,078.79 ns** |  **98.650 ns** |  **5.407 ns** | **0.0877** |    **1480 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **2/3**                  |   **998.63 ns** |  **68.879 ns** |  **3.776 ns** | **0.0839** |    **1416 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **269/200**              |   **348.99 ns** |   **6.245 ns** |  **0.342 ns** | **0.0196** |     **328 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **5/2**                  |   **292.18 ns** |  **70.597 ns** |  **3.870 ns** | **0.0196** |     **328 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **8/3**                  |   **964.03 ns** |  **36.423 ns** |  **1.996 ns** | **0.0801** |    **1344 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **88427(...)10656 [31]** | **1,070.70 ns** |  **50.809 ns** |  **2.785 ns** | **0.0839** |    **1424 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **42**                   |   **109.35 ns** |   **9.226 ns** |  **0.506 ns** | **0.0105** |     **176 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **400/3**                |   **895.01 ns** |  **32.336 ns** |  **1.772 ns** | **0.0725** |    **1224 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **1234567/1000**         |   **374.61 ns** |  **30.594 ns** |  **1.677 ns** | **0.0186** |     **312 B** |
-| **DecimalNotationFormatter_Format** | **?**            | **123456789**            |   **123.22 ns** |   **7.398 ns** |  **0.405 ns** | **0.0114** |     **192 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-123456789**           |    **55.36 ns** |   **2.348 ns** |  **0.129 ns** | **0.0033** |      **56 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-1234567/1000**        |   **396.82 ns** | **104.399 ns** |  **5.722 ns** | **0.0563** |     **944 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-42**                  |    **43.44 ns** |   **0.173 ns** |  **0.009 ns** | **0.0024** |      **40 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-8842(...)10656 [32]** |   **432.23 ns** | **138.025 ns** |  **7.566 ns** | **0.0486** |     **816 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-5/2**                 |   **362.86 ns** |  **38.002 ns** |  **2.083 ns** | **0.0429** |     **720 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-2/3**                 |   **379.17 ns** | **104.294 ns** |  **5.717 ns** | **0.0429** |     **720 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **-1/123456789**         |   **264.53 ns** |  **20.854 ns** |  **1.143 ns** | **0.0358** |     **600 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **1/123456789**          |   **235.09 ns** |  **32.515 ns** |  **1.782 ns** | **0.0358** |     **600 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **2/3**                  |   **323.43 ns** |  **40.934 ns** |  **2.244 ns** | **0.0372** |     **624 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **269/200**              |   **364.19 ns** |  **60.115 ns** |  **3.295 ns** | **0.0372** |     **624 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **5/2**                  |   **303.26 ns** |  **20.049 ns** |  **1.099 ns** | **0.0372** |     **624 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **8/3**                  |   **332.74 ns** |  **30.653 ns** |  **1.680 ns** | **0.0372** |     **624 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **88427(...)10656 [31]** |   **394.37 ns** |  **41.960 ns** |  **2.300 ns** | **0.0429** |     **720 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **42**                   |    **42.20 ns** |   **1.257 ns** |  **0.069 ns** | **0.0024** |      **40 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **400/3**                |   **337.15 ns** |  **22.895 ns** |  **1.255 ns** | **0.0443** |     **744 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **1234567/1000**         |   **373.88 ns** |  **63.758 ns** |  **3.495 ns** | **0.0496** |     **832 B** |
-| **DecimalNotationFormatter_Format** | **C2**           | **123456789**            |    **55.31 ns** |   **1.338 ns** |  **0.073 ns** | **0.0033** |      **56 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-123456789**           |    **54.42 ns** |   **1.738 ns** |  **0.095 ns** | **0.0029** |      **48 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-1234567/1000**        |   **337.93 ns** |   **9.121 ns** |  **0.500 ns** | **0.0167** |     **280 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-42**                  |    **49.44 ns** |   **0.797 ns** |  **0.044 ns** | **0.0029** |      **48 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-8842(...)10656 [32]** |   **353.29 ns** |   **8.844 ns** |  **0.485 ns** | **0.0243** |     **408 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-5/2**                 |   **237.48 ns** |  **16.856 ns** |  **0.924 ns** | **0.0167** |     **280 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-2/3**                 |   **276.13 ns** |  **16.687 ns** |  **0.915 ns** | **0.0167** |     **280 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **-1/123456789**         |   **332.45 ns** | **138.410 ns** |  **7.587 ns** | **0.0205** |     **344 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **1/123456789**          |   **319.71 ns** |  **20.279 ns** |  **1.112 ns** | **0.0200** |     **336 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **2/3**                  |   **266.50 ns** |   **6.676 ns** |  **0.366 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **269/200**              |   **274.82 ns** |   **3.720 ns** |  **0.204 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **5/2**                  |   **232.59 ns** |   **9.285 ns** |  **0.509 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **8/3**                  |   **265.72 ns** | **116.450 ns** |  **6.383 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **88427(...)10656 [31]** |   **318.27 ns** |  **41.813 ns** |  **2.292 ns** | **0.0238** |     **400 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **42**                   |    **49.21 ns** |   **1.853 ns** |  **0.102 ns** | **0.0024** |      **40 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **400/3**                |   **317.85 ns** | **104.756 ns** |  **5.742 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **1234567/1000**         |   **330.23 ns** |  **95.949 ns** |  **5.259 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **E2**           | **123456789**            |    **55.20 ns** |   **1.275 ns** |  **0.070 ns** | **0.0024** |      **40 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-123456789**           |    **51.01 ns** |   **1.556 ns** |  **0.085 ns** | **0.0029** |      **48 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-1234567/1000**        |   **229.93 ns** |  **17.415 ns** |  **0.955 ns** | **0.0105** |     **176 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-42**                  |    **43.58 ns** |   **0.544 ns** |  **0.030 ns** | **0.0024** |      **40 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-8842(...)10656 [32]** |   **277.10 ns** |  **13.222 ns** |  **0.725 ns** | **0.0153** |     **256 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-5/2**                 |   **202.79 ns** |  **58.756 ns** |  **3.221 ns** | **0.0095** |     **160 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-2/3**                 |   **220.37 ns** |  **17.221 ns** |  **0.944 ns** | **0.0095** |     **160 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **-1/123456789**         |   **140.52 ns** |   **9.601 ns** |  **0.526 ns** | **0.0100** |     **168 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **1/123456789**          |   **140.07 ns** |   **4.678 ns** |  **0.256 ns** | **0.0100** |     **168 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **2/3**                  |   **208.65 ns** |   **5.334 ns** |  **0.292 ns** | **0.0095** |     **160 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **269/200**              |   **229.26 ns** |   **8.526 ns** |  **0.467 ns** | **0.0095** |     **160 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **5/2**                  |   **190.02 ns** |  **22.017 ns** |  **1.207 ns** | **0.0095** |     **160 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **8/3**                  |   **225.44 ns** |   **9.124 ns** |  **0.500 ns** | **0.0095** |     **160 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **88427(...)10656 [31]** |   **260.09 ns** |   **4.667 ns** |  **0.256 ns** | **0.0153** |     **256 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **42**                   |    **38.59 ns** |   **0.411 ns** |  **0.023 ns** | **0.0019** |      **32 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **400/3**                |   **214.37 ns** |   **2.927 ns** |  **0.160 ns** | **0.0105** |     **176 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **1234567/1000**         |   **215.92 ns** |  **26.320 ns** |  **1.443 ns** | **0.0105** |     **176 B** |
-| **DecimalNotationFormatter_Format** | **F2**           | **123456789**            |    **49.25 ns** |   **1.742 ns** |  **0.095 ns** | **0.0029** |      **48 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-123456789**           |   **265.85 ns** | **239.843 ns** | **13.147 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-1234567/1000**        |   **249.89 ns** |  **20.840 ns** |  **1.142 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-42**                  |    **89.49 ns** |   **4.127 ns** |  **0.226 ns** | **0.0072** |     **120 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-8842(...)10656 [32]** |   **204.10 ns** |  **23.036 ns** |  **1.263 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-5/2**                 |   **185.54 ns** |  **15.193 ns** |  **0.833 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-2/3**                 |   **208.89 ns** |  **18.699 ns** |  **1.025 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **-1/123456789**         |   **277.63 ns** |  **10.567 ns** |  **0.579 ns** | **0.0200** |     **336 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **1/123456789**          |   **281.88 ns** |  **15.884 ns** |  **0.871 ns** | **0.0200** |     **336 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **2/3**                  |   **198.98 ns** |   **4.883 ns** |  **0.268 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **269/200**              |   **158.93 ns** |   **8.228 ns** |  **0.451 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **5/2**                  |   **190.08 ns** |   **6.030 ns** |  **0.331 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **8/3**                  |   **161.58 ns** |   **8.557 ns** |  **0.469 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **88427(...)10656 [31]** |   **196.41 ns** |   **7.453 ns** |  **0.409 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **42**                   |    **81.31 ns** |   **2.534 ns** |  **0.139 ns** | **0.0072** |     **120 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **400/3**                |   **208.26 ns** |  **20.555 ns** |  **1.127 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **1234567/1000**         |   **239.20 ns** |   **2.847 ns** |  **0.156 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **G2**           | **123456789**            |   **248.57 ns** |  **18.243 ns** |  **1.000 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-123456789**           |    **51.03 ns** |   **4.612 ns** |  **0.253 ns** | **0.0033** |      **56 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-1234567/1000**        |   **256.40 ns** |  **19.828 ns** |  **1.087 ns** | **0.0210** |     **352 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-42**                  |    **38.79 ns** |   **0.841 ns** |  **0.046 ns** | **0.0024** |      **40 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-8842(...)10656 [32]** |   **281.08 ns** |  **17.237 ns** |  **0.945 ns** | **0.0143** |     **240 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-5/2**                 |   **202.09 ns** |   **2.062 ns** |  **0.113 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-2/3**                 |   **241.78 ns** |  **11.280 ns** |  **0.618 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **-1/123456789**         |   **140.28 ns** |  **39.985 ns** |  **2.192 ns** | **0.0072** |     **120 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **1/123456789**          |   **129.86 ns** |   **2.581 ns** |  **0.141 ns** | **0.0072** |     **120 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **2/3**                  |   **206.44 ns** |  **20.122 ns** |  **1.103 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **269/200**              |   **231.54 ns** |  **10.540 ns** |  **0.578 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **5/2**                  |   **181.12 ns** |  **17.912 ns** |  **0.982 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **8/3**                  |   **206.27 ns** |  **11.739 ns** |  **0.643 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **88427(...)10656 [31]** |   **254.24 ns** |   **5.667 ns** |  **0.311 ns** | **0.0143** |     **240 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **42**                   |    **37.98 ns** |   **2.376 ns** |  **0.130 ns** | **0.0019** |      **32 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **400/3**                |   **219.51 ns** |   **7.273 ns** |  **0.399 ns** | **0.0148** |     **248 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **1234567/1000**         |   **233.59 ns** |  **16.390 ns** |  **0.898 ns** | **0.0148** |     **248 B** |
-| **DecimalNotationFormatter_Format** | **N2**           | **123456789**            |    **48.63 ns** |   **2.018 ns** |  **0.111 ns** | **0.0033** |      **56 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-123456789**           |    **69.71 ns** |   **4.225 ns** |  **0.232 ns** | **0.0038** |      **64 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-1234567/1000**        |   **414.71 ns** |  **28.625 ns** |  **1.569 ns** | **0.0505** |     **848 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-42**                  |    **49.80 ns** |   **2.876 ns** |  **0.158 ns** | **0.0029** |      **48 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-8842(...)10656 [32]** |   **579.05 ns** |   **8.373 ns** |  **0.459 ns** | **0.0610** |    **1024 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-5/2**                 |   **262.92 ns** |  **57.205 ns** |  **3.136 ns** | **0.0520** |     **872 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-2/3**                 |   **389.04 ns** |  **40.562 ns** |  **2.223 ns** | **0.0434** |     **728 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **-1/123456789**         |   **281.21 ns** |  **30.298 ns** |  **1.661 ns** | **0.0362** |     **608 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **1/123456789**          |   **257.58 ns** |  **36.414 ns** |  **1.996 ns** | **0.0362** |     **608 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **2/3**                  |   **384.07 ns** |  **14.171 ns** |  **0.777 ns** | **0.0434** |     **728 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **269/200**              |   **367.82 ns** |  **51.407 ns** |  **2.818 ns** | **0.0434** |     **728 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **5/2**                  |   **249.38 ns** |  **55.945 ns** |  **3.067 ns** | **0.0458** |     **768 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **8/3**                  |   **381.01 ns** |  **46.835 ns** |  **2.567 ns** | **0.0434** |     **728 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **88427(...)10656 [31]** |   **562.57 ns** |  **54.427 ns** |  **2.983 ns** | **0.0544** |     **920 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **42**                   |    **53.67 ns** |   **2.352 ns** |  **0.129 ns** | **0.0029** |      **48 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **400/3**                |   **372.59 ns** |  **16.618 ns** |  **0.911 ns** | **0.0443** |     **744 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **1234567/1000**         |   **412.87 ns** |  **69.892 ns** |  **3.831 ns** | **0.0443** |     **744 B** |
-| **DecimalNotationFormatter_Format** | **P2**           | **123456789**            |    **60.60 ns** |   **3.247 ns** |  **0.178 ns** | **0.0038** |      **64 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-123456789**           |   **304.28 ns** | **116.039 ns** |  **6.360 ns** | **0.0200** |     **336 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-1234567/1000**        |   **284.93 ns** |  **32.175 ns** |  **1.764 ns** | **0.0148** |     **248 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-42**                  |   **118.68 ns** |   **9.204 ns** |  **0.505 ns** | **0.0091** |     **152 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-8842(...)10656 [32]** |   **294.29 ns** |  **60.116 ns** |  **3.295 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-5/2**                 |   **205.86 ns** |  **11.680 ns** |  **0.640 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-2/3**                 |   **231.97 ns** |   **5.538 ns** |  **0.304 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **-1/123456789**         |   **298.70 ns** |  **10.639 ns** |  **0.583 ns** | **0.0200** |     **336 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **1/123456789**          |   **301.39 ns** |  **25.047 ns** |  **1.373 ns** | **0.0200** |     **336 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **2/3**                  |   **199.36 ns** |   **9.608 ns** |  **0.527 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **269/200**              |   **244.68 ns** |  **21.509 ns** |  **1.179 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **5/2**                  |   **194.04 ns** |  **18.634 ns** |  **1.021 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **8/3**                  |   **214.99 ns** |  **11.270 ns** |  **0.618 ns** | **0.0086** |     **144 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **88427(...)10656 [31]** |   **292.67 ns** |  **18.790 ns** |  **1.030 ns** | **0.0162** |     **272 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **42**                   |   **114.56 ns** |   **6.714 ns** |  **0.368 ns** | **0.0091** |     **152 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **400/3**                |   **248.63 ns** |   **8.493 ns** |  **0.466 ns** | **0.0148** |     **248 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **1234567/1000**         |   **268.29 ns** |  **41.178 ns** |  **2.257 ns** | **0.0148** |     **248 B** |
-| **DecimalNotationFormatter_Format** | **S2**           | **123456789**            |   **295.04 ns** |  **21.082 ns** |  **1.156 ns** | **0.0200** |     **336 B** |
+| Method                          | StringFormat | fraction             | Mean      | Error      | StdDev    | Gen0   | Allocated |
+|-------------------------------- |------------- |--------------------- |----------:|-----------:|----------:|-------:|----------:|
+| **DecimalNotationFormatter_Format** | **?**            | **-123456789**           | **119.00 ns** | **127.811 ns** |  **7.006 ns** | **0.0119** |     **200 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **-1234567/1000**        | **273.31 ns** | **324.682 ns** | **17.797 ns** | **0.0224** |     **376 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **-42**                  |  **84.34 ns** |   **6.705 ns** |  **0.368 ns** | **0.0105** |     **176 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **-8842(...)10656 [32]** | **487.80 ns** |  **46.351 ns** |  **2.541 ns** | **0.0334** |     **568 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **-5/2**                 | **179.01 ns** |  **10.977 ns** |  **0.602 ns** | **0.0176** |     **296 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **-2/3**                 | **461.74 ns** | **108.858 ns** |  **5.967 ns** | **0.0310** |     **520 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **-1/123456789**         | **411.99 ns** |  **55.784 ns** |  **3.058 ns** | **0.0296** |     **496 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **1/123456789**          | **412.03 ns** |  **30.462 ns** |  **1.670 ns** | **0.0291** |     **488 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **2/3**                  | **463.44 ns** | **165.532 ns** |  **9.073 ns** | **0.0310** |     **520 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **269/200**              | **236.67 ns** |  **17.209 ns** |  **0.943 ns** | **0.0215** |     **360 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **5/2**                  | **170.42 ns** |  **32.123 ns** |  **1.761 ns** | **0.0176** |     **296 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **8/3**                  | **424.04 ns** |  **30.769 ns** |  **1.687 ns** | **0.0286** |     **480 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **88427(...)10656 [31]** | **474.55 ns** |   **8.638 ns** |  **0.473 ns** | **0.0334** |     **560 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **42**                   |  **75.83 ns** |   **6.443 ns** |  **0.353 ns** | **0.0105** |     **176 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **400/3**                | **382.37 ns** |  **45.464 ns** |  **2.492 ns** | **0.0253** |     **424 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **1234567/1000**         | **244.26 ns** | **113.868 ns** |  **6.241 ns** | **0.0224** |     **376 B** |
+| **DecimalNotationFormatter_Format** | **?**            | **123456789**            |  **88.14 ns** |  **21.849 ns** |  **1.198 ns** | **0.0114** |     **192 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-123456789**           |  **54.72 ns** |   **1.288 ns** |  **0.071 ns** | **0.0033** |      **56 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-1234567/1000**        | **313.56 ns** |  **83.621 ns** |  **4.584 ns** | **0.0563** |     **944 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-42**                  |  **43.00 ns** |   **1.010 ns** |  **0.055 ns** | **0.0024** |      **40 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-8842(...)10656 [32]** | **323.47 ns** |  **26.861 ns** |  **1.472 ns** | **0.0486** |     **816 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-5/2**                 | **284.14 ns** |  **42.383 ns** |  **2.323 ns** | **0.0429** |     **720 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-2/3**                 | **281.76 ns** |  **16.437 ns** |  **0.901 ns** | **0.0429** |     **720 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **-1/123456789**         | **200.56 ns** |  **17.025 ns** |  **0.933 ns** | **0.0358** |     **600 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **1/123456789**          | **187.84 ns** |  **36.961 ns** |  **2.026 ns** | **0.0358** |     **600 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **2/3**                  | **256.15 ns** |  **95.207 ns** |  **5.219 ns** | **0.0372** |     **624 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **269/200**              | **254.39 ns** |   **7.090 ns** |  **0.389 ns** | **0.0372** |     **624 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **5/2**                  | **267.02 ns** |  **90.310 ns** |  **4.950 ns** | **0.0372** |     **624 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **8/3**                  | **249.87 ns** |  **47.239 ns** |  **2.589 ns** | **0.0372** |     **624 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **88427(...)10656 [31]** | **285.54 ns** |  **76.893 ns** |  **4.215 ns** | **0.0429** |     **720 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **42**                   |  **42.50 ns** |   **3.065 ns** |  **0.168 ns** | **0.0024** |      **40 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **400/3**                | **264.48 ns** |  **20.514 ns** |  **1.124 ns** | **0.0443** |     **744 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **1234567/1000**         | **287.51 ns** | **123.000 ns** |  **6.742 ns** | **0.0496** |     **832 B** |
+| **DecimalNotationFormatter_Format** | **C2**           | **123456789**            |  **54.84 ns** |   **0.941 ns** |  **0.052 ns** | **0.0033** |      **56 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-123456789**           |  **54.38 ns** |   **4.038 ns** |  **0.221 ns** | **0.0029** |      **48 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-1234567/1000**        | **219.94 ns** |  **22.102 ns** |  **1.211 ns** | **0.0167** |     **280 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-42**                  |  **49.76 ns** |   **1.986 ns** |  **0.109 ns** | **0.0029** |      **48 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-8842(...)10656 [32]** | **225.05 ns** |  **31.339 ns** |  **1.718 ns** | **0.0243** |     **408 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-5/2**                 | **169.36 ns** |  **20.196 ns** |  **1.107 ns** | **0.0167** |     **280 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-2/3**                 | **198.26 ns** |   **7.770 ns** |  **0.426 ns** | **0.0167** |     **280 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **-1/123456789**         | **222.06 ns** |  **15.082 ns** |  **0.827 ns** | **0.0205** |     **344 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **1/123456789**          | **215.10 ns** |  **41.886 ns** |  **2.296 ns** | **0.0200** |     **336 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **2/3**                  | **209.32 ns** |  **85.405 ns** |  **4.681 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **269/200**              | **185.97 ns** |  **19.779 ns** |  **1.084 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **5/2**                  | **170.66 ns** |   **6.147 ns** |  **0.337 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **8/3**                  | **172.02 ns** |  **25.187 ns** |  **1.381 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **88427(...)10656 [31]** | **233.46 ns** |   **8.989 ns** |  **0.493 ns** | **0.0238** |     **400 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **42**                   |  **49.66 ns** |   **4.114 ns** |  **0.226 ns** | **0.0024** |      **40 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **400/3**                | **224.17 ns** |  **19.679 ns** |  **1.079 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **1234567/1000**         | **232.77 ns** |  **44.926 ns** |  **2.463 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **E2**           | **123456789**            |  **57.15 ns** |   **5.416 ns** |  **0.297 ns** | **0.0024** |      **40 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-123456789**           |  **48.80 ns** |   **4.385 ns** |  **0.240 ns** | **0.0029** |      **48 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-1234567/1000**        | **162.94 ns** |  **18.023 ns** |  **0.988 ns** | **0.0105** |     **176 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-42**                  |  **38.44 ns** |   **1.810 ns** |  **0.099 ns** | **0.0024** |      **40 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-8842(...)10656 [32]** | **176.47 ns** |  **27.889 ns** |  **1.529 ns** | **0.0153** |     **256 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-5/2**                 | **138.63 ns** |   **6.813 ns** |  **0.373 ns** | **0.0095** |     **160 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-2/3**                 | **142.36 ns** |   **3.841 ns** |  **0.211 ns** | **0.0095** |     **160 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **-1/123456789**         |  **89.67 ns** |  **11.494 ns** |  **0.630 ns** | **0.0100** |     **168 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **1/123456789**          |  **88.59 ns** |  **22.389 ns** |  **1.227 ns** | **0.0100** |     **168 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **2/3**                  | **151.57 ns** |  **37.644 ns** |  **2.063 ns** | **0.0095** |     **160 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **269/200**              | **135.22 ns** |  **12.349 ns** |  **0.677 ns** | **0.0095** |     **160 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **5/2**                  | **120.68 ns** |  **10.839 ns** |  **0.594 ns** | **0.0095** |     **160 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **8/3**                  | **134.99 ns** |  **25.658 ns** |  **1.406 ns** | **0.0095** |     **160 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **88427(...)10656 [31]** | **168.01 ns** |  **19.464 ns** |  **1.067 ns** | **0.0153** |     **256 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **42**                   |  **37.47 ns** |   **1.714 ns** |  **0.094 ns** | **0.0019** |      **32 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **400/3**                | **137.96 ns** |   **3.202 ns** |  **0.175 ns** | **0.0105** |     **176 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **1234567/1000**         | **144.66 ns** |  **20.125 ns** |  **1.103 ns** | **0.0105** |     **176 B** |
+| **DecimalNotationFormatter_Format** | **F2**           | **123456789**            |  **48.06 ns** |   **2.679 ns** |  **0.147 ns** | **0.0029** |      **48 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-123456789**           | **162.19 ns** |   **6.694 ns** |  **0.367 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-1234567/1000**        | **177.41 ns** |  **10.699 ns** |  **0.586 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-42**                  |  **55.97 ns** |   **0.665 ns** |  **0.036 ns** | **0.0072** |     **120 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-8842(...)10656 [32]** | **196.17 ns** | **233.152 ns** | **12.780 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-5/2**                 | **138.92 ns** |  **41.567 ns** |  **2.278 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-2/3**                 | **144.13 ns** |  **18.728 ns** |  **1.027 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **-1/123456789**         | **212.49 ns** |  **54.198 ns** |  **2.971 ns** | **0.0200** |     **336 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **1/123456789**          | **199.55 ns** |   **7.354 ns** |  **0.403 ns** | **0.0200** |     **336 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **2/3**                  | **145.22 ns** |   **4.605 ns** |  **0.252 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **269/200**              | **127.90 ns** |   **8.792 ns** |  **0.482 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **5/2**                  | **130.50 ns** |   **9.359 ns** |  **0.513 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **8/3**                  | **128.60 ns** |  **13.217 ns** |  **0.724 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **88427(...)10656 [31]** | **176.57 ns** |   **2.938 ns** |  **0.161 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **42**                   |  **49.63 ns** |   **1.725 ns** |  **0.095 ns** | **0.0072** |     **120 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **400/3**                | **154.13 ns** |  **10.637 ns** |  **0.583 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **1234567/1000**         | **153.21 ns** |  **14.671 ns** |  **0.804 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **G2**           | **123456789**            | **152.96 ns** |   **2.340 ns** |  **0.128 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-123456789**           |  **49.77 ns** |   **0.404 ns** |  **0.022 ns** | **0.0033** |      **56 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-1234567/1000**        | **187.96 ns** |  **24.466 ns** |  **1.341 ns** | **0.0210** |     **352 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-42**                  |  **39.37 ns** |  **11.257 ns** |  **0.617 ns** | **0.0024** |      **40 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-8842(...)10656 [32]** | **181.17 ns** |  **48.979 ns** |  **2.685 ns** | **0.0143** |     **240 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-5/2**                 | **141.43 ns** |  **94.998 ns** |  **5.207 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-2/3**                 | **154.57 ns** |   **7.761 ns** |  **0.425 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **-1/123456789**         |  **89.67 ns** |   **3.456 ns** |  **0.189 ns** | **0.0072** |     **120 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **1/123456789**          |  **81.20 ns** |   **3.065 ns** |  **0.168 ns** | **0.0072** |     **120 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **2/3**                  | **124.16 ns** |   **7.411 ns** |  **0.406 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **269/200**              | **124.89 ns** |  **10.539 ns** |  **0.578 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **5/2**                  | **117.11 ns** |  **17.815 ns** |  **0.977 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **8/3**                  | **122.44 ns** |   **5.115 ns** |  **0.280 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **88427(...)10656 [31]** | **157.68 ns** |  **15.557 ns** |  **0.853 ns** | **0.0143** |     **240 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **42**                   |  **36.67 ns** |   **2.432 ns** |  **0.133 ns** | **0.0019** |      **32 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **400/3**                | **148.28 ns** | **109.215 ns** |  **5.986 ns** | **0.0148** |     **248 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **1234567/1000**         | **146.16 ns** |  **16.200 ns** |  **0.888 ns** | **0.0148** |     **248 B** |
+| **DecimalNotationFormatter_Format** | **N2**           | **123456789**            |  **50.11 ns** |   **4.595 ns** |  **0.252 ns** | **0.0033** |      **56 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-123456789**           |  **60.17 ns** |   **8.704 ns** |  **0.477 ns** | **0.0038** |      **64 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-1234567/1000**        | **345.22 ns** |  **27.491 ns** |  **1.507 ns** | **0.0505** |     **848 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-42**                  |  **48.97 ns** |   **1.355 ns** |  **0.074 ns** | **0.0029** |      **48 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-8842(...)10656 [32]** | **483.66 ns** |  **29.861 ns** |  **1.637 ns** | **0.0610** |    **1024 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-5/2**                 | **281.11 ns** |  **11.803 ns** |  **0.647 ns** | **0.0520** |     **872 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-2/3**                 | **323.51 ns** |  **49.659 ns** |  **2.722 ns** | **0.0434** |     **728 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **-1/123456789**         | **260.45 ns** |  **35.125 ns** |  **1.925 ns** | **0.0362** |     **608 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **1/123456789**          | **227.34 ns** |  **26.913 ns** |  **1.475 ns** | **0.0362** |     **608 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **2/3**                  | **298.95 ns** | **142.649 ns** |  **7.819 ns** | **0.0434** |     **728 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **269/200**              | **306.94 ns** |  **90.501 ns** |  **4.961 ns** | **0.0434** |     **728 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **5/2**                  | **241.98 ns** |  **40.872 ns** |  **2.240 ns** | **0.0458** |     **768 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **8/3**                  | **303.62 ns** |  **45.807 ns** |  **2.511 ns** | **0.0434** |     **728 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **88427(...)10656 [31]** | **468.43 ns** | **129.322 ns** |  **7.089 ns** | **0.0548** |     **920 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **42**                   |  **49.56 ns** |   **2.053 ns** |  **0.113 ns** | **0.0029** |      **48 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **400/3**                | **305.50 ns** |  **53.570 ns** |  **2.936 ns** | **0.0443** |     **744 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **1234567/1000**         | **320.55 ns** |  **79.589 ns** |  **4.363 ns** | **0.0443** |     **744 B** |
+| **DecimalNotationFormatter_Format** | **P2**           | **123456789**            |  **63.92 ns** |  **34.930 ns** |  **1.915 ns** | **0.0038** |      **64 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-123456789**           | **194.60 ns** |  **25.902 ns** |  **1.420 ns** | **0.0200** |     **336 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-1234567/1000**        | **168.42 ns** |  **10.610 ns** |  **0.582 ns** | **0.0148** |     **248 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-42**                  |  **87.40 ns** |   **1.224 ns** |  **0.067 ns** | **0.0091** |     **152 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-8842(...)10656 [32]** | **202.71 ns** |   **9.259 ns** |  **0.508 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-5/2**                 | **135.55 ns** |   **5.702 ns** |  **0.313 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-2/3**                 | **144.67 ns** |   **0.464 ns** |  **0.025 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **-1/123456789**         | **177.25 ns** |   **4.392 ns** |  **0.241 ns** | **0.0200** |     **336 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **1/123456789**          | **176.29 ns** |  **18.434 ns** |  **1.010 ns** | **0.0200** |     **336 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **2/3**                  | **132.90 ns** |  **17.180 ns** |  **0.942 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **269/200**              | **140.13 ns** |   **9.010 ns** |  **0.494 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **5/2**                  | **128.59 ns** |  **66.129 ns** |  **3.625 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **8/3**                  | **141.20 ns** |  **10.003 ns** |  **0.548 ns** | **0.0086** |     **144 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **88427(...)10656 [31]** | **186.49 ns** |  **16.341 ns** |  **0.896 ns** | **0.0162** |     **272 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **42**                   |  **79.01 ns** |  **10.461 ns** |  **0.573 ns** | **0.0091** |     **152 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **400/3**                | **157.02 ns** |   **6.778 ns** |  **0.372 ns** | **0.0148** |     **248 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **1234567/1000**         | **161.18 ns** |   **7.257 ns** |  **0.398 ns** | **0.0148** |     **248 B** |
+| **DecimalNotationFormatter_Format** | **S2**           | **123456789**            | **185.58 ns** |   **0.395 ns** |  **0.022 ns** | **0.0200** |     **336 B** |

@@ -39,7 +39,7 @@ public class RoundingBenchmarks {
 
 [MemoryDiagnoser]
 [ShortRunJob]
-public class RoundingWithoutReducingBenchmarks {
+public class RoundingWithoutReductionBenchmarks {
 
     [Params(1, 2, 4, 8, 16)]
     public int NbDecimals { get; set; }
