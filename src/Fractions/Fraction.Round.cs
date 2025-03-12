@@ -55,7 +55,7 @@ public readonly partial struct Fraction {
                 return fraction.Reduce();
             }
 
-            var factor = BigInteger.Pow(TEN, decimals);
+            var factor = PowerOfTen(decimals);
             var roundedNumerator = RoundToBigInteger(numerator * factor, denominator, mode);
             return ReduceSigned(roundedNumerator, factor);
         } else {
@@ -68,8 +68,8 @@ public readonly partial struct Fraction {
             if (denominator.IsOne || denominator.IsZero) {
                 return fraction;
             }
-
-            var factor = BigInteger.Pow(TEN, decimals);
+            
+            var factor = PowerOfTen(decimals);
             var roundedNumerator = RoundToBigInteger(numerator * factor, denominator, mode);
             return new Fraction(true, roundedNumerator, factor);
         }
@@ -120,9 +120,10 @@ public readonly partial struct Fraction {
         };
 
         static BigInteger roundAwayFromZero(BigInteger numerator, BigInteger denominator) {
+            var halfDenominator = denominator >> 1;
             return numerator.Sign == denominator.Sign
-                ? BigInteger.Divide(numerator + (denominator / 2), denominator)
-                : BigInteger.Divide(numerator - (denominator / 2), denominator);
+                ? BigInteger.Divide(numerator + halfDenominator, denominator)
+                : BigInteger.Divide(numerator - halfDenominator, denominator);
         }
 
         static BigInteger roundToEven(BigInteger numerator, BigInteger denominator) {
@@ -134,29 +135,29 @@ public readonly partial struct Fraction {
             if (denominator.Sign == 1) {
                 if (numerator.Sign == 1) {
                     // Both values are positive
-                    var midpoint = 2 * remainder;
+                    var midpoint = remainder << 1;
                     if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
-                        return quotient + 1;
+                        return quotient + BigInteger.One;
                     }
                 } else {
                     // For negative values
-                    var midpoint = -2 * remainder;
+                    var midpoint = -remainder << 1;
                     if (midpoint > denominator || (midpoint == denominator && !quotient.IsEven)) {
-                        return quotient - 1;
+                        return quotient - BigInteger.One;
                     }
                 }
             } else {
                 if (numerator.Sign == -1) {
                     // Both values are positive
-                    var midpoint = 2 * remainder;
+                    var midpoint = remainder << 1;
                     if (midpoint < denominator || (midpoint == denominator && !quotient.IsEven)) {
-                        return quotient + 1;
+                        return quotient + BigInteger.One;
                     }
                 } else {
                     // For negative values
-                    var midpoint = -2 * remainder;
+                    var midpoint = -remainder << 1;
                     if (midpoint < denominator || (midpoint == denominator && !quotient.IsEven)) {
-                        return quotient - 1;
+                        return quotient - BigInteger.One;
                     }
                 }
             }
@@ -166,12 +167,12 @@ public readonly partial struct Fraction {
 #if NET
         static BigInteger roundToPositiveInfinity(BigInteger numerator, BigInteger denominator) {
             var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
-            return remainder.Sign == denominator.Sign ? quotient + 1 : quotient;
+            return remainder.Sign == denominator.Sign ? quotient + BigInteger.One : quotient;
         }
 
         static BigInteger roundToNegativeInfinity(BigInteger numerator, BigInteger denominator) {
             var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
-            return remainder.Sign == -denominator.Sign ? quotient - 1 : quotient;
+            return remainder.Sign == -denominator.Sign ? quotient - BigInteger.One : quotient;
         }
 #endif
     }
