@@ -33,20 +33,14 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     <list type="bullet">
     ///         <item>
     ///             On .NET Framework and .NET Core up to .NET Core 2.0, the runtime selects the result with the greater least
-    ///             significant digit (that is, using <see cref="MidpointRounding.AwayFromZero" />).
+    ///             significant digit (that is, using <see cref="MidpointRounding.AwayFromZero" />) for both the double and decimal rounding.
     ///         </item>
     ///         <item>
-    ///             On .NET Core 2.1 and later, the runtime selects the result with an even least significant digit (that is,
-    ///             using  <see cref="MidpointRounding.ToEven" />).
+    ///             On .NET Core 2.1 and later, the EEE‑754 floating‑point (e.g. double) numbers appear to be formatted using some variant of the Ry¯u: Fast Float-to-String Conversion.
     ///         </item>
-    ///     </list>
+    ///     </list>   
     /// </summary>
-    private const MidpointRounding DefaultMidpointRoundingMode =
-#if NETCOREAPP2_1_OR_GREATER
-        MidpointRounding.ToEven;
-#else
-        MidpointRounding.AwayFromZero;
-#endif
+    private const MidpointRounding DefaultMidpointRoundingMode =  MidpointRounding.AwayFromZero;
 
     /// <summary>
     ///     The default precision used for the general format specifier (G)
@@ -73,8 +67,6 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     This instance can be used to format Fraction objects into decimal string representations.
     /// </remarks>
     public static DecimalNotationFormatter Instance { get; } = new();
-
-    private static readonly BigInteger Ten = new(10);
 
     /// <summary>
     /// <inheritdoc cref="Format(string?,Fraction,System.IFormatProvider?)" path="/summary"/>
@@ -267,8 +259,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </remarks>
     private static string FormatWithFixedPointFormat(Fraction fraction, string format,
         NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
-            return 0d.ToString(format, formatProvider);
+        if (fraction.Numerator.IsZero) {
+            return 0.ToString(format, formatProvider);
         }
 
         if (fraction.Denominator.IsOne) {
@@ -281,28 +273,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
         }
 
         var sb = new StringBuilder(12 + maxNbDecimalsAfterRadix);
-
-#if NETCOREAPP2_1_OR_GREATER
-        if (fraction.IsNegative) {
-            sb.Append(formatProvider.NegativeSign);
-            fraction = fraction.Abs();
-        }
-
         if (maxNbDecimalsAfterRadix == 0) {
-            return sb.Append(Round(fraction.Numerator, fraction.Denominator).ToString(format, formatProvider)).ToString();
-        }
-
-        var roundedFraction = Round(fraction, maxNbDecimalsAfterRadix);
-        if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
-            return sb.Append(roundedFraction.Numerator.ToString(format, formatProvider)!).ToString();
-        }
-
-        return AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimalsAfterRadix).ToString();
-#else
-        // On .NET Framework and .NET Core up to .NET Core 2.0 the string format does not append the '-' sign when a value is rounded to 0.
-        if (maxNbDecimalsAfterRadix == 0) {
-            return sb.Append(Round(fraction.Numerator, fraction.Denominator).ToString(format, formatProvider)!)
-                .ToString();
+            return sb.Append(Round(fraction.Numerator, fraction.Denominator).ToString(format, formatProvider)!).ToString();
         }
 
         var roundedFraction = Round(fraction, maxNbDecimalsAfterRadix);
@@ -311,12 +283,11 @@ public class DecimalNotationFormatter : ICustomFormatter {
             roundedFraction = roundedFraction.Abs();
         }
 
-        if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
-            return sb.Append(roundedFraction.Numerator.ToString(format, formatProvider)!).ToString();
+        if (roundedFraction.Numerator.IsZero) {
+            return sb.Append(0.ToString(format, formatProvider)).ToString();
         }
 
         return AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimalsAfterRadix).ToString();
-#endif
     }
 
     /// <summary>
@@ -330,8 +301,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     current <see cref="NumberFormatInfo.NumberDecimalDigits" /> property supplies the numeric precision.
     /// </remarks>
     private static string FormatWithStandardNumericFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
-            return 0d.ToString(format, formatProvider);
+        if (fraction.Numerator.IsZero) {
+            return 0.ToString(format, formatProvider);
         }
 
         if (fraction.Denominator.IsOne) {
@@ -352,24 +323,18 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         if (maxNbDecimals == 0) {
             var roundedValue = Round(fraction.Numerator, fraction.Denominator);
-#if NETSTANDARD
             if (roundedValue.IsZero) {
-                return 0d.ToString(format, formatProvider);
+                return 0.ToString(format, formatProvider);
             }
-#endif
+            
             sb.Append(roundedValue.ToString(format, formatProvider)!);
         } else {
             var roundedFraction = Round(fraction, maxNbDecimals);
-            if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
-#if NETSTANDARD
-                if (roundedFraction.Numerator.IsZero) {
-                    return 0d.ToString(format, formatProvider);
-                }
-#endif
-                sb.Append(roundedFraction.Numerator.ToString(format, formatProvider)!);
-            } else {
-                AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimals, "N0");
+            if (roundedFraction.Numerator.IsZero) {
+                return 0.ToString(format, formatProvider);
             }
+
+            AppendDecimals(sb, roundedFraction, formatProvider, maxNbDecimals, "N0");
         }
 
         return isPositive
@@ -386,9 +351,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
                     sb.Insert(0, negativeSignSymbol + ' ').ToString(),
                 3 => // n-
                     sb.Append(negativeSignSymbol).ToString(),
-                4 => // n -
+                _ => // n -
                     sb.Append(' ').Append(negativeSignSymbol).ToString(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
             };
         }
     }
@@ -428,11 +392,10 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         if (maxNbDecimals == 0) {
             var roundedValue = Round(100 * fraction.Numerator, fraction.Denominator);
-#if NETSTANDARD
             if (roundedValue.IsZero) {
                 return 0.ToString(format, formatProvider);
             }
-#endif
+            
             var percentFormatString = 'N' + maxNbDecimals.ToString();
             if (fraction.IsPositive) {
                 sb.Append(roundedValue.ToString(percentFormatString, percentFormatInfo));
@@ -440,8 +403,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             }
 
             sb.Append((-roundedValue).ToString(percentFormatString, percentFormatInfo));
-            return withNegativeSign(sb, formatProvider.PercentSymbol, formatProvider.NegativeSign,
-                formatProvider.PercentNegativePattern);
+            return withNegativeSign(sb, formatProvider.PercentSymbol, formatProvider.NegativeSign, formatProvider.PercentNegativePattern);
         }
 
         var isPositive = fraction.IsPositive;
@@ -454,11 +416,10 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         var roundedFraction = Round(fraction, maxNbDecimals);
         if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
-#if NETSTANDARD
             if (roundedFraction.Numerator.IsZero) {
                 return 0.ToString(format, formatProvider);
             }
-#endif
+            
             var percentFormatString = 'N' + maxNbDecimals.ToString();
             sb.Append(roundedFraction.Numerator.ToString(percentFormatString, percentFormatInfo)!);
         } else {
@@ -478,9 +439,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
                     sb.Append(percentSymbol).ToString(),
                 2 => // %n
                     sb.Insert(0, percentSymbol).ToString(),
-                3 => // % n
+                _ => // % n
                     sb.Insert(0, percentSymbol + ' ').ToString(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
             };
         }
 
@@ -508,9 +468,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
                     sb.Insert(0, percentSymbol + ' ').Append(negativeSignSymbol).ToString(),
                 10 => // % -n
                     sb.Insert(0, percentSymbol + ' ').Insert(2, negativeSignSymbol).ToString(),
-                11 => // n- %
+                _ => // n- %
                     sb.Append(negativeSignSymbol).Append(' ').Append(percentSymbol).ToString(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
             };
         }
     }
@@ -527,7 +486,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     greater, the last digit in the result string is rounded away from zero.
     /// </remarks>
     private static string FormatWithCurrencyFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
+        if (fraction.Numerator.IsZero) {
             return 0.ToString(format, formatProvider);
         }
 
@@ -552,11 +511,10 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         if (maxNbDecimals == 0) {
             var roundedValue = Round(fraction.Numerator, fraction.Denominator);
-#if NETSTANDARD
             if (roundedValue.IsZero) {
                 return 0.ToString(format, formatProvider);
             }
-#endif
+            
             var currencyFormatString = 'N' + maxNbDecimals.ToString();
             if (fraction.IsPositive) {
                 sb.Append(roundedValue.ToString(currencyFormatString, currencyFormatInfo));
@@ -575,17 +533,12 @@ public class DecimalNotationFormatter : ICustomFormatter {
         }
 
         var roundedFraction = Round(fraction, maxNbDecimals);
-        if (roundedFraction.Numerator.IsZero || roundedFraction.Denominator.IsOne) {
-#if NETSTANDARD
-            if (roundedFraction.Numerator.IsZero) {
-                return 0.ToString(format, formatProvider);
-            }
-#endif
-            var currencyFormatString = 'N' + maxNbDecimals.ToString();
-            sb.Append(roundedFraction.Numerator.ToString(currencyFormatString, currencyFormatInfo)!);
-        } else {
-            AppendDecimals(sb, roundedFraction, currencyFormatInfo, maxNbDecimals, "N0");
+        
+        if (roundedFraction.Numerator.IsZero) {
+            return 0.ToString(format, formatProvider);
         }
+
+        AppendDecimals(sb, roundedFraction, currencyFormatInfo, maxNbDecimals, "N0");
 
         return isPositive
             ? withPositiveSign(sb, formatProvider.CurrencySymbol, formatProvider.CurrencyPositivePattern)
@@ -600,9 +553,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
                     sb.Append(currencySymbol).ToString(),
                 2 => // $ n
                     sb.Insert(0, currencySymbol + ' ').ToString(),
-                3 => // n $
+                _ => // n $
                     sb.Append(' ').Append(currencySymbol).ToString(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
             };
         }
 
@@ -639,11 +591,15 @@ public class DecimalNotationFormatter : ICustomFormatter {
                     sb.Append(negativeSignSymbol).Append(' ').Append(currencySymbol).ToString(),
                 14 => // ($ n)
                     sb.Insert(0, '(').Insert(1, currencySymbol + ' ').Append(')').ToString(),
+#if NETSTANDARD
+                _ => // (n $)
+                    sb.Insert(0, '(').Append(' ').Append(currencySymbol).Append(')').ToString(),
+#else
                 15 => // (n $)
                     sb.Insert(0, '(').Append(' ').Append(currencySymbol).Append(')').ToString(),
-                16 => // $- n
+                _ => // $- n
                     sb.Insert(0, currencySymbol + negativeSignSymbol + ' ').ToString(),
-                _ => throw new ArgumentOutOfRangeException(nameof(pattern))
+#endif
             };
         }
     }
@@ -662,8 +618,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     this minimum, if required.
     /// </remarks>
     private static string FormatWithScientificFormat(Fraction fraction, string format, NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
-            return 0d.ToString(format, formatProvider);
+        if (fraction.Numerator.IsZero) {
+            return 0.ToString(format, formatProvider);
         }
 
         if (fraction.Denominator.IsOne) {
@@ -682,7 +638,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             fraction = fraction.Abs();
         }
 
-        var exponent = GetExponentPower(fraction, out var exponentTerm);
+        var exponent = GetExponentPower(fraction.Numerator, fraction.Denominator, out var exponentTerm);
         var mantissa = exponent switch {
             0 => Round(fraction, maxNbDecimals),
             > 0 => Round(fraction / exponentTerm, maxNbDecimals),
@@ -716,8 +672,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
     ///     is omitted or zero, the type of the number determines the default precision.
     /// </remarks>
     private static string FormatGeneral(Fraction fraction, string format, NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
-            return 0d.ToString(format, formatProvider);
+        if (fraction.Numerator.IsZero) {
+            return 0.ToString(format, formatProvider);
         }
 
         if (!TryGetPrecisionDigits(format, DefaultGeneralFormatPrecision, out var maxNbDecimals)) {
@@ -736,7 +692,7 @@ public class DecimalNotationFormatter : ICustomFormatter {
             fraction = fraction.Abs();
         }
 
-        var exponent = GetExponentPower(fraction, out var exponentTerm);
+        var exponent = GetExponentPower(fraction.Numerator, fraction.Denominator, out var exponentTerm);
 
         if (exponent == maxNbDecimals - 1) {
             // integral result: both 123400 (1.234e5) and 123400.01 (1.234001e+005) result in "123400" with the "G6" format
@@ -745,28 +701,29 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         if (exponent > maxNbDecimals - 1) {
             // we are required to shorten down a number of the form 123400 (1.234E+05)
-            var mantissa = Round(fraction / exponentTerm, maxNbDecimals - 1);
-            AppendSignificantDecimals(sb, mantissa, formatProvider, maxNbDecimals - 1);
+            if (maxNbDecimals == 1) {
+                sb.Append(Round(fraction.Numerator, fraction.Denominator * exponentTerm));
+            } else {
+                var mantissa = Round(new Fraction(fraction.Numerator, fraction.Denominator * exponentTerm, false), maxNbDecimals - 1);
+                AppendSignificantDecimals(sb, mantissa, formatProvider, maxNbDecimals - 1);
+            }
+            
             return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 'g' ? 'e' : 'E')
                 .ToString();
         }
 
-        switch (exponent) {
-            case >= 0:
-                // the required number of significant digits is less than the specified limit: e.g. 123.45 with the "G20"
-                return AppendSignificantDecimals(sb, fraction, formatProvider, maxNbDecimals - exponent - 1).ToString();
-            case <= -5:
-                // the largest value would have the form: 1.23e-5 (0.000123)
-                var mantissa = Round(fraction * exponentTerm, maxNbDecimals - 1);
-                AppendSignificantDecimals(sb, mantissa, formatProvider, maxNbDecimals - 1);
-                return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 'g' ? 'e' : 'E')
-                    .ToString();
-            default:
-                // the smallest value would have the form: 1.23e-4 (0.00123)
-                var roundedDecimal = Round(fraction, maxNbDecimals - exponent - 1);
-                return AppendSignificantDecimals(sb, roundedDecimal, formatProvider, maxNbDecimals - exponent - 1)
-                    .ToString();
+        if (exponent <= -5) {
+            // the largest value would have the form: 1.23e-5 (0.000123)
+            var mantissa = Round(fraction * exponentTerm, maxNbDecimals - 1);
+            AppendSignificantDecimals(sb, mantissa, formatProvider, maxNbDecimals - 1);
+            return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 'g' ? 'e' : 'E')
+                .ToString();
         }
+        
+        // the smallest value would have the form: 1.23e-4 (0.00123)
+        var roundedDecimal = Round(fraction, maxNbDecimals - exponent - 1);
+        return AppendSignificantDecimals(sb, roundedDecimal, formatProvider, maxNbDecimals - exponent - 1)
+            .ToString();
     }
 
     /// <summary>
@@ -800,8 +757,8 @@ public class DecimalNotationFormatter : ICustomFormatter {
     /// </remarks>
     private static string FormatWithSignificantDigitsAfterRadix(Fraction fraction, string format,
         NumberFormatInfo formatProvider) {
-        if (fraction.Numerator == BigInteger.Zero) {
-            return 0d.ToString(formatProvider);
+        if (fraction.Numerator.IsZero) {
+            return 0.ToString(formatProvider);
         }
 
         const string quotientFormat = "N0";
@@ -818,18 +775,20 @@ public class DecimalNotationFormatter : ICustomFormatter {
             fraction = fraction.Abs();
         }
 
-        var exponent = GetExponentPower(fraction, out var exponentTerm);
+        var exponent = GetExponentPower(fraction.Numerator, fraction.Denominator, out var exponentTerm);
         Fraction mantissa;
         switch (exponent) {
             case > 5:
                 // the smallest value would have the form: 1.23e6 (1230000)
-                mantissa = Round(fraction / exponentTerm, maxDigitsAfterRadix);
+                // mantissa = Round(fraction / exponentTerm, maxDigitsAfterRadix);
+                mantissa = Round(new Fraction(fraction.Numerator, fraction.Denominator * exponentTerm, false), maxDigitsAfterRadix);
                 AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, quotientFormat);
                 return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 's' ? 'e' : 'E')
                     .ToString();
             case <= -4:
                 // the largest value would have the form: 1.23e-4 (0.000123)
-                mantissa = Round(fraction * exponentTerm, maxDigitsAfterRadix);
+                // mantissa = Round(fraction * exponentTerm, maxDigitsAfterRadix);
+                mantissa = Round(new Fraction(fraction.Numerator * exponentTerm, fraction.Denominator, false), maxDigitsAfterRadix);
                 AppendSignificantDecimals(sb, mantissa, formatProvider, maxDigitsAfterRadix, quotientFormat);
                 return AppendExponentWithSignificantDigits(sb, exponent, formatProvider, format[0] is 's' ? 'e' : 'E')
                     .ToString();
@@ -848,11 +807,40 @@ public class DecimalNotationFormatter : ICustomFormatter {
         }
     }
 
+    private static BigInteger PreviousPowerOfTen(BigInteger powerOfTen, int exponent) {
+        return exponent <= Fraction.PowersOfTen.Length ? Fraction.PowersOfTen[exponent - 1] : powerOfTen / Fraction.TEN;
+    }
 
-    private static StringBuilder AppendDecimals(StringBuilder sb, Fraction fraction, NumberFormatInfo formatProvider,
-        int nbDecimals, string quotientFormat = "F0",
-        MidpointRounding roundingMode = DefaultMidpointRoundingMode) {
-        var quotient = BigInteger.DivRem(fraction.Numerator, fraction.Denominator, out var remainder);
+    private static BigInteger NextPowerOfTen(BigInteger powerOfTen, int exponent) {
+        return exponent + 1 < Fraction.PowersOfTen.Length ? Fraction.PowersOfTen[exponent + 1] : powerOfTen * Fraction.TEN;
+    }
+
+    /// <summary>
+    ///     Appends the decimal representation of a fraction to the specified <see cref="StringBuilder" />.
+    /// </summary>
+    /// <param name="sb">The <see cref="StringBuilder" /> to which the decimal representation will be appended.</param>
+    /// <param name="decimalFraction">The <see cref="Fraction" /> to be represented in decimal form.</param>
+    /// <param name="formatProvider">The <see cref="NumberFormatInfo" /> that provides culture-specific formatting information.</param>
+    /// <param name="nbDecimals">The maximum number of decimal places to include in the representation.</param>
+    /// <param name="quotientFormat">
+    ///     An optional format string for formatting the quotient part of the fraction.
+    ///     Defaults to <c>"F0"</c>.
+    /// </param>
+    /// <returns>The <see cref="StringBuilder" /> with the appended decimal representation.</returns>
+    /// <remarks>
+    ///     This method calculates the decimal representation of the given fraction by dividing the numerator
+    ///     by the denominator and appending the result to the <paramref name="sb" />, padding with "0" to ensure the specified
+    ///     number of decimal places is respected.
+    ///     <para>
+    ///         The <paramref name="decimalFraction" /> must represent a value with a denominator that is a power of 10,
+    ///         equal to the specified <paramref name="nbDecimals" />.
+    ///     </para>
+    /// </remarks>
+    private static StringBuilder AppendDecimals(StringBuilder sb, Fraction decimalFraction, NumberFormatInfo formatProvider,
+        int nbDecimals, string quotientFormat = "F0") {
+        var numerator = decimalFraction.Numerator;
+        var denominator = decimalFraction.Denominator;
+        var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
 
         sb.Append(quotient.ToString(quotientFormat, formatProvider)).Append(formatProvider.NumberDecimalSeparator);
 
@@ -860,24 +848,49 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         var decimalsAdded = 0;
         while (!remainder.IsZero && decimalsAdded++ < nbDecimals - 1) {
-            quotient = BigInteger.DivRem(remainder * Ten, fraction.Denominator, out remainder);
-            sb.Append(quotient.ToString(formatProvider));
+            denominator = PreviousPowerOfTen(denominator, nbDecimals - decimalsAdded + 1);
+            var digit = (int)BigInteger.DivRem(remainder, denominator, out remainder);
+            sb.Append(digit.ToString(formatProvider));
         }
 
         if (remainder.IsZero) {
             sb.Append('0', nbDecimals - decimalsAdded);
         } else {
-            quotient = Round(remainder * Ten, fraction.Denominator, roundingMode);
-            sb.Append(quotient.ToString(formatProvider));
+            sb.Append(remainder.ToString(formatProvider));
         }
 
         return sb;
     }
 
-    private static StringBuilder AppendSignificantDecimals(StringBuilder sb, Fraction mantissa,
-        NumberFormatInfo formatProvider, int maxNbDecimals,
-        string quotientFormat = "F0") {
-        var quotient = BigInteger.DivRem(mantissa.Numerator, mantissa.Denominator, out var remainder);
+    /// <summary>
+    ///     Appends the significant decimal digits of a fractional number to the specified <see cref="StringBuilder" />.
+    /// </summary>
+    /// <param name="sb">The <see cref="StringBuilder" /> to which the significant decimal digits will be appended.</param>
+    /// <param name="decimalFraction">
+    ///     The fractional number whose significant decimal digits are to be appended.
+    ///     The denominator of this fraction must be a power of 10, corresponding to the <paramref name="maxNbDecimals" />.
+    /// </param>
+    /// <param name="formatProvider">The <see cref="NumberFormatInfo" /> that provides culture-specific formatting information.</param>
+    /// <param name="maxNbDecimals">The maximum number of decimal digits to append.</param>
+    /// <param name="quotientFormat">
+    ///     An optional format string that specifies the format of the quotient. Defaults to "F0".
+    /// </param>
+    /// <returns>
+    ///     The <see cref="StringBuilder" /> instance with the appended significant decimal digits.
+    /// </returns>
+    /// <remarks>
+    ///     This method calculates and appends the significant decimal digits of the given fractional number.
+    ///     It ensures that the number of appended decimal digits does not exceed the specified maximum.
+    ///     <para>
+    ///         The <paramref name="decimalFraction" /> must represent a value with a denominator that is a power of 10,
+    ///         equal to the specified <paramref name="maxNbDecimals" />.
+    ///     </para>
+    /// </remarks>
+    private static StringBuilder AppendSignificantDecimals(StringBuilder sb, Fraction decimalFraction, NumberFormatInfo formatProvider,
+        int maxNbDecimals, string quotientFormat = "F0") {
+        var numerator = decimalFraction.Numerator;
+        var denominator = decimalFraction.Denominator;
+        var quotient = BigInteger.DivRem(numerator, denominator, out var remainder);
 
         sb.Append(quotient.ToString(quotientFormat, formatProvider));
 
@@ -887,17 +900,14 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
         sb.Append(formatProvider.NumberDecimalSeparator);
 
-        var nbDecimals = 0;
-        while (nbDecimals++ < maxNbDecimals - 1) {
-            quotient = BigInteger.DivRem(remainder * Ten, mantissa.Denominator, out remainder);
-            sb.Append(quotient.ToString(formatProvider));
-            if (remainder == BigInteger.Zero) {
-                return sb;
-            }
-        }
+        var decimalsRemaining = maxNbDecimals;
+        do {
+            denominator = PreviousPowerOfTen(denominator, decimalsRemaining);
+            var digit = (int)BigInteger.DivRem(remainder, denominator, out remainder);
+            sb.Append(digit.ToString(formatProvider));
+            decimalsRemaining--;
+        } while (!remainder.IsZero && decimalsRemaining > 0);
 
-        quotient = Round(remainder * Ten, mantissa.Denominator);
-        sb.Append(quotient.ToString(formatProvider));
         return sb;
     }
 
@@ -953,69 +963,92 @@ public class DecimalNotationFormatter : ICustomFormatter {
 
     #endregion
 
+    private static readonly double Log10Of2 = Math.Log10(2);
+
     /// <summary>
-    ///     Calculates the exponent power for the given fraction.
+    ///     Calculates the exponent power for the given fraction terms.
     /// </summary>
-    /// <param name="fraction">The fraction for which to calculate the exponent power. The fraction must be positive.</param>
+    /// <param name="numerator">The numerator of the fraction.</param>
+    /// <param name="denominator">The denominator of the fraction.</param>
     /// <param name="powerOfTen">
     ///     Output parameter that returns the power of ten that corresponds to the calculated exponent
     ///     power.
     /// </param>
     /// <returns>The exponent power for the given fraction.</returns>
-    private static int GetExponentPower(Fraction fraction, out BigInteger powerOfTen) {
-        var numerator = fraction.Numerator;
-        var denominator = fraction.Denominator;
+    /// <remarks>It is expected that both terms have the same sign (i.e. the Fraction is positive)</remarks>
+    private static int GetExponentPower(BigInteger numerator, BigInteger denominator, out BigInteger powerOfTen) {
         if (denominator.Sign == -1) {
             // normalize the signs of the terms
             numerator = -numerator;
             denominator = -denominator;
         }
 
-        if (numerator > denominator) {
-            var nbDigits = CountDigits(numerator / denominator, out powerOfTen);
-            if (numerator * powerOfTen < Ten * denominator) {
-                return nbDigits;
-            }
-
-            powerOfTen /= Ten;
-            return nbDigits - 1;
-        } else {
-            var nbDigits = CountDigits(denominator / numerator, out powerOfTen);
-            if (numerator * powerOfTen < Ten * denominator) {
-                return -nbDigits;
-            }
-
-            powerOfTen /= Ten;
-            return -nbDigits + 1;
-        }
-    }
-
-
-#if NET5_0_OR_GREATER
-    private static readonly double Log10Of2 = Math.Log10(2);
-    private static int CountDigits(BigInteger value, out BigInteger powerOfTen) {
-        var numBits = value.GetBitLength();
-        var base10Digits = (int)(numBits * Log10Of2);
-        powerOfTen = BigInteger.Pow(Ten, base10Digits);
-
-        if (value < powerOfTen) {
-            return base10Digits;
-        }
-
-        powerOfTen *= Ten;
-        return base10Digits + 1;
-    }
+        // Preconditions: numerator > 0, denominator > 0.
+#if NET
+        var numLen = numerator.GetBitLength();
+        var denLen = denominator.GetBitLength();
 #else
-    private static int CountDigits(BigInteger value, out BigInteger powerOfTen) {
-        var base10Digits = (int)Math.Ceiling(BigInteger.Log10(value));
-        powerOfTen = BigInteger.Pow(Ten, base10Digits);
+        var numLen = getBitLength(numerator);
+        var denLen = getBitLength(denominator);
+#endif
+        // If the two numbers have equal bit-length, then their ratio is in [1,2) if numerator >= denominator,
+        // or in (0,1) if numerator < denominator. In these cases the scientific exponent is fixed.
+        if (numLen == denLen) {
+            if (numerator >= denominator) {
+                powerOfTen = BigInteger.One; // 10^0
+                return 0;
+            }
 
-        if (value < powerOfTen) {
-            return base10Digits;
+            // When numerator < denominator, ratio < 1, and normalization requires multiplying by 10 once.
+            powerOfTen = Fraction.TEN; // 10^1, leading to an exponent of -1.
+            return -1;
         }
 
-        powerOfTen *= Ten;
-        return base10Digits + 1;
-    }
+        if (numLen > denLen) {
+            // Case: number >= 1, so the scientific exponent is positive.
+            // The adjusted candidate uses (diffBits - 1) because an L-bit number is at least 2^(L-1).
+            var diffBits = numLen - denLen;
+            var exponent = (int)Math.Floor((diffBits - 1) * Log10Of2) + 1;
+            powerOfTen = Fraction.PowerOfTen(exponent);
+
+            // Adjustment: if our candidate powerOfTen is too high,
+            // then the quotient doesn't reach that many digits.
+            if (numerator >= denominator * powerOfTen) {
+                return exponent;
+            }
+
+            powerOfTen = PreviousPowerOfTen(powerOfTen, exponent);
+            return exponent - 1;
+        } else {
+            // Case: number < 1, so the scientific exponent is negative.
+            // We need the smallest k such that numerator * 10^k >= denominator.
+            var diffBits = denLen - numLen;
+            var exponent = (int)Math.Ceiling(diffBits * Log10Of2) - 1;
+            powerOfTen = Fraction.PowerOfTen(exponent);
+
+            // First, check if one fewer factor of Ten would suffice.
+            if (numerator * powerOfTen >= denominator) {
+                return -exponent;
+            }
+
+            // Select the next guess as 10^exponent
+            powerOfTen = NextPowerOfTen(powerOfTen, exponent++);
+            
+            // Then, check if our candidate is too low.
+            if (numerator * powerOfTen < denominator) {
+                powerOfTen = NextPowerOfTen(powerOfTen, exponent++);
+            }
+
+            // For numbers < 1, the scientific exponent is -k.
+            return -exponent;
+        }
+
+#if NETSTANDARD
+        static long getBitLength(BigInteger value) {
+            // Using BigInteger.Log(value, 2) avoids creating a byte array.
+            // Note: For value > 0 this returns a double that we floor and add 1.
+            return (long)Math.Floor(BigInteger.Log(value, 2)) + 1;
+        }
 #endif
+    }
 }

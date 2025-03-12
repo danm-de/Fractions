@@ -555,6 +555,8 @@ public readonly partial struct Fraction {
             denominator: BigInteger.Pow(fraction.Denominator, exponent));
     }
 
+    internal static BigInteger PowerOfTen(int exponent) => exponent < PowersOfTen.Length ? PowersOfTen[exponent] : BigInteger.Pow(TEN, exponent);
+
     /// <summary>
     /// Returns a fraction with the numerator and denominator exchanged.
     /// </summary>
