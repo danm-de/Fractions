@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Fractions;
 
@@ -457,9 +458,7 @@ public readonly partial struct Fraction {
     ///     Returns this as reduced/simplified fraction. The fraction's sign will be normalized.
     /// </summary>
     /// <returns>A reduced and normalized fraction.</returns>
-    public Fraction Reduce() {
-        return _normalizationNotApplied ? GetReducedFraction(Numerator, Denominator) : this;
-    }
+    public Fraction Reduce() => _normalizationNotApplied ? GetReducedFraction(Numerator, Denominator) : this;
 
     /// <summary>
     /// Gets the absolute value of a <see cref="Fraction"/> object.
@@ -555,7 +554,11 @@ public readonly partial struct Fraction {
             denominator: BigInteger.Pow(fraction.Denominator, exponent));
     }
 
-    internal static BigInteger PowerOfTen(int exponent) => exponent < PowersOfTen.Length ? PowersOfTen[exponent] : BigInteger.Pow(TEN, exponent);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static BigInteger PowerOfTen(int exponent) =>
+        exponent < PowersOfTen.Length
+            ? PowersOfTen[exponent]
+            : BigInteger.Pow(TEN, exponent);
 
     /// <summary>
     /// Returns a fraction with the numerator and denominator exchanged.
