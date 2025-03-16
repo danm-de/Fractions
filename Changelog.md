@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+## 8.3.1
+- Fixed [#105](https://github.com/danm-de/Fractions/issues/105): ArgumentOutOfRangeException thrown from the TryParse method by [lipchev](https://github.com/lipchev)
+- Fixed [#102](https://github.com/danm-de/Fractions/issues/102): DecimalNotationFormatter with "G2" returns "2.0" by [lipchev](https://github.com/lipchev)
+- Fixed [#107](https://github.com/danm-de/Fractions/issues/107): The comparison operators with NaN should return false
+
 ## 8.3.0
 
 - Re-implement the Sqrt function (fixes [#97](https://github.com/danm-de/Fractions/issues/97)) by [lipchev](https://github.com/lipchev)

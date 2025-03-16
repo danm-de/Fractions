@@ -29,13 +29,13 @@ public readonly partial struct Fraction {
 
     public static Fraction operator %(Fraction a, Fraction b) => a.Remainder(b);
 
-    public static bool operator <(Fraction a, Fraction b) => a.CompareTo(b) < 0;
+    public static bool operator <(Fraction a, Fraction b) => !(a.IsNaN || b.IsNaN) && a.CompareTo(b) < 0;
 
-    public static bool operator >(Fraction a, Fraction b) => a.CompareTo(b) > 0;
+    public static bool operator >(Fraction a, Fraction b) => !(a.IsNaN || b.IsNaN) && a.CompareTo(b) > 0;
 
-    public static bool operator <=(Fraction a, Fraction b) => a.CompareTo(b) <= 0;
+    public static bool operator <=(Fraction a, Fraction b) => !(a.IsNaN || b.IsNaN) && a.CompareTo(b) <= 0;
 
-    public static bool operator >=(Fraction a, Fraction b) => a.CompareTo(b) >= 0;
+    public static bool operator >=(Fraction a, Fraction b) => !(a.IsNaN || b.IsNaN) && a.CompareTo(b) >= 0;
 
     public static implicit operator Fraction(int value) => new(value);
 

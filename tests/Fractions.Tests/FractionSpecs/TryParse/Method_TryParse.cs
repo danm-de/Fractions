@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 using FluentAssertions;
@@ -117,6 +118,31 @@ public class When_trying_to_parse_a_fraction {
     }
 
     // TODO see about testing the non-normalized parsing variant (see tests in Method_FromString)
+
+    [Test]
+    public void TryParse_with_valid_string_for_current_culture_should_return_the_expected_result() {
+        var valueToParse = 123.45.ToString("G", CultureInfo.CurrentCulture);
+        var expectedValue = new Fraction(12345, 100);
+
+        var success = Fraction.TryParse(valueToParse, out var result);
+
+        success.Should().BeTrue();
+        result.Should().Be(expectedValue);
+    }
+
+#if NET
+
+    [Test]
+    public void TryParse_ReadOnlySpan_with_valid_string_should_return_the_expected_value() {
+        var valueToParse = "123.45".AsSpan();
+        var expectedValue = new Fraction(12345, 100);
+
+        var success = Fraction.TryParse(valueToParse, NumberStyles.Any, CultureInfo.InvariantCulture, out var result);
+
+        success.Should().BeTrue();
+        result.Should().Be(expectedValue);
+    }
+#endif
 }
 
 [TestFixture]
@@ -129,10 +155,20 @@ public class When_trying_to_parse_an_invalid_fraction {
             yield return new TestCaseData(" ");
             yield return new TestCaseData(default(string));
             yield return new TestCaseData("abc123");
+            yield return new TestCaseData("1x/2");
+            yield return new TestCaseData("1/2x");
         }
     }
 
     [Test, TestCaseSource(nameof(TestCases))]
     public void The_result_should_be_FALSE(string value) =>
         Fraction.TryParse(value, out _).Should().BeFalse();
+
+#if NET
+    [Test]
+    public void The_result_with_ReadOnlySpan_should_be_false() {
+        Fraction.TryParse("12 345".AsSpan(), NumberStyles.Any, CultureInfo.GetCultureInfo("de-DE"), out _).Should().BeFalse();
+    }
+
+#endif
 }
